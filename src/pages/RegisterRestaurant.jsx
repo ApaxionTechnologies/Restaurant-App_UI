@@ -101,11 +101,34 @@ export default function RegisterRestaurant() {
     });
 
     if (Object.keys(errors).length === 0) {
-      alert("Restaurant registered successfully!");
-      console.log("Form submitted:", formData);
-
-      // ✅ Redirect to QR upload page after successful registration
-      navigate("/upload-qr");
+      // Send data to backend API
+      fetch("http://localhost:5001/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          restaurantName: formData.restaurantName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          contact: formData.contact,
+          address: formData.address,
+          email: formData.email,
+          password: formData.password,
+        }),
+      })
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok) {
+            alert("Restaurant registered successfully!");
+            navigate("/upload-qr");
+          } else {
+            alert(data.error || "Registration failed.");
+          }
+        })
+        .catch(() => {
+          alert("Server error. Please try again later.");
+        });
     } else {
       alert("Please fix the errors in the form.");
     }
@@ -113,6 +136,7 @@ export default function RegisterRestaurant() {
 
   return (
     <div className="register-page">
+      {/* Backend API: POST http://localhost:5000/api/register */}
       <form className="register-form" onSubmit={handleSubmit} data-aos="fade-up">
         <h1 className="form-title">Register As Restaurant</h1>
         <div className="title-divider" />
