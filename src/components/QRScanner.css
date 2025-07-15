@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #b2c8f6;
+}
+
+/* Center the scanner on full page */
+.scanner-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Stylish card container */
+.scanner-box {
+  background: rgb(242, 242, 244);
+  padding: 2.5rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  animation: slideFadeIn 0.6s ease-in-out;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Title and subtext */
+.scanner-title {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.scanner-subtext {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* Button styling */
+.btn {
+  display: inline-block;
+  margin: 0.5rem 0.3rem;
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  color: white;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.green {
+  background-color: #28a745;
+}
+
+.blue {
+  background-color: #007bff;
+}
+
+.red {
+  background-color: #dc3545;
+}
+
+/* QR scan box */
+.qr-area-wrapper {
+  position: relative;
+  width: 250px;
+  height: 200px;
+  margin: 1.5rem auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.qr-area {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Glowing scan line inside scanner */
+.scan-line {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px; /* Match the qrbox width */
+  height: 4px;
+  background: linear-gradient(to right, #00ff88, #00ffaa);
+  animation: scan-line-animation 2s linear infinite alternate;
+  z-index: 2;
+  opacity: 0.9;
+}
+
+
+@keyframes scan-line-animation {
+  0% {
+    top: 10%;
+  }
+  100% {
+    top: 80%;
+  }
+}
+
+
+/* Remove dark overlay from SVG (html5-qrcode camera view) */
+#qr-reader__scan_region svg path {
+  fill: transparent !important;
+}
+
+/* Status feedback */
+.loading {
+  margin-top: 1rem;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.error {
+  margin-top: 1rem;
+  color: red;
+  font-weight: bold;
+}
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}

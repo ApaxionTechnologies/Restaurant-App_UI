@@ -1,0 +1,133 @@
+/* Grid layout for the menu */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+/* Individual menu card container */
+.menu-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 390px;
+}
+
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Image section */
+.menu-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+
+.menu-card:hover img {
+  transform: scale(1.03);
+}
+
+/* Card content */
+.menu-card-content {
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+/* Item name */
+.menu-card-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem;
+  color: #222;
+}
+
+/* Price */
+.menu-card-content p {
+  margin: 0;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Cuisine & duration details */
+.menu-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+/* Add button */
+.menu-card button {
+  background-color: #22c55e;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.menu-card button:hover {
+  background-color: #16a34a;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    padding: 0.5rem 0;
+  }
+
+  .menu-card {
+    height: auto;
+  }
+
+  .menu-card-content {
+    padding: 1rem;
+  }
+
+  .menu-card img {
+    height: 180px;
+  }
+}
+/* Heart icon for favorites */
+.heart-icon {
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.heart-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Star rating display */
+.menu-stars {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
