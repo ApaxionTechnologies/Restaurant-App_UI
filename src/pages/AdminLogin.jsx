@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-//import Header from './components/Header'; // ✅ correct if in same folder as src/components
 
 export default function AdminLogin() {
   const [adminEmail, setAdminEmail] = useState("");
@@ -9,27 +8,41 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(""); // Clear previous error
 
-    const storedData = JSON.parse(localStorage.getItem("restaurantData"));
+  try {
+    const response = await fetch("http://localhost:5001/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: adminEmail.trim().toLowerCase(),  // ✅ Standardized before sending
+        password: adminPassword.trim(),          // ✅ Trim spaces just in case
+      }),
+    });
 
-    if (
-      storedData &&
-      storedData.email === adminEmail &&
-      storedData.password === adminPassword
-    ) {
+    const data = await response.json();
+
+    if (response.ok) {
       alert("Admin login successful!");
-      navigate("/admin-dashboard"); // ✅ Route to your admin page
+      navigate("/admin-dashboard");
     } else {
-      setError("Invalid email or password.");
+      setError(data.error || "Invalid email or password.");
     }
-  };
+  } catch (error) {
+    setError("Server error. Please try again later.");
+  }
+};
+
 
   return (
     <div className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>🔐 Admin Login</h2>
+
         <div className="form-group">
           <label>Email Address</label>
           <input
@@ -39,6 +52,7 @@ export default function AdminLogin() {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Password</label>
           <input

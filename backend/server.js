@@ -4,12 +4,15 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const registerRoute = require('./routes/register');
 
+// ✅ Use the renamed route file (register.js ➜ restaurant.js)
+const restaurantRoutes = require('./routes/restaurant');
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/qrmenu', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -17,8 +20,8 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/qrmenu', {
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-// Routes
-app.use('/api', registerRoute);
+// ✅ Routes
+app.use('/api', restaurantRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
