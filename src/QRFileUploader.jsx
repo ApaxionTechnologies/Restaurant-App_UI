@@ -72,11 +72,34 @@ export default function QRFileUploader() {
     document.body.removeChild(link);
   };
 
-  const handleTableChange = (e) => {
-    const table = e.target.value;
-    setTableNumber(table);
-    if (file && !qrSrc) setShowGenerateBtn(true);
-  };
+ const handleTableChange = (e) => {
+  const selectedTable = parseInt(e.target.value, 10);
+  setTableNumber(selectedTable);
+
+  if (file && !qrSrc) {
+    setShowGenerateBtn(true);
+  }
+
+  // 🔄 Update table count on server
+  const restaurantEmail = localStorage.getItem('restaurantEmail'); // or however you're storing email
+  if (restaurantEmail) {
+    fetch("http://localhost:5001/api/tables/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: restaurantEmail, tables: selectedTable }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.tables) {
+          console.log("✅ Table count updated to:", data.tables);
+        } else {
+          console.error("❌ Failed to update tables:", data);
+        }
+      })
+      .catch(err => console.error("Server error while updating tables:", err));
+  }
+};
+
 
   return (
     <div className="qr-page-bg py-5">
@@ -94,7 +117,7 @@ export default function QRFileUploader() {
                     value={tableNumber}
                     onChange={handleTableChange}
                   >
-                    {[...Array(10).keys()].map((num) => (
+                    {[...Array(5).keys()].map((num) => (
                       <option key={num + 1} value={num + 1}>
                         Table {num + 1}
                       </option>

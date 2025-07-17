@@ -1,10 +1,22 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const Restaurant = require('../models/Restaurant');
+const path = require('path');
 
-// ==========================
-// 📝 Restaurant Registration
-// ==========================
+// ✅ Multer setup for image upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + '-' + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({ storage: storage });
+
+// ✅ Restaurant Registration
 router.post('/register', async (req, res) => {
   try {
     const {
@@ -17,51 +29,40 @@ router.post('/register', async (req, res) => {
       password
     } = req.body;
 
-    // Basic validation
-    if (
-      !restaurantName || !firstName || !lastName || !contact ||
-      !address || !email || !password
-    ) {
+    if (!restaurantName || !firstName || !lastName || !contact || !address || !email || !password) {
       return res.status(400).json({ error: 'All fields are required.' });
     }
 
     const formattedEmail = email.trim().toLowerCase();
-    const formattedPassword = password.trim();
-
-    // Check if email already exists
     const existingRestaurant = await Restaurant.findOne({ email: formattedEmail });
     if (existingRestaurant) {
       return res.status(400).json({ error: 'Email already exists.' });
     }
 
-    // Save to DB
     const restaurant = new Restaurant({
       restaurantName,
       firstName,
       lastName,
       contact,
       address,
-      email: formattedEmail,       // ✅ Save lowercase email
-      password: formattedPassword, // ✅ Trimmed password
+      email: formattedEmail,
+      password: password.trim()
     });
 
     await restaurant.save();
     res.status(201).json({ message: 'Restaurant registered successfully!' });
 
   } catch (err) {
-    console.error('Registration Error:', err);
+    console.error('Registration error:', err);
     res.status(500).json({ error: 'Server error.' });
   }
 });
 
-// =====================
-// 🔐 Restaurant Login
-// =====================
+// ✅ Restaurant Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Basic validation
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
@@ -69,30 +70,95 @@ router.post('/login', async (req, res) => {
     const formattedEmail = email.trim().toLowerCase();
     const formattedPassword = password.trim();
 
-    console.log('📩 Incoming Login Request:');
-    console.log('Email:', formattedEmail);
-    console.log('Password:', formattedPassword);
-
-    // Find restaurant by lowercased + trimmed email
     const restaurant = await Restaurant.findOne({ email: formattedEmail });
-
-    if (!restaurant) {
-      console.log('❌ Email not found:', formattedEmail);
+    if (!restaurant || restaurant.password !== formattedPassword) {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    // Compare plain text passwords
-    if (restaurant.password !== formattedPassword) {
-      console.log('❌ Incorrect password for:', formattedEmail);
-      return res.status(401).json({ error: 'Invalid email or password.' });
-    }
-
-    console.log('✅ Login successful for:', formattedEmail);
     res.status(200).json({ message: 'Login successful', restaurant });
 
   } catch (err) {
-    console.error('Login Error:', err);
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Server error.' });
+  }
+});
+
+// ✅ Add menu item (image upload or link)
+router.post('/add-menu-item', upload.single('image'), async (req, res) => {
+  const { email, name, price, imageUrl } = req.body;
+
+  try {
+    const restaurant = await Restaurant.findOne({ email });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    const finalImageUrl = imageUrl || (req.file ? `/uploads/${req.file.filename}` : '');
+
+    const newItem = { name, price, imageUrl: finalImageUrl };
+    restaurant.menu.push(newItem);
+    await restaurant.save();
+
+    res.status(201).json({ message: 'Item added successfully', item: newItem });
+
+  } catch (error) {
+    console.error('Error adding menu item:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ✅ Get all menu items
+router.get('/menu/:email', async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ email: req.params.email });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    res.json(restaurant.menu);
+  } catch (error) {
+    console.error('Error fetching menu:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ✅ Increase tables
+router.put('/tables/increase/:email', async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ email: req.params.email });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    restaurant.tables += 1;
+    await restaurant.save();
+
+    res.json({ message: 'Table increased', tables: restaurant.tables });
+
+  } catch (error) {
+    console.error('Increase table error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ✅ Decrease tables
+router.put('/tables/decrease/:email', async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ email: req.params.email });
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    if (restaurant.tables > 0) {
+      restaurant.tables -= 1;
+      await restaurant.save();
+    }
+
+    res.json({ message: 'Table decreased', tables: restaurant.tables });
+
+  } catch (error) {
+    console.error('Decrease table error:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

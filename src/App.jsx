@@ -10,6 +10,8 @@ import MenuPage from "./pages/MenuPage";
 import OrderSuccess from "./pages/OrderSuccess";
 import QRFileUploader from "./QRFileUploader"; // QR Generator
 import QRScanner from "./components/QRScanner"; // QR Scanner
+import AdminDashboard from "./pages/AdminDashboard"; // ✅ Admin Dashboard
+import AddMenuItem from './components/AddMenuItem'; // ✅ Add Menu Item
 
 // Global Styles
 import "./styles/MenuCard.css";
@@ -24,6 +26,8 @@ export default function App() {
       <Route path="/register" element={<RegisterRestaurant />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/add-item" element={<AddMenuItem />} /> {/* ✅ New Route */}
 
       {/* ✅ Customer/QR Routes */}
       <Route path="/scanner" element={<QRScanner />} />
@@ -34,4 +38,4 @@ export default function App() {
       <Route path="/upload-qr" element={<QRFileUploader />} />
     </Routes>
   );
-} 
+}

@@ -1,13 +1,21 @@
 const mongoose = require('mongoose');
 
-const RestaurantSchema = new mongoose.Schema({
-  restaurantName: { type: String, required: true },
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  contact: { type: String, required: true },
-  address: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
-}, { timestamps: true });
+const restaurantSchema = new mongoose.Schema({
+  restaurantName: String,
+  firstName: String,
+  lastName: String,
+  contact: String,
+  address: String,
+  email: { type: String, unique: true },
+  password: String,
+  tables: { type: Number, default: 0 },
+  menu: [
+    {
+      name: String,
+      price: Number,
+      imageUrl: String // ✅ add this
+    }
+  ]
+});
 
-module.exports = mongoose.model('Restaurant', RestaurantSchema);
+module.exports = mongoose.model('Restaurant', restaurantSchema);
