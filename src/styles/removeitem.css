@@ -1,0 +1,96 @@
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
+  font-family: "Poppins", sans-serif;
+}
+
+.remove-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  max-width: 90%;
+}
+
+.remove-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.item-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-price {
+  color: #555;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.empty-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+.fade-in-row {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

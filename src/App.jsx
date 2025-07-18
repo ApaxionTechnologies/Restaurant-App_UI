@@ -1,41 +1,51 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-// Pages & Components
+// ✅ Pages
 import HomePage from "./pages/HomePage";
 import RegisterRestaurant from "./pages/RegisterRestaurant";
 import AdminLogin from "./pages/AdminLogin";
 import Login from "./pages/Login";
 import MenuPage from "./pages/MenuPage";
 import OrderSuccess from "./pages/OrderSuccess";
-import QRFileUploader from "./QRFileUploader"; // QR Generator
-import QRScanner from "./components/QRScanner"; // QR Scanner
-import AdminDashboard from "./pages/AdminDashboard"; // ✅ Admin Dashboard
-import AddMenuItem from './components/AddMenuItem'; // ✅ Add Menu Item
+import AdminDashboard from "./pages/AdminDashboard";
+import GenerateQR from "./pages/GenerateQR";
+import RemoveItem from "./pages/RemoveItem";
 
-// Global Styles
+// ✅ Components
+import AddMenuItem from "./components/AddMenuItem";
+import QRScanner from "./components/QRScanner";
+
+// ✅ QR File Uploader from src
+import QRFileUploader from "./QRFileUploader";
+
+// ✅ Styles
+import "./styles/global.css";
 import "./styles/MenuCard.css";
+import "./styles/QRFileUploader.css";
 
 export default function App() {
   return (
     <Routes>
-      {/* ✅ Home Route */}
+      {/* ✅ Public Routes */}
       <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<Login />} />
 
-      {/* ✅ Admin/Restaurant Routes */}
+      {/* ✅ Restaurant & Admin Routes */}
       <Route path="/register" element={<RegisterRestaurant />} />
       <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/login" element={<Login />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      <Route path="/add-item" element={<AddMenuItem />} /> {/* ✅ New Route */}
+      <Route path="/add-item" element={<AddMenuItem />} />
+      <Route path="/remove-item" element={<RemoveItem />} />
+      <Route path="/generate-qr" element={<GenerateQR />} />
 
-      {/* ✅ Customer/QR Routes */}
-      <Route path="/scanner" element={<QRScanner />} />
+      {/* ✅ Customer QR Options */}
+      <Route path="/scanner" element={<QRScanner />} /> {/* Camera Scanner */}
+      <Route path="/upload-qr" element={<QRFileUploader />} /> {/* Upload QR File */}
+
+      {/* ✅ Customer Menu & Order */}
       <Route path="/menu" element={<MenuPage />} />
       <Route path="/order-success" element={<OrderSuccess />} />
-
-      {/* ✅ QR File Upload for Admins */}
-      <Route path="/upload-qr" element={<QRFileUploader />} />
     </Routes>
   );
 }

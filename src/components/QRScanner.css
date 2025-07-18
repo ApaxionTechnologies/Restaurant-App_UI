@@ -3,7 +3,7 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: #b2c8f6;
+  background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
 }
 
 /* Center the scanner on full page */
@@ -17,7 +17,7 @@ body {
 
 /* Stylish card container */
 .scanner-box {
-  background: rgb(242, 242, 244);
+  background: #fff;
   padding: 2.5rem;
   border-radius: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -103,14 +103,13 @@ body {
   top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  width: 250px; /* Match the qrbox width */
+  width: 250px;
   height: 4px;
   background: linear-gradient(to right, #00ff88, #00ffaa);
   animation: scan-line-animation 2s linear infinite alternate;
   z-index: 2;
   opacity: 0.9;
 }
-
 
 @keyframes scan-line-animation {
   0% {
@@ -119,12 +118,6 @@ body {
   100% {
     top: 80%;
   }
-}
-
-
-/* Remove dark overlay from SVG (html5-qrcode camera view) */
-#qr-reader__scan_region svg path {
-  fill: transparent !important;
 }
 
 /* Status feedback */
@@ -139,6 +132,7 @@ body {
   color: red;
   font-weight: bold;
 }
+
 .button-row {
   display: flex;
   justify-content: center;

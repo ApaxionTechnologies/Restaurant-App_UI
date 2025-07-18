@@ -1,4 +1,3 @@
-// // src/components/QRScanner.jsx
 // import React, { useRef, useState, useEffect } from "react";
 // import { Html5Qrcode } from "html5-qrcode";
 // import { useNavigate } from "react-router-dom";
@@ -7,12 +6,12 @@
 // export default function QRScanner() {
 //   const navigate = useNavigate();
 //   const scannerRef = useRef(null);
-//   const fileInputRef = useRef(null);
 
 //   const [scanning, setScanning] = useState(false);
-//   const [loading, setLoading] = useState(false);
 //   const [errorMsg, setErrorMsg] = useState("");
+//   const [loading, setLoading] = useState(false);
 
+//   // Cleanup on unmount
 //   useEffect(() => {
 //     return () => stopScanner();
 //   }, []);
@@ -32,87 +31,89 @@
 
 //   const handleScanSuccess = (decodedText) => {
 //     stopScanner();
-//     navigate(`/menu?${decodedText}`);
-//   };
-
-//   const startScanner = () => {
-//     if (scannerRef.current) return;
-//     setScanning(true);
-//     setTimeout(() => {
-//       const html5QrCode = new Html5Qrcode("qr-reader");
-//       scannerRef.current = html5QrCode;
-
-//       html5QrCode.start(
-//         { facingMode: "environment" },
-//         {
-//           fps: 10,
-//           qrbox: { width: 250, height: 250 },
-//         },
-//         handleScanSuccess,
-//         (error) => console.warn("Scan error:", error)
-//       );
-//     }, 0);
-//   };
-
-//   const handleFileUpload = async (event) => {
-//     const file = event.target.files[0];
-//     if (!file) return;
-//     setLoading(true);
-//     setErrorMsg("");
-//     const html5QrCode = new Html5Qrcode("qr-reader-temp");
 //     try {
-//       const result = await html5QrCode.scanFile(file, true);
-//       handleScanSuccess(result);
-//     } catch (err) {
-//       console.error("Image scan error:", err);
-//       setErrorMsg("❌ Could not scan image. Try a clearer QR.");
-//     } finally {
-//       setLoading(false);
+//       const qrData = JSON.parse(decodedText);
+//       if (qrData.restaurant && qrData.table) {
+//         localStorage.setItem("restaurantName", qrData.restaurant);
+//         localStorage.setItem("tableNumber", qrData.table);
+//         navigate(`/menu?restaurant=${encodeURIComponent(qrData.restaurant)}&table=${qrData.table}`);
+//       } else {
+//         setErrorMsg("Invalid QR code. Missing restaurant or table info.");
+//       }
+//     } catch (e) {
+//       setErrorMsg("Invalid QR format. Expected JSON data.");
 //     }
 //   };
 
+//   const startScanner = () => {
+//     if (!scanning) {
+//       setScanning(true); // Render #qr-reader first
+//     }
+//   };
+
+//   // Initialize scanner after #qr-reader renders
+//   useEffect(() => {
+//     if (scanning) {
+//       setLoading(true);
+//       const html5QrCode = new Html5Qrcode("qr-reader");
+//       scannerRef.current = html5QrCode;
+
+//       html5QrCode
+//         .start(
+//           { facingMode: "environment" },
+//           { fps: 10, qrbox: { width: 250, height: 250 } },
+//           handleScanSuccess,
+//           (error) => console.warn("Scan error:", error)
+//         )
+//         .then(() => setLoading(false))
+//         .catch((err) => {
+//           setErrorMsg("Camera access failed. Please allow permissions.");
+//           setLoading(false);
+//         });
+//     }
+//   }, [scanning]);
+
+//   const handleFileUpload = (event) => {
+//     const file = event.target.files[0];
+//     if (!file) return;
+
+//     // ✅ Use Html5Qrcode in file mode without DOM element
+//     const html5QrCode = new Html5Qrcode("");
+//     html5QrCode
+//       .scanFile(file, true)
+//       .then(handleScanSuccess)
+//       .catch(() => setErrorMsg("Could not read QR from image."));
+//   };
+
 //   return (
-//     <div className="page-center fade-in">
+//     <div className="scanner-wrapper">
 //       <div className="scanner-box">
-//         <h1 className="scanner-title">📱 Welcome to Apaxion QR Menu</h1>
-//         <p className="scanner-subtext">Scan the QR on your table or upload one</p>
+//         <h1>📱 Scan Your Table QR</h1>
+//         <p>Scan the QR on your table to view the menu.</p>
 
 //         {!scanning && (
-//           <button className="btn green" onClick={startScanner}>
-//             ▶️ Start Scanning
-//           </button>
+//           <div className="button-row">
+//             <button className="btn btn-primary" onClick={startScanner}>
+//               ▶️ Start Scanning
+//             </button>
+//             <label className="btn btn-success" style={{ cursor: "pointer" }}>
+//               📂 Upload QR
+//               <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: "none" }} />
+//             </label>
+//           </div>
 //         )}
 
 //         {scanning && (
-//           <>
-//             <div className="qr-area-wrapper">
-//               <div className="scan-line"></div>
-//               <div id="qr-reader" className="qr-area"></div>
-//             </div>
-
-//             <div className="button-row">
-//               <label htmlFor="qr-upload" className="btn blue">
-//                 📁 Upload QR Image
-//               </label>
-//               <input
-//                 id="qr-upload"
-//                 type="file"
-//                 accept="image/*"
-//                 onChange={handleFileUpload}
-//                 style={{ display: "none" }}
-//               />
-
-//               <button className="btn red" onClick={stopScanner}>
-//                 🛑 Stop Scanning
-//               </button>
-//             </div>
-//           </>
+//           <div>
+//             <div id="qr-reader" className="qr-area"></div>
+//             <button className="btn btn-danger mt-3" onClick={stopScanner}>
+//               🛑 Stop Scanning
+//             </button>
+//             {loading && <p className="loading">Starting Camera...</p>}
+//           </div>
 //         )}
 
-//         {loading && <p className="loading">⏳ Scanning image...</p>}
-//         {errorMsg && <p className="error">{errorMsg}</p>}
-
-//         <div id="qr-reader-temp" style={{ display: "none" }}></div>
+//         {errorMsg && <p className="text-danger mt-3">{errorMsg}</p>}
 //       </div>
 //     </div>
 //   );
@@ -120,20 +121,17 @@
 
 
 import React, { useRef, useState, useEffect } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScanType } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "./QRScanner.css";
-//import Header from './components/Header'; // ✅ correct if in same folder as src/components
-
 
 export default function QRScanner() {
   const navigate = useNavigate();
   const scannerRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   const [scanning, setScanning] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     return () => stopScanner();
@@ -154,97 +152,92 @@ export default function QRScanner() {
 
   const handleScanSuccess = (decodedText) => {
     stopScanner();
-
-    const match = decodedText.trim().match(/^t(\d+)$/i);
-    if (match) {
-      const tableNumber = match[1];
-      navigate(`/menu?table=${tableNumber}`);
-    } else {
-      setErrorMsg("❌ Invalid QR code. Please scan a valid table QR (like t1, t2, ...).");
+    try {
+      const qrData = JSON.parse(decodedText);
+      if (qrData.restaurant && qrData.table) {
+        localStorage.setItem("restaurantName", qrData.restaurant);
+        localStorage.setItem("tableNumber", qrData.table);
+        navigate(`/menu?restaurant=${encodeURIComponent(qrData.restaurant)}&table=${qrData.table}`);
+      } else {
+        setErrorMsg("Invalid QR code. Missing restaurant or table info.");
+      }
+    } catch (e) {
+      setErrorMsg("Invalid QR format. Expected JSON data.");
     }
   };
 
   const startScanner = () => {
-    if (scannerRef.current) return;
-    setScanning(true);
-    setTimeout(() => {
+    if (!scanning) {
+      setScanning(true);
+    }
+  };
+
+  useEffect(() => {
+    if (scanning) {
+      setLoading(true);
       const html5QrCode = new Html5Qrcode("qr-reader");
       scannerRef.current = html5QrCode;
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-        },
-        handleScanSuccess,
-        (error) => console.warn("Scan error:", error)
-      );
-    }, 0);
-  };
+      html5QrCode
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          handleScanSuccess,
+          (error) => console.warn("Scan error:", error)
+        )
+        .then(() => setLoading(false))
+        .catch(() => {
+          setErrorMsg("Camera access failed. Please allow permissions.");
+          setLoading(false);
+        });
+    }
+  }, [scanning]);
 
+  // ✅ Updated for file scanning
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    setLoading(true);
-    setErrorMsg("");
-    const html5QrCode = new Html5Qrcode("qr-reader-temp");
+
     try {
-      const result = await html5QrCode.scanFile(file, true);
-      handleScanSuccess(result);
+      const html5QrCode = new Html5Qrcode(Html5QrcodeScanType.SCAN_TYPE_FILE);
+      const decodedText = await html5QrCode.scanFile(file, true);
+      handleScanSuccess(decodedText);
     } catch (err) {
-      console.error("Image scan error:", err);
-      setErrorMsg("❌ Could not scan image. Please upload a clear and valid QR.");
-    } finally {
-      setLoading(false);
+      console.error("QR Scan Error:", err);
+      setErrorMsg("Could not read QR from image.");
     }
   };
 
   return (
-    <div className="page-center fade-in">
+    <div className="scanner-wrapper">
       <div className="scanner-box">
-        <h1 className="scanner-title">📱 Welcome to Apaxion QR Menu</h1>
-        <p className="scanner-subtext">Scan the QR on your table or upload one</p>
+        <h1>📱 Scan Your Table QR</h1>
+        <p>Scan the QR on your table to view the menu.</p>
 
         {!scanning && (
-          <button className="btn green" onClick={startScanner}>
-            ▶️ Start Scanning
-          </button>
+          <div className="button-row">
+            <button className="btn btn-primary" onClick={startScanner}>
+              ▶️ Start Scanning
+            </button>
+            <label className="btn btn-success" style={{ cursor: "pointer" }}>
+              📂 Upload QR
+              <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: "none" }} />
+            </label>
+          </div>
         )}
 
         {scanning && (
-          <>
-            <div className="qr-area-wrapper">
-              <div className="scan-line"></div>
-              <div id="qr-reader" className="qr-area"></div>
-            </div>
-
-            <div className="button-row">
-              <label htmlFor="qr-upload" className="btn blue">
-                📁 Upload QR Image
-              </label>
-              <input
-                id="qr-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                style={{ display: "none" }}
-              />
-
-              <button className="btn red" onClick={stopScanner}>
-                🛑 Stop Scanning
-              </button>
-            </div>
-          </>
+          <div>
+            <div id="qr-reader" className="qr-area"></div>
+            <button className="btn btn-danger mt-3" onClick={stopScanner}>
+              🛑 Stop Scanning
+            </button>
+            {loading && <p className="loading">Starting Camera...</p>}
+          </div>
         )}
 
-        {loading && <p className="loading">⏳ Scanning image...</p>}
-        {errorMsg && <p className="error">{errorMsg}</p>}
-
-        <div id="qr-reader-temp" style={{ display: "none" }}></div>
+        {errorMsg && <p className="text-danger mt-3">{errorMsg}</p>}
       </div>
     </div>
   );
 }
-
-

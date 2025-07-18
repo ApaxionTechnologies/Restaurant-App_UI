@@ -3,7 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(145deg, #e0f1f7, #ebedee);
+  background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
 }
 .login-form {
   background: white;

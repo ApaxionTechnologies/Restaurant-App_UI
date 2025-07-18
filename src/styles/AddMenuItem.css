@@ -1,0 +1,104 @@
+/* Full-page background like other pages */
+.add-menu-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Card styling */
+.add-menu-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.add-menu-card h2 {
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* Success message styling */
+.success-text {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.check-icon {
+  color: #28a745;
+  margin-left: 8px;
+  font-size: 22px;
+  animation: pop 0.3s ease-in-out;
+}
+
+/* Input fields */
+.add-menu-form .form-control {
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+}
+
+/* Preview box */
+.preview-box {
+  text-align: center;
+}
+
+.preview-image {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 10px;
+  margin-top: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button */
+.add-menu-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 18px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-menu-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

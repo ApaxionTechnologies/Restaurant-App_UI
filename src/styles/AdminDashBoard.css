@@ -1,45 +1,108 @@
+/* Overall Page */
 .admin-dashboard {
-  padding: 2rem;
-  max-width: 600px;
-  margin: auto;
+  max-width: 800px;
+  margin: 2rem auto;
+   background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
   font-family: 'Segoe UI', sans-serif;
 }
 
-.admin-dashboard h2 {
-  text-align: center;
+/* Header */
+.dashboard-header {
+  background: #f8f9fa;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.admin-section {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  border: 1px solid #ccc;
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Profile Icon */
+.profile-container {
+  position: relative;
+}
+
+.profile-icon {
+  font-size: 2rem;
+  color: #007bff;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.profile-icon:hover {
+  color: #0056b3;
+}
+
+/* Dropdown Menu */
+.profile-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  width: 230px;
   border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+.profile-menu .menu-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.profile-menu .menu-email {
+  font-size: 0.85rem;
+  color: #444;
+  margin-bottom: 0.75rem;
+  word-break: break-word;
+}
+
+/* Logout Button */
+.logout-btn {
+  width: 100%;
+  background: #dc3545;
+  color: #fff;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #b02a37;
+}
+
+/* Main Section */
+.admin-section {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 .admin-section h3 {
   margin-bottom: 1rem;
 }
 
-.admin-section form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.admin-section p {
+  color: #555;
 }
 
-.admin-section input,
-.admin-section button {
-  padding: 0.6rem;
-  font-size: 1rem;
-}
-
-.admin-section button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.admin-section button:hover {
-  background-color: #0056b3;
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
