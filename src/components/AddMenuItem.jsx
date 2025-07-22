@@ -1,72 +1,118 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../styles/AddMenuItem.css";
 
-export default function AddMenuItem() {
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
-  const [itemImage, setItemImage] = useState("");
-  const navigate = useNavigate();
+const AddMenuItem = () => {
+  const [menuItem, setMenuItem] = useState({
+    name: "",
+    price: "",
+    timeToPrepare: "",
+    image: null,
+  });
 
-  const handleAddItem = (e) => {
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setMenuItem((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setMenuItem((prev) => ({ ...prev, image: file }));
+    setPreview(file ? URL.createObjectURL(file) : null);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const newItem = {
-      id: Date.now(), // Unique ID
-      name: itemName,
-      price: itemPrice,
-      image: itemImage,
-    };
+    const { name, price, timeToPrepare, image } = menuItem;
+    const restaurantEmail = localStorage.getItem("adminEmail"); // or wherever you store it
 
-    const existingMenu = JSON.parse(localStorage.getItem("finalMenu")) || [];
-    const updatedMenu = [...existingMenu, newItem];
-    localStorage.setItem("finalMenu", JSON.stringify(updatedMenu));
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("timeToPrepare", timeToPrepare);
+    formData.append("image", image);
+    formData.append("restaurantEmail", restaurantEmail);
 
-    // Clear form
-    setItemName("");
-    setItemPrice("");
-    setItemImage("");
+    try {
+      await axios.post("http://localhost:5002/api/menu/add", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-    // Optional: redirect to view menu
-    navigate("/view-menu");
+      alert("✅ Menu item added successfully!");
+
+      setMenuItem({
+        name: "",
+        price: "",
+        timeToPrepare: "",
+        image: null,
+      });
+      setPreview(null);
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to add menu item");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Add New Menu Item</h2>
-      <form onSubmit={handleAddItem}>
-        <div className="form-group">
-          <label>Name</label>
-          <input
-            type="text"
-            className="form-control"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Price</label>
-          <input
-            type="text"
-            className="form-control"
-            value={itemPrice}
-            onChange={(e) => setItemPrice(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Image URL</label>
-          <input
-            type="text"
-            className="form-control"
-            value={itemImage}
-            onChange={(e) => setItemImage(e.target.value)}
-          />
-        </div>
-        <button type="submit" className="btn btn-success mt-3">
-          ➕ Add Item
-        </button>
-      </form>
+    <div className="add-menu-page">
+      <div className="add-menu-card">
+        <h2>Add Menu Item</h2>
+        <form onSubmit={handleSubmit} className="add-menu-form">
+          <div>
+            <label>Item Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={menuItem.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Price (₹):</label>
+            <input
+              type="number"
+              name="price"
+              value={menuItem.price}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Time to Prepare (mins):</label>
+            <input
+              type="number"
+              name="timeToPrepare"
+              value={menuItem.timeToPrepare}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Upload Image:</label>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+          </div>
+
+          {preview && (
+            <div className="image-preview">
+              <img src={preview} alt="Preview" />
+            </div>
+          )}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Adding..." : "Add Item"}
+          </button>
+        </form>
+      </div>
     </div>
   );
-}
+};
+
+export default AddMenuItem;

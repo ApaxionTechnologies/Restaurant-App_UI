@@ -1,20 +1,20 @@
 /* Page layout */
+/* Parent page layout with scroll handling */
+/* Parent page layout with scroll handling */
 .register-page {
   min-height: 100vh;
-  background: linear-gradient(to right, #e0f7fa, #ffffff);
+  background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 60px 15px;
-  background-size: cover;
-  background-position: center;
+  align-items: flex-start;  /* ✅ changed from center to flex-start */
+  padding: 40px 15px;
+  overflow: visible;        /* ✅ allow dropdowns to flow naturally */
   box-sizing: border-box;
 }
 
-/* Form card */
 .register-form {
   background-color: #fff;
-  padding: 40px 30px;
+  padding: 20px 30px;
   border-radius: 10px;
   max-width: 700px;
   width: 100%;
@@ -24,7 +24,11 @@
   gap: 1.5rem;
   text-align: left;
   animation: fadeInUp 0.8s ease-in-out;
+  margin-bottom: 60px; 
+  max-height: unset;
+  overflow: visible;
 }
+
 
 /* Title styles */
 .form-title {
@@ -182,4 +186,9 @@ small {
   .register-form h2 {
     font-size: 1rem;
   }
+}
+.register-form::after {
+  content: "";
+  height: 50px;
+  display: block;
 }

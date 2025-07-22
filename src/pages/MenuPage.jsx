@@ -186,7 +186,7 @@ export default function MenuPage() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/menu/${restaurantId}`);
+        const res = await axios.get(`http://localhost:5002/api/menu/${restaurantId}`);
         const data = res.data;
  
         // Use default if data is invalid or empty
@@ -218,7 +218,7 @@ export default function MenuPage() {
     <div className="page-center fade-in">
       <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
         <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-          📋 Here's the Menu for Table {table}
+          📋 Here's the Menu 
         </h2>
  
         <input

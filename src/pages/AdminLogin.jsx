@@ -42,7 +42,7 @@ export default function AdminLogin() {
     <div
       className="d-flex justify-content-center align-items-center"
       style={{
-        background: "linear-gradient(120deg, #b2c8f6, #e0f0ff)",
+        //background: "linear-gradient(120deg, #b2c8f6, #e0f0ff)",
         minHeight: "100vh",
       }}
     >

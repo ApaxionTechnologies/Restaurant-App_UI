@@ -1,5 +1,9 @@
+
+
+
+
 // import React, { useRef, useState, useEffect } from "react";
-// import { Html5Qrcode } from "html5-qrcode";
+// import { Html5Qrcode, Html5QrcodeScanType } from "html5-qrcode";
 // import { useNavigate } from "react-router-dom";
 // import "./QRScanner.css";
 
@@ -11,7 +15,6 @@
 //   const [errorMsg, setErrorMsg] = useState("");
 //   const [loading, setLoading] = useState(false);
 
-//   // Cleanup on unmount
 //   useEffect(() => {
 //     return () => stopScanner();
 //   }, []);
@@ -47,11 +50,10 @@
 
 //   const startScanner = () => {
 //     if (!scanning) {
-//       setScanning(true); // Render #qr-reader first
+//       setScanning(true);
 //     }
 //   };
 
-//   // Initialize scanner after #qr-reader renders
 //   useEffect(() => {
 //     if (scanning) {
 //       setLoading(true);
@@ -66,23 +68,26 @@
 //           (error) => console.warn("Scan error:", error)
 //         )
 //         .then(() => setLoading(false))
-//         .catch((err) => {
+//         .catch(() => {
 //           setErrorMsg("Camera access failed. Please allow permissions.");
 //           setLoading(false);
 //         });
 //     }
 //   }, [scanning]);
 
-//   const handleFileUpload = (event) => {
+//   // ✅ Updated for file scanning
+//   const handleFileUpload = async (event) => {
 //     const file = event.target.files[0];
 //     if (!file) return;
 
-//     // ✅ Use Html5Qrcode in file mode without DOM element
-//     const html5QrCode = new Html5Qrcode("");
-//     html5QrCode
-//       .scanFile(file, true)
-//       .then(handleScanSuccess)
-//       .catch(() => setErrorMsg("Could not read QR from image."));
+//     try {
+//       const html5QrCode = new Html5Qrcode(Html5QrcodeScanType.SCAN_TYPE_FILE);
+//       const decodedText = await html5QrCode.scanFile(file, true);
+//       handleScanSuccess(decodedText);
+//     } catch (err) {
+//       console.error("QR Scan Error:", err);
+//       setErrorMsg("Could not read QR from image.");
+//     }
 //   };
 
 //   return (
@@ -120,8 +125,15 @@
 // }
 
 
+
+
+
+
+
+
+
 import React, { useRef, useState, useEffect } from "react";
-import { Html5Qrcode, Html5QrcodeScanType } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "./QRScanner.css";
 
@@ -134,7 +146,7 @@ export default function QRScanner() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    return () => stopScanner();
+    return () => stopScanner(); // Cleanup on unmount
   }, []);
 
   const stopScanner = () => {
@@ -153,6 +165,7 @@ export default function QRScanner() {
   const handleScanSuccess = (decodedText) => {
     stopScanner();
     try {
+      // Try parsing as JSON
       const qrData = JSON.parse(decodedText);
       if (qrData.restaurant && qrData.table) {
         localStorage.setItem("restaurantName", qrData.restaurant);
@@ -162,7 +175,12 @@ export default function QRScanner() {
         setErrorMsg("Invalid QR code. Missing restaurant or table info.");
       }
     } catch (e) {
-      setErrorMsg("Invalid QR format. Expected JSON data.");
+      // Fallback: check if it's a URL
+      if (decodedText.startsWith("http")) {
+        window.location.href = decodedText;
+      } else {
+        setErrorMsg("Invalid QR format. Expected JSON or a valid URL.");
+      }
     }
   };
 
@@ -193,13 +211,13 @@ export default function QRScanner() {
     }
   }, [scanning]);
 
-  // ✅ Updated for file scanning
+  // ✅ Fixed File Upload method
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     try {
-      const html5QrCode = new Html5Qrcode(Html5QrcodeScanType.SCAN_TYPE_FILE);
+      const html5QrCode = new Html5Qrcode("qr-file-reader"); // Dummy hidden container
       const decodedText = await html5QrCode.scanFile(file, true);
       handleScanSuccess(decodedText);
     } catch (err) {
@@ -237,6 +255,9 @@ export default function QRScanner() {
         )}
 
         {errorMsg && <p className="text-danger mt-3">{errorMsg}</p>}
+
+        {/* ✅ Hidden container for file scan */}
+        <div id="qr-file-reader" style={{ display: "none" }}></div>
       </div>
     </div>
   );

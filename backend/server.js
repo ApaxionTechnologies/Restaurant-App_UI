@@ -1,30 +1,29 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const menuRoutes = require("./backend/routes/menu");
+const uploadQRRoute = require("./backend/routes/uploadQR"); // ✅ Add QR route
 
 const app = express();
-
-// ✅ Middlewares
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static('uploads')); // ✅ serve uploaded images
 
-// ✅ MongoDB Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/qrmenu', {
+// ✅ Existing routes
+app.use("/api/menu", menuRoutes);
+
+// ✅ New QR Upload route
+app.use("/api", uploadQRRoute);
+
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log("✅ Connected to MongoDB"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ✅ Routes
-const restaurantRoutes = require('./routes/restaurant');
-app.use('/api', restaurantRoutes); // routes for /api/register, /api/login, etc.
+app.get("/", (req, res) => res.send("API is working"));
 
-// ✅ Start Server
 const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

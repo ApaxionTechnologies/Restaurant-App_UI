@@ -8,7 +8,7 @@ const MenuView = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/api/menu");
+        const response = await axios.get("http://localhost:5002/api/menu");
         setMenuItems(response.data);
       } catch (error) {
         console.error("Failed to fetch menu:", error);
