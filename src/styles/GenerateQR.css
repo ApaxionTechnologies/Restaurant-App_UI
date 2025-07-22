@@ -1,88 +1,155 @@
-/* Background with smooth gradient */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+/* ===== Global ===== */
 body {
-  background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
-  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
 }
 
-/* Full page wrapper */
+/* ===== Centered Wrapper ===== */
 .generate-qr-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 20px;
+  padding: 2rem 1rem;
 }
 
-/* Stylish card */
+/* ===== Stylish QR Card ===== */
 .qr-card {
   background: #fff;
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 20px;
+  padding: 2.5rem;
   max-width: 450px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Title styling */
+/* ===== Heading ===== */
 .qr-card h2 {
+  font-size: 1.8rem;
   font-weight: 700;
   color: #007bff;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
-/* Restaurant text */
+/* ===== Subtext / Restaurant Info ===== */
 .qr-card p {
-  color: #555;
-  margin-bottom: 20px;
+  color: #444;
   font-size: 16px;
+  margin-bottom: 1.5rem;
 }
 
-/* Dropdown styling */
-.qr-card .form-select {
-  border-radius: 8px;
-  font-size: 16px;
-  padding: 10px;
+/* ===== Form Input & Select ===== */
+input[type="number"],
+.form-control,
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s;
   margin-top: 10px;
 }
 
-/* QR Preview */
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* ===== QR Display Area ===== */
 .qr-preview {
-  margin: 20px 0;
+  margin: 1.5rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 240px; /* ✅ Prevents sudden collapse */
+  min-height: 240px; /* Prevents layout shift */
 }
 
-
-/* Download Button */
+/* ===== Buttons ===== */
 .qr-card button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
   background-color: #007bff;
   color: white;
-  border: none;
-  font-size: 18px;
+  font-size: 16px;
   padding: 12px 20px;
-  border-radius: 8px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  margin-top: 0.75rem;
 }
 
 .qr-card button:hover {
   background-color: #0056b3;
+  transform: scale(1.03);
 }
 
-/* Animation */
+/* ===== Secondary Buttons (Prev/Next) ===== */
+.qr-card .btn-outline-secondary {
+  background-color: transparent;
+  border: 2px solid #6c757d;
+  color: #6c757d;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.qr-card .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* ===== Button Group for Navigation ===== */
+.qr-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ===== Fade Animation ===== */
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
     transform: translateY(30px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .qr-card {
+    padding: 2rem 1.2rem;
+  }
+
+  .qr-nav-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.qr-generator-container {
+  max-height: 90vh; /* adjust as needed */
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: auto; /* in case content overflows */
 }

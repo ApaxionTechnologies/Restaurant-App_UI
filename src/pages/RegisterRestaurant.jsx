@@ -1,23 +1,28 @@
-// // src/pages/RegisterRestaurant.jsx
 // import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
 // import PhoneInput from "react-phone-input-2";
 // import "react-phone-input-2/lib/style.css";
 // import "aos/dist/aos.css";
 // import AOS from "aos";
+// import { Country, State, City } from "country-state-city";
 // import "../styles/RegisterForm.css";
 // import "@fortawesome/fontawesome-free/css/all.min.css";
-// //import Header from './components/Header'; // ✅ correct if in same folder as src/components
+// import axios from "axios";
+
+// const BASE_URL = "http://localhost:5002/api";
 
 // export default function RegisterRestaurant() {
-//   const navigate = useNavigate();
-
 //   const [formData, setFormData] = useState({
 //     restaurantName: "",
 //     firstName: "",
 //     lastName: "",
 //     contact: "",
-//     address: "",
+//     address: {
+//       line1: "",
+//       line2: "",
+//       country: "",
+//       state: "",
+//       city: "",
+//     },
 //     email: "",
 //     password: "",
 //     confirmPassword: "",
@@ -27,9 +32,33 @@
 //   const [errors, setErrors] = useState({});
 //   const [showPasswordHint, setShowPasswordHint] = useState(false);
 
+//   const [countryList, setCountryList] = useState([]);
+//   const [stateList, setStateList] = useState([]);
+//   const [cityList, setCityList] = useState([]);
+
 //   useEffect(() => {
 //     AOS.init({ duration: 1000 });
+//     setCountryList(Country.getAllCountries());
 //   }, []);
+
+//   const handleAddressChange = (field, value) => {
+//     const updatedAddress = { ...formData.address, [field]: value };
+
+//     if (field === "country") {
+//       setStateList(State.getStatesOfCountry(value));
+//       updatedAddress.state = "";
+//       updatedAddress.city = "";
+//       setCityList([]);
+//     }
+
+//     if (field === "state") {
+//       setCityList(City.getCitiesOfState(formData.address.country, value));
+//       updatedAddress.city = "";
+//     }
+
+//     setFormData((prev) => ({ ...prev, address: updatedAddress }));
+//     validate({ ...formData, address: updatedAddress });
+//   };
 
 //   const handleChange = (e) => {
 //     const { name, value } = e.target;
@@ -53,82 +82,74 @@
 //     const newErrors = {};
 //     const nameRegex = /^[A-Za-z]+$/;
 
-//     if (!data.restaurantName)
-//       newErrors.restaurantName = "Restaurant name is required.";
+//     if (!data.restaurantName) newErrors.restaurantName = "Restaurant name is required.";
+//     if (!data.firstName) newErrors.firstName = "First name is required.";
+//     else if (!nameRegex.test(data.firstName)) newErrors.firstName = "First name must contain letters only.";
+//     if (!data.lastName) newErrors.lastName = "Last name is required.";
+//     else if (!nameRegex.test(data.lastName)) newErrors.lastName = "Last name must contain letters only.";
+//     if (!data.contact || data.contact.length < 10) newErrors.contact = "Valid phone number required.";
 
-//     if (!data.firstName) {
-//       newErrors.firstName = "First name is required.";
-//     } else if (!nameRegex.test(data.firstName)) {
-//       newErrors.firstName = "First name must contain letters only.";
-//     }
+//     const { line1, country, state, city } = data.address || {};
+//     if (!line1) newErrors.line1 = "Street/Colony is required.";
+//     if (!country) newErrors.country = "Country is required.";
+//     if (!state) newErrors.state = "State is required.";
+//     if (!city) newErrors.city = "City is required.";
 
-//     if (!data.lastName) {
-//       newErrors.lastName = "Last name is required.";
-//     } else if (!nameRegex.test(data.lastName)) {
-//       newErrors.lastName = "Last name must contain letters only.";
-//     }
-
-//     if (!data.contact || data.contact.length < 10)
-//       newErrors.contact = "Valid phone number required.";
-
-//     if (!data.address)
-//       newErrors.address = "Address is required.";
-
-//     if (!data.email || !/\S+@\S+\.\S+/.test(data.email))
-//       newErrors.email = "Enter a valid email.";
-
-//     if (!data.password || data.password.length < 6)
-//       newErrors.password = "Minimum 6 characters.";
-
-//     if (data.password !== data.confirmPassword)
-//       newErrors.confirmPassword = "Passwords do not match.";
+//     if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = "Enter a valid email.";
+//     if (!data.password || data.password.length < 6) newErrors.password = "Minimum 6 characters.";
+//     if (data.password !== data.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
 
 //     setErrors(newErrors);
+//     return newErrors;
 //   };
 
-//   const handleSubmit = (e) => {
+//   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     validate(formData);
+
+//     const currentErrors = validate(formData);
 //     setTouched({
 //       restaurantName: true,
 //       firstName: true,
 //       lastName: true,
 //       contact: true,
-//       address: true,
+//       line1: true,
+//       country: true,
+//       state: true,
+//       city: true,
 //       email: true,
 //       password: true,
 //       confirmPassword: true,
 //     });
 
-//     if (Object.keys(errors).length === 0) {
-//       // Send data to backend API
-//       fetch("http://localhost:5001/api/register", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({
+//     if (Object.keys(currentErrors).length === 0) {
+//       try {
+//         const payload = {
 //           restaurantName: formData.restaurantName,
 //           firstName: formData.firstName,
 //           lastName: formData.lastName,
 //           contact: formData.contact,
-//           address: formData.address,
+//           address: {
+//             line1: formData.address.line1,
+//             line2: formData.address.line2 || '',
+//             country: formData.address.country,
+//             state: formData.address.state,
+//             city: formData.address.city,
+//           },
 //           email: formData.email,
 //           password: formData.password,
-//         }),
-//       })
-//         .then(async (res) => {
-//           const data = await res.json();
-//           if (res.ok) {
-//             alert("Restaurant registered successfully!");
-//             navigate("/upload-qr");
-//           } else {
-//             alert(data.error || "Registration failed.");
-//           }
-//         })
-//         .catch(() => {
-//           alert("Server error. Please try again later.");
-//         });
+//         };
+
+//         const response = await axios.post(`${BASE_URL}/register`, payload);
+
+//         const restaurantData = response.data.restaurant || payload;
+//         localStorage.setItem("restaurantEmail", restaurantData.email);
+//         localStorage.setItem("restaurantName", restaurantData.restaurantName);
+
+//         alert(response.data.message || "✅ Registered Successfully!");
+//       } catch (error) {
+//         console.error("Registration error:", error);
+//         alert(error.response?.data?.error || "Registration failed.");
+//       }
 //     } else {
 //       alert("Please fix the errors in the form.");
 //     }
@@ -136,15 +157,15 @@
 
 //   return (
 //     <div className="register-page">
-//       {/* Backend API: POST http://localhost:5000/api/register */}
 //       <form className="register-form" onSubmit={handleSubmit} data-aos="fade-up">
 //         <h1 className="form-title">Register As Restaurant</h1>
 //         <div className="title-divider" />
 //         <h2>🍽️ Register Your Restaurant</h2>
 
+//         {/* Basic Info */}
 //         <div className="form-grid">
 //           <div className="form-group full-width">
-//             <label><i className="fas fa-store" /> Restaurant Name</label>
+//             <label><i className="fas fa-store me-2" />Restaurant Name</label>
 //             <input
 //               type="text"
 //               name="restaurantName"
@@ -157,7 +178,7 @@
 //           </div>
 
 //           <div className="form-group">
-//             <label><i className="fas fa-user" /> First Name</label>
+//             <label><i className="fas fa-user me-2" />First Name</label>
 //             <input
 //               type="text"
 //               name="firstName"
@@ -170,7 +191,7 @@
 //           </div>
 
 //           <div className="form-group">
-//             <label><i className="fas fa-user" /> Last Name</label>
+//             <label><i className="fas fa-user me-2" />Last Name</label>
 //             <input
 //               type="text"
 //               name="lastName"
@@ -183,7 +204,7 @@
 //           </div>
 
 //           <div className="form-group full-width">
-//             <label><i className="fas fa-phone" /> Contact Number</label>
+//             <label><i className="fas fa-phone me-2" />Contact Number</label>
 //             <PhoneInput
 //               country={"in"}
 //               value={formData.contact}
@@ -194,55 +215,93 @@
 //             />
 //             {errors.contact && touched.contact && <small>{errors.contact}</small>}
 //           </div>
+//         </div>
 
-//           <div className="form-group full-width">
-//             <label><i className="fas fa-map-marker-alt" /> Address</label>
-//             <textarea
-//               name="address"
-//               value={formData.address}
-//               onChange={handleChange}
-//               onBlur={handleBlur}
-//               rows="2"
-//               className={errors.address && touched.address ? "error" : ""}
-//             />
-//             {errors.address && touched.address && <small>{errors.address}</small>}
-//           </div>
+//         {/* Address */}
+//         <div className="form-group full-width">
+//           <label><i className="fas fa-map-marker-alt me-2" />Address Line 1 (Street/Colony)</label>
+//           <input
+//             type="text"
+//             value={formData.address.line1}
+//             onChange={(e) => handleAddressChange("line1", e.target.value)}
+//             className={errors.line1 && touched.line1 ? "error" : ""}
+//           />
+//           {errors.line1 && touched.line1 && <small>{errors.line1}</small>}
+//         </div>
 
-//           <div className="form-group full-width">
-//             <label><i className="fas fa-envelope" /> Email Address</label>
-//             <input
-//               type="email"
-//               name="email"
-//               value={formData.email}
-//               onChange={handleChange}
-//               onBlur={handleBlur}
-//               className={errors.email && touched.email ? "error" : ""}
-//             />
-//             {errors.email && touched.email && <small>{errors.email}</small>}
-//           </div>
+//         <div className="form-group full-width">
+//           <label><i className="fas fa-building me-2" />Address Line 2 (Apartment/Building)</label>
+//           <input
+//             type="text"
+//             value={formData.address.line2}
+//             onChange={(e) => handleAddressChange("line2", e.target.value)}
+//           />
+//         </div>
 
+//         <div className="form-group">
+//           <label><i className="fas fa-globe-asia me-2" />Country</label>
+//           <select value={formData.address.country} onChange={(e) => handleAddressChange("country", e.target.value)}>
+//             <option value="">Select Country</option>
+//             {countryList.map((c) => (
+//               <option key={c.isoCode} value={c.isoCode}>{c.name}</option>
+//             ))}
+//           </select>
+//           {errors.country && touched.country && <small>{errors.country}</small>}
+//         </div>
+
+//         <div className="form-group">
+//           <label><i className="fas fa-map me-2" />State</label>
+//           <select value={formData.address.state} onChange={(e) => handleAddressChange("state", e.target.value)}>
+//             <option value="">Select State</option>
+//             {stateList.map((s) => (
+//               <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
+//             ))}
+//           </select>
+//           {errors.state && touched.state && <small>{errors.state}</small>}
+//         </div>
+
+//         <div className="form-group">
+//           <label><i className="fas fa-city me-2" />City</label>
+//           <select value={formData.address.city} onChange={(e) => handleAddressChange("city", e.target.value)}>
+//             <option value="">Select City</option>
+//             {cityList.map((c) => (
+//               <option key={c.name} value={c.name}>{c.name}</option>
+//             ))}
+//           </select>
+//           {errors.city && touched.city && <small>{errors.city}</small>}
+//         </div>
+
+//         {/* Email & Password */}
+//         <div className="form-group full-width">
+//           <label><i className="fas fa-envelope me-2" />Email Address</label>
+//           <input
+//             type="email"
+//             name="email"
+//             value={formData.email}
+//             onChange={handleChange}
+//             onBlur={handleBlur}
+//             className={errors.email && touched.email ? "error" : ""}
+//           />
+//           {errors.email && touched.email && <small>{errors.email}</small>}
+//         </div>
+
+//         <div className="form-grid">
 //           <div className="form-group">
-//             <label><i className="fas fa-lock" /> Set Password</label>
+//             <label><i className="fas fa-lock me-2" />Password</label>
 //             <input
 //               type="password"
 //               name="password"
 //               value={formData.password}
 //               onChange={handleChange}
+//               onBlur={handleBlur}
 //               onFocus={() => setShowPasswordHint(true)}
-//               onBlur={(e) => {
-//                 handleBlur(e);
-//                 setShowPasswordHint(false);
-//               }}
 //               className={errors.password && touched.password ? "error" : ""}
 //             />
-//             {showPasswordHint && formData.confirmPassword && formData.password !== formData.confirmPassword && (
-//               <div className="password-popup">🔐 Passwords don’t match</div>
-//             )}
 //             {errors.password && touched.password && <small>{errors.password}</small>}
 //           </div>
 
 //           <div className="form-group">
-//             <label><i className="fas fa-lock" /> Confirm Password</label>
+//             <label><i className="fas fa-lock me-2" />Confirm Password</label>
 //             <input
 //               type="password"
 //               name="confirmPassword"
@@ -261,13 +320,14 @@
 //   );
 // }
 
-// src/pages/RegisterRestaurant.jsx
+
+
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import { Country, State, City } from "country-state-city";
 import "../styles/RegisterForm.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
@@ -275,14 +335,18 @@ import axios from "axios";
 const BASE_URL = "http://localhost:5002/api";
 
 export default function RegisterRestaurant() {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     restaurantName: "",
     firstName: "",
     lastName: "",
     contact: "",
-    address: "",
+    address: {
+      line1: "",
+      line2: "",
+      country: "",
+      state: "",
+      city: "",
+    },
     email: "",
     password: "",
     confirmPassword: "",
@@ -292,9 +356,33 @@ export default function RegisterRestaurant() {
   const [errors, setErrors] = useState({});
   const [showPasswordHint, setShowPasswordHint] = useState(false);
 
+  const [countryList, setCountryList] = useState([]);
+  const [stateList, setStateList] = useState([]);
+  const [cityList, setCityList] = useState([]);
+
   useEffect(() => {
     AOS.init({ duration: 1000 });
+    setCountryList(Country.getAllCountries());
   }, []);
+
+  const handleAddressChange = (field, value) => {
+    const updatedAddress = { ...formData.address, [field]: value };
+
+    if (field === "country") {
+      setStateList(State.getStatesOfCountry(value));
+      updatedAddress.state = "";
+      updatedAddress.city = "";
+      setCityList([]);
+    }
+
+    if (field === "state") {
+      setCityList(City.getCitiesOfState(formData.address.country, value));
+      updatedAddress.city = "";
+    }
+
+    setFormData((prev) => ({ ...prev, address: updatedAddress }));
+    validate({ ...formData, address: updatedAddress });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -318,73 +406,81 @@ export default function RegisterRestaurant() {
     const newErrors = {};
     const nameRegex = /^[A-Za-z]+$/;
 
-    if (!data.restaurantName)
-      newErrors.restaurantName = "Restaurant name is required.";
+    if (!data.restaurantName) newErrors.restaurantName = "Restaurant name is required.";
+    if (!data.firstName) newErrors.firstName = "First name is required.";
+    else if (!nameRegex.test(data.firstName)) newErrors.firstName = "First name must contain letters only.";
+    if (!data.lastName) newErrors.lastName = "Last name is required.";
+    else if (!nameRegex.test(data.lastName)) newErrors.lastName = "Last name must contain letters only.";
+    if (!data.contact || data.contact.length < 10) newErrors.contact = "Valid phone number required.";
 
-    if (!data.firstName) {
-      newErrors.firstName = "First name is required.";
-    } else if (!nameRegex.test(data.firstName)) {
-      newErrors.firstName = "First name must contain letters only.";
-    }
+    const { line1, country, state, city } = data.address || {};
+    if (!line1) newErrors.line1 = "Street/Colony is required.";
+    if (!country) newErrors.country = "Country is required.";
+    if (!state) newErrors.state = "State is required.";
+    if (!city) newErrors.city = "City is required.";
 
-    if (!data.lastName) {
-      newErrors.lastName = "Last name is required.";
-    } else if (!nameRegex.test(data.lastName)) {
-      newErrors.lastName = "Last name must contain letters only.";
-    }
-
-    if (!data.contact || data.contact.length < 10)
-      newErrors.contact = "Valid phone number required.";
-
-    if (!data.address) newErrors.address = "Address is required.";
-
-    if (!data.email || !/\S+@\S+\.\S+/.test(data.email))
-      newErrors.email = "Enter a valid email.";
-
-    if (!data.password || data.password.length < 6)
-      newErrors.password = "Minimum 6 characters.";
-
-    if (data.password !== data.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match.";
+    if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = "Enter a valid email.";
+    if (!data.password || data.password.length < 6) newErrors.password = "Minimum 6 characters.";
+    if (data.password !== data.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
 
     setErrors(newErrors);
+    return newErrors;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    validate(formData);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setTouched({
-      restaurantName: true,
-      firstName: true,
-      lastName: true,
-      contact: true,
-      address: true,
-      email: true,
-      password: true,
-      confirmPassword: true,
-    });
+  const currentErrors = validate(formData);
+  setTouched({
+    restaurantName: true,
+    firstName: true,
+    lastName: true,
+    contact: true,
+    line1: true,
+    country: true,
+    state: true,
+    city: true,
+    email: true,
+    password: true,
+    confirmPassword: true,
+  });
 
-    if (Object.keys(errors).length === 0) {
-      try {
-        const res = await axios.post(`${BASE_URL}/register`, formData);
+  if (Object.keys(currentErrors).length === 0) {
+    try {
+      const payload = {
+        restaurantName: formData.restaurantName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        contact: formData.contact,
+        address: {
+          line1: formData.address.line1,
+          line2: formData.address.line2 || '',
+          country: formData.address.country,
+          state: formData.address.state,
+          city: formData.address.city,
+        },
+        email: formData.email,
+        password: formData.password,
+      };
 
-        // ✅ Use safe fallback
-        const restaurantData = res.data.restaurant || formData;
+      // ✅ Fixed here
+      const response = await axios.post(`${BASE_URL}/register`, payload);
 
-        localStorage.setItem("restaurantEmail", restaurantData.email);
-        localStorage.setItem("restaurantName", restaurantData.restaurantName);
+      const restaurantData = response.data.restaurant || payload;
+      localStorage.setItem("restaurantEmail", restaurantData.email);
+      localStorage.setItem("restaurantName", restaurantData.restaurantName);
 
-        alert(res.data.message || "✅ Registered Successfully!");
-        navigate("/generate-qr");
-      } catch (error) {
-        console.error("Error:", error);
-        alert(error.response?.data?.error || "Registration failed.");
-      }
-    } else {
-      alert("Please fix the errors in the form.");
+      alert(response.data.message || "✅ Registered Successfully!");
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(error.response?.data?.error || "Registration failed.");
     }
-  };
+  } else {
+    alert("Please fix the errors in the form.");
+  }
+};
+
+
 
   return (
     <div className="register-page">
@@ -393,10 +489,10 @@ export default function RegisterRestaurant() {
         <div className="title-divider" />
         <h2>🍽️ Register Your Restaurant</h2>
 
+        {/* Basic Info */}
         <div className="form-grid">
-          {/* Restaurant Name */}
           <div className="form-group full-width">
-            <label><i className="fas fa-store" /> Restaurant Name</label>
+            <label><i className="fas fa-store me-2" />Restaurant Name</label>
             <input
               type="text"
               name="restaurantName"
@@ -408,9 +504,8 @@ export default function RegisterRestaurant() {
             {errors.restaurantName && touched.restaurantName && <small>{errors.restaurantName}</small>}
           </div>
 
-          {/* First & Last Name */}
           <div className="form-group">
-            <label><i className="fas fa-user" /> First Name</label>
+            <label><i className="fas fa-user me-2" />First Name</label>
             <input
               type="text"
               name="firstName"
@@ -423,7 +518,7 @@ export default function RegisterRestaurant() {
           </div>
 
           <div className="form-group">
-            <label><i className="fas fa-user" /> Last Name</label>
+            <label><i className="fas fa-user me-2" />Last Name</label>
             <input
               type="text"
               name="lastName"
@@ -435,69 +530,106 @@ export default function RegisterRestaurant() {
             {errors.lastName && touched.lastName && <small>{errors.lastName}</small>}
           </div>
 
-          {/* Contact */}
           <div className="form-group full-width">
-            <label><i className="fas fa-phone" /> Contact Number</label>
+            <label><i className="fas fa-phone me-2" />Contact Number</label>
             <PhoneInput
-              country={"in"}
-              value={formData.contact}
-              onChange={handlePhoneChange}
-              onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
-              inputClass={`custom-phone-input ${errors.contact && touched.contact ? "error" : ""}`}
-              enableSearch
-            />
+  country={"in"}
+  value={formData.contact}
+  onChange={handlePhoneChange}
+  onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
+  inputClass={`custom-phone-input ${errors.contact && touched.contact ? "error" : ""}`}
+  enableSearch
+/>
+
             {errors.contact && touched.contact && <small>{errors.contact}</small>}
           </div>
+        </div>
 
-          {/* Address */}
-          <div className="form-group full-width">
-            <label><i className="fas fa-map-marker-alt" /> Address</label>
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              rows="2"
-              className={errors.address && touched.address ? "error" : ""}
-            />
-            {errors.address && touched.address && <small>{errors.address}</small>}
-          </div>
+        {/* Address Fields */}
+        <div className="form-group full-width">
+          <label><i className="fas fa-map-marker-alt me-2" />Address Line 1 (Street/Colony)</label>
+          <input
+            type="text"
+            value={formData.address.line1}
+            onChange={(e) => handleAddressChange("line1", e.target.value)}
+            className={errors.line1 && touched.line1 ? "error" : ""}
+          />
+          {errors.line1 && touched.line1 && <small>{errors.line1}</small>}
+        </div>
 
-          {/* Email */}
-          <div className="form-group full-width">
-            <label><i className="fas fa-envelope" /> Email Address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={errors.email && touched.email ? "error" : ""}
-            />
-            {errors.email && touched.email && <small>{errors.email}</small>}
-          </div>
+        <div className="form-group full-width">
+          <label><i className="fas fa-building me-2" />Address Line 2 (Apartment/Building)</label>
+          <input
+            type="text"
+            value={formData.address.line2}
+            onChange={(e) => handleAddressChange("line2", e.target.value)}
+          />
+        </div>
 
-          {/* Password */}
+        <div className="form-group">
+          <label><i className="fas fa-globe-asia me-2" />Country</label>
+          <select value={formData.address.country} onChange={(e) => handleAddressChange("country", e.target.value)}>
+            <option value="">Select Country</option>
+            {countryList.map((c) => (
+              <option key={c.isoCode} value={c.isoCode}>{c.name}</option>
+            ))}
+          </select>
+          {errors.country && touched.country && <small>{errors.country}</small>}
+        </div>
+
+        <div className="form-group">
+          <label><i className="fas fa-map me-2" />State</label>
+          <select value={formData.address.state} onChange={(e) => handleAddressChange("state", e.target.value)}>
+            <option value="">Select State</option>
+            {stateList.map((s) => (
+              <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
+            ))}
+          </select>
+          {errors.state && touched.state && <small>{errors.state}</small>}
+        </div>
+
+        <div className="form-group">
+          <label><i className="fas fa-city me-2" />City</label>
+          <select value={formData.address.city} onChange={(e) => handleAddressChange("city", e.target.value)}>
+            <option value="">Select City</option>
+            {cityList.map((c) => (
+              <option key={c.name} value={c.name}>{c.name}</option>
+            ))}
+          </select>
+          {errors.city && touched.city && <small>{errors.city}</small>}
+        </div>
+
+        {/* Email & Password */}
+        <div className="form-group full-width">
+          <label><i className="fas fa-envelope me-2" />Email Address</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            className={errors.email && touched.email ? "error" : ""}
+          />
+          {errors.email && touched.email && <small>{errors.email}</small>}
+        </div>
+
+        <div className="form-grid">
           <div className="form-group">
-            <label><i className="fas fa-lock" /> Set Password</label>
+            <label><i className="fas fa-lock me-2" />Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onBlur={handleBlur}
               onFocus={() => setShowPasswordHint(true)}
-              onBlur={(e) => {
-                handleBlur(e);
-                setShowPasswordHint(false);
-              }}
               className={errors.password && touched.password ? "error" : ""}
             />
             {errors.password && touched.password && <small>{errors.password}</small>}
           </div>
 
-          {/* Confirm Password */}
           <div className="form-group">
-            <label><i className="fas fa-lock" /> Confirm Password</label>
+            <label><i className="fas fa-lock me-2" />Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
@@ -514,4 +646,4 @@ export default function RegisterRestaurant() {
       </form>
     </div>
   );
-}
+} 

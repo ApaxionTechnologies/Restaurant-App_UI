@@ -26,23 +26,26 @@ const menuItemSchema = new mongoose.Schema({
   name: String,
   price: Number,
   imageUrl: String,
-  category: {
-    type: String,
-    enum: ['Starters', 'Mains', 'Desserts', 'Beverages'],
-    default: 'Mains'
-  }
+  prepTime: Number,
 });
+
+const addressSchema = new mongoose.Schema({
+  line1: String,
+  line2: String,
+  country: String,
+  state: String,
+  city: String,
+}, { _id: false });
 
 const restaurantSchema = new mongoose.Schema({
-  restaurantName: { type: String, unique: true },
-  firstName: String,
-  lastName: String,
-  contact: String,
-  address: String,
-  email: { type: String, unique: true },
-  password: String,
+  restaurantName: { type: String, unique: true, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  contact: { type: String, required: true },
+  address: addressSchema,
+  email: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
   tables: { type: Number, default: 0 },
-  menu: [menuItemSchema]
+  menu: { type: Array, default: [] }
 });
-
 module.exports = mongoose.model('Restaurant', restaurantSchema);

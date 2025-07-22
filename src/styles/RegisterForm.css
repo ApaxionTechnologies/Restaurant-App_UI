@@ -1,25 +1,24 @@
-/* Page container */
+/* Page layout */
 .register-page {
   min-height: 100vh;
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: linear-gradient(145deg, #e0f1f7, #ebedee);
-  padding: 2rem;
-  box-sizing: border-box;
-  
+  align-items: center;
+  padding: 60px 15px;
   background-size: cover;
   background-position: center;
+  box-sizing: border-box;
 }
 
 /* Form card */
 .register-form {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 10px;
+  max-width: 700px;
   width: 100%;
-  max-width: 850px;
-  background: #fff;
-  padding: 2.5rem 3rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -27,25 +26,13 @@
   animation: fadeInUp 0.8s ease-in-out;
 }
 
-/* Form animations */
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Heading and divider */
+/* Title styles */
 .form-title {
-  font-size: 2rem;
-  font-weight: 700;
   text-align: center;
-  color: #2c3e50;
-  margin-bottom: 0.2rem;
+  margin-bottom: 30px;
+  font-weight: bold;
+  font-size: 28px;
+  color: #333;
 }
 
 .title-divider {
@@ -64,7 +51,7 @@
   margin-bottom: 1rem;
 }
 
-/* Grid layout */
+/* Form layout */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -81,7 +68,7 @@
   grid-column: 1 / -1;
 }
 
-/* Inputs & textareas */
+/* Inputs and textareas */
 input,
 textarea,
 .custom-phone-input {
@@ -111,28 +98,31 @@ small {
   margin-top: 4px;
 }
 
-/* Labels with icons */
-.register-form label {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  color: #222;
+/* Label styles */
+.register-form label,
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  color: #222;
+  font-size: 0.95rem;
 }
 
 /* Submit button */
-.register-form button {
+.register-form button,
+.btn-block {
   padding: 12px;
   background: linear-gradient(to right, #28a745, #218838);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 1rem;
+  margin-top: 20px;
   width: 100%;
 }
 
@@ -141,20 +131,30 @@ small {
   transform: scale(1.01);
 }
 
-/* Responsive layout */
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr;
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
   }
-
-  .form-title {
-    font-size: 1.6rem;
-  }
-
-  .register-form h2 {
-    font-size: 1rem;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Password popup */
 .password-popup {
   position: absolute;
   background-color: #fff0f0;
@@ -169,13 +169,17 @@ small {
   max-width: 250px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
+/* Responsive */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .form-title {
+    font-size: 1.6rem;
+  }
+
+  .register-form h2 {
+    font-size: 1rem;
   }
 }

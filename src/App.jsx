@@ -6,18 +6,19 @@ import HomePage from "./pages/HomePage";
 import RegisterRestaurant from "./pages/RegisterRestaurant";
 import AdminLogin from "./pages/AdminLogin";
 import Login from "./pages/Login";
-import MenuPage from "./pages/MenuPage";
+import MenuPage from "./pages/MenuPage"; // ✅ Ensure default export
 import OrderSuccess from "./pages/OrderSuccess";
 import AdminDashboard from "./pages/AdminDashboard";
 import GenerateQR from "./pages/GenerateQR";
 import RemoveItem from "./pages/RemoveItem";
+import CurrentMenu from "./pages/CurrentMenu"; // ✅ Ensure default export
 
 // ✅ Components
-import AddMenuItem from "./components/AddMenuItem";
-import QRScanner from "./components/QRScanner";
+import AddMenuItem from "./components/AddMenuItem"; // ✅ Ensure default export
+import QRScanner from "./components/QRScanner";     // ✅ Ensure default export
 
 // ✅ QR File Uploader from src
-import QRFileUploader from "./QRFileUploader";
+import QRFileUploader from "./QRFileUploader";       // ✅ Ensure default export
 
 // ✅ Styles
 import "./styles/global.css";
@@ -38,10 +39,12 @@ export default function App() {
       <Route path="/add-item" element={<AddMenuItem />} />
       <Route path="/remove-item" element={<RemoveItem />} />
       <Route path="/generate-qr" element={<GenerateQR />} />
+      <Route path="/view-menu" element={<CurrentMenu />} />
+      <Route path="/current-menu" element={<CurrentMenu />} />
 
       {/* ✅ Customer QR Options */}
-      <Route path="/scanner" element={<QRScanner />} /> {/* Camera Scanner */}
-      <Route path="/upload-qr" element={<QRFileUploader />} /> {/* Upload QR File */}
+      <Route path="/scanner" element={<QRScanner />} />
+      <Route path="/upload-qr" element={<QRFileUploader />} />
 
       {/* ✅ Customer Menu & Order */}
       <Route path="/menu" element={<MenuPage />} />

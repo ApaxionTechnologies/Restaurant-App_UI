@@ -1,121 +1,72 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "../styles/AddMenuItem.css";
+import { useNavigate } from "react-router-dom";
 
 export default function AddMenuItem() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [showCheck, setShowCheck] = useState(false);
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
+  const [itemImage, setItemImage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleAddItem = (e) => {
     e.preventDefault();
 
-    if (!name || !price || !imageFile) {
-      alert("Please fill all fields and select an image");
-      return;
-    }
+    const newItem = {
+      id: Date.now(), // Unique ID
+      name: itemName,
+      price: itemPrice,
+      image: itemImage,
+    };
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("image", imageFile);
+    const existingMenu = JSON.parse(localStorage.getItem("finalMenu")) || [];
+    const updatedMenu = [...existingMenu, newItem];
+    localStorage.setItem("finalMenu", JSON.stringify(updatedMenu));
 
-    try {
-      setLoading(true);
-      setSuccessMsg("");
-      setShowCheck(false);
+    // Clear form
+    setItemName("");
+    setItemPrice("");
+    setItemImage("");
 
-      await axios.post("http://localhost:5001/api/menu/add", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      // ✅ Show success message and checkmark
-      setSuccessMsg("✅ Item added successfully!");
-      setShowCheck(true);
-
-      // Reset text inputs only (keep image)
-      setName("");
-      setPrice("");
-
-      // Hide checkmark after 2 seconds
-      setTimeout(() => setShowCheck(false), 2000);
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to add item");
-    } finally {
-      setLoading(false);
-    }
+    // Optional: redirect to view menu
+    navigate("/view-menu");
   };
 
   return (
-    <div className="add-menu-wrapper">
-      <div className="add-menu-card">
-        <h2>
-          <i className="bi bi-plus-circle"></i> Add Menu Item
-        </h2>
-
-        {successMsg && (
-          <p className="success-text">
-            {successMsg}{" "}
-            {showCheck && <i className="bi bi-check-circle-fill check-icon"></i>}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="add-menu-form">
-          <div className="mb-3">
-            <label className="form-label">Item Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter item name"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Price (₹)</label>
-            <input
-              type="number"
-              className="form-control"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Enter price"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label className="form-label">Item Image</label>
-            <input
-              type="file"
-              className="form-control"
-              onChange={(e) => setImageFile(e.target.files[0])}
-              required={!imageFile} // Allow keeping previous image
-            />
-          </div>
-
-          {imageFile && (
-            <div className="preview-box mb-3">
-              <img
-                src={URL.createObjectURL(imageFile)}
-                alt="Preview"
-                className="preview-image"
-              />
-            </div>
-          )}
-
-          <button className="btn btn-primary w-100" disabled={loading}>
-            {loading ? "Adding..." : "Add Item"}
-          </button>
-        </form>
-      </div>
+    <div className="container mt-4">
+      <h2>Add New Menu Item</h2>
+      <form onSubmit={handleAddItem}>
+        <div className="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            className="form-control"
+            value={itemName}
+            onChange={(e) => setItemName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Price</label>
+          <input
+            type="text"
+            className="form-control"
+            value={itemPrice}
+            onChange={(e) => setItemPrice(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Image URL</label>
+          <input
+            type="text"
+            className="form-control"
+            value={itemImage}
+            onChange={(e) => setItemImage(e.target.value)}
+          />
+        </div>
+        <button type="submit" className="btn btn-success mt-3">
+          ➕ Add Item
+        </button>
+      </form>
     </div>
   );
 }
