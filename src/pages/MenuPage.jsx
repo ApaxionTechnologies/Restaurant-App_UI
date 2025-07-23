@@ -186,7 +186,7 @@ export default function MenuPage() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get(`http://localhost:5002/api/menu/${restaurantId}`);
+        const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
         const data = res.data;
  
         // Use default if data is invalid or empty

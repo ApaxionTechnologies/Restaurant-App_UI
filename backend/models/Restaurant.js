@@ -1,6 +1,4 @@
-
-
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const menuItemSchema = new mongoose.Schema({
   name: String,
@@ -28,4 +26,7 @@ const restaurantSchema = new mongoose.Schema({
   tables: { type: Number, default: 0 },
   menu: { type: Array, default: [] }
 });
-module.exports = mongoose.model('Restaurant', restaurantSchema);
+
+const Restaurant = mongoose.model("Restaurant", restaurantSchema);
+
+export default Restaurant; // ✅ ES module export

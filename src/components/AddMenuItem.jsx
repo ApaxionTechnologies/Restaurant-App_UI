@@ -39,7 +39,7 @@ const AddMenuItem = () => {
     formData.append("restaurantEmail", restaurantEmail);
 
     try {
-      await axios.post("http://localhost:5002/api/menu/add", formData, {
+      await axios.post("http://localhost:5001/api/menu/add", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

@@ -13,7 +13,7 @@ import "../styles/RegisterForm.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5002/api";
+const BASE_URL = "http://localhost:5001/api";
 
 export default function RegisterRestaurant() {
   const [formData, setFormData] = useState({
@@ -144,8 +144,8 @@ const handleSubmit = async (e) => {
         password: formData.password,
       };
 
-      // ✅ Fixed here
-      const response = await axios.post(`${BASE_URL}/register`, payload);
+      // ✅ Corrected API endpoint
+      const response = await axios.post(`${BASE_URL}/restaurants/register`, payload);
 
       const restaurantData = response.data.restaurant || payload;
       localStorage.setItem("restaurantEmail", restaurantData.email);
@@ -160,6 +160,7 @@ const handleSubmit = async (e) => {
     alert("Please fix the errors in the form.");
   }
 };
+
 
 
 

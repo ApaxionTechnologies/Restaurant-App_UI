@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
-import Jimp from "jimp";
+import * as Jimp from "jimp";
+
 import QRCodeReader from "qrcode-reader";
 
 const router = express.Router();

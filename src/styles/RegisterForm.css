@@ -192,3 +192,22 @@ small {
   height: 50px;
   display: block;
 }
+
+select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select.error {
+  border-color: #dc3545 !important;
+  background-color: #fff0f0;
+}

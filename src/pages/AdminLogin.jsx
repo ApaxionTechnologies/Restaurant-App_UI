@@ -8,35 +8,36 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear previous error
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError(""); // Clear previous error
 
-    try {
-      const response = await fetch("http://localhost:5002/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: adminEmail.trim().toLowerCase(),
-          password: adminPassword.trim(),
-        }),
-      });
+  try {
+    const response = await fetch("http://localhost:5001/api/restaurants/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: adminEmail.trim().toLowerCase(),
+        password: adminPassword.trim(),
+      }),
+    });
 
-      const data = await response.json();
-      if (response.ok && data.message === 'Login successful') {
-        // ✅ Store email in localStorage
-        localStorage.setItem("restaurantEmail", adminEmail);
-        alert("Admin login successful!");
-        navigate("/admin-dashboard");
-      } else {
-        setError(data.error || "Invalid email or password");
-      }
-    } catch (error) {
-      setError("Server error. Please try again later.");
+    const data = await response.json();
+    if (response.ok && data.message === "Login successful") {
+      // ✅ Store email in localStorage
+      localStorage.setItem("restaurantEmail", adminEmail);
+      alert("Admin login successful!");
+      navigate("/admin-dashboard");
+    } else {
+      setError(data.error || "Invalid email or password");
     }
-  };
+  } catch (error) {
+    setError("Server error. Please try again later.");
+  }
+};
+
 
   return (
     <div

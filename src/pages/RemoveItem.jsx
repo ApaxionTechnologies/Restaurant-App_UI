@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const BASE_URL = "http://localhost:5002/api";
+const BASE_URL = "http://localhost:5001/api";
 
 export default function RemoveItem() {
   const [menuItems, setMenuItems] = useState([]);
