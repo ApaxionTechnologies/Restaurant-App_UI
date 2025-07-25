@@ -16,6 +16,7 @@ import CurrentMenu from "./pages/CurrentMenu"; // ✅ Ensure default export
 // ✅ Components
 import AddMenuItem from "./components/AddMenuItem"; // ✅ Ensure default export
 import QRScanner from "./components/QRScanner";     // ✅ Ensure default export
+import TableManager from "./components/TableManager"; // Correct import path
 
 // ✅ QR File Uploader from src
 import QRFileUploader from "./QRFileUploader";       // ✅ Ensure default export
@@ -49,6 +50,9 @@ export default function App() {
       {/* ✅ Customer Menu & Order */}
       <Route path="/menu" element={<MenuPage />} />
       <Route path="/order-success" element={<OrderSuccess />} />
+
+      {/* ✅ Admin Manage Tables */}
+      <Route path="/table-manager" element={<TableManager />} /> {/* Add this route */}
     </Routes>
   );
 }

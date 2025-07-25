@@ -190,3 +190,10 @@ select:focus {
     gap: 1rem;
   }
 }
+/* ===== Image in Left Card ===== */
+.qr-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 20px;
+}

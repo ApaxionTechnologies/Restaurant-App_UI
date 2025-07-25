@@ -78,7 +78,7 @@ export default function AdminDashboard() {
   <Link to="/generate-qr" className="btn btn-primary btn-lg">
     🔗 Generate Table QR
   </Link>
-  <Link to="/manage-tables" className="btn btn-warning btn-lg">
+  <Link to="/table-manager" className="btn btn-warning btn-lg">
     🪑 Manage Tables
   </Link>
 </div>

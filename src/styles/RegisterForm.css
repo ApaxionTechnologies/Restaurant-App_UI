@@ -193,6 +193,8 @@ small {
   display: block;
 }
 
+/* Ensure the dropdown opens below the select input */
+/* Ensure the select dropdown opens below */
 select {
   padding: 10px 14px;
   border-radius: 8px;
@@ -205,9 +207,34 @@ select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  z-index: 1; /* Ensure dropdown appears above other elements */
+  position: relative; /* Ensure proper positioning of the dropdown */
 }
 
 select.error {
   border-color: #dc3545 !important;
   background-color: #fff0f0;
+}
+
+/* Custom arrow for select */
+select::-ms-expand {
+  display: none; /* Remove default arrow in IE */
+}
+
+select:focus {
+  z-index: 2; /* Ensure it is above other content */
+}
+
+/* Ensure dropdown opens below if space is available */
+select:focus + .select-dropdown {
+  display: block !important; /* Force it to show the dropdown */
+}
+
+.select-dropdown {
+  display: none; /* Hide dropdown by default */
+  position: absolute;
+  top: 100%; /* Ensure it opens below */
+  left: 0;
+  right: 0;
+  z-index: 10;
 }

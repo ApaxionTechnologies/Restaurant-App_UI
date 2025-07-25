@@ -3,6 +3,7 @@
 
 
 
+
 import React, { useState, useEffect } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -21,6 +22,7 @@ export default function RegisterRestaurant() {
     firstName: "",
     lastName: "",
     contact: "",
+    tables: "",  // Added field for tables
     address: {
       line1: "",
       line2: "",
@@ -103,67 +105,65 @@ export default function RegisterRestaurant() {
     if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = "Enter a valid email.";
     if (!data.password || data.password.length < 6) newErrors.password = "Minimum 6 characters.";
     if (data.password !== data.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
+    if (!data.tables || data.tables <= 0) newErrors.tables = "Enter a valid number of tables."; // New validation
 
     setErrors(newErrors);
     return newErrors;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const currentErrors = validate(formData);
-  setTouched({
-    restaurantName: true,
-    firstName: true,
-    lastName: true,
-    contact: true,
-    line1: true,
-    country: true,
-    state: true,
-    city: true,
-    email: true,
-    password: true,
-    confirmPassword: true,
-  });
+    const currentErrors = validate(formData);
+    setTouched({
+      restaurantName: true,
+      firstName: true,
+      lastName: true,
+      contact: true,
+      tables: true, // Mark tables as touched
+      line1: true,
+      country: true,
+      state: true,
+      city: true,
+      email: true,
+      password: true,
+      confirmPassword: true,
+    });
 
-  if (Object.keys(currentErrors).length === 0) {
-    try {
-      const payload = {
-        restaurantName: formData.restaurantName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        contact: formData.contact,
-        address: {
-          line1: formData.address.line1,
-          line2: formData.address.line2 || '',
-          country: formData.address.country,
-          state: formData.address.state,
-          city: formData.address.city,
-        },
-        email: formData.email,
-        password: formData.password,
-      };
+    if (Object.keys(currentErrors).length === 0) {
+      try {
+        const payload = {
+          restaurantName: formData.restaurantName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          contact: formData.contact,
+          tables: formData.tables,  // Add tables to payload
+          address: {
+            line1: formData.address.line1,
+            line2: formData.address.line2 || '',
+            country: formData.address.country,
+            state: formData.address.state,
+            city: formData.address.city,
+          },
+          email: formData.email,
+          password: formData.password,
+        };
 
-      // ✅ Corrected API endpoint
-      const response = await axios.post(`${BASE_URL}/restaurants/register`, payload);
+        const response = await axios.post(`${BASE_URL}/restaurants/register`, payload);
 
+        const restaurantData = response.data.restaurant || payload;
+        localStorage.setItem("restaurantEmail", restaurantData.email);
+        localStorage.setItem("restaurantName", restaurantData.restaurantName);
 
-      const restaurantData = response.data.restaurant || payload;
-      localStorage.setItem("restaurantEmail", restaurantData.email);
-      localStorage.setItem("restaurantName", restaurantData.restaurantName);
-
-      alert(response.data.message || "✅ Registered Successfully!");
-    } catch (error) {
-      console.error("Registration error:", error);
-      alert(error.response?.data?.error || "Registration failed.");
+        alert(response.data.message || "✅ Registered Successfully!");
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert(error.response?.data?.error || "Registration failed.");
+      }
+    } else {
+      alert("Please fix the errors in the form.");
     }
-  } else {
-    alert("Please fix the errors in the form.");
-  }
-};
-
-
-
+  };
 
   return (
     <div className="register-page">
@@ -216,15 +216,28 @@ const handleSubmit = async (e) => {
           <div className="form-group full-width">
             <label><i className="fas fa-phone me-2" />Contact Number</label>
             <PhoneInput
-  country={"in"}
-  value={formData.contact}
-  onChange={handlePhoneChange}
-  onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
-  inputClass={`custom-phone-input ${errors.contact && touched.contact ? "error" : ""}`}
-  enableSearch
-/>
-
+              country={"in"}
+              value={formData.contact}
+              onChange={handlePhoneChange}
+              onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
+              inputClass={`custom-phone-input ${errors.contact && touched.contact ? "error" : ""}`}
+              enableSearch
+            />
             {errors.contact && touched.contact && <small>{errors.contact}</small>}
+          </div>
+
+          {/* New Tables Input */}
+          <div className="form-group full-width">
+            <label><i className="fas fa-table me-2" />Enter Tables</label>
+            <input
+              type="number"
+              name="tables"
+              value={formData.tables}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.tables && touched.tables ? "error" : ""}
+            />
+            {errors.tables && touched.tables && <small>{errors.tables}</small>}
           </div>
         </div>
 
@@ -329,14 +342,7 @@ const handleSubmit = async (e) => {
       </form>
     </div>
   );
-} 
-
-
-
-
-
-
-
+}
 
 
 

@@ -84,7 +84,6 @@ export default function GenerateQR() {
               placeholder="Start"
               value={startTable}
               onChange={(e) => setStartTable(e.target.value)}
-            
             />
             <input
               type="number"
@@ -102,6 +101,15 @@ export default function GenerateQR() {
         {/* Instruction Text Below Table Range */}
         <div className="instruction-text">
           <p>Input the starting and ending table numbers to generate individual QR codes for each table.</p>
+        </div>
+
+        {/* Add Image Below the Input Section */}
+        <div className="text-center mt-4">
+          <img
+            src="https://tse1.mm.bing.net/th/id/OIP.j3Q5KEdaACrCsdDg-xayvQHaDj?rs=1&pid=ImgDetMain&o=7&rm=3"
+            alt="QR Code Example"
+            className="qr-image"
+          />
         </div>
       </div>
 
