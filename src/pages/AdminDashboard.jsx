@@ -17,7 +17,7 @@ export default function AdminDashboard() {
     const storedRestaurant = localStorage.getItem("restaurantName");
 
     if (!storedEmail) {
-      navigate("/admin-login");
+      navigate("/");
     } else {
       setAdminEmail(storedEmail);
       setRestaurantName(storedRestaurant || "My Restaurant");
@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
     localStorage.removeItem("restaurantName");
-    navigate("/admin-login");
+    navigate("/");
   };
 
   return (
