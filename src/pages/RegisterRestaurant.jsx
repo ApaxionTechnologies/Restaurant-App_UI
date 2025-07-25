@@ -147,6 +147,7 @@ const handleSubmit = async (e) => {
       // ✅ Corrected API endpoint
       const response = await axios.post(`${BASE_URL}/restaurants/register`, payload);
 
+
       const restaurantData = response.data.restaurant || payload;
       localStorage.setItem("restaurantEmail", restaurantData.email);
       localStorage.setItem("restaurantName", restaurantData.restaurantName);
