@@ -8,14 +8,23 @@ import "../styles/GenerateQR.css";
 
 export default function GenerateQR() {
   const restaurantName = localStorage.getItem("restaurantName") || "My Restaurant";
-  const [totalTables, setTotalTables] = useState(1);
+  const [startTable, setStartTable] = useState("");
+  const [endTable, setEndTable] = useState("");
   const [qrList, setQrList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const qrRefs = useRef([]);
 
   const generateQRCodes = () => {
+    const start = parseInt(startTable);
+    const end = parseInt(endTable);
+
+    if (isNaN(start) || isNaN(end) || start > end || start < 1) {
+      alert("Please enter a valid table range.");
+      return;
+    }
+
     const list = [];
-    for (let i = 1; i <= totalTables; i++) {
+    for (let i = start; i <= end; i++) {
       list.push({
         table: i,
         value: JSON.stringify({
@@ -24,6 +33,7 @@ export default function GenerateQR() {
         }),
       });
     }
+
     setQrList(list);
     setCurrentIndex(0);
   };
@@ -41,12 +51,11 @@ export default function GenerateQR() {
 
   const downloadAllQRCodes = async () => {
     const zip = new JSZip();
-
     for (let i = 0; i < qrList.length; i++) {
       const canvas = qrRefs.current[i]?.querySelector("canvas");
       if (canvas) {
         const dataUrl = canvas.toDataURL("image/png");
-        const imgData = dataUrl.split(",")[1]; // Get base64 string
+        const imgData = dataUrl.split(",")[1];
         zip.file(`QR_Table_${qrList[i].table}.png`, imgData, { base64: true });
       }
     }
@@ -57,8 +66,9 @@ export default function GenerateQR() {
 
   return (
     <div className="generate-qr-wrapper">
+      {/* Left Box - Input */}
       <div className="qr-card">
-        <h2>
+        <h2 className="mb-2">
           <i className="bi bi-qr-code-scan"></i> Generate QR Code
         </h2>
         <p>
@@ -66,80 +76,95 @@ export default function GenerateQR() {
         </p>
 
         <div className="mb-3">
-          <label className="form-label fw-semibold">Enter Total Tables</label>
-          <input
-            type="number"
-            className="form-control"
-            min="1"
-            value={totalTables}
-            onChange={(e) => setTotalTables(Number(e.target.value))}
-          />
-          <button onClick={generateQRCodes} className="btn btn-success mt-2 w-100">
+          <label className="form-label fw-semibold">Enter Table Range</label>
+          <div className="d-flex gap-2">
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Start"
+              value={startTable}
+              onChange={(e) => setStartTable(e.target.value)}
+            
+            />
+            <input
+              type="number"
+              className="form-control"
+              placeholder="End"
+              value={endTable}
+              onChange={(e) => setEndTable(e.target.value)}
+            />
+          </div>
+          <button onClick={generateQRCodes} className="btn btn-primary mt-3 w-100">
             Generate QR Codes
           </button>
         </div>
 
-        {qrList.length > 0 && (
-          <>
-            <div className="text-center fw-bold mb-2">
-              Table {qrList[currentIndex].table}
-            </div>
-            <div
-              className="qr-preview"
-              ref={(el) => (qrRefs.current[currentIndex] = el)}
-            >
-              <QRCodeCanvas
-                value={qrList[currentIndex].value}
-                size={220}
-                includeMargin={true}
-              />
-            </div>
+        {/* Instruction Text Below Table Range */}
+        <div className="instruction-text">
+          <p>Input the starting and ending table numbers to generate individual QR codes for each table.</p>
+        </div>
+      </div>
 
-            <div className="d-flex justify-content-between my-2">
-              <button
-                className="btn btn-outline-secondary"
-                disabled={currentIndex === 0}
-                onClick={() => setCurrentIndex(currentIndex - 1)}
-              >
-                <i className="bi bi-arrow-left"></i> Prev
-              </button>
-              <button
-                className="btn btn-outline-secondary"
-                disabled={currentIndex === qrList.length - 1}
-                onClick={() => setCurrentIndex(currentIndex + 1)}
-              >
-                Next <i className="bi bi-arrow-right"></i>
-              </button>
-            </div>
-
-            <button
-              onClick={() => downloadSingleQR(currentIndex)}
-              className="btn btn-primary w-100"
-            >
-              <i className="bi bi-download"></i> Download QR
-            </button>
-
-            {/* Render all hidden QR canvases for ZIP */}
-            <div style={{ display: "none" }}>
-              {qrList.map((qr, index) => (
-                <div
-                  key={index}
-                  ref={(el) => (qrRefs.current[index] = el)}
-                >
-                  <QRCodeCanvas value={qr.value} size={220} includeMargin={true} />
-                </div>
-              ))}
-            </div>
-
+      {/* Right Box - QR Display */}
+      {qrList.length > 0 && (
+        <div className="qr-card d-flex flex-column">
+          {/* Download All QR Button Above QR */}
+          <div className="qr-download-buttons">
             <button
               onClick={downloadAllQRCodes}
-              className="btn btn-dark w-100 mt-2"
+              className="btn btn-dark mt-3 w-100"
             >
               <i className="bi bi-archive"></i> Download All QR
             </button>
-          </>
-        )}
-      </div>
+          </div>
+
+          {/* Download QR Button Below Download All */}
+          <div className="qr-download-buttons">
+            <button
+              onClick={() => downloadSingleQR(currentIndex)}
+              className="btn btn-primary mt-3 w-100"
+            >
+              <i className="bi bi-download"></i> Download QR
+            </button>
+          </div>
+
+          {/* Table Number Section Below Download QR */}
+          <div className="text-center fw-bold mb-3 fs-5">
+            Table {qrList[currentIndex].table}
+          </div>
+
+          {/* QR Preview Section */}
+          <div
+            className="qr-preview d-flex justify-content-center align-items-center"
+            ref={(el) => (qrRefs.current[currentIndex] = el)}
+          >
+            <QRCodeCanvas
+              value={qrList[currentIndex].value}
+              size={220}  // Adjusted size for better visibility
+              includeMargin={true}
+            />
+          </div>
+
+          {/* Navigation Arrows (Left and Right for Previous and Next QR) */}
+          <div className="qr-nav-arrows d-flex justify-content-between mt-3">
+            <button
+              className="btn btn-outline-secondary"
+              disabled={currentIndex === 0}
+              onClick={() => setCurrentIndex(currentIndex - 1)}
+            >
+              ← Previous
+            </button>
+
+            <button
+              className="btn btn-outline-secondary"
+              disabled={currentIndex === qrList.length - 1}
+              onClick={() => setCurrentIndex(currentIndex + 1)}
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
