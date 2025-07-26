@@ -227,6 +227,101 @@
 
 
 
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import "../styles/Login.css";
+
+// export default function AdminLogin({ onClose }) {
+//   const navigate = useNavigate();
+//   const [adminEmail, setAdminEmail] = useState("");
+//   const [adminPassword, setAdminPassword] = useState("");
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     localStorage.setItem("adminEmail", adminEmail);
+//     navigate("/admin-dashboard");
+//   };
+
+//   return (
+//     <div className="admin-login-container">
+//       <div className="admin-login-header">
+//         <h3 className="amnin-font">
+//           🔐 Admin Login{" "}
+//           <button className="admin-close-btn" onClick={onClose}>
+//             ❌
+//           </button>
+//         </h3>
+//       </div>
+
+//       <form onSubmit={handleSubmit}>
+//         <div className="form-group">
+//           <label>Email Address</label>
+//           <input
+//             type="email"
+//             value={adminEmail}
+//             onChange={(e) => setAdminEmail(e.target.value)}
+//             className="form-control"
+//             placeholder="admin@example.com"
+//             required
+//           />
+//         </div>
+
+//         <div className="form-group">
+//           <label>Password</label>
+//           <input
+//             type="password"
+//             value={adminPassword}
+//             onChange={(e) => setAdminPassword(e.target.value)}
+//             className="form-control"
+//             placeholder="Enter your password"
+//             required
+//           />
+//         </div>
+
+//         <button type="submit" className="btn btn-primary btn-block">
+//           Login as Admin
+//     <div className="admin-login-overlay">
+//       <div className="admin-login-box">
+//         <button className="admin-close-btn" onClick={onClose}>
+//           ❌
+//         </button>
+//         <h3 className="admin-login-title">🔐 Admin Login</h3>
+//         <form onSubmit={handleSubmit} className="admin-login-form">
+//           <div className="form-group">
+//             <label>Email Address</label>
+//             <input
+//               type="email"
+//               value={adminEmail}
+//               onChange={(e) => setAdminEmail(e.target.value)}
+//               className="form-control"
+//               placeholder="admin@example.com"
+//               required
+//             />
+//           </div>
+
+//           <div className="form-group">
+//             <label>Password</label>
+//             <input
+//               type="password"
+//               value={adminPassword}
+//               onChange={(e) => setAdminPassword(e.target.value)}
+//               className="form-control"
+//               placeholder="Enter your password"
+//               required
+//             />
+//           </div>
+
+//           <button type="submit" className="btn btn-primary btn-block">
+//             Login as Admin
+//           </button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
@@ -243,28 +338,28 @@ export default function AdminLogin({ onClose }) {
   };
 
   return (
-    <div className="admin-login-container">
-      <div className="admin-login-header.jsx">
-        <h3>
-          🔐 Admin Login{" "}
-          <button className="admin-close-btn" onClick={onClose}>
-            ❌
-          </button>
-        </h3>
-      </div>
+    <div className="admin-login-overlay">
+      <div className="admin-login-box">
+        {/* Top-right close button */}
+        <button className="admin-close-btn" onClick={onClose}>
+          ❌
+        </button>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email Address</label>
-          <input
-            type="email"
-            value={adminEmail}
-            onChange={(e) => setAdminEmail(e.target.value)}
-            className="form-control"
-            placeholder="admin@example.com"
-            required
-          />
-        </div>
+        {/* Centered heading */}
+        <h3 className="admin-login-title">🔐 Admin Login</h3>
+
+        <form onSubmit={handleSubmit} className="admin-login-form">
+          <div className="form-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              value={adminEmail}
+              onChange={(e) => setAdminEmail(e.target.value)}
+              className="form-control"
+              placeholder="admin@example.com"
+              required
+            />
+          </div>
 
           <div className="form-group">
             <label>Password</label>
