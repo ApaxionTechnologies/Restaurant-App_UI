@@ -152,70 +152,75 @@
 
 
 
+
+
+
+
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
-// import "../styles/Login.css"; // Keep your original styles
+// import "../styles/Login.css";
 
-// export default function AdminLogin() {
+// export default function AdminLogin({ onClose }) {
+//   const navigate = useNavigate();
 //   const [adminEmail, setAdminEmail] = useState("");
 //   const [adminPassword, setAdminPassword] = useState("");
-//   const [error, setError] = useState("");
-//   const navigate = useNavigate();
 
-//   const handleLogin = (e) => {
+//   const handleSubmit = (e) => {
 //     e.preventDefault();
 
-//     // ✅ Replace this with your actual backend login logic
-//     const mockEmail = "";
-//     const mockPassword = "";
-//     const mockRestaurantName = "";
+//     // 👉 Store the email in localStorage
+//     localStorage.setItem("adminEmail", adminEmail);
 
-//     if (adminEmail === mockEmail && adminPassword === mockPassword) {
-//       localStorage.setItem("adminEmail", adminEmail);
-//       localStorage.setItem("restaurantName", mockRestaurantName);
-//       navigate("/admin-dashboard");
-//     } else {
-//       setError("Invalid email or password");
-//     }
+//     // Navigate to dashboard
+//     navigate("/admin-dashboard");
 //   };
 
 //   return (
-//     <div className="login-container">
-//       <div className="login-popup">
-//         <div className="login-header">
-//           <h2>
-//             <span role="img" aria-label="lock">🔒</span> Admin Login 
-//           </h2>
-//           <button className="close-btn" onClick={() => navigate("/")}>❌</button>
-//         </div>
+//     <div className="admin-login-container">
+//       <div className="admin-login-header">
+//         <h3>
+//           🔐 Admin Login{" "}
+//           <button className="admin-close-btn" onClick={onClose}>
+//             ❌
+//           </button>
+//         </h3>
+//       </div>
 
-//         <form onSubmit={handleLogin}>
+//       <form onSubmit={handleSubmit}>
+//         <div className="form-group">
 //           <label>Email Address</label>
 //           <input
 //             type="email"
 //             value={adminEmail}
 //             onChange={(e) => setAdminEmail(e.target.value)}
+//             className="form-control"
+//             placeholder="admin@example.com"
 //             required
 //           />
+//         </div>
 
+//         <div className="form-group">
 //           <label>Password</label>
 //           <input
 //             type="password"
 //             value={adminPassword}
 //             onChange={(e) => setAdminPassword(e.target.value)}
+//             className="form-control"
+//             placeholder="Enter your password"
 //             required
 //           />
+//         </div>
 
-//           <button type="submit" className="login-button">
-//             Login as Admin
-//           </button>
-//         </form>
-
-//         {error && <p className="error-msg">{error}</p>}
-//       </div>
+//         <button type="submit" className="btn btn-primary btn-block">
+//           Login as Admin
+//         </button>
+//       </form>
 //     </div>
 //   );
 // }
+
+
+
 
 
 
@@ -233,18 +238,14 @@ export default function AdminLogin({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // 👉 Store the email in localStorage
     localStorage.setItem("adminEmail", adminEmail);
-
-    // Navigate to dashboard
     navigate("/admin-dashboard");
   };
 
   return (
     <div className="admin-login-container">
-      <div className="admin-login-header">
-        <h3 className="amnin-font">
+      <div className="admin-login-header.jsx">
+        <h3>
           🔐 Admin Login{" "}
           <button className="admin-close-btn" onClick={onClose}>
             ❌
@@ -265,22 +266,24 @@ export default function AdminLogin({ onClose }) {
           />
         </div>
 
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
-            className="form-control"
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              className="form-control"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
 
-        <button type="submit" className="btn btn-primary btn-block">
-          Login as Admin
-        </button>
-      </form>
+          <button type="submit" className="btn btn-primary btn-block">
+            Login as Admin
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 .login-page {
-  min-height: 35vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -75,14 +75,4 @@
 
 .admin-login-btn:hover {
   background-color: #0056b3;
-}
-
-.admin-close-btn{
-  
-  border: none;
- margin-top: 0px;
-  margin-left: 95PX;
-  height: 0PX;
-  width: 0PX;
-  font-size: 1rem;
 }
