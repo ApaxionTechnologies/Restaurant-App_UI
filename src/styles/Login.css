@@ -1,5 +1,5 @@
 .login-page {
-  min-height: 100vh;
+  min-height: 35vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,7 +7,7 @@
 }
 .login-form {
   background: white;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -35,6 +35,9 @@
 .password-wrapper input {
   width: 100%;
   padding-right: 35px;
+}
+.admin-font{
+  font-size:x-small;
 }
 
 .password-wrapper i {
@@ -72,4 +75,14 @@
 
 .admin-login-btn:hover {
   background-color: #0056b3;
+}
+
+.admin-close-btn{
+  
+  border: none;
+ margin-top: 0px;
+  margin-left: 95PX;
+  height: 0PX;
+  width: 0PX;
+  font-size: 1rem;
 }

@@ -244,7 +244,7 @@ export default function AdminLogin({ onClose }) {
   return (
     <div className="admin-login-container">
       <div className="admin-login-header">
-        <h3>
+        <h3 className="amnin-font">
           🔐 Admin Login{" "}
           <button className="admin-close-btn" onClick={onClose}>
             ❌
