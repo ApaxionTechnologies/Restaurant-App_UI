@@ -194,27 +194,27 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import "../styles/TableManager.css"; // ✅ Import the CSS here
+ 
 const TableManager = () => {
-  const [restaurantData, setRestaurantData] = useState(null);  // To store restaurant data
-  const [tables, setTables] = useState(0);  // To store the number of tables
-  const [error, setError] = useState("");  // To display error messages
-  const restaurantEmail = localStorage.getItem("restaurantEmail");  // Get logged-in restaurant's email
-
+  const [restaurantData, setRestaurantData] = useState(null);
+  const [tables, setTables] = useState(0);
+  const [error, setError] = useState("");
+  const restaurantEmail = localStorage.getItem("restaurantEmail");
+ 
   useEffect(() => {
-    // Function to fetch restaurant data from the backend
     const fetchRestaurantData = async () => {
       try {
         if (!restaurantEmail) {
           setError("Restaurant email is missing.");
           return;
         }
-
-        // URL-encode the email to handle special characters like '@'
+ 
         const encodedEmail = encodeURIComponent(restaurantEmail);
-
-        // Make the GET request to the backend
-        const response = await axios.get(`http://localhost:5001/api/restaurants/${encodedEmail}`);
+        const response = await axios.get(
+          `http://localhost:5001/api/restaurants/${encodedEmail}`
+        );
+ 
         if (response.data.restaurant) {
           setRestaurantData(response.data.restaurant);
           setTables(response.data.restaurant.tables);
@@ -226,85 +226,74 @@ const TableManager = () => {
         setError("Error fetching restaurant data. Please try again later.");
       }
     };
-
+ 
     if (restaurantEmail) {
-      fetchRestaurantData();  // Fetch data when the component is mounted
+      fetchRestaurantData();
     } else {
       setError("Restaurant email is missing.");
     }
   }, [restaurantEmail]);
-
-  // Optimistic Update: Update the table count immediately on increment or decrement
+ 
   const handleIncrement = () => {
-    setTables((prevTables) => prevTables + 1);
-    updateTablesOnBackend(tables + 1);
+    const updated = tables + 1;
+    setTables(updated);
+    updateTablesOnBackend(updated);
   };
-
+ 
   const handleDecrement = () => {
-    setTables((prevTables) => (prevTables > 0 ? prevTables - 1 : 0));
-    updateTablesOnBackend(tables - 1);
+    const updated = tables > 0 ? tables - 1 : 0;
+    setTables(updated);
+    updateTablesOnBackend(updated);
   };
-
-  // Update the table count on the backend after UI change
+ 
   const updateTablesOnBackend = async (updatedTables) => {
     try {
-      // URL-encode the email to handle special characters like '@'
       const encodedEmail = encodeURIComponent(restaurantEmail);
-      await axios.put(`http://localhost:5001/api/restaurants/${encodedEmail}/tables`, { tables: updatedTables });
+      await axios.put(
+        `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
+        { tables: updatedTables }
+      );
     } catch (err) {
-      alert("Failed to update tables on backend"); // If the update fails, we show an error
+      alert("Failed to update tables on backend");
     }
   };
-
+ 
   const handleSubmit = async () => {
     try {
-      // URL-encode the email to handle special characters like '@'
       const encodedEmail = encodeURIComponent(restaurantEmail);
-      await axios.put(`http://localhost:5001/api/restaurants/${encodedEmail}/tables`, { tables });
-      alert("Tables updated successfully!");  // Success message
+      await axios.put(
+        `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
+        { tables }
+      );
+      alert("Tables updated successfully!");
     } catch (err) {
-      alert("Failed to update tables");  // Error message
+      alert("Failed to update tables");
     }
   };
-
-  // Conditional rendering based on loading, error, and data availability
+ 
   return (
-    <div className="container mt-4">
-      <h2 className="text-center">Manage Tables</h2>
-
-      {/* Displaying error message if there's an error */}
-      {error && <div className="alert alert-danger">{error}</div>}
-
-      {/* Display restaurant data */}
-      {restaurantData ? (
-        <div className="card mt-4" style={{ width: "18rem", margin: "0 auto" }}>
-          <div className="card-body">
-            <h5 className="card-title text-center">{restaurantData.restaurantName}</h5>
-            <h6 className="card-subtitle mb-2 text-muted text-center">
-              Total Tables: {tables}
-            </h6>
-
-            {/* Table Count Adjustment */}
-            <div className="d-flex justify-content-center align-items-center mt-4">
-              <button className="btn btn-outline-primary" onClick={handleDecrement}>-</button>
-              <span className="mx-3">{tables}</span>
-              <button className="btn btn-outline-primary" onClick={handleIncrement}>+</button>
-            </div>
-
-            {/* Save Button */}
-            <div className="text-center mt-4">
-              <button className="btn btn-primary" onClick={handleSubmit}>
-                Save Changes
-              </button>
-            </div>
-          </div>
+    <div className="table-manager-container">
+      <div className="table-manager-card">
+        <h3>Manage Tables</h3>
+        <h6>
+          {restaurantData ? restaurantData.restaurantName : "Restaurant"}<br />
+          Current Tables: {tables}
+        </h6>
+ 
+        <div className="button-group">
+          <button onClick={handleDecrement}>-</button>
+          <span className="table-count">{tables}</span>
+          <button onClick={handleIncrement}>+</button>
         </div>
-      ) : (
-        // Loading message while fetching data
-        <p>Loading restaurant data...</p>
-      )}
+ 
+        <button className="save-button" onClick={handleSubmit}>
+          Save Changes
+        </button>
+ 
+        {error && <div className="alert-danger">{error}</div>}
+      </div>
     </div>
   );
 };
-
+ 
 export default TableManager;
