@@ -1,73 +1,128 @@
-body {
-  background: linear-gradient(45deg, #ff6b6b, #f06595); /* Your background gradient */
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  padding: 0;
+/* Ensure full height and centering */
+.table-manager-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;  /* Ensures the body takes the full height of the viewport */
+  padding: 2rem;
+  min-height: 100vh;
+  animation: fadeIn 0.4s ease-in-out;
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+/* Card styling */
+.table-manager-card {
+  background-color: #ffffff;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
   width: 100%;
-}
-
-.card {
- 
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  width: 100%;
-  max-width: 400px; /* Ensures the card has a maximum width */
-  height: auto;     /* Allows the card to adjust its height based on content */
   text-align: center;
-  margin: 0 auto;   /* Ensures it is centered horizontally */
 }
 
-.card-title {
+/* Headings */
+.table-manager-card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.table-manager-card h6 {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #6c757d;
+}
+
+/* Table count styling */
+.table-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+  margin: 0 1.5rem;
+}
+
+/* Button group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.button-group button {
+  background-color: white;
+  border: 2px solid #007bff;
+  color: #007bff;
   font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.card-subtitle {
-  font-size: 1rem;
-  color: #777;
-}
-
-.btn-outline-primary {
-  width: 40px;
-  height: 40px;
-  font-size: 1.2rem;
   border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-.btn-primary {
+.button-group button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Save button */
+.save-button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  border-radius: 10px;
   font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
 }
 
-.mt-4 {
-  margin-top: 20px;
+.save-button:hover {
+  background-color: #218838;
 }
 
-.alert {
-  font-size: 1rem;
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 20px;
-  background-color: rgba(255, 99, 71, 0.1);
-  color: #ff6b6b;
-  border: 1px solid #ff6b6b;
+/* Alert Message */
+.alert-danger {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #ffe0e0;
+  color: #a00;
+  border-left: 4px solid #dc3545;
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
 
-/* Ensures the body takes up the full height */
-html, body {
-  height: 100%;
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive support */
+@media (max-width: 480px) {
+  .table-manager-card {
+    padding: 1.5rem;
+  }
+
+  .table-manager-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .table-count {
+    font-size: 1.8rem;
+  }
+
+  .button-group button {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
+  }
 }
