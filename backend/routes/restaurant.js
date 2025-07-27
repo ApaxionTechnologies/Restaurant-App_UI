@@ -24,7 +24,7 @@
 //       lastName,
 //       contact,
 //       email,
-//       password,
+//       password,  // Storing password as plain text (not hashed)
 //       tables, // Accepts the number of tables here
 //       address,
 //     });
@@ -109,6 +109,8 @@
 
 
 
+
+
 import express from "express";
 import Restaurant from "../models/Restaurant.js"; // Assuming your Restaurant model is set up correctly
 
@@ -131,7 +133,7 @@ router.post("/register", async (req, res) => {
       lastName,
       contact,
       email,
-      password,
+      password,  // Storing password as plain text (not hashed)
       tables, // Accepts the number of tables here
       address,
     });
@@ -174,7 +176,10 @@ router.get("/:email", async (req, res) => {
   const { email } = req.params;
 
   try {
-    const restaurant = await Restaurant.findOne({ email });
+    // Decode the email to handle special characters like '@'
+    const decodedEmail = decodeURIComponent(email);
+
+    const restaurant = await Restaurant.findOne({ email: decodedEmail });
 
     if (!restaurant) {
       return res.status(404).json({ error: "Restaurant not found" });
@@ -194,8 +199,11 @@ router.put("/:email/tables", async (req, res) => {
   const { tables } = req.body;
 
   try {
+    // Decode the email to handle special characters like '@'
+    const decodedEmail = decodeURIComponent(email);
+
     // Find the restaurant by email
-    const restaurant = await Restaurant.findOne({ email });
+    const restaurant = await Restaurant.findOne({ email: decodedEmail });
 
     if (!restaurant) {
       return res.status(404).json({ error: "Restaurant not found" });
@@ -213,3 +221,4 @@ router.put("/:email/tables", async (req, res) => {
 });
 
 export default router;
+

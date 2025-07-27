@@ -330,11 +330,40 @@ export default function AdminLogin({ onClose }) {
   const navigate = useNavigate();
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");  // State for error message
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    localStorage.setItem("adminEmail", adminEmail);
-    navigate("/admin-dashboard");
+
+    try {
+      // Send login request to the server
+      const response = await fetch("http://localhost:5001/api/restaurants/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: adminEmail,
+          password: adminPassword,
+        }),
+      });
+
+      // Check for errors in the response
+      const data = await response.json();
+
+      if (response.ok) {
+        // Successful login: Store email in localStorage and navigate to dashboard
+        localStorage.setItem("adminEmail", adminEmail);
+        navigate("/admin-dashboard");
+      } else {
+        // Display error message from the server
+        setErrorMessage(data.error || "Invalid email or password");
+        console.log("Login failed:", data.error);
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      setErrorMessage("An error occurred. Please try again later.");
+    }
   };
 
   return (
@@ -347,6 +376,9 @@ export default function AdminLogin({ onClose }) {
 
         {/* Centered heading */}
         <h3 className="admin-login-title">🔐 Admin Login</h3>
+
+        {/* Error message if credentials are incorrect */}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="admin-login-form">
           <div className="form-group">
