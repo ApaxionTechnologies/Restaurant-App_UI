@@ -42,6 +42,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/MenuView.css";
+import AdminLayout from "../components/AdminLayout";
 
 const ViewMenuItems = ({ refreshMenu }) => {
   const [menuItems, setMenuItems] = useState([]);
@@ -65,6 +66,7 @@ const ViewMenuItems = ({ refreshMenu }) => {
   }, [refreshMenu]); // Dependency on refreshMenu prop
 
   return (
+    <AdminLayout> 
     <div className="menu-items-container">
       <h2>Menu Items</h2>
       {loading ? (
@@ -92,8 +94,7 @@ const ViewMenuItems = ({ refreshMenu }) => {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 };
-
 export default ViewMenuItems;
-y

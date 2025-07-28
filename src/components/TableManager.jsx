@@ -195,6 +195,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/TableManager.css"; // ✅ Import the CSS here
+import AdminLayout from "../components/AdminLayout";
  
 const TableManager = () => {
   const [restaurantData, setRestaurantData] = useState(null);
@@ -272,6 +273,7 @@ const TableManager = () => {
   };
  
   return (
+    <AdminLayout> 
     <div className="table-manager-container">
       <div className="table-manager-card">
         <h3>Manage Tables</h3>
@@ -293,6 +295,7 @@ const TableManager = () => {
         {error && <div className="alert-danger">{error}</div>}
       </div>
     </div>
+    </AdminLayout>
   );
 };
  

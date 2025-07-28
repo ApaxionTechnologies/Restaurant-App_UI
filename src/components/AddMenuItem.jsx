@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FaUtensils, FaMoneyBillAlt, FaClock, FaImage, FaListAlt } from "react-icons/fa";  // Added icons
 import "../styles/AddMenuItem.css";
+import AdminLayout from "../components/AdminLayout";
 
 const AddMenuItem = ({ refreshMenu }) => {
   const [menuItem, setMenuItem] = useState({
@@ -66,6 +67,7 @@ const AddMenuItem = ({ refreshMenu }) => {
   };
 
   return (
+    <AdminLayout>
     <div className="add-menu-page">
       <div className="add-menu-card">
         <div className="form-header">
@@ -147,6 +149,7 @@ const AddMenuItem = ({ refreshMenu }) => {
         </form>
       </div>
     </div>
+    </AdminLayout>
   );
 };
 

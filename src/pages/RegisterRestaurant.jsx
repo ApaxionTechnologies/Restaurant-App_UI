@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -13,6 +8,8 @@ import { Country, State, City } from "country-state-city";
 import "../styles/RegisterForm.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
+import Select from 'react-select';
+
 
 const BASE_URL = "http://localhost:5001/api";
 
@@ -262,7 +259,7 @@ export default function RegisterRestaurant() {
           />
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label><i className="fas fa-globe-asia me-2" />Country</label>
           <select value={formData.address.country} onChange={(e) => handleAddressChange("country", e.target.value)}>
             <option value="">Select Country</option>
@@ -293,7 +290,47 @@ export default function RegisterRestaurant() {
             ))}
           </select>
           {errors.city && touched.city && <small>{errors.city}</small>}
-        </div>
+        </div> */}
+
+
+      
+  
+
+<div className="form-group">
+<label><i className="fas fa-globe-asia me-2" />Country</label>
+<Select
+  options={countryList.map((c) => ({ label: c.name, value: c.isoCode }))}
+  value={formData.address.country ? { label: Country.getCountryByCode(formData.address.country)?.name, value: formData.address.country } : null}
+  onChange={(selected) => handleAddressChange("country", selected.value)}
+  placeholder="Select Country"
+  className="react-select-container"
+  classNamePrefix="react-select"
+/>
+</div>
+
+<div className="form-group">
+<label><i className="fas fa-map me-2" />State</label>
+<Select
+  options={stateList.map((s) => ({ label: s.name, value: s.isoCode }))}
+  value={formData.address.state ? { label: State.getStateByCodeAndCountry(formData.address.state, formData.address.country)?.name, value: formData.address.state } : null}
+  onChange={(selected) => handleAddressChange("state", selected.value)}
+  placeholder="Select State"
+  className="react-select-container"
+  classNamePrefix="react-select"
+/>
+</div>
+
+<div className="form-group">
+<label><i className="fas fa-city me-2" />City</label>
+<Select
+  options={cityList.map((c) => ({ label: c.name, value: c.name }))}
+  value={formData.address.city ? { label: formData.address.city, value: formData.address.city } : null}
+  onChange={(selected) => handleAddressChange("city", selected.value)}
+  placeholder="Select City"
+  className="react-select-container"
+  classNamePrefix="react-select"
+/>
+</div>
 
         {/* Email & Password */}
         <div className="form-group full-width">
@@ -343,6 +380,3 @@ export default function RegisterRestaurant() {
     </div>
   );
 }
-
-
-

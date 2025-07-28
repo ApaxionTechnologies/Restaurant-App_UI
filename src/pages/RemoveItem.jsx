@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AdminLayout from "../components/AdminLayout";
 
 const BASE_URL = "http://localhost:5001/api";
 
@@ -41,6 +42,7 @@ export default function RemoveItem() {
   };
 
   return (
+    <AdminLayout>
     <div className="container mt-4">
       <h4>Remove Menu Items</h4>
       {loading && <p>Loading...</p>}
@@ -62,5 +64,6 @@ export default function RemoveItem() {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 }

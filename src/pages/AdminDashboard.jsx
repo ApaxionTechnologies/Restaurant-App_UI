@@ -5,6 +5,8 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Footer from "../components/Footer";
 import "../components/AdminDashboard.css";
 import { FaUserCircle } from "react-icons/fa";
+import "../components/AdminDashboardHeader.css";
+
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ export default function AdminDashboard() {
           <h5 className="mb-0 fw-bold">{restaurantName}</h5>
           <span className="text-muted small">{adminEmail}</span>
         </div>
-        <div className="dropdown">
+        <div className="profile-icon">
           <FaUserCircle
             size={30}
             className="dropdown-toggle"
