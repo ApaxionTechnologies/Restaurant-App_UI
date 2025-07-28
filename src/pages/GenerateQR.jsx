@@ -243,6 +243,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../styles/GenerateQR.css";
 import axios from "axios";
+import AdminLayout from "../components/AdminLayout";
 
 export default function GenerateQR() {
   const restaurantEmail = localStorage.getItem("restaurantEmail"); // Get logged-in restaurant's email
@@ -380,6 +381,7 @@ export default function GenerateQR() {
   };
 
   return (
+    <AdminLayout> 
     <div className="generate-qr-wrapper">
       {/* Left Box - Input */}
       <div className="qr-card">
@@ -502,5 +504,6 @@ export default function GenerateQR() {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 }
