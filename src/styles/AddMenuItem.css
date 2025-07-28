@@ -27,18 +27,31 @@
   gap: 20px;
 }
 
-/* Labels */
-.add-menu-form label {
-  font-weight: 600;
-  margin-bottom: 5px;
-  display: block;
-  color: #333;
+/* Header with Icon */
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-/* Inputs */
-.add-menu-form input[type="text"],
-.add-menu-form input[type="number"],
-.add-menu-form input[type="file"] {
+.form-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Labels and Inputs with Icons */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.input-group select,
+.input-group input {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -47,9 +60,16 @@
   transition: border-color 0.3s ease;
 }
 
-.add-menu-form input:focus {
+.input-group input:focus,
+.input-group select:focus {
   outline: none;
   border-color: #4caf50;
+}
+
+/* Icon styling */
+.form-icon {
+  font-size: 1.2rem;
+  color: #333;
 }
 
 /* Button */
