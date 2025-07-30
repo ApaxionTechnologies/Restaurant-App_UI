@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import GenerateQR from "./pages/GenerateQR";
 import RemoveItem from "./pages/RemoveItem";
 import CurrentMenu from "./pages/CurrentMenu"; // ✅ Ensure default export
+import ViewMenu from "./components/ViewMenu"; 
 
 // ✅ Components
 import AddMenuItem from "./components/AddMenuItem"; // ✅ Ensure default export
@@ -42,6 +43,7 @@ export default function App() {
       <Route path="/generate-qr" element={<GenerateQR />} />
       <Route path="/view-menu" element={<CurrentMenu />} />
       <Route path="/current-menu" element={<CurrentMenu />} />
+  
 
       {/* ✅ Customer QR Options */}
       <Route path="/scanner" element={<QRScanner />} />
@@ -50,9 +52,11 @@ export default function App() {
       {/* ✅ Customer Menu & Order */}
       <Route path="/menu" element={<MenuPage />} />
       <Route path="/order-success" element={<OrderSuccess />} />
+     <Route path="/view-all-items" element={<ViewMenu />} /> {/* ✅ New route */}
 
       {/* ✅ Admin Manage Tables */}
       <Route path="/table-manager" element={<TableManager />} /> {/* Add this route */}
+       <Route path="/view-all-items" element={<ViewMenu />} /> {/* ✅ New route */}
     </Routes>
   );
 }

@@ -12,7 +12,7 @@ const AddMenuItem = ({ refreshMenu }) => {
     timeToPrepare: "",
     image: null,
   });
-
+  
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +39,7 @@ const AddMenuItem = ({ refreshMenu }) => {
     formData.append("name", name);
     formData.append("price", price);
     formData.append("timeToPrepare", timeToPrepare);
-    formData.append("image", image);
+    // formData.append("image", image);
     formData.append("restaurantEmail", restaurantEmail);
 
     try {
@@ -48,14 +48,14 @@ const AddMenuItem = ({ refreshMenu }) => {
       });
 
       alert("✅ Menu item added successfully!");
-      refreshMenu();
+      // refreshMenu();
 
       setMenuItem({
         category: "",  // Reset category field
         name: "",
         price: "",
         timeToPrepare: "",
-        image: null,
+        // image: null,
       });
       setPreview(null);
     } catch (err) {
