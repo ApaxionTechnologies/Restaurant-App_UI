@@ -1,10 +1,10 @@
-.admin-header {
+ .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: hsl(220, 18%, 97%);
   padding: 12px 20px;
-  height: 70px; /* ensures consistent height */
+  height: 70px; 
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
   
 }
