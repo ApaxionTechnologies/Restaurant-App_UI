@@ -1,96 +1,43 @@
-/* Full-page center alignment with soft gradient background */
-.add-menu-page {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* White card container */
-.add-menu-card {
-  background-color: #ffffff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+.add-menu-container {
   max-width: 500px;
-  width: 100%;
-  animation: fadeIn 0.5s ease-in-out;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fdfdfd;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
 
-/* Form layout */
-.add-menu-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Labels */
-.add-menu-form label {
-  font-weight: 600;
-  margin-bottom: 5px;
-  display: block;
+.add-menu-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
   color: #333;
 }
 
-/* Inputs */
-.add-menu-form input[type="text"],
-.add-menu-form input[type="number"],
-.add-menu-form input[type="file"] {
-  padding: 12px;
-  border-radius: 8px;
+.add-menu-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-menu-container input {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
   border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 1rem;
-  width: 100%;
-  transition: border-color 0.3s ease;
 }
 
-.add-menu-form input:focus {
-  outline: none;
-  border-color: #4caf50;
-}
-
-/* Button */
-.add-menu-form button {
-  padding: 12px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.add-menu-form button:hover {
+.add-menu-container button {
+  padding: 0.75rem;
   background-color: #388e3c;
-  transform: scale(1.02);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Image Preview */
-.image-preview {
-  text-align: center;
-  margin-top: 15px;
-}
-
-.image-preview img {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 10px;
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.add-menu-container button:hover {
+  background-color: #2e7d32;
 }
