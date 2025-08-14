@@ -4,11 +4,15 @@ import { db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 
-export default function Cart({ cart, table }) {
+export default function Cart({ cart = [], table = null }) {
   const [loading, setLoading] = useState(false);
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0); // handles qty
+  const total = cart.reduce((sum, item) => sum + (item.price || 0) * (item.qty || 0), 0);
 
   const handleOrder = async (payOnline) => {
+    if (cart.length === 0) {
+      alert("Cart is empty.");
+      return;
+    }
     const receiptId = uuidv4().slice(0, 8);
     setLoading(true);
     try {
@@ -25,7 +29,7 @@ export default function Cart({ cart, table }) {
       if (payOnline) {
         alert("Redirecting to payment gateway (not implemented)...");
       } else {
-        alert(`Order placed! Show this Receipt ID at counter: ${receiptId}`);
+        alert(`Order placed! Receipt ID: ${receiptId}`);
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -36,38 +40,29 @@ export default function Cart({ cart, table }) {
   };
 
   return (
-    <div className="cart-drawer">
-      <h4 className="mb-3 text-center">🛒 Your Cart</h4>
+    <div style={{ maxWidth: 820, margin: "0 auto", padding: 16 }}>
+      <h3>Your Cart</h3>
 
       {cart.length === 0 ? (
-        <p className="text-center text-muted">No items added yet.</p>
+        <p>No items added yet.</p>
       ) : (
         <>
-          <ul className="list-group mb-3">
-            {cart.map((item, index) => (
-              <li key={index} className="list-group-item d-flex justify-content-between">
-                <span>{item.name} (x{item.qty})</span>
-                <span>₹{item.price * item.qty}</span>
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {cart.map((it, i) => (
+              <li key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #eee" }}>
+                <div>{it.name} (x{it.qty})</div>
+                <div>₹{(it.price || 0) * (it.qty || 0)}</div>
               </li>
             ))}
           </ul>
 
-          <h5 className="text-end mb-3">Total: ₹{total}</h5>
+          <h4 style={{ textAlign: "right", marginTop: 12 }}>Total: ₹{total}</h4>
 
-          <div className="d-grid gap-2">
-            <button
-              onClick={() => handleOrder(true)}
-              className="btn btn-danger"
-              disabled={loading}
-            >
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button onClick={() => handleOrder(true)} disabled={loading} style={{ padding: "10px 14px", background: "#dc2626", color: "#fff", border: "none", borderRadius: 8 }}>
               {loading ? "Processing..." : "💳 Pay Online"}
             </button>
-
-            <button
-              onClick={() => handleOrder(false)}
-              className="btn btn-success"
-              disabled={loading}
-            >
+            <button onClick={() => handleOrder(false)} disabled={loading} style={{ padding: "10px 14px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 8 }}>
               {loading ? "Processing..." : "✅ Pay at Counter"}
             </button>
           </div>

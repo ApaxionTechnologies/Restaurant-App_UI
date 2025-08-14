@@ -5,8 +5,6 @@
 // import Footer from "../components/Footer";
 // import "../components/AdminDashboard.css";
 // import { FaUserCircle } from "react-icons/fa";
-// import "../components/AdminDashboardHeader.css";
-
 
 // export default function AdminDashboard() {
 //   const navigate = useNavigate();
@@ -40,7 +38,7 @@
 //           <h5 className="mb-0 fw-bold">{restaurantName}</h5>
 //           <span className="text-muted small">{adminEmail}</span>
 //         </div>
-//         <div className="profile-icon">
+//         <div className="dropdown">
 //           <FaUserCircle
 //             size={30}
 //             className="dropdown-toggle"
@@ -94,17 +92,13 @@
 // }
 
 
-
-
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Footer from "../components/Footer";
 import "../components/AdminDashboard.css";
-import { FaUserCircle, FaStore, FaEnvelope } from "react-icons/fa";
-import "../components/AdminDashboardHeader.css";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -135,14 +129,10 @@ export default function AdminDashboard() {
       {/* Header */}
       <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
         <div>
-          <h5 className="mb-0 fw-bold d-flex align-items-center">
-            <FaStore className="me-2" /> {restaurantName}
-          </h5>
-          <span className="text-muted small d-flex align-items-center">
-            <FaEnvelope className="me-2" /> {adminEmail}
-          </span>
+          <h5 className="mb-0 fw-bold">{restaurantName}</h5>
+          <span className="text-muted small">{adminEmail}</span>
         </div>
-        <div className="profile-icon">
+        <div className="dropdown">
           <FaUserCircle
             size={30}
             className="dropdown-toggle"
@@ -169,8 +159,9 @@ export default function AdminDashboard() {
       <main className="admin-dashboard-content container text-center mt-5">
         <h2>Welcome, Admin 👨‍💻</h2>
         <p className="lead">Manage your restaurant menu and settings below:</p>
+
         <div className="d-flex flex-column gap-3 mt-4">
-          <Link to={`/menu/${restaurantName}`} className="btn btn-info btn-lg">
+          <Link to="/view-menu" className="btn btn-info btn-lg">
             📋 View Menu
           </Link>
           <Link to="/add-item" className="btn btn-success btn-lg">
@@ -193,5 +184,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-
