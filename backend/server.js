@@ -38,6 +38,7 @@
 // import cors from "cors";
 // import dotenv from "dotenv";
 // import restaurantRoutes from "./routes/restaurant.js"; // Import the restaurant routes
+// import menuRoutes from './routes/menu.js';
 
 // dotenv.config(); // Load environment variables
 
@@ -46,12 +47,14 @@
 // // ✅ Middleware
 // app.use(cors()); // Allow cross-origin requests
 // app.use(express.json()); // Parse incoming JSON request bodies
+// app.use(express.urlencoded({ extended: true }));
 
 // // ✅ Routes
 // app.use("/api/restaurants", restaurantRoutes); // Routes related to restaurants
+// app.use('/api/menu', menuRoutes);
 
 // // ✅ MongoDB Connection
-// const PORT = process.env.PORT || 5000; // Port from environment or default to 5000
+// const PORT = process.env.PORT || 5001; // Port from environment or default to 5001
 // const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/qr_menu"; // Mongo URI from environment or default to local MongoDB
 
 // // Connect to MongoDB
@@ -64,17 +67,14 @@
 //   .catch((err) => console.error("❌ MongoDB Connection Error:", err)); // Handle DB connection errors
 
 
-// server.js
+
+// ✅ server.js
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import restaurantRoutes from "./routes/restaurant.js";
-import menuRoutes from "./routes/menu.js"; // ✅ New
-
-
-// import path from "path";
-// import { fileURLToPath } from "url";
+import menuRoutes from "./routes/menu.js";
 
 dotenv.config();
 
@@ -83,23 +83,18 @@ const app = express();
 // ✅ Middleware
 app.use(cors());
 app.use(express.json());
-
-// ✅ Serve static image uploads
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-// app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use(express.urlencoded({ extended: true }));
 
 // ✅ Routes
 app.use("/api/restaurants", restaurantRoutes);
-app.use("/api/menu", menuRoutes); 
+app.use("/api/menu", menuRoutes);
 
 // ✅ MongoDB Connection
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/qr_menu";
 
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ MongoDB Connected");
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
