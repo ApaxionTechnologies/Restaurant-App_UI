@@ -7,7 +7,7 @@
   min-height: 100vh;
   animation: fadeIn 0.4s ease-in-out;
 }
- 
+
 /* Card styling */
 .table-manager-card {
   background-color: #ffffff;
@@ -18,20 +18,20 @@
   width: 100%;
   text-align: center;
 }
- 
+
 /* Headings */
 .table-manager-card h3 {
   font-size: 1.8rem;
   margin-bottom: 0.4rem;
   font-weight: 600;
 }
- 
+
 .table-manager-card h6 {
   font-size: 1rem;
   margin-bottom: 1.5rem;
   color: #6c757d;
 }
- 
+
 /* Table count styling */
 .table-count {
   font-size: 2rem;
@@ -39,7 +39,7 @@
   color: #007bff;
   margin: 0 1.5rem;
 }
- 
+
 /* Button group */
 .button-group {
   display: flex;
@@ -48,7 +48,7 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
- 
+
 .button-group button {
   background-color: white;
   border: 2px solid #007bff;
@@ -60,12 +60,12 @@
   cursor: pointer;
   transition: 0.2s ease;
 }
- 
+
 .button-group button:hover {
   background-color: #007bff;
   color: white;
 }
- 
+
 /* Save button */
 .save-button {
   width: 100%;
@@ -78,11 +78,11 @@
   font-weight: 600;
   transition: background 0.2s ease;
 }
- 
+
 .save-button:hover {
   background-color: #218838;
 }
- 
+
 /* Alert Message */
 .alert-danger {
   margin-top: 1rem;
@@ -93,7 +93,7 @@
   border-radius: 8px;
   font-size: 0.95rem;
 }
- 
+
 /* Fade-in animation */
 @keyframes fadeIn {
   from {
@@ -105,26 +105,24 @@
     transform: translateY(0);
   }
 }
- 
+
 /* Responsive support */
 @media (max-width: 480px) {
   .table-manager-card {
     padding: 1.5rem;
   }
- 
+
   .table-manager-card h3 {
     font-size: 1.5rem;
   }
- 
+
   .table-count {
     font-size: 1.8rem;
   }
- 
+
   .button-group button {
     width: 42px;
     height: 42px;
     font-size: 1.3rem;
   }
 }
- 
- 
