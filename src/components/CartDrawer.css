@@ -1,90 +1,263 @@
-/* 🔴 CART DRAWER STYLING */
-.cart-drawer {
-  animation: slideUp 0.4s ease-out;
-  position: absolute;
-  bottom: 60px;
-  right: 0;
-  background: #ffebeb; /* Soft red tone */
-  border: 2px solid #dc3545; /* Red border */
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(208, 79, 79, 0.1);
-  padding: 1.5rem;
-  width: 280px;
-  z-index: 999;
-}
+/* src/styles/cart.css
+   Fixed: avoid dropdown clipping on large screens + responsive mobile panel
+*/
 
-/* 🔴 Cart Toggle Button (Base Style) */
-.cart-toggle {
-  background: #dc3545;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 16px;
+/* Ensure navbar doesn't clip absolute dropdown */
+.navbar {
   position: relative;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+  z-index: 1400;
+  overflow: visible; /* <-- important to avoid clipping */
 }
 
-.cart-toggle.highlight {
-  animation: cartPulse 0.6s ease-in-out;
-  box-shadow: 0 0 15px rgba(220, 53, 69, 0.6);
+/* wrapper for cart toggle/dropdown */
+.navbar-cart {
+  position: relative;
+  display: inline-block;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  overflow: visible; /* ensure child absolute element isn't clipped */
 }
 
-.cart-badge {
-  background-color: white;
-  color: #dc3545;
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  position: absolute;
-  top: -8px;
-  right: -10px;
-}
-
-@keyframes cartPulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(220, 53, 69, 0.6);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  }
-}
-
-
-/* ✅ Green Place Order Button */
-.place-order {
-  margin-top: 1rem;
-  background: #22c55e; /* green-500 */
-  color: white;
+/* Cart toggle (pill) */
+.cart-toggle {
+  background: transparent !important; /* white background hatao */
+  color: black;
+  padding: 8px 12px;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* icon aur text ka gap kam */
   cursor: pointer;
-  transition: background 0.2s ease;
+  box-shadow: none; /* shadow bhi remove agar nahi chahiye */
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s;
 }
 
-.place-order:hover {
-  background: #16a34a; /* green-600 on hover */
+.cart-toggle:active { transform: translateY(1px); }
+.cart-toggle:focus { outline: 3px solid rgba(37,99,235,0.12); }
+.cart-toggle.highlight { box-shadow: 0 8px 30px rgba(220,53,69,0.16); }
+
+/* Naye page pe cart ko center me lane ke liye */
+.cart-drawer-page {
+  position: static; /* fixed hatao */
+  max-width: 500px;
+  margin: 50px auto; /* center horizontally */
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+   overflow: visible;
 }
 
-/* 🚀 Drawer Slide Animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+/* badge */
+.cart-badge {
+  color: #fff; /* text ko white rakho */
+  background: #dc2626; /* red background */
+  border: none; /* extra border hatao */
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 12px;
+  font-weight: 700;
+  position: absolute;
+  top: -6px; /* thoda adjust */
+  right: -6px;
+  z-index: 10; /* cart-drawer ke upar */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Drawer (desktop anchored) */
+/* NOTE: overflow is handled on .cart-list so the drawer itself should not be clipped */
+.cart-drawer {
+  animation: fadeScale 180ms ease-out;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,0.06);
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(2,6,23,0.08);
+  padding: 14px;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  z-index: 2000; /* increased to avoid overlap */
+  color: #0f172a;
+  font-size: 14px;
+  /* don't hide overflow here — let inner list scroll */
+  overflow: visible;
+}
+
+/* animation */
+@keyframes fadeScale {
+  from { opacity: 0; transform: translateY(-6px) scale(.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Drawer header */
+.cart-drawer h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Empty state */
+.cart-drawer .cart-empty {
+  color: #6b7280;
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+/* item list — THIS scrolls if content grows */
+.cart-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  max-height: 46vh; /* responsive max height (viewport-based) */
+  overflow-y: auto;
+  display: block;
+  gap: 8px;
+}
+
+/* item */
+.cart-item {
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(15,23,42,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cart-item:last-child { border-bottom: none; }
+
+/* name + price row */
+.cart-compact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cart-compact-row strong { font-size: 14px; color: #0f172a; }
+
+/* controls row */
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* qty buttons */
+.qty-btn-drawer {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.06);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.04);
+  transition: background .12s ease, transform .08s;
+}
+.qty-btn-drawer:active { transform: translateY(1px); }
+
+/* quantity display */
+.qty-display {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* item price aligned right */
+.item-price {
+  margin-left: auto;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* total row */
+.cart-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Place order button */
+.place-order {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg,#16a34a 0%, #22c55e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(16,185,129,0.12);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s;
+}
+.place-order:active { transform: translateY(1px); }
+.place-order:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+
+/* subtle scrollbar styling */
+.cart-list::-webkit-scrollbar { width: 8px; height: 8px; }
+.cart-list::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.06); border-radius: 8px; }
+
+/* ----- MOBILE: fixed centered panel (avoids navbar layout shifts) ----- */
+@media (max-width: 520px) {
+  .cart-drawer {
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 10vh !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 420px !important;
+    max-height: 76vh !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 28px 80px rgba(2,6,23,0.18) !important;
+    overflow-y: auto !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .cart-drawer h3 { font-size: 14px; margin-bottom: 8px; }
+  .cart-compact-row strong { font-size: 13px; }
+  .item-price { font-size: 13px; }
+  .qty-btn-drawer { width: 30px; height: 30px; }
+  .qty-display { min-width: 26px; }
+
+  .place-order { padding: 10px; font-size: 15px; }
+}
+
+/* tiny screens */
+@media (max-width: 360px) {
+  .cart-drawer {
+    top: 8vh !important;
+    width: calc(100vw - 20px) !important;
+    padding: 10px !important;
+    max-height: 78vh !important;
   }
+  .cart-drawer h3 { font-size: 13.5px; }
+  .place-order { padding: 9px; font-size: 14px; }
+}
+/* Only for /cart page center layout */
+.cart-drawer.cart-drawer-page {
+  position: static !important;  /* absolute/fixed ko hatao */
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  transform: none !important;
+  margin: 50px auto !important;  /* center horizontally */
+  max-width: 500px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
