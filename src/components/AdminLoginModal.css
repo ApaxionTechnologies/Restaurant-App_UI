@@ -3,25 +3,26 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index:1;
+  z-index:9999;
   width: 100vw;
   height: 100vh;
   background-color: rgba(246, 241, 241, 0.3); /* Less blur */
   display: flex;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(2px); /* Minimized blur */
+  backdrop-filter: blur(1px); /* Minimized blur */
+  right:20px;
 }
 
 .admin-login-box {
   background-color: white;
-  padding: 65px 55px;
+  padding: 55px 45px;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   width: 380px;
   height:420px;
-  right:13px;
+  
   margin-top: 48px;
 }
 

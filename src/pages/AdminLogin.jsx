@@ -160,90 +160,80 @@
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import "../styles/Login.css";
+// import { FaUser } from "react-icons/fa";
+// import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+// import "../components/AdminLoginModal.css";
 
-// export default function AdminLogin({ onClose }) {
+//  export default function AdminLogin({ onClose }) {
 //   const navigate = useNavigate();
 //   const [adminEmail, setAdminEmail] = useState("");
 //   const [adminPassword, setAdminPassword] = useState("");
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [errorMessage, setErrorMessage] = useState("");
 
-//   const handleSubmit = (e) => {
+//   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     localStorage.setItem("adminEmail", adminEmail);
-//     navigate("/admin-dashboard");
+//     try {
+//       const response = await fetch("http://localhost:5001/api/restaurants/login", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email: adminEmail, password: adminPassword }),
+//       });
+
+//       const data = await response.json();
+
+//       if (response.ok) {
+//         localStorage.setItem("adminEmail", adminEmail);
+//         navigate("/admin-dashboard");
+//       } else {
+//         setErrorMessage(data.error || "Invalid email or password");
+//       }
+//     } catch (error) {
+//       console.error("Login error:", error);
+//       setErrorMessage("An error occurred. Please try again.");
+//     }
 //   };
 
 //   return (
-//     <div className="admin-login-container">
-//       <div className="admin-login-header">
-//         <h3 className="amnin-font">
-//           🔐 Admin Login{" "}
-//           <button className="admin-close-btn" onClick={onClose}>
-//             ❌
-//           </button>
-//         </h3>
-//       </div>
-
-//       <form onSubmit={handleSubmit}>
-//         <div className="form-group">
-//           <label>Email Address</label>
-//           <input
-//             type="email"
-//             value={adminEmail}
-//             onChange={(e) => setAdminEmail(e.target.value)}
-//             className="form-control"
-//             placeholder="admin@example.com"
-//             required
-//           />
-//         </div>
-
-//         <div className="form-group">
-//           <label>Password</label>
-//           <input
-//             type="password"
-//             value={adminPassword}
-//             onChange={(e) => setAdminPassword(e.target.value)}
-//             className="form-control"
-//             placeholder="Enter your password"
-//             required
-//           />
-//         </div>
-
-//         <button type="submit" className="btn btn-primary btn-block">
-//           Login as Admin
 //     <div className="admin-login-overlay">
 //       <div className="admin-login-box">
-//         <button className="admin-close-btn" onClick={onClose}>
-//           ❌
-//         </button>
-//         <h3 className="admin-login-title">🔐 Admin Login</h3>
+//         <button className="admin-close-btn" onClick={onClose}>✕</button>
+//         <h2 className="admin-login-title">Login</h2>
+
+//         {errorMessage && <p className="error-text">{errorMessage}</p>}
+
 //         <form onSubmit={handleSubmit} className="admin-login-form">
-//           <div className="form-group">
-//             <label>Email Address</label>
+//           <div className="input-wrapper">
+//             <FaUser className="input-icon" />
+
 //             <input
+//              className="admin-login-input"
 //               type="email"
 //               value={adminEmail}
 //               onChange={(e) => setAdminEmail(e.target.value)}
-//               className="form-control"
-//               placeholder="admin@example.com"
+//               placeholder="Email"
 //               required
 //             />
 //           </div>
 
-//           <div className="form-group">
-//             <label>Password</label>
+//           <div className="input-wrapper">
+//             <FaLock className="input-icon" />
 //             <input
-//               type="password"
+//              className="admin-login-input"
+//               type={showPassword ? "text" : "password"}
 //               value={adminPassword}
 //               onChange={(e) => setAdminPassword(e.target.value)}
-//               className="form-control"
-//               placeholder="Enter your password"
+//               placeholder="Password"
 //               required
 //             />
+//             {showPassword ? (
+//               <FaEyeSlash className="toggle-icon" onClick={() => setShowPassword(false)} />
+//             ) : (
+//               <FaEye className="toggle-icon" onClick={() => setShowPassword(true)} />
+//             )}
 //           </div>
 
-//           <button type="submit" className="btn btn-primary btn-block">
-//             Login as Admin
-//           </button>
+//           <button type="submit" className="continue-btn">Continue</button>
 //         </form>
 //       </div>
 //     </div>
@@ -251,11 +241,12 @@
 // }
 
 
+
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css";
-import { FaUser } from "react-icons/fa";
-import { FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import "../components/AdminLoginModal.css";
 
 export default function AdminLogin({ onClose }) {
@@ -291,7 +282,9 @@ export default function AdminLogin({ onClose }) {
   return (
     <div className="admin-login-overlay">
       <div className="admin-login-box">
+        {/* ✅ Working close button with correct prop */}
         <button className="admin-close-btn" onClick={onClose}>✕</button>
+
         <h2 className="admin-login-title">Login</h2>
 
         {errorMessage && <p className="error-text">{errorMessage}</p>}
@@ -299,9 +292,8 @@ export default function AdminLogin({ onClose }) {
         <form onSubmit={handleSubmit} className="admin-login-form">
           <div className="input-wrapper">
             <FaUser className="input-icon" />
-
             <input
-             className="admin-login-input"
+              className="admin-login-input"
               type="email"
               value={adminEmail}
               onChange={(e) => setAdminEmail(e.target.value)}
@@ -313,7 +305,7 @@ export default function AdminLogin({ onClose }) {
           <div className="input-wrapper">
             <FaLock className="input-icon" />
             <input
-             className="admin-login-input"
+              className="admin-login-input"
               type={showPassword ? "text" : "password"}
               value={adminPassword}
               onChange={(e) => setAdminPassword(e.target.value)}
@@ -333,4 +325,3 @@ export default function AdminLogin({ onClose }) {
     </div>
   );
 }
-

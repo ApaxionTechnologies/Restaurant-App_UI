@@ -1,5 +1,5 @@
 html, body {
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
 }
@@ -39,7 +39,7 @@ html, body {
 }
 
 html, body, #root {
-  height: 100%;
+  height: 100vh;
   margin: 0;
   padding: 0;
 }
@@ -53,3 +53,26 @@ html, body, #root {
   font-size: 16px;
   font-family: 'Poppins', 'Segoe UI', sans-serif;
 }
+
+
+
+/* Full page layout fix */
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Allow main content to grow and push footer down */
+.admin-content {
+  flex: 1;
+  padding: 2rem 1rem;
+}
+
+/* Optional: Remove unnecessary vertical scroll */
+body, html {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+

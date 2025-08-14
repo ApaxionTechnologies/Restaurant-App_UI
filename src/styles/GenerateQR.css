@@ -204,3 +204,80 @@ select:focus {
   border-radius: 10px;
   margin-top: 20px;
 }
+
+
+
+
+.qr-page {
+  padding: 20px;
+  text-align: center;
+}
+
+.qr-input-section {
+  margin-bottom: 20px;
+}
+
+.qr-input-section input {
+  padding: 8px;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.qr-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.qr-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-card {
+  width: 260px;
+  padding: 15px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.qr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.food-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.restaurant-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.table-label {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.download-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background: #e68900;
+}

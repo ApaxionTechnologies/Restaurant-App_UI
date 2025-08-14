@@ -3,10 +3,9 @@
   justify-content: flex-end;
   gap: 15px;
   align-items: center;
-  background-color: hsl(220, 18%, 97%);
+  background-color: lab(97.21% 0.03 -1.08);
   padding: 12px 20px;
-  height: 70px; 
-  /* box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); */
+  height: 60px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
 }

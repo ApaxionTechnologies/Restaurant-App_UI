@@ -204,10 +204,12 @@ const TableManager = () => {
   const restaurantEmail = localStorage.getItem("restaurantEmail");
  
   useEffect(() => {
+    document.body.classList.add("no-scrollbar");
     const fetchRestaurantData = async () => {
       try {
         if (!restaurantEmail) {
           setError("Restaurant email is missing.");
+          document.body.classList.remove("no-scrollbar");
           return;
         }
  
@@ -273,8 +275,8 @@ const TableManager = () => {
   };
  
   return (
-    <AdminLayout> 
-    <div className="table-manager-container">
+    <AdminLayout hideProfileIcon={true}> 
+    <div className="table-manager-container hide-scrollbar">
       <div className="table-manager-card">
         <h3>Manage Tables</h3>
         <h6>
