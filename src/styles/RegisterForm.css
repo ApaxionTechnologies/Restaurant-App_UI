@@ -2,7 +2,7 @@
 /* Parent page layout with scroll handling */
 /* Parent page layout with scroll handling */
 .register-page {
-  min-height: 100vh;
+  
   background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
   display: flex;
   justify-content: center;
@@ -25,7 +25,6 @@
   text-align: left;
   animation: fadeInUp 0.8s ease-in-out;
   margin-bottom: 60px; 
-  max-height: unset;
   overflow: visible;
 }
 

@@ -1,57 +1,115 @@
-.modal-overlay {
+
+.admin-login-overlay {
   position: fixed;
   top: 0;
   left: 0;
+  z-index:1;
   width: 100vw;
   height: 100vh;
-
-  background-color: rgba(246, 241, 241, 0.5); /* Dark dim overlay */
-  backdrop-filter: blur(8px); /* Glass blur effect */
-  -webkit-backdrop-filter: blur(8px);
-  
+  background-color: rgba(246, 241, 241, 0.3); /* Less blur */
   display: flex;
-  align-items: center;
   justify-content: center;
-  
-  z-index: 1000;
+  align-items: center;
+  backdrop-filter: blur(2px); /* Minimized blur */
 }
 
-.modal-content {
+.admin-login-box {
+  background-color: white;
+  padding: 65px 55px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
-  width: 90%;
-  max-width: 420px;
-  padding: 2rem;
-  
-  
-  animation: popIn 0.3s ease-out;
+  width: 380px;
+  height:420px;
+  right:13px;
+  margin-top: 48px;
 }
 
-/* Close Button (X) */
-.close-button {
+.admin-close-btn {
   position: absolute;
-  top: 10px;
-  right: 2px;
-  font-size: 2px;
-
-  color: #e74c3c;
-  background: transparent;
+  top: 12px;
+  right: 15px;
+  font-size: 20px;
+  background: none;
   border: none;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
+  color: #201f1f;
 }
 
-.close-button:hover {
-  transform: scale(1.3);
-  color: #c0392b;
+.admin-login-title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 34px;
+  color: #333;
 }
 
-/* @keyframes popIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-} */
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  
+}
+
+.input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-wrapper input {
+  width: 300px;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #777;
+  pointer-events: none;
+  font-size: 16px;
+  /* cursor: pointer; */
+  font-size: 16px;
+   z-index: 1;
+}
+
+.toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: 16px;
+  cursor: pointer;
+   z-index: 1;
+}
+
+.continue-btn {
+  background-color: hsl(44, 100%, 48%);
+  border: none;
+  padding: 10px 90px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 300px;
+  margin-top: 7px;
+  
+}
+
+.continue-btn:hover {
+  background-color: #e0a800;
+  
+}
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-bottom: -10px;
+  text-align: center;
+}
