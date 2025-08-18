@@ -6,6 +6,8 @@ import "../styles/global.css";
 import "../styles/MenuCard.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
+
+import { useParams } from "react-router-dom";   // ✅ param import kar
 import {
   FaHeart,
   FaRegHeart,
@@ -21,6 +23,8 @@ import axios from "axios";
 import ViewMenuNavbar from "../components/ViewMenuNavbar";
 
 export default function MenuPage() {
+
+  
   const [searchParams] = useSearchParams();
   const { cart, addToCart, updateQty, setTable } = useCart();
   const table = searchParams.get("table");
@@ -30,7 +34,9 @@ export default function MenuPage() {
   const [favorites, setFavorites] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [layout, setLayout] = useState("grid-3");
+const [dishes, setDishes] = useState([]);  // ✅ always array
 
+  const { restaurantName } = useParams();   // ✅ param destructure
   // defaultMenu (same as before)...
   const defaultMenu = {
     Starters: [
@@ -216,21 +222,21 @@ export default function MenuPage() {
 
   useEffect(() => {
     const fetchMenu = async () => {
-      try {
-        const res = await axios.get(
-          `http://localhost:5001/api/menu/${restaurantId}`
-        );
-        const data = res.data;
-        if (!data || Object.keys(data).length === 0) {
-          setMenu(defaultMenu);
-        } else {
-          setMenu(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch menu, loading default menu:", err);
-        setMenu(defaultMenu);
-      }
-    };
+  try {
+    const res = await axios.get(`http://localhost:5001/api/menu/${restaurantName}`);
+
+    // ✅ yaha safe check
+    if (Array.isArray(res.data)) {
+      setDishes(res.data);
+    } else {
+      setDishes([]); // fallback agar array na ho
+    }
+  } catch (err) {
+    console.error("Failed to fetch menu, loading default menu:", err);
+    setDishes([]); // fallback to empty
+  }
+};
+
 
     if (restaurantId) fetchMenu();
     else setMenu(defaultMenu);

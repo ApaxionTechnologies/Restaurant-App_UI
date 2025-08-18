@@ -7,13 +7,16 @@ const menuItemSchema = new mongoose.Schema({
   prepTime: Number,
 });
 
-const addressSchema = new mongoose.Schema({
-  line1: String,
-  line2: String,
-  country: String,
-  state: String,
-  city: String,
-}, { _id: false });
+const addressSchema = new mongoose.Schema(
+  {
+    line1: String,
+    line2: String,
+    country: String,
+    state: String,
+    city: String,
+  },
+  { _id: false }
+);
 
 const restaurantSchema = new mongoose.Schema({
   restaurantName: { type: String, unique: true, required: true },
@@ -24,9 +27,11 @@ const restaurantSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
   tables: { type: Number, default: 0 },
-  menu: { type: Array, default: [] }
+  menu: { type: Array, default: [] },
 });
 
-const Restaurant = mongoose.model("Restaurant", restaurantSchema);
+// ✅ Yeh line OverwriteModelError se bachayegi
+const Restaurant =
+  mongoose.models.Restaurant || mongoose.model("Restaurant", restaurantSchema);
 
-export default Restaurant; // ✅ ES module export
+export default Restaurant;

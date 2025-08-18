@@ -1,25 +1,12 @@
+import express from "express";
+import { addMenuItem, getMenuByRestaurant } from "../controllers/MenuController.js";
 
-import mongoose from 'mongoose';
+const router = express.Router();
 
-const menuItemSchema = new mongoose.Schema({
-  restaurantEmail: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  price: {
-    type: Number,
-    required: true
-  },
-  category: {
-    type: String
-  },
-  timeToPrepare: {
-    type: String
-  }
-});
+// ✅ POST add menu item
+router.post("/add", addMenuItem);
 
-export default mongoose.model('MenuItem', menuItemSchema);
+// ✅ GET menu by restaurant name
+router.get("/:restaurantName", getMenuByRestaurant);
+
+export default router;
