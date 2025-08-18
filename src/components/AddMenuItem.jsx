@@ -1,135 +1,19 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-// import "../styles/AddMenuItem.css";
-
-// const AddMenuItem = () => {
-//   const [menuItem, setMenuItem] = useState({
-//     name: "",
-//     price: "",
-//     timeToPrepare: "",
-//     image: null,
-//   });
-
-//   const [preview, setPreview] = useState(null);
-//   const [loading, setLoading] = useState(false);
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setMenuItem((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     setMenuItem((prev) => ({ ...prev, image: file }));
-//     setPreview(file ? URL.createObjectURL(file) : null);
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-
-//     const { name, price, timeToPrepare, image } = menuItem;
-//     const restaurantEmail = localStorage.getItem("adminEmail"); // or wherever you store it
-
-//     const formData = new FormData();
-//     formData.append("name", name);
-//     formData.append("price", price);
-//     formData.append("timeToPrepare", timeToPrepare);
-//     formData.append("image", image);
-//     formData.append("restaurantEmail", restaurantEmail);
-
-//     try {
-//       await axios.post("http://localhost:5001/api/menu/add", formData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-
-//       alert("✅ Menu item added successfully!");
-
-//       setMenuItem({
-//         name: "",
-//         price: "",
-//         timeToPrepare: "",
-//         image: null,
-//       });
-//       setPreview(null);
-//     } catch (err) {
-//       console.error(err);
-//       alert("❌ Failed to add menu item");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="add-menu-page">
-//       <div className="add-menu-card">
-//         <h2>Add Menu Item</h2>
-//         <form onSubmit={handleSubmit} className="add-menu-form">
-//           <div>
-//             <label>Item Name:</label>
-//             <input
-//               type="text"
-//               name="name"
-//               value={menuItem.name}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-//           <div>
-//             <label>Price (₹):</label>
-//             <input
-//               type="number"
-//               name="price"
-//               value={menuItem.price}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-//           <div>
-//             <label>Time to Prepare (mins):</label>
-//             <input
-//               type="number"
-//               name="timeToPrepare"
-//               value={menuItem.timeToPrepare}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-//           <div>
-//             <label>Upload Image:</label>
-//             <input type="file" accept="image/*" onChange={handleImageChange} />
-//           </div>
-
-//           {preview && (
-//             <div className="image-preview">
-//               <img src={preview} alt="Preview" />
-//             </div>
-//           )}
-
-//           <button type="submit" disabled={loading}>
-//             {loading ? "Adding..." : "Add Item"}
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddMenuItem;
-
-
 import React, { useState } from "react";
 import axios from "axios";
 import "../styles/AddMenuItem.css";
 
 const AddMenuItem = () => {
   const [formData, setFormData] = useState({
-    restaurantEmail: "",
+    category: "Starter", // default category
     name: "",
     price: "",
-    category: "",
+    image: "",
+    queries: "Indian", // default cuisine
     timeToPrepare: ""
   });
+
+  const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
+  const queriesOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -142,33 +26,97 @@ const AddMenuItem = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5001/api/menu/add", formData);
-      alert("Menu item added!");
+      alert("✅ Menu item added successfully!");
       setFormData({
-        restaurantEmail: "",
+        category: "Starter",
         name: "",
         price: "",
-        category: "",
+        image: "",
+        queries: "Indian",
         timeToPrepare: ""
       });
     } catch (err) {
       console.error(err);
-      alert("Failed to add item");
+      alert("❌ Failed to add item");
     }
   };
 
   return (
-    <div>
     <div className="add-menu-container">
       <h2>Add Menu Item</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" name="restaurantEmail" placeholder="Restaurant Email" value={formData.restaurantEmail} onChange={handleChange} required /><br/>
-        <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required /><br/>
-        <input type="number" name="price" placeholder="Price" value={formData.price} onChange={handleChange} required /><br/>
-        <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} /><br/>
-        <input type="text" name="timeToPrepare" placeholder="Time to Prepare" value={formData.timeToPrepare} onChange={handleChange} /><br/>
+      <form onSubmit={handleSubmit} className="add-menu-form">
+        
+        {/* Category Dropdown */}
+        <label>Category</label>
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        >
+          {categoryOptions.map((cat, idx) => (
+            <option key={idx} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <label>Item Name</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="Item Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Price (₹)</label>
+        <input
+          type="number"
+          name="price"
+          placeholder="Price"
+          value={formData.price}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Image URL</label>
+        <input
+          type="text"
+          name="image"
+          placeholder="Enter Image URL"
+          value={formData.image}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Queries</label>
+        <select
+          name="queries"
+          value={formData.queries}
+          onChange={handleChange}
+          required
+        >
+          {queriesOptions.map((opt, idx) => (
+            <option key={idx} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+
+        <label>Time to Prepare (mins)</label>
+        <input
+          type="text"
+          name="timeToPrepare"
+          placeholder="e.g. 30 mins"
+          value={formData.timeToPrepare}
+          onChange={handleChange}
+        />
+
         <button type="submit">Add Item</button>
       </form>
-    </div></div>
+    </div>
   );
 };
 
