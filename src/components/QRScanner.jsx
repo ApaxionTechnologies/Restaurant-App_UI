@@ -6,7 +6,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "./QRScanner.css";
-import RegisterRestaurantHeader from "../components/RegisterRestaurantHeader.jsx";
 import Footer from "../components/Footer.jsx";
 import AdminLogin from "../pages/AdminLogin"; // adjust path if needed
 
@@ -106,7 +105,6 @@ export default function QRScanner() {
   return (
     <>    
     {/* <RegisterRestaurantHeader /> */}
-    <RegisterRestaurantHeader onAdminLoginClick={() => setShowLoginModal(true)} />
       {showLoginModal && (
   <div className="admin-login-overlay">
     <div className="admin-login-modal">

@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/TableManager.css"; // ✅ Import the CSS here
+import "../styles/TableManager.css";
+import AdminLayout from "./AdminLayout"; // <-- Add this line
 
 const TableManager = () => {
   const [restaurantData, setRestaurantData] = useState(null);
@@ -81,30 +81,30 @@ const TableManager = () => {
   };
 
   return (
-    <AdminLayout> 
-    <div className="table-manager-container">
-      <div className="table-manager-card">
-        <h3>Manage Tables</h3>
-        <h6>
-          {restaurantData ? restaurantData.restaurantName : "Restaurant"}<br />
-          Current Tables: {tables}
-        </h6>
+    <AdminLayout>
+      <div className="table-manager-container">
+        <div className="table-manager-card">
+          <h3>Manage Tables</h3>
+          <h6>
+            {restaurantData ? restaurantData.restaurantName : "Restaurant"}<br />
+            Current Tables: {tables}
+          </h6>
 
-        <div className="button-group">
-          <button onClick={handleDecrement}>-</button>
-          <span className="table-count">{tables}</span>
-          <button onClick={handleIncrement}>+</button>
+          <div className="button-group">
+            <button onClick={handleDecrement}>-</button>
+            <span className="table-count">{tables}</span>
+            <button onClick={handleIncrement}>+</button>
+          </div>
+
+          <button className="save-button" onClick={handleSubmit}>
+            Save Changes
+          </button>
+
+          {error && <div className="alert-danger">{error}</div>}
         </div>
-
-        <button className="save-button" onClick={handleSubmit}>
-          Save Changes
-        </button>
-
-        {error && <div className="alert-danger">{error}</div>}
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 
 export default TableManager;
-
