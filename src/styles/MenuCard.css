@@ -31,6 +31,7 @@
 }
 
 /* ===== BASE GRID LAYOUT ===== */
+
 .menu-grid {
   display: grid;
   gap: 1rem;
@@ -351,3 +352,56 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Extra fallback — only if needed */
+.container,
+.menu-wrapper,
+.menu-section,
+.main,
+#root,
+#app {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* If html/body have been forced to fixed height somewhere (rare), let them size naturally */
+html, body {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* ========== TARGETED: ensure page-center and fade-in don't clip the grid ========== */
+/* Very small, safe overrides. DO NOT change any visual/grid/list rules above. */
+.page-center,
+.page-center.fade-in {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;    /* allow scrolling to reach lower rows */
+  overflow-x: visible !important; /* keep horizontal behaviour unchanged */
+}
+
+/* Ensure grid flows rows from top (doesn't change columns/gaps/images) */
+.menu-grid {
+  align-content: start;
+  grid-auto-flow: row;
+  grid-auto-rows: minmax(100px, auto);
+}
+
+/* Ensure cards remain in normal flow */
+.menu-card {
+  position: relative;
+  height: auto;
+  box-sizing: border-box;
+}
+/* ===== Place heart icon over image top-right in LIST view =====
+   Paste this at the END of your CSS file (non-invasive) */
+
+/* default variables for list image width and heart icon sizing */
+.menu-grid.list {
+  --list-img-w: 140px;   /* matches your .menu-grid.list .menu-card img width */
+  --heart-size: 32px;    /* approximate width/height of .heart-icon (including padding) */
+  --heart-pad: 8px;      /* distance from top of image */
+}
+
+/* ensure card is positioning context (it's already relative in your CSS, this is safe) */
+/* Heart icon fix for LIST view — same as grid */

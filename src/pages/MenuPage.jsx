@@ -95,11 +95,13 @@ export default function MenuPage() {
         const res = await axios.get(`http://localhost:5001/api/menu/${encoded}`);
         const items = Array.isArray(res.data) ? res.data : [];
 
-        // Filter menu items to ensure they belong to the current restaurant
-        const filteredItems = items.filter((item) => item.restaurantId === restaurant);
+        setDishes(items);
 
-        setDishes(filteredItems);
-        setMenuMap(buildMenuMap(filteredItems));
+        setMenuMap(buildMenuMap(items));
+        // after you get `items` from the API
+console.log("Fetched menu items:", items.length);
+console.table(items.map(it => ({ id: it._id, name: it.name, category: it.category })));
+
       } catch (err) {
         console.error("Failed to fetch menu, loading default menu:", err);
         setDishes([]);
@@ -195,6 +197,8 @@ export default function MenuPage() {
             .map(([category, items]) => {
               const filteredDishes = items.filter((dish) => dish.name.toLowerCase().includes(search.toLowerCase()));
 
+              console.log('Filtered Dishes:', filteredDishes);
+
               if (filteredDishes.length === 0) return null;
 
               return (
@@ -208,34 +212,27 @@ export default function MenuPage() {
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
                           {imgSrc && <img src={imgSrc} alt={item.name} />}
                           <div className="menu-card-content">
-                            {/* Name & Price */}
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                              <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: "600" }}>{item.name}</h3>
-                              <p style={{ margin: 0, fontSize: "1rem", fontWeight: "600" }}>₹{item.price}</p>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <h3>{item.name}</h3>
+                              <p className="price">₹{item.price}</p>
+                              <span onClick={() => toggleFavorite(item.name)} className="heart-icon" style={{ cursor: "pointer" }}>
+                                {favorites[item.name] ? <FaHeart color="#ef4444" /> : <FaRegHeart />}
+                              </span>
                             </div>
 
-                            {/* Heart icon */}
-                            <span onClick={() => toggleFavorite(item.name)} className="heart-icon" style={{ cursor: "pointer" }}>
-                              {favorites[item.name] ? <FaHeart color="#ef4444" /> : <FaRegHeart />}
-                            </span>
-
-                            {/* Stars */}
-                            <div className="menu-stars" aria-hidden>
-                              {[...Array(5)].map((_, i) =>
-                                i < (item.rating || 4)
-                                  ? <FaStar key={i} color="#fbbf24" size={14} />
-                                  : <FaRegStar key={i} color="#fbbf24" size={14} />
-                              )}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
+                             
+                              <div className="menu-stars" aria-hidden>
+                                {[...Array(5)].map((_, i) => i < (item.rating || 4) ? <FaStar key={i} color="#fbbf24" size={14} /> : <FaRegStar key={i} color="#fbbf24" size={14} />)}
+                              </div>
                             </div>
 
-                            {/* Queries & Prep Time */}
                             <div className="menu-details">
                               <span>{item.queries || "🍴"}</span>
                               <span>•</span>
                               <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
                             </div>
 
-                            {/* Add / Qty controls */}
                             {qty === 0 ? (
                               <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
                             ) : (

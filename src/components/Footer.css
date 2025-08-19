@@ -1,9 +1,13 @@
-.footer {
-
-  color: #000;
-  padding: 1rem 2rem;
+footer {
+  background-color: #000; /* Black background */
+  color: #fff; /* White text */
   text-align: center;
-  font-size: 0.95rem;
-  width: 100%;
-  background-color: transparent;
+  padding: 12px 0;
+   /* Ensure no space above */
 }
+
+/* Remove gap between footer and Food Court */
+/* .food-court-section {
+  margin-bottom: 0;
+  padding-bottom: 0;
+} */

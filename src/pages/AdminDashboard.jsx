@@ -143,7 +143,7 @@ export default function AdminDashboard() {
           />
           <ul className="dropdown-menu dropdown-menu-end">
             <li>
-              <span className="dropdown-item-text text-muted">{adminEmail}</span>
+              <span className="dropdown-item-text text-muted">{restaurantName}</span>
             </li>
             <li><hr className="dropdown-divider" /></li>
             <li>

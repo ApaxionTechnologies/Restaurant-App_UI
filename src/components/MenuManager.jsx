@@ -24,6 +24,7 @@ const ViewMenuItems = ({ refreshMenu }) => {
   }, [refreshMenu]); // Dependency on refreshMenu prop
 
   return (
+    <div style={{ overflowY: 'hidden', height: '100vh' }}>
     <div className="menu-items-container">
       <h2>Menu Items</h2>
       {loading ? (
@@ -50,6 +51,7 @@ const ViewMenuItems = ({ refreshMenu }) => {
           )}
         </div>
       )}
+    </div>
     </div>
   );
 };
