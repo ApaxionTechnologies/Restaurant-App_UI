@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const menuItemSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  imageUrl: String,
-  prepTime: Number,
-});
+// const menuItemSchema = new mongoose.Schema({
+//   name: String,
+//   price: Number,
+//   imageUrl: String,
+//   prepTime: Number,
+// });
 
 const addressSchema = new mongoose.Schema(
   {

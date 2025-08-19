@@ -68,13 +68,13 @@
 
 
 
-// ✅ server.js
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import restaurantRoutes from "./routes/restaurant.js";
 import menuRoutes from "./routes/menu.js";
+
 
 dotenv.config();
 
@@ -85,19 +85,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Serve uploaded images
+app.use("/uploads", express.static("uploads"));
+
 // ✅ Routes
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/menu", menuRoutes);
 
-
-
-app.use("/api/addMenuItem", menuRoutes);
 // ✅ MongoDB Connection
 const PORT = process.env.PORT || 5001;
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/qr_menu";
+const MONGO_URI = process.env.MONGO_URI ;
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
   .then(() => {
     console.log("✅ MongoDB Connected");
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -93,6 +93,7 @@
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
+  z-index: 2;
 }
 
 .heart-icon:hover {
@@ -115,6 +116,9 @@
   font-weight: 700;
   margin: 0;
   color: #222;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .menu-card-content .desc {
@@ -129,6 +133,13 @@
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+}
+
+/* Price styling */
+.menu-card-content p.price {
+  font-weight: 600;
+  color: #2563eb;
+  margin: 0;
 }
 
 /* ===== ACTION ROW ===== */
@@ -182,7 +193,7 @@
 .menu-grid.list .menu-card {
   display: flex;
   flex-direction: row;
-  align-items: stretch;   /* 🔥 Image matches full card height */
+  align-items: stretch;
 }
 
 .menu-grid.list .menu-card img {
@@ -191,14 +202,15 @@
   object-fit: cover;
   border-radius: 12px 0 0 12px;
   flex-shrink: 0;
-  align-self: stretch;   /* 🔥 force image to stretch full card */
+  align-self: stretch;
 }
 
 .menu-grid.list .menu-card-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;  /* 🔥 pushes add-to-cart block to bottom */
+  justify-content: space-between;
+  padding-left: 12px;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -212,7 +224,7 @@
   .menu-grid.list .menu-card img {
     width: 140px;
     height: auto;
-    align-self: stretch;   /* 🔥 */
+    align-self: stretch;
   }
 
   .menu-card {
@@ -263,6 +275,47 @@
   .qty-number {
     font-size: 0.85rem;
   }
+
+  /* ===== GRID VIEW NAME + PRICE INLINE & DETAILS FLEX ===== */
+  .menu-grid.grid-2 .menu-card-content,
+  .menu-grid.grid-3 .menu-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  /* Name left, price right */
+  .menu-grid.grid-2 .menu-card-content h3,
+  .menu-grid.grid-3 .menu-card-content h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+
+  .menu-grid.grid-2 .menu-card-content p.price,
+  .menu-grid.grid-3 .menu-card-content p.price {
+    margin: 0;
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 0.9rem;
+  }
+
+  /* Queries & prep time inline */
+  .menu-grid.grid-2 .menu-card-content .menu-details,
+  .menu-grid.grid-3 .menu-card-content .menu-details {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    font-size: 0.75rem;
+    flex-wrap: nowrap;
+  }
+
+  .menu-grid.grid-2 .menu-card,
+  .menu-grid.grid-3 .menu-card {
+    padding: 6px;
+  }
 }
 
 @media (max-width: 500px) {
@@ -289,7 +342,7 @@
   .menu-grid.list .menu-card img {
     width: 100px;
     height: auto;
-    align-self: stretch;  /* 🔥 full height even in small screens */
+    align-self: stretch;
   }
 }
 

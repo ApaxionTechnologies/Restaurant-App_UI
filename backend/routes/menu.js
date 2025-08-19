@@ -1,12 +1,15 @@
 import express from "express";
-import { addMenuItem, getMenuByRestaurant } from "../controllers/MenuController.js";
-
+import multer from "multer";
+import { addMenuItem } from "../controllers/MenuController.js";
+import { getMenuByRestaurantId } from "../controllers/MenuController.js";
 const router = express.Router();
 
-// ✅ POST add menu item
-router.post("/add", addMenuItem);
+// Multer setup
+const upload = multer({ dest: "uploads/" });
 
-// ✅ GET menu by restaurant name
-router.get("/:restaurantName", getMenuByRestaurant);
+// Route
+router.post("/add", upload.single("image"), addMenuItem);
+
+router.get("/:restaurantId", getMenuByRestaurantId);
 
 export default router;

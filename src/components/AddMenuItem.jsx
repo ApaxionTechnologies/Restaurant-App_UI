@@ -4,13 +4,14 @@ import "../styles/AddMenuItem.css";
 
 const AddMenuItem = () => {
   const [formData, setFormData] = useState({
-    category: "Starter", // default category
+    category: "Starter",
     name: "",
     price: "",
-    image: "",
-    queries: "Indian", // default cuisine
+    queries: "Indian",
     timeToPrepare: ""
   });
+
+  const [imageFile, setImageFile] = useState(null);
 
   const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
   const queriesOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
@@ -22,31 +23,50 @@ const AddMenuItem = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:5001/api/menu/add", formData);
-      alert("✅ Menu item added successfully!");
-      setFormData({
-        category: "Starter",
-        name: "",
-        price: "",
-        image: "",
-        queries: "Indian",
-        timeToPrepare: ""
-      });
-    } catch (err) {
-      console.error(err);
-      alert("❌ Failed to add item");
-    }
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
   };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const data  = new FormData();
+  data.append("category", formData.category);
+  data.append("name", formData.name);
+  data.append("price", formData.price);
+  data.append("queries", formData.queries);
+  data.append("timeToPrepare", formData.timeToPrepare);
+  if (imageFile) {
+    data.append("image", imageFile);
+  }
+
+  try {
+    await axios.post("http://localhost:5001/api/menu/add", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    alert("✅ Menu item added successfully!");
+    setFormData({
+      category: "Starter",
+      name: "",
+      price: "",
+      queries: "Indian",
+      timeToPrepare: "",
+    });
+    setImageFile(null);
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to add item");
+  }
+};
+
 
   return (
     <div className="add-menu-container">
       <h2>Add Menu Item</h2>
       <form onSubmit={handleSubmit} className="add-menu-form">
         
-        {/* Category Dropdown */}
+        {/* Category */}
         <label>Category</label>
         <select
           name="category"
@@ -61,6 +81,7 @@ const AddMenuItem = () => {
           ))}
         </select>
 
+        {/* Item Name */}
         <label>Item Name</label>
         <input
           type="text"
@@ -71,6 +92,7 @@ const AddMenuItem = () => {
           required
         />
 
+        {/* Price */}
         <label>Price (₹)</label>
         <input
           type="number"
@@ -81,16 +103,17 @@ const AddMenuItem = () => {
           required
         />
 
-        <label>Image URL</label>
+        {/* Image Upload */}
+        <label>Upload Image</label>
         <input
-          type="text"
+          type="file"
           name="image"
-          placeholder="Enter Image URL"
-          value={formData.image}
-          onChange={handleChange}
+          accept="image/*"
+          onChange={handleFileChange}
           required
         />
 
+        {/* Queries */}
         <label>Queries</label>
         <select
           name="queries"
@@ -105,6 +128,7 @@ const AddMenuItem = () => {
           ))}
         </select>
 
+        {/* Time to Prepare */}
         <label>Time to Prepare (mins)</label>
         <input
           type="text"

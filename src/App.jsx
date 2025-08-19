@@ -89,10 +89,15 @@ import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
 
+
+import { RestaurantProvider } from "./context/RestaurantContext";
+
 export default function App() {
 
-  const Navigate=useNavigate("")
+  const Navigate=useNavigate();
   return (
+    
+    <RestaurantProvider>
     <Routes>
       {/* ✅ Public Routes */}
       <Route path="/" element={<HomePage />} />
@@ -113,8 +118,9 @@ export default function App() {
       <Route path="/upload-qr" element={<QRFileUploader />} />
 
       {/* ✅ Customer Menu & Order */}
-       <Route path="/" element={<Navigate to="/menu" />} />
-        <Route path="/menu" element={<MenuPage />} />
+
+      <Route path="/menu" element={<MenuPage />} />
+
         <Route path="/feedback" element={<FeedbackPage />} />
         
        <Route path="/cart" element={<CartPage />} />
@@ -123,5 +129,6 @@ export default function App() {
       {/* ✅ Admin Manage Tables */}
       <Route path="/table-manager" element={<TableManager />} />
     </Routes>
+    </RestaurantProvider>
   );
 }

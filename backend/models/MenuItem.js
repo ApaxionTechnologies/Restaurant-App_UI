@@ -1,11 +1,6 @@
-
 import mongoose from 'mongoose';
 
 const menuItemSchema = new mongoose.Schema({
-  restaurantEmail: {
-    type: String,
-    required: true
-  },
   name: {
     type: String,
     required: true
@@ -15,11 +10,25 @@ const menuItemSchema = new mongoose.Schema({
     required: true
   },
   category: {
-    type: String
+    type: String,
+    required: true,   // Starter, Main Course, Dessert, etc.
+  },
+  image: {
+    type: String,     // yaha file ka path ya image ka URL store hoga
+    required: true
+  },
+  queries: {
+    type: String,     // cuisine: Indian, Japanese, Chinese...
+    required: true
   },
   timeToPrepare: {
     type: String
-  }
-});
+  },
+  restaurantId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Restaurant",
+    required: true,
+  },
+}, { timestamps: true });
 
 export default mongoose.model('MenuItem', menuItemSchema);
