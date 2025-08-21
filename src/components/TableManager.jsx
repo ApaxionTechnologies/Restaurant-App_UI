@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/TableManager.css";
-import AdminLayout from "./AdminLayout"; // <-- Add this line
+import Footer from "./Footer";
+import HomeHeader from "../components/HomeHeader.jsx";
 
 const TableManager = () => {
   const [restaurantData, setRestaurantData] = useState(null);
@@ -10,12 +11,10 @@ const TableManager = () => {
   const restaurantEmail = localStorage.getItem("restaurantEmail");
 
   useEffect(() => {
-    document.body.classList.add("no-scrollbar");
     const fetchRestaurantData = async () => {
       try {
         if (!restaurantEmail) {
           setError("Restaurant email is missing.");
-          document.body.classList.remove("no-scrollbar");
           return;
         }
 
@@ -81,12 +80,22 @@ const TableManager = () => {
   };
 
   return (
-    <AdminLayout>
+    <div className="table-manager-wrapper">
+      {/* ✅ Pass props to HomeHeader */}
+      <HomeHeader
+        isAdminDashboard={true}
+        restaurantName={restaurantData ? restaurantData.restaurantName : ""}
+        adminEmail={restaurantEmail}
+        onLogout={() => {
+          localStorage.removeItem("restaurantEmail");
+          window.location.reload();
+        }}
+      />
       <div className="table-manager-container">
         <div className="table-manager-card">
           <h3>Manage Tables</h3>
           <h6>
-            {restaurantData ? restaurantData.restaurantName : "Restaurant"}<br />
+            {restaurantData ? restaurantData.restaurantName : "Restaurant"} <br />
             Current Tables: {tables}
           </h6>
 
@@ -103,7 +112,8 @@ const TableManager = () => {
           {error && <div className="alert-danger">{error}</div>}
         </div>
       </div>
-    </AdminLayout>
+      <Footer />
+    </div>
   );
 };
 

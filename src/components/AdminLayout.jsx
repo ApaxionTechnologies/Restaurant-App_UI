@@ -1,181 +1,23 @@
-
+// src/pages/AdminLayout.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUserCircle, FaStore, FaEnvelope } from "react-icons/fa";
-import Footer from "./Footer";
-import "./AdminDashboard.css";
-import "../components/AdminLayout.css"; // Import your CSS for styling
-
-// import React, { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { FaUserCircle, FaStore, FaEnvelope } from "react-icons/fa";
-// import Footer from "./Footer";
-// import "./AdminDashboard.css";
-
-// export default function AdminLayout({ children }) {
-//   const navigate = useNavigate();
-//   const [restaurantName, setRestaurantName] = useState("");
-//   const [adminEmail, setAdminEmail] = useState("");
-
-//   useEffect(() => {
-//     const storedEmail = localStorage.getItem("adminEmail");
-//     const storedRestaurant = localStorage.getItem("restaurantName");
-
-//     if (!storedEmail) {
-//       navigate("/");
-//     } else {
-//       setAdminEmail(storedEmail);
-//       setRestaurantName(storedRestaurant || "My Restaurant");
-//     }
-//   }, [navigate]);
-
-//   const handleLogout = () => {
-//     localStorage.removeItem("adminEmail");
-//     localStorage.removeItem("restaurantName");
-//     navigate("/");
-//   };
-
-//   return (
-//     <div className="admin-dashboard-wrapper">
-//       <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
-//         <div>
-//           <h5 className="mb-0 fw-bold d-flex align-items-center">
-//             <FaStore className="me-2" /> {restaurantName}
-//           </h5>
-//           <span className="text-muted small d-flex align-items-center">
-//             <FaEnvelope className="me-2" /> {adminEmail}
-//           </span>
-//         </div>
-//         <div className="profile-icon">
-//           <FaUserCircle
-//             size={30}
-//             className="dropdown-toggle"
-//             role="button"
-//             data-bs-toggle="dropdown"
-//             aria-expanded="false"
-//             style={{ cursor: "pointer" }}
-//           />
-//           <ul className="dropdown-menu dropdown-menu-end">
-//             <li>
-//               <span className="dropdown-item-text text-muted">{adminEmail}</span>
-//             </li>
-//             <li><hr className="dropdown-divider" /></li>
-//             <li>
-//               <button className="dropdown-item text-danger" onClick={handleLogout}>
-//                 Logout
-//               </button>
-//             </li>
-//           </ul>
-//         </div>
-//       </header>
-
-//       <main className="admin-dashboard-content container py-5">
-//         {children}
-//       </main>
-
-//       <Footer />
-//     </div>
-//   );
-// }
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { FaUserCircle, FaStore, FaEnvelope } from "react-icons/fa";
-// import Footer from "./Footer";
-// import "./AdminDashboard.css";
-
-// export default function AdminLayout({ children }) {
-//   const navigate = useNavigate();
-//   const [restaurantName, setRestaurantName] = useState("");
-//   const [adminEmail, setAdminEmail] = useState("");
-
-//   useEffect(() => {
-//     const storedEmail = localStorage.getItem("adminEmail");
-//     const storedRestaurant = localStorage.getItem("restaurantName");
-
-//     if (!storedEmail) {
-//       navigate("/");
-//     } else {
-//       setAdminEmail(storedEmail);
-//       setRestaurantName(storedRestaurant || "My Restaurant");
-//     }
-//   }, [navigate]);
-
-//   const handleLogout = () => {
-//     localStorage.removeItem("adminEmail");
-//     localStorage.removeItem("restaurantName");
-//     navigate("/");
-//   };
-
-  // return (
-  //   <div className="d-flex flex-column min-vh-100">
-      {/* Header */}
-      // <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
-      //   <div>
-      //     <h5 className="mb-0 fw-bold d-flex align-items-center">
-      //       <FaStore className="me-2" /> {restaurantName}
-      //     </h5>
-      //     <span className="text-muted small d-flex align-items-center">
-      //       <FaEnvelope className="me-2" /> {adminEmail}
-      //     </span>
-      //   </div>
-      //   <div className="profile-icon">
-      //     <FaUserCircle
-      //       size={30}
-      //       className="dropdown-toggle"
-      //       role="button"
-      //       data-bs-toggle="dropdown"
-      //       aria-expanded="false"
-      //       style={{ cursor: "pointer" }}
-      //     />
-      //     <ul className="dropdown-menu dropdown-menu-end">
-      //       <li>
-      //         <span className="dropdown-item-text text-muted">{adminEmail}</span>
-      //       </li>
-      //       <li><hr className="dropdown-divider" /></li>
-      //       <li>
-      //         <button className="dropdown-item text-danger" onClick={handleLogout}>
-      //           Logout
-      //         </button>
-      //       </li>
-      //     </ul>
-      //   </div>
-      // </header>
-
-      {/* Main content */}
-      // <main className="flex-grow-1 container py-5 admin-dashboard-content">
-      //   {children}
-      // </main>
-
-      {/* Footer */}
-//       <Footer />
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
+import Footer from "../components/Footer";
+import { FaUserCircle, FaStore } from "react-icons/fa"; // ✅ Icons
+import "../components/AdminLayout.css"; // ✅ Add your custom styles
 
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
+
   const [restaurantName, setRestaurantName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedRestaurant = localStorage.getItem("restaurantName");
 
     if (!storedEmail) {
-      navigate("/");
+      navigate("/"); // redirect if not logged in
     } else {
       setAdminEmail(storedEmail);
       setRestaurantName(storedRestaurant || "My Restaurant");
@@ -188,62 +30,49 @@ export default function AdminLayout({ children }) {
     navigate("/");
   };
 
-  const handleBackToDashboard = () => {
-    navigate("/admin-dashboard");
-  };
-
   return (
-    <div className="d-flex flex-column min-vh-100">
-      {/* Header */}
-      <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
-        <div>
-          <h5 className="mb-0 fw-bold d-flex align-items-center">
-            <FaStore className="me-2" /> {restaurantName}
-          </h5>
-          <span className="text-muted small d-flex align-items-center">
-            <FaEnvelope className="me-2" /> {adminEmail}
-          </span>
+    <>
+      {/* ✅ Custom Admin Header */}
+      <header className="admin-header">
+        <div className="admin-header-left">
+          <FaStore className="admin-logo-icon" />
+          <span className="admin-logo-text">Restaurant Panel</span>
         </div>
 
-        <div className="profile-icon">
-          <FaUserCircle
-            size={30}
-            className="dropdown-toggle"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            style={{ cursor: "pointer" }}
-          />
-          <ul className="dropdown-menu dropdown-menu-end">
-            {/* ✅ Restaurant name instead of email */}
-            <li>
-              <span className="dropdown-item">{restaurantName}</span>
-            </li>
+        <div className="admin-header-right">
+          <div
+            className="profile-wrapper"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <FaUserCircle className="profile-icon" />
+          </div>
 
-            <li>
-              <button className="dropdown-item" onClick={handleBackToDashboard}>
-                 Dashboard
-              </button>
-            </li>
-
-            <li><hr className="dropdown-divider" /></li>
-
-            <li>
-              <button className="dropdown-item text-danger" onClick={handleLogout}>
+          {dropdownOpen && (
+            <div className="profile-dropdown">
+              <div className="dropdown-item non-clickable">
+                {restaurantName}
+              </div>
+              <div
+                className="dropdown-item"
+                onClick={() => navigate("/admin-dashboard")}
+              >
+                Admin Dashboard
+              </div>
+              <div className="dropdown-item" onClick={handleLogout}>
                 Logout
-              </button>
-            </li>
-          </ul>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="flex-grow-1 container py-5 admin-dashboard-content">
-        {children}
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+      {/* ✅ Page Content */}
+      <div className="admin-dashboard-wrapper">
+        <main className="admin-dashboard-content container mt-5 text-center">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 }

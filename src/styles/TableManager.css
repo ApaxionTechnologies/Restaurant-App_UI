@@ -139,18 +139,75 @@ html {
 
 
 
-
-/* TableManager.css */
-
-.hide-scrollbar {
-  overflow: hidden;          /* Disable scrolling */
-  scrollbar-width: none;     /* Firefox */
+/* Make wrapper full height */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Edge */
+/* Flex column so footer sticks to bottom only when needed */
+.table-manager-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full screen height */
 }
 
+/* Main content grows */
+.table-manager-container {
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Card styling */
+.table-manager-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 1rem;
+}
+
+.table-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.save-button {
+  margin-top: 1rem;
+  padding: 10px 16px;
+  background: #4caf50;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background: #43a047;
+}
+
+/* Error message */
+.alert-danger {
+  margin-top: 1rem;
+  color: red;
+  font-size: 0.9rem;
+}
 
 
 

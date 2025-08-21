@@ -937,6 +937,39 @@ export default function RegisterRestaurant() {
     { value: "soups", label: "Soups" },
   ];
 
+  // 🔹 Common react-select style override
+const customSelectStyles = {
+  control: (base) => ({
+    ...base,
+    height: "52px",
+    minHeight: "42px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    boxShadow: "none",
+    "&:hover": { borderColor: "#999" },
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    height: "42px",
+    padding: "0 10px",
+  }),
+  input: (base) => ({
+    ...base,
+    margin: 0,
+    padding: 0,
+  }),
+  indicatorsContainer: (base) => ({
+    ...base,
+    height: "42px",
+  }),
+  multiValue: (base) => ({
+    ...base,
+    backgroundColor: "#f0f0f0",
+    borderRadius: "6px",
+    padding: "2px 4px",
+  }),
+};
+
   return (
     <>
       <HomeHeader />
@@ -1031,6 +1064,7 @@ export default function RegisterRestaurant() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={errors.tables && touched.tables ? "error" : ""}
+                styles={customSelectStyles}
               />
               {errors.tables && touched.tables && (
                 <small>{errors.tables}</small>
@@ -1052,6 +1086,7 @@ export default function RegisterRestaurant() {
                 placeholder="Choose categories"
                 className="react-select-container"
                 classNamePrefix="react-select"
+                styles={customSelectStyles}
               />
             </div>
           </div>
@@ -1118,6 +1153,18 @@ export default function RegisterRestaurant() {
             />
           </div>
 
+           <div className="form-group">
+             <label><i className="fas fa-globe-asia me-2" />Country</label>
+             <Select
+               options={countryList.map((c) => ({ label: c.name, value: c.isoCode }))}
+               value={formData.address.country ? { label: Country.getCountryByCode(formData.address.country)?.name, value: formData.address.country } : null}
+               onChange={(selected) => handleAddressChange("country", selected.value)}
+               placeholder="Select Country"
+               className="react-select-container"
+               classNamePrefix="react-select"
+               styles={customSelectStyles}
+             />
+           </div>
           <div className="form-group">
             <label>
               <i className="fas fa-globe-asia me-2" />

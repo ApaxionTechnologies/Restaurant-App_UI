@@ -75,12 +75,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/ViewMenu.css";
-import { FaThList, FaThLarge, FaTh } from "react-icons/fa"; // icons for toggle
+import { FaThList, FaThLarge, FaTh } from "react-icons/fa";
 import "../styles/MenuCard.css";
+import Footer from "../components/Footer.jsx";
+import HomeHeader from "../components/HomeHeader.jsx";
+import { useNavigate } from "react-router-dom"; // <-- Add this
 
 const ViewMenu = () => {
+  const navigate = useNavigate(); // <-- Add this
+  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant"); // <-- Add this
+  const [adminEmail, setAdminEmail] = useState(""); // <-- Add this
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("adminEmail");
+    if (!storedEmail) {
+      navigate("/");
+    } else {
+      setAdminEmail(storedEmail);
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("restaurantName");
+    navigate("/");
+  };
+
   const [menuItems, setMenuItems] = useState([]);
-  const [layout, setLayout] = useState("grid-2"); // default 2 cards
+  const [layout, setLayout] = useState("grid-2");
   const [filterEmail, setFilterEmail] = useState("");
   const [editingItemId, setEditingItemId] = useState(null);
   const [editData, setEditData] = useState({
@@ -136,7 +158,6 @@ const ViewMenu = () => {
   const handleEditSave = async () => {
     try {
       const res = await axios.put(`http://localhost:5001/api/menu/${editingItemId}`, editData);
-      console.log("Edit response:", res.data);
       alert("Item updated!");
       setEditingItemId(null);
       fetchMenu();
@@ -151,49 +172,60 @@ const ViewMenu = () => {
   );
 
   return (
-    <div className="view-menu-container">
-      <h2>View Menu</h2>
-      <input
-        type="email"
-        placeholder="Filter by Restaurant Email"
-        value={filterEmail}
-        onChange={(e) => setFilterEmail(e.target.value)}
-        className="filter-input"
+    <>
+      <HomeHeader
+        isAdminDashboard={true}
+        restaurantName={restaurantName}
+        adminEmail={adminEmail}
+        onLogout={handleLogout}
       />
+      <div className="view-menu-container">
+        <h2>View Menu</h2>
+        <input
+          type="email"
+          placeholder="Filter by Restaurant Email"
+          value={filterEmail}
+          onChange={(e) => setFilterEmail(e.target.value)}
+          className="filter-input"
+        />
 
-      <div className="menu-grid">
-        {filteredItems.map((item) => (
-          <div className="menu-card" key={item._id}>
-            {editingItemId === item._id ? (
-              <>
-                <input name="name" value={editData.name} onChange={handleEditChange} />
-                <input name="price" value={editData.price} onChange={handleEditChange} />
-                <input name="category" value={editData.category} onChange={handleEditChange} />
-                <input name="timeToPrepare" value={editData.timeToPrepare} onChange={handleEditChange} />
-                <div className="card-actions">
-                  <button className="edit-btn" onClick={handleEditSave}>Save</button>
-                  <button className="delete-btn" onClick={() => setEditingItemId(null)}>Cancel</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="menu-header">
-                  <h3>{item.name}</h3>
-                  <p>₹{item.price}</p>
-                </div>
-                <p><strong>Category:</strong> {item.category}</p>
-                <p><strong>Time:</strong> {item.timeToPrepare}</p>
-                <p className="restaurant-email">{item.restaurantEmail}</p>
-                <div className="card-actions">
-                  <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
-                  <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
-                </div>
-              </>    
-            )}
-          </div>
-        ))}
+        <div className="menu-grid">
+          {filteredItems.map((item) => (
+            <div className="menu-card" key={item._id}>
+              {editingItemId === item._id ? (
+                <>
+                  <input name="name" value={editData.name} onChange={handleEditChange} />
+                  <input name="price" value={editData.price} onChange={handleEditChange} />
+                  <input name="category" value={editData.category} onChange={handleEditChange} />
+                  <input name="timeToPrepare" value={editData.timeToPrepare} onChange={handleEditChange} />
+                  <div className="card-actions">
+                    <button className="edit-btn" onClick={handleEditSave}>Save</button>
+                    <button className="delete-btn" onClick={() => setEditingItemId(null)}>Cancel</button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="menu-header">
+                    <h3>{item.name}</h3>
+                    <p>₹{item.price}</p>
+                  </div>
+                  <p><strong>Category:</strong> {item.category}</p>
+                  <p><strong>Time:</strong> {item.timeToPrepare}</p>
+                  <p className="restaurant-email">{item.restaurantEmail}</p>
+                  <div className="card-actions">
+                    <button className="edit-btn" onClick={() => handleEditClick(item)}>Edit</button>
+                    <button className="delete-btn" onClick={() => handleDelete(item._id)}>Delete</button>
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      <footer className="footer">
+        <Footer />
+      </footer>
+    </>
   );
 };
 
