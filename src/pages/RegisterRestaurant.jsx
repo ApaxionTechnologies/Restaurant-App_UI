@@ -911,16 +911,14 @@ export default function RegisterRestaurant() {
         formDataToSend.append("password", formData.password);
         if (formData.image) formDataToSend.append("image", formData.image);
 
-        // IMPORTANT: withCredentials so cookie can be set by backend
+        //  withCredentials so cookie can be set by backend
         const response = await axios.post(`${BASE_URL}/restaurants/register`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials:true,
         });
 
-        // Do NOT write auth info to localStorage here.
-        // Backend should set an HttpOnly cookie (or return user only).
         alert(response.data.message || "Registered successfully! Please log in.");
-        navigate("/login");
+        navigate("/");
       } catch (error) {
         console.error("Registration error:", error);
         alert(error.response?.data?.error || "Registration failed.");

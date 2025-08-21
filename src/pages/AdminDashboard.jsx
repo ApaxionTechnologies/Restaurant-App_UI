@@ -23,7 +23,7 @@ useEffect(() => {
   try {
     const decoded = jwtDecode(token);
     setAdminEmail(decoded.email);
-    setRestaurantName(decoded.restaurantName || "My Restaurant"); // ✅ ab DB ka naam show hoga
+    setRestaurantName(decoded.restaurantName || "My Restaurant"); 
   } catch (err) {
     console.error("Invalid token", err);
     navigate("/");
@@ -31,13 +31,13 @@ useEffect(() => {
 }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // sirf token remove karna hai
+    localStorage.removeItem("token"); 
     navigate("/");
   };
 
   return (
     <div className="admin-dashboard-wrapper">
-      {/* Header */}
+
       <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
         <div>
           <h5 className="mb-0 fw-bold">{restaurantName}</h5>
@@ -66,7 +66,7 @@ useEffect(() => {
         </div>
       </header>
 
-      {/* Main Content */}
+
       <main className="admin-dashboard-content container text-center mt-5">
         <h2>Welcome, Admin 👨‍💻</h2>
         <p className="lead">Manage your restaurant menu and settings below:</p>
