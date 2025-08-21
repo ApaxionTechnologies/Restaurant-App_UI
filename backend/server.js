@@ -68,17 +68,60 @@
 
 
 
+// import express from "express";
+// import mongoose from "mongoose";
+// import cors from "cors";
+// import dotenv from "dotenv";
+// import restaurantRoutes from "./routes/restaurant.js";
+// import menuRoutes from "./routes/menu.js";
+
+
+// dotenv.config();
+
+// const app = express();
+
+// // ✅ Middleware
+// app.use(cors());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+
+// // ✅ Serve uploaded images
+// app.use("/uploads", express.static("uploads"));
+
+// // ✅ Routes
+// app.use("/api/restaurants", restaurantRoutes);
+// app.use("/api/menu", menuRoutes);
+
+// // ✅ MongoDB Connection
+// const PORT = process.env.PORT || 5001;
+// const MONGO_URI = process.env.MONGO_URI ;
+// console.log("MONGO_URI:", process.env.MONGO_URI);
+
+// mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+//   .then(() => {
+//     console.log("✅ MongoDB Connected");
+//     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+//   })
+//   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import restaurantRoutes from "./routes/restaurant.js";
 import menuRoutes from "./routes/menu.js";
-
+import fs from "fs";
 
 dotenv.config();
 
 const app = express();
+
+// ✅ Create uploads folder if not exists
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 
 // ✅ Middleware
 app.use(cors());
@@ -94,11 +137,10 @@ app.use("/api/menu", menuRoutes);
 
 // ✅ MongoDB Connection
 const PORT = process.env.PORT || 5001;
-const MONGO_URI = process.env.MONGO_URI ;
-console.log("MONGO_URI:", process.env.MONGO_URI);
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-
+mongoose
+  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ MongoDB Connected");
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
