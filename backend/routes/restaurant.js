@@ -108,24 +108,58 @@
 // export default router;
 
 
+// import express from "express";
+// import {
+//   registerRestaurant,
+//   loginRestaurant,
+//   getRestaurantByEmail,
+//   updateTables,
+//   deleteRestaurant,
+//   updateRestaurant
+// } from "../controllers/restaurantController.js";
+
+// const router = express.Router();
+
+// router.post("/register", registerRestaurant);
+// router.post("/login", loginRestaurant);
+// router.get("/:email", getRestaurantByEmail);
+// router.put("/:email/tables", updateTables);
+// router.put("/:email", updateRestaurant);     // ✅ Full update route
+// router.delete("/:email", deleteRestaurant);  // ✅ Delete route
+
+// export default router;
+
 import express from "express";
+import multer from "multer";
 import {
   registerRestaurant,
   loginRestaurant,
   getRestaurantByEmail,
   updateTables,
   deleteRestaurant,
-  updateRestaurant
+  updateRestaurant,
 } from "../controllers/restaurantController.js";
 
 const router = express.Router();
 
-router.post("/register", registerRestaurant);
+// ✅ Multer setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
+
+// Routes
+router.post("/register", upload.single("image"), registerRestaurant);
 router.post("/login", loginRestaurant);
 router.get("/:email", getRestaurantByEmail);
 router.put("/:email/tables", updateTables);
-router.put("/:email", updateRestaurant);     // ✅ Full update route
-router.delete("/:email", deleteRestaurant);  // ✅ Delete route
+router.put("/:email", upload.single("image"), updateRestaurant);
+router.delete("/:email", deleteRestaurant);
 
 export default router;
 

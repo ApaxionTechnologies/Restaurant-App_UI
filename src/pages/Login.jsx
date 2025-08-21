@@ -1,45 +1,51 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ added
+import axios from "axios";
 import "../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false); // ✅ Added this
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // ✅ added
 
-  // Auto-fill if user previously checked "Remember Me"
   useEffect(() => {
     const remembered = JSON.parse(localStorage.getItem("rememberedUser"));
     if (remembered) {
       setEmail(remembered.email);
-      setPassword(remembered.password);
+      setPassword(remembered.password || ""); // password optional
       setRememberMe(true);
     }
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:5001/api/auth/login", {
+        email,
+        password,
+      });
 
-    const storedUser = JSON.parse(localStorage.getItem("restaurantUser"));
+      const { token, user } = res.data;
 
-    if (!storedUser) {
-      setError("No registered user found. Please register first.");
-    } else if (storedUser.email === email && storedUser.password === password) {
-      setError("");
-      alert("Login successful!");
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       if (rememberMe) {
-        localStorage.setItem("rememberedUser", JSON.stringify({ email, password }));
+        localStorage.setItem("rememberedUser", JSON.stringify({ email }));
       } else {
         localStorage.removeItem("rememberedUser");
       }
 
-      // TODO: Redirect to dashboard
-    } else {
-      setError("Invalid email or password.");
+      alert("Login successful!");
+      navigate("/admin-dashboard"); // ✅ now works
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
     }
   };
+
 
   const handleForgotPassword = () => {
     const storedUser = JSON.parse(localStorage.getItem("restaurantUser"));

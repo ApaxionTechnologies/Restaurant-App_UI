@@ -255,29 +255,41 @@ export default function AdminLogin({ onClose }) {
   const [adminPassword, setAdminPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch("http://localhost:5001/api/restaurants/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: adminEmail, password: adminPassword }),
+    });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:5001/api/restaurants/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: adminEmail, password: adminPassword }),
-      });
+    const data = await response.json();
 
-      const data = await response.json();
+    if (response.ok) {
+      // ✅ Token aur email save karo
+      localStorage.setItem("token", data.token);  // yeh line badal do
+localStorage.setItem("adminEmail", adminEmail);
 
-      if (response.ok) {
-        localStorage.setItem("adminEmail", adminEmail);
-        navigate("/admin-dashboard");
-      } else {
-        setErrorMessage(data.error || "Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("An error occurred. Please try again.");
+
+      // ✅ Success message show karo
+      alert("Login successful ✅");
+
+
+   // modal close karo
+      // ✅ Navigate to dashboard 
+       navigate("/admin-dashboard");
+       onClose();  
+    } else {
+      // ✅ Error message UI me dikhao
+      setErrorMessage(data.error || "Invalid email or password");
     }
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    setErrorMessage("An error occurred. Please try again.");
+  }
+};
+
 
   return (
     <div className="admin-login-overlay">
