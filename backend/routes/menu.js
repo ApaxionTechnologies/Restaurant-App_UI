@@ -9,6 +9,6 @@ const router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
 router.post("/add", upload.single("image"), addMenuItem);
-router.get("/:restaurantId", getMenuByRestaurantId);
+router.post("/add", requireAuth, upload.single("image"), addMenuItem);
 
 export default router;

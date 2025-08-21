@@ -914,7 +914,7 @@ export default function RegisterRestaurant() {
         // IMPORTANT: withCredentials so cookie can be set by backend
         const response = await axios.post(`${BASE_URL}/restaurants/register`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
+          withCredentials:true,
         });
 
         // Do NOT write auth info to localStorage here.
