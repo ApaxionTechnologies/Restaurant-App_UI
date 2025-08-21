@@ -872,10 +872,16 @@ export default function RegisterRestaurant() {
     if (!country) newErrors.country = "Country is required.";
     if (!state) newErrors.state = "State is required.";
     if (!city) newErrors.city = "City is required.";
-    if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = "Enter a valid email.";
-    if (!data.password || data.password.length < 6) newErrors.password = "Minimum 6 characters.";
-    if (data.password !== data.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
-    if (!data.tables || data.tables <= 0) newErrors.tables = "Enter a valid number of tables.";
+
+    if (!data.email || !/\S+@\S+\.\S+/.test(data.email))
+      newErrors.email = "Enter a valid email.";
+    if (!data.password || data.password.length < 6)
+      newErrors.password = "Minimum 6 characters.";
+    if (data.password !== data.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match.";
+    if (!data.tables || data.tables <= 0)
+      newErrors.tables = "Enter a valid number of tables.";
+
     setErrors(newErrors);
     return newErrors;
   };
@@ -895,8 +901,11 @@ export default function RegisterRestaurant() {
         formDataToSend.append("ownerName", formData.ownerName);
         formDataToSend.append("contact", formData.contact);
         formDataToSend.append("tables", formData.tables);
-        formDataToSend.append("categories", JSON.stringify(formData.categories.map(c => c.value)));
-        formDataToSend.append("tagline", formData.tagline);
+        formDataToSend.append(
+          "categories",
+          JSON.stringify(formData.categories.map((c) => c.value))
+        );
+        formDataToSend.append("tagline", formData.tagline); // ✅ tagline
         formDataToSend.append("address", JSON.stringify(formData.address));
         formDataToSend.append("email", formData.email);
         formDataToSend.append("password", formData.password);
@@ -935,58 +944,88 @@ export default function RegisterRestaurant() {
       <HomeHeader />
 
       <div className="register-page">
-        <form className="register-form" onSubmit={handleSubmit} data-aos="fade-up">
+        <form
+          className="register-form"
+          onSubmit={handleSubmit}
+          data-aos="fade-up"
+        >
           <h1 className="form-title">🍽️ Register As Restaurant</h1>
           <div className="title-divider" />
 
           {/* Basic Info */}
           <div className="form-grid">
             <div className="form-group full-width">
-              <label><i className="fas fa-store me-2" />Restaurant Name</label>
+              <label>
+                <i className="fas fa-store me-2" />
+                Restaurant Name
+              </label>
               <input
                 type="text"
                 name="restaurantName"
                 value={formData.restaurantName}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={errors.restaurantName && touched.restaurantName ? "error" : ""}
+                className={
+                  errors.restaurantName && touched.restaurantName ? "error" : ""
+                }
               />
-              {errors.restaurantName && touched.restaurantName && <small>{errors.restaurantName}</small>}
+              {errors.restaurantName && touched.restaurantName && (
+                <small>{errors.restaurantName}</small>
+              )}
             </div>
 
             <div className="form-group">
-              <label><i className="fas fa-user me-2" />Owner Name</label>
+              <label>
+                <i className="fas fa-user me-2" />
+                Owner Name
+              </label>
               <input
                 type="text"
                 name="ownerName"
                 value={formData.ownerName}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={errors.ownerName && touched.ownerName ? "error" : ""}
+                className={
+                  errors.ownerName && touched.ownerName ? "error" : ""
+                }
               />
-              {errors.ownerName && touched.ownerName && <small>{errors.ownerName}</small>}
+              {errors.ownerName && touched.ownerName && (
+                <small>{errors.ownerName}</small>
+              )}
             </div>
 
             <div className="form-group">
-              <label><i className="fas fa-phone me-2" />Contact Number</label>
+              <label>
+                <i className="fas fa-phone me-2" />
+                Contact Number
+              </label>
               <PhoneInput
                 country={"in"}
                 value={formData.contact}
                 onChange={handlePhoneChange}
-                onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
-                inputClass={`custom-phone-input ${errors.contact && touched.contact ? "error" : ""}`}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, contact: true }))
+                }
+                inputClass={`custom-phone-input ${
+                  errors.contact && touched.contact ? "error" : ""
+                }`}
                 containerClass="phone-container"
                 buttonClass="phone-flag-button"
                 enableSearch
               />
-              {errors.contact && touched.contact && <small>{errors.contact}</small>}
+              {errors.contact && touched.contact && (
+                <small>{errors.contact}</small>
+              )}
             </div>
           </div>
 
           {/* Tables & Categories side by side */}
           <div className="form-grid">
             <div className="form-group ">
-              <label><i className="fas fa-table me-2" />Table Number</label>
+              <label>
+                <i className="fas fa-table me-2" />
+                Table Number
+              </label>
               <input
                 type="number"
                 name="tables"
@@ -995,16 +1034,23 @@ export default function RegisterRestaurant() {
                 onBlur={handleBlur}
                 className={errors.tables && touched.tables ? "error" : ""}
               />
-              {errors.tables && touched.tables && <small>{errors.tables}</small>}
+              {errors.tables && touched.tables && (
+                <small>{errors.tables}</small>
+              )}
             </div>
 
             <div className="form-group">
-              <label><i className="fas fa-list-alt me-2" />Select Categories</label>
+              <label>
+                <i className="fas fa-list-alt me-2" />
+                Select Categories
+              </label>
               <Select
                 options={categoryOptions}
                 isMulti
                 value={formData.categories}
-                onChange={(selected) => setFormData({ ...formData, categories: selected })}
+                onChange={(selected) =>
+                  setFormData({ ...formData, categories: selected })
+                }
                 placeholder="Choose categories"
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -1014,7 +1060,10 @@ export default function RegisterRestaurant() {
 
           {/* ✅ Tagline */}
           <div className="form-group full-width">
-            <label><i className="fas fa-quote-left me-2" />Tagline</label>
+            <label>
+              <i className="fas fa-quote-left me-2" />
+              Tagline
+            </label>
             <input
               type="text"
               name="tagline"
@@ -1026,133 +1075,205 @@ export default function RegisterRestaurant() {
 
           {/* ✅ Upload Image */}
           <div className="form-group full-width">
-            <label><i className="fas fa-image me-2" />Upload Restaurant Image</label>
+            <label>
+              <i className="fas fa-image me-2" />
+              Upload Restaurant Image
+            </label>
             <input type="file" accept="image/*" onChange={handleImageChange} />
             {previewImage && (
-              <img src={previewImage} alt="Preview" style={{ marginTop: "10px", width: "200px", borderRadius: "10px" }} />
+              <img
+                src={previewImage}
+                alt="Preview"
+                style={{
+                  marginTop: "10px",
+                  width: "200px",
+                  borderRadius: "10px",
+                }}
+              />
             )}
           </div>
 
           {/* Address */}
+          <div className="form-group full-width">
+            <label>
+              <i className="fas fa-map-marker-alt me-2" />
+              Address Line 1 (Street/Colony)
+            </label>
+            <input
+              type="text"
+              value={formData.address.line1}
+              onChange={(e) => handleAddressChange("line1", e.target.value)}
+              className={errors.line1 && touched.line1 ? "error" : ""}
+            />
+            {errors.line1 && touched.line1 && <small>{errors.line1}</small>}
+          </div>
 
-          {/* Address */}
-           <div className="form-group full-width">
-             <label><i className="fas fa-map-marker-alt me-2" />Address Line 1 (Street/Colony)</label>
-             <input
-               type="text"
-               value={formData.address.line1}
-               onChange={(e) => handleAddressChange("line1", e.target.value)}
-               className={errors.line1 && touched.line1 ? "error" : ""}
-             />
-             {errors.line1 && touched.line1 && <small>{errors.line1}</small>}
-           </div>
+          <div className="form-group full-width">
+            <label>
+              <i className="fas fa-building me-2" />
+              Address Line 2 (Apartment/Building)
+            </label>
+            <input
+              type="text"
+              value={formData.address.line2}
+              onChange={(e) => handleAddressChange("line2", e.target.value)}
+            />
+          </div>
 
-           <div className="form-group full-width">
-             <label><i className="fas fa-building me-2" />Address Line 2 (Apartment/Building)</label>
-             <input
-               type="text"
-               value={formData.address.line2}
-               onChange={(e) => handleAddressChange("line2", e.target.value)}
-             />
-           </div>
+          <div className="form-group">
+            <label>
+              <i className="fas fa-globe-asia me-2" />
+              Country
+            </label>
+            <Select
+              options={countryList.map((c) => ({
+                label: c.name,
+                value: c.isoCode,
+              }))}
+              value={
+                formData.address.country
+                  ? {
+                      label: Country.getCountryByCode(formData.address.country)
+                        ?.name,
+                      value: formData.address.country,
+                    }
+                  : null
+              }
+              onChange={(selected) =>
+                handleAddressChange("country", selected.value)
+              }
+              placeholder="Select Country"
+              className="react-select-container"
+              classNamePrefix="react-select"
+            />
+          </div>
 
-           <div className="form-group">
-             <label><i className="fas fa-globe-asia me-2" />Country</label>
-             <Select
-               options={countryList.map((c) => ({ label: c.name, value: c.isoCode }))}
-               value={formData.address.country ? { label: Country.getCountryByCode(formData.address.country)?.name, value: formData.address.country } : null}
-               onChange={(selected) => handleAddressChange("country", selected.value)}
-               placeholder="Select Country"
-               className="react-select-container"
-               classNamePrefix="react-select"
-             />
-           </div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label>
+                <i className="fas fa-map me-2" />
+                State
+              </label>
+              <Select
+                options={stateList.map((s) => ({
+                  label: s.name,
+                  value: s.isoCode,
+                }))}
+                value={
+                  formData.address.state
+                    ? {
+                        label: State.getStateByCodeAndCountry(
+                          formData.address.state,
+                          formData.address.country
+                        )?.name,
+                        value: formData.address.state,
+                      }
+                    : null
+                }
+                onChange={(selected) =>
+                  handleAddressChange("state", selected.value)
+                }
+                placeholder="Select State"
+                className="react-select-container"
+                classNamePrefix="react-select"
+              />
+            </div>
 
-           <div className="form-grid">
-             <div className="form-group">
-               <label><i className="fas fa-map me-2" />State</label>
-               <Select
-                 options={stateList.map((s) => ({ label: s.name, value: s.isoCode }))}
-                 value={formData.address.state ? { label: State.getStateByCodeAndCountry(formData.address.state, formData.address.country)?.name, value: formData.address.state } : null}
-                 onChange={(selected) => handleAddressChange("state", selected.value)}
-                 placeholder="Select State"
-                 className="react-select-container"
-                 classNamePrefix="react-select"
-               />
-             </div>
+            <div className="form-group">
+              <label>
+                <i className="fas fa-city me-2" />
+                City
+              </label>
+              <Select
+                options={cityList.map((c) => ({
+                  label: c.name,
+                  value: c.name,
+                }))}
+                value={
+                  formData.address.city
+                    ? {
+                        label: formData.address.city,
+                        value: formData.address.city,
+                      }
+                    : null
+                }
+                onChange={(selected) =>
+                  handleAddressChange("city", selected.value)
+                }
+                placeholder="Select City"
+                className="react-select-container"
+                classNamePrefix="react-select"
+              />
+            </div>
+          </div>
 
-             <div className="form-group">
-               <label><i className="fas fa-city me-2" />City</label>
-               <Select
-                 options={cityList.map((c) => ({ label: c.name, value: c.name }))}
-                 value={formData.address.city ? { label: formData.address.city, value: formData.address.city } : null}
-                 onChange={(selected) => handleAddressChange("city", selected.value)}
-                 placeholder="Select City"
-                 className="react-select-container"
-                 classNamePrefix="react-select"
-               />
-             </div>
-           </div>
+          {/* Email */}
+          <div className="form-group full-width">
+            <label>
+              <i className="fas fa-envelope me-2" />
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.email && touched.email ? "error" : ""}
+            />
+            {errors.email && touched.email && <small>{errors.email}</small>}
+          </div>
 
-           {/* Email */}
-           <div className="form-group full-width">
-             <label><i className="fas fa-envelope me-2" />Email Address</label>
-             <input
-               type="email"
-               name="email"
-               value={formData.email}
-               onChange={handleChange}
-               onBlur={handleBlur}
-               className={errors.email && touched.email ? "error" : ""}
-             />
-             {errors.email && touched.email && <small>{errors.email}</small>}
-           </div>
+          {/* Passwords */}
+          <div className="form-grid">
+            <div className="form-group">
+              <label>
+                <i className="fas fa-lock me-2" />
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.password && touched.password ? "error" : ""}
+              />
+              {errors.password && touched.password && (
+                <small>{errors.password}</small>
+              )}
+            </div>
 
-           {/* Passwords */}
-           <div className="form-grid">
-             <div className="form-group">
-               <label><i className="fas fa-lock me-2" />Password</label>
-               <input
-                 type="password"
-                 name="password"
-                 value={formData.password}
-                 onChange={handleChange}
-                 onBlur={handleBlur}
-                 className={errors.password && touched.password ? "error" : ""}
-               />
-               {errors.password && touched.password && <small>{errors.password}</small>}
-             </div>
+            <div className="form-group">
+              <label>
+                <i className="fas fa-lock me-2" />
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={
+                  errors.confirmPassword && touched.confirmPassword
+                    ? "error"
+                    : ""
+                }
+              />
+              {errors.confirmPassword && touched.confirmPassword && (
+                <small>{errors.confirmPassword}</small>
+              )}
+            </div>
+          </div>
 
-             <div className="form-group">
-               <label><i className="fas fa-lock me-2" />Confirm Password</label>
-               <input
-                 type="password"
-                 name="confirmPassword"
-                 value={formData.confirmPassword}
-                 onChange={handleChange}
-                 onBlur={handleBlur}
-                 className={errors.confirmPassword && touched.confirmPassword ? "error" : ""}
-               />
-               {errors.confirmPassword && touched.confirmPassword && <small>{errors.confirmPassword}</small>}
-             </div>
-           </div>
+          <button type="submit">Register</button>
+        </form>
+      </div>
 
-           <button type="submit">Register</button>
-         </form>
-       </div>
-
-       <div className="Footer">
-         <Footer />
-       </div>
-     </>
-   );
- }
-
-
-
-
-
-
-
-
-
+      <div className="Footer">
+        <Footer />
+      </div>
+    </>
+  );
+}
