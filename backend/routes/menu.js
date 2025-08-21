@@ -1,5 +1,7 @@
 // routes/menuRoutes.js
 import express from "express";
+import { requireAuth } from "../middleware/auth.js"; 
+
 import { addMenuItem, getMenuByRestaurantId } from "../controllers/MenuController.js";
 import multer from "multer";
 
