@@ -954,6 +954,39 @@ export default function RegisterRestaurant() {
     { value: "soups", label: "Soups" },
   ];
 
+  // 🔹 Common react-select style override
+const customSelectStyles = {
+  control: (base) => ({
+    ...base,
+    height: "52px",
+    minHeight: "42px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    boxShadow: "none",
+    "&:hover": { borderColor: "#999" },
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    height: "42px",
+    padding: "0 10px",
+  }),
+  input: (base) => ({
+    ...base,
+    margin: 0,
+    padding: 0,
+  }),
+  indicatorsContainer: (base) => ({
+    ...base,
+    height: "42px",
+  }),
+  multiValue: (base) => ({
+    ...base,
+    backgroundColor: "#f0f0f0",
+    borderRadius: "6px",
+    padding: "2px 4px",
+  }),
+};
+
   return (
     <>
       <HomeHeader />
@@ -1018,6 +1051,7 @@ export default function RegisterRestaurant() {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={errors.tables && touched.tables ? "error" : ""}
+                styles={customSelectStyles}
               />
               {errors.tables && touched.tables && <small>{errors.tables}</small>}
             </div>
@@ -1032,6 +1066,7 @@ export default function RegisterRestaurant() {
                 placeholder="Choose categories"
                 className="react-select-container"
                 classNamePrefix="react-select"
+                styles={customSelectStyles}
               />
             </div>
           </div>
@@ -1053,7 +1088,7 @@ export default function RegisterRestaurant() {
             <label><i className="fas fa-image me-2" />Upload Restaurant Image</label>
             <input type="file" accept="image/*" onChange={handleImageChange} />
             {previewImage && (
-              <img src={previewImage} alt="Preview" style={{ marginTop: "10px", width: "200px", borderRadius: "10px" }} />
+              <img src={previewImage} alt="Preview" style={{ marginTop: "10px", width: "200px", height: "52px", borderRadius: "10px" }} />
             )}
           </div>
 
@@ -1089,6 +1124,7 @@ export default function RegisterRestaurant() {
                placeholder="Select Country"
                className="react-select-container"
                classNamePrefix="react-select"
+               styles={customSelectStyles}
              />
            </div>
 
@@ -1102,6 +1138,7 @@ export default function RegisterRestaurant() {
                  placeholder="Select State"
                  className="react-select-container"
                  classNamePrefix="react-select"
+                 styles={customSelectStyles}
                />
              </div>
 
@@ -1114,6 +1151,7 @@ export default function RegisterRestaurant() {
                  placeholder="Select City"
                  className="react-select-container"
                  classNamePrefix="react-select"
+                 styles={customSelectStyles}
                />
              </div>
            </div>

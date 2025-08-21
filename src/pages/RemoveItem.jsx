@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AdminLayout from "../components/AdminLayout";
+import Footer from "../components/Footer";
+import HomeHeader from "../components/HomeHeader.jsx";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:5001/api";
 
 export default function RemoveItem() {
+  const navigate = useNavigate();
+  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
+  const [adminEmail, setAdminEmail] = useState("");
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("adminEmail");
+    if (!storedEmail) {
+      navigate("/");
+    } else {
+      setAdminEmail(storedEmail);
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("restaurantName");
+    navigate("/");
+  };
+
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -42,28 +63,36 @@ export default function RemoveItem() {
   };
 
   return (
-    <AdminLayout>
-    <div className="container mt-4">
-      <h4>Remove Menu Items</h4>
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-danger">{error}</p>}
-      {success && <p className="text-success">{success}</p>}
+    <>
+      <HomeHeader
+        isAdminDashboard={true}
+        restaurantName={restaurantName}
+        adminEmail={adminEmail}
+        onLogout={handleLogout}
+      />
 
-      {menuItems.length === 0 ? (
-        <p>No items found.</p>
-      ) : (
-        <div className="list-group">
-          {menuItems.map((item, index) => (
-            <div key={index} className="list-group-item d-flex justify-content-between">
-              <span>{item.name}</span>
-              <button className="btn btn-sm btn-danger" onClick={() => handleRemove(item.name)}>
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-    </AdminLayout>
+      <div className="container mt-4">
+        <h4>Remove Menu Items</h4>
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-danger">{error}</p>}
+        {success && <p className="text-success">{success}</p>}
+
+        {menuItems.length === 0 ? (
+          <p>No items found.</p>
+        ) : (
+          <div className="list-group">
+            {menuItems.map((item, index) => (
+              <div key={index} className="list-group-item d-flex justify-content-between">
+                <span>{item.name}</span>
+                <button className="btn btn-sm btn-danger" onClick={() => handleRemove(item.name)}>
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <Footer/>
+    </>
   );
 }

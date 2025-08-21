@@ -31,27 +31,12 @@ html, body {
   margin-bottom: 3rem; /* 👈 This adds space above the footer */
 }
 
-.footer {
-  margin-top: auto;
-  background-color: #f8f9fa;
-  padding: 10px 0;
-  text-align: center;
-}
+
 
 html, body, #root {
   height: 100vh;
   margin: 0;
   padding: 0;
-}
-
-
-/* AdminDashboard.css */
-.header-info {
-  color: #000000;
-  font-weight: 700;
-  margin: 0;
-  font-size: 16px;
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
 }
 
 
@@ -75,4 +60,7 @@ body, html {
   margin: 0;
   padding: 0;
 }
+
+
+
 
