@@ -207,7 +207,13 @@ console.table(items.map(it => ({ id: it._id, name: it.name, category: it.categor
                   <div className={`menu-grid ${layout}`}>
                     {filteredDishes.map((item, index) => {
                       const qty = getQty(item.name);
-                      const imgSrc = item.image ? (item.image.startsWith("http") ? item.image : `http://localhost:5001${item.image}`) : "";
+                    const imgSrc = item.image
+  ? (item.image.startsWith("http")
+      ? item.image
+      : `http://localhost:5001/uploads/${item.image}`)
+  : "";
+
+
                       return (
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
                           {imgSrc && <img src={imgSrc} alt={item.name} />}

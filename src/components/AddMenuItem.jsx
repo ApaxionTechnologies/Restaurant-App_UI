@@ -27,22 +27,21 @@ const AddMenuItem = () => {
     setImageFile(e.target.files[0]);
   };
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const data  = new FormData();
+  const data = new FormData();
   data.append("category", formData.category);
   data.append("name", formData.name);
   data.append("price", formData.price);
   data.append("queries", formData.queries);
   data.append("timeToPrepare", formData.timeToPrepare);
-  if (imageFile) {
-    data.append("image", imageFile);
-  }
+  if (imageFile) data.append("image", imageFile);
 
   try {
     await axios.post("http://localhost:5001/api/menu/add", data, {
       headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true, // ✅ send cookies with token
     });
 
     alert("✅ Menu item added successfully!");

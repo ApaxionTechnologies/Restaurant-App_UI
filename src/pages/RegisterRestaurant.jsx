@@ -774,8 +774,8 @@
 //   );
 // }
 
-
-import React, { useState, useEffect } from "react";  
+// src/pages/RegisterRestaurant.jsx
+import React, { useState, useEffect, useContext } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "aos/dist/aos.css";
@@ -786,32 +786,27 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
 import Select from "react-select";
 import Footer from "../components/Footer.jsx";
-import HomeHeader from "../components/HomeHeader.jsx"; // ✅ Single header
+import HomeHeader from "../components/HomeHeader.jsx";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:5001/api";
 
 export default function RegisterRestaurant() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     restaurantName: "",
     ownerName: "",
     contact: "",
     tables: "",
     categories: [],
-    tagline: "",         // ✅ new field
-    image: null,         // ✅ image file
-    address: {
-      line1: "",
-      line2: "",
-      country: "",
-      state: "",
-      city: "",
-    },
+    tagline: "",
+    image: null,
+    address: { line1: "", line2: "", country: "", state: "", city: "" },
     email: "",
     password: "",
     confirmPassword: "",
   });
-
-  const [previewImage, setPreviewImage] = useState(null); // ✅ show before upload
+  const [previewImage, setPreviewImage] = useState(null);
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
   const [countryList, setCountryList] = useState([]);
@@ -825,19 +820,16 @@ export default function RegisterRestaurant() {
 
   const handleAddressChange = (field, value) => {
     const updatedAddress = { ...formData.address, [field]: value };
-
     if (field === "country") {
       setStateList(State.getStatesOfCountry(value));
       updatedAddress.state = "";
       updatedAddress.city = "";
       setCityList([]);
     }
-
     if (field === "state") {
       setCityList(City.getCitiesOfState(formData.address.country, value));
       updatedAddress.city = "";
     }
-
     setFormData((prev) => ({ ...prev, address: updatedAddress }));
     validate({ ...formData, address: updatedAddress });
   };
@@ -871,44 +863,29 @@ export default function RegisterRestaurant() {
   const validate = (data) => {
     const newErrors = {};
     const nameRegex = /^[A-Za-z\s]+$/;
-
     if (!data.restaurantName) newErrors.restaurantName = "Restaurant name is required.";
     if (!data.ownerName) newErrors.ownerName = "Owner name is required.";
     else if (!nameRegex.test(data.ownerName)) newErrors.ownerName = "Owner name must contain letters only.";
-
     if (!data.contact || data.contact.length < 10) newErrors.contact = "Valid phone number required.";
-
     const { line1, country, state, city } = data.address || {};
     if (!line1) newErrors.line1 = "Street/Colony is required.";
     if (!country) newErrors.country = "Country is required.";
     if (!state) newErrors.state = "State is required.";
     if (!city) newErrors.city = "City is required.";
-
     if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) newErrors.email = "Enter a valid email.";
     if (!data.password || data.password.length < 6) newErrors.password = "Minimum 6 characters.";
     if (data.password !== data.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
     if (!data.tables || data.tables <= 0) newErrors.tables = "Enter a valid number of tables.";
-
     setErrors(newErrors);
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const currentErrors = validate(formData);
     setTouched({
-      restaurantName: true,
-      ownerName: true,
-      contact: true,
-      tables: true,
-      line1: true,
-      country: true,
-      state: true,
-      city: true,
-      email: true,
-      password: true,
-      confirmPassword: true,
+      restaurantName: true, ownerName: true, contact: true, tables: true,
+      line1: true, country: true, state: true, city: true, email: true, password: true, confirmPassword: true
     });
 
     if (Object.keys(currentErrors).length === 0) {
@@ -919,23 +896,22 @@ export default function RegisterRestaurant() {
         formDataToSend.append("contact", formData.contact);
         formDataToSend.append("tables", formData.tables);
         formDataToSend.append("categories", JSON.stringify(formData.categories.map(c => c.value)));
-        formDataToSend.append("tagline", formData.tagline); // ✅ tagline
+        formDataToSend.append("tagline", formData.tagline);
         formDataToSend.append("address", JSON.stringify(formData.address));
         formDataToSend.append("email", formData.email);
         formDataToSend.append("password", formData.password);
-        if (formData.image) {
-          formDataToSend.append("image", formData.image); // ✅ image file
-        }
+        if (formData.image) formDataToSend.append("image", formData.image);
 
+        // IMPORTANT: withCredentials so cookie can be set by backend
         const response = await axios.post(`${BASE_URL}/restaurants/register`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
         });
 
-        const restaurantData = response.data.restaurant;
-        localStorage.setItem("restaurantEmail", restaurantData.email);
-        localStorage.setItem("restaurantName", restaurantData.restaurantName);
-
-        alert(response.data.message || "✅ Registered Successfully!");
+        // Do NOT write auth info to localStorage here.
+        // Backend should set an HttpOnly cookie (or return user only).
+        alert(response.data.message || "Registered successfully! Please log in.");
+        navigate("/login");
       } catch (error) {
         console.error("Registration error:", error);
         alert(error.response?.data?.error || "Registration failed.");

@@ -162,8 +162,12 @@ import Footer from "../components/Footer";
 import HomeHeader from "../components/HomeHeader"; // ✅ Single Header
 import "../styles/Home.css";
 import "./HomePage.css";
+import { useState } from "react";
+import AdminLogin from "../pages/AdminLogin"; // ✅ Admin Login Modal
 
 export default function HomePage() {
+  
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
   return (
     <>
       {/* HEADER */}
@@ -198,6 +202,10 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <Footer />
+        {/* ✅ Show Admin Login Modal */}
+      {showAdminLogin && (
+        <AdminLogin onClose={() => setShowAdminLogin(false)} />
+      )}
     </>
   );
 }

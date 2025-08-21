@@ -1,20 +1,24 @@
 
 // 🟢 Add Menu Item
+// controllers/MenuController.js
+import Restaurant from "../models/Restaurant.js";
+
+// Middleware should already verify JWT and attach restaurant info to req.restaurant
 export const addMenuItem = async (req, res) => {
   try {
-    const { restaurantEmail, name, price, category, queries, timeToPrepare ,
-      restaurantId,} = req.body;
+    const restaurantId = req.restaurant.id; // from JWT
+    const { name, price, category, queries, timeToPrepare } = req.body;
 
-    // find restaurant
-    const restaurant = await Restaurant.findOne();
+    // Find the logged-in restaurant
+    const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
-      return res.status(404).json({ message: "No restaurant found" });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    // multer se file ka path aayega
+    // Multer file path
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
-    // push new menu item
+    // Add menu item
     restaurant.menu.push({
       name,
       price,
@@ -22,26 +26,21 @@ export const addMenuItem = async (req, res) => {
       image: imagePath,
       queries,
       prepTime: timeToPrepare,
-     restaurantId,
-    }); 
+    });
 
     await restaurant.save();
-
-    console.log("📥 Body:", req.body);
-    console.log("📷 File:", req.file);
 
     res.status(200).json({ message: "Menu item added successfully" });
   } catch (error) {
     console.error("Error in addMenuItem:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // 🟢 Get Menu (no restaurant name needed)
 // Get Menu by Restaurant ID
 // controllers/MenuController.js
-import mongoose from "mongoose";
-import Restaurant from "../models/Restaurant.js";
 
 // Get menu by restaurant id OR name (robust)
 export const getMenuByRestaurantId = async (req, res) => {
