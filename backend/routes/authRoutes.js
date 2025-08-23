@@ -1,5 +1,6 @@
 // routes/authRoutes.js
 import express from "express";
+import { requireAuth } from "../middleware/auth.js"; 
 import {
   registerRestaurant,
   loginRestaurant,
@@ -20,8 +21,7 @@ router.post("/register", upload.single("image"), registerRestaurant);
 router.post("/login", loginRestaurant);
 
 // me
-router.get("/me", getCurrentRestaurant);
-
+router.get("/me", requireAuth, getCurrentRestaurant);
 // logout
 router.post("/logout", logoutRestaurant);
 

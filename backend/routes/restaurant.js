@@ -128,7 +128,6 @@
 // router.delete("/:email", deleteRestaurant);  // ✅ Delete route
 
 // export default router;
-
 import express from "express";
 import multer from "multer";
 import {
@@ -138,7 +137,10 @@ import {
   updateTables,
   deleteRestaurant,
   updateRestaurant,
+  getCurrentRestaurant, // ✅ import this
 } from "../controllers/restaurantController.js";
+
+import { requireAuth } from "../middleware/auth.js"; // ✅ import auth middleware
 
 const router = express.Router();
 
@@ -161,9 +163,11 @@ router.put("/:email/tables", updateTables);
 router.put("/:email", upload.single("image"), updateRestaurant);
 router.delete("/:email", deleteRestaurant);
 
+
+router.get("/me", requireAuth, getCurrentRestaurant); 
+router.get("/:email", getRestaurantByEmail);
+
 export default router;
-
-
 
 // import express from "express";
 // import Restaurant from "../models/Restaurant.js"; // Assuming your Restaurant model is set up correctly

@@ -153,7 +153,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path";
 import { fileURLToPath } from 'url';
-
+import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurant.js";
 import menuRoutes from "./routes/menu.js";
 import fs from "fs";
@@ -215,6 +215,8 @@ app.use(cookieParser());
 app.use("/api/restaurants", restaurantRoutes); // e.g. POST /api/restaurants/register
 app.use("/api/menu", menuRoutes);
 
+app.use("/api/auth", authRoutes);
+app.use("/api/restaurants", restaurantRoutes);
 // If you created authRoutes separately: app.use("/api/auth", authRoutes);
 
 // ---- MongoDB connect + start server ----

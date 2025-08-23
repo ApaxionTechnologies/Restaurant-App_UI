@@ -147,7 +147,7 @@ const signRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: process.env.REFRESH_EXPIRES_IN || "7d" });
 };
 
-// ✅ Register a new restaurant
+// Register a new restaurant
 export const registerRestaurant = async (req, res) => {
   try {
     const {
@@ -236,20 +236,24 @@ export const loginRestaurant = async (req, res) => {
 // /auth/me - return current user based on cookie token
 export const getCurrentRestaurant = async (req, res) => {
   try {
-    // token read by middleware or directly from cookie
-    const token = req.cookies?.token;
+    let token = req.cookies?.token; // fallback
+    if (!token && req.headers.authorization) {
+      token = req.headers.authorization.split(" ")[1]; // Bearer token
+    }
+
     if (!token) return res.status(401).json({ error: "Not authenticated" });
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     const restaurant = await Restaurant.findById(payload.id).select("-password");
     if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
-    return res.status(200).json({ user: restaurant });
+    return res.status(200).json({ restaurant }); // use `restaurant` instead of `user` for consistency
   } catch (err) {
     console.error("❌ getCurrentRestaurant error:", err);
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
+
 
 // logout - clear cookies
 export const logoutRestaurant = async (req, res) => {

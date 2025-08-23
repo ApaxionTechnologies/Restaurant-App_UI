@@ -96,6 +96,7 @@ import ViewMenu from "./components/ViewMenu";
 import QRFileUploader from "./QRFileUploader";
 import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
+import ProtectedRoute from "./components/ProtectRoute";
 
 // ✅ Styles
 import "./styles/global.css";
@@ -119,7 +120,7 @@ export default function App() {
       {/* ✅ Restaurant & Admin Routes */}
       <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
       <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/admin-dashboard" element={ <ProtectedRoute><AdminDashboard /></ProtectedRoute> } />
       <Route path="/add-item" element={<AddMenuItem />} />
       <Route path="/view-menu" element={<ViewMenu />} />
       <Route path="/remove-item" element={<RemoveItem />} />
@@ -132,12 +133,13 @@ export default function App() {
 
       {/* ✅ Customer Menu & Order */}
 
-      <Route path="/menu" element={<MenuPage />} />
 
         <Route path="/feedback" element={<FeedbackPage />} />
         
        <Route path="/cart" element={<CartPage />} />
-      <Route path="/menu" element={<MenuPage />} />
+       <Route path="/menu" element={<MenuPage />} />
+
+
       <Route path="/feedback" element={<FeedbackPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/order-success" element={<OrderSuccess />} />

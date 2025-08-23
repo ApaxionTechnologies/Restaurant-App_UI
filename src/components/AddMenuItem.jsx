@@ -7,13 +7,18 @@ import { useNavigate } from "react-router-dom";
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
-  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
+
+  const [restaurantName, setRestaurantName] = useState(
+    localStorage.getItem("restaurant") || "My Restaurant"
+  );
   const [adminEmail, setAdminEmail] = useState("");
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
-    if (!storedEmail) {
-      navigate("/");
+    const storedToken = localStorage.getItem("token"); // ✅ changed (was adminToken)
+
+    if (!storedEmail || !storedToken) {
+      navigate("/"); // agar login nahi hai toh home pe bhej do
     } else {
       setAdminEmail(storedEmail);
     }
@@ -21,7 +26,8 @@ const AddMenuItem = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
-    localStorage.removeItem("restaurantName");
+    localStorage.removeItem("token");   // ✅ changed (was adminToken)
+    localStorage.removeItem("restaurant");
     navigate("/");
   };
 
@@ -30,7 +36,7 @@ const AddMenuItem = () => {
     name: "",
     price: "",
     queries: "Indian",
-    timeToPrepare: ""
+    timeToPrepare: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -41,7 +47,7 @@ const AddMenuItem = () => {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -52,19 +58,26 @@ const AddMenuItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data  = new FormData();
+    const data = new FormData();
     data.append("category", formData.category);
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("queries", formData.queries);
     data.append("timeToPrepare", formData.timeToPrepare);
-    if (imageFile) {
-      data.append("image", imageFile);
-    }
+    if (imageFile) data.append("image", imageFile);
 
     try {
+      const token = localStorage.getItem("token"); // ✅ changed
+      if (!token) {
+        alert("⚠️ No token found. Please log in again.");
+        navigate("/");
+        return;
+      }
+
       await axios.post("http://localhost:5001/api/menu/add", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ send token properly
+        },
       });
 
       alert("✅ Menu item added successfully!");
@@ -77,8 +90,8 @@ const AddMenuItem = () => {
       });
       setImageFile(null);
     } catch (err) {
-      console.error(err);
-      alert("❌ Failed to add item");
+      console.error("❌ Error adding item:", err.response?.data || err.message);
+      alert("❌ Failed to add item: " + (err.response?.data?.message || "Unauthorized"));
     }
   };
 
@@ -93,7 +106,6 @@ const AddMenuItem = () => {
       <div className="add-menu-container">
         <h2>Add Menu Item</h2>
         <form onSubmit={handleSubmit} className="add-menu-form">
-          {/* Category */}
           <label>Category</label>
           <select
             name="category"
@@ -108,7 +120,6 @@ const AddMenuItem = () => {
             ))}
           </select>
 
-          {/* Item Name */}
           <label>Item Name</label>
           <input
             type="text"
@@ -119,7 +130,6 @@ const AddMenuItem = () => {
             required
           />
 
-          {/* Price */}
           <label>Price (₹)</label>
           <input
             type="number"
@@ -130,7 +140,6 @@ const AddMenuItem = () => {
             required
           />
 
-          {/* Image Upload */}
           <label>Upload Image</label>
           <input
             type="file"
@@ -140,7 +149,6 @@ const AddMenuItem = () => {
             required
           />
 
-          {/* Queries */}
           <label>Queries</label>
           <select
             name="queries"
@@ -155,7 +163,6 @@ const AddMenuItem = () => {
             ))}
           </select>
 
-          {/* Time to Prepare */}
           <label>Time to Prepare (mins)</label>
           <input
             type="text"
