@@ -40,7 +40,7 @@ export default function Login() {
       }
 
       alert("Login successful!");
-      navigate("/admin-dashboard"); // ✅ now works
+      navigate("/admin-dashboard"); 
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }
