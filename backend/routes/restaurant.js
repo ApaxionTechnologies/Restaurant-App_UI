@@ -32,7 +32,7 @@
 // router.delete("/:email", deleteRestaurant);
 
 // export default router;
- main_palak
+
 
 
 
@@ -82,7 +82,7 @@ router.put("/:email/tables", updateTables);
 router.put("/:email", uploadFields, updateRestaurant);
 router.delete("/:email", deleteRestaurant);
 
- main_palak
+
 
 router.get("/me", requireAuth, getCurrentRestaurant); 
 router.get("/:email", getRestaurantByEmail);
@@ -200,5 +200,4 @@ export default router;
 
 // export default router;
 
-export default router;
- main
+

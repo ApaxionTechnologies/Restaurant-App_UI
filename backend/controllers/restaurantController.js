@@ -405,10 +405,7 @@ export const registerRestaurant = async (req, res) => {
       lastName,
       contact,
       email,
- main_palak
       password, 
-
-
       tables,
       tagline,
       categories,
