@@ -3,12 +3,12 @@ import Restaurant from "../models/Restaurant.js";
 
 export const requireAuth = async (req, res, next) => {
   try {
-    // Token from cookies OR headers
+    
     let token = req.cookies?.token;
 
-    // ✅ check header
+    
     if (!token && req.headers.authorization) {
-      const authHeader = req.headers.authorization; // "Bearer <token>"
+      const authHeader = req.headers.authorization; 
       if (authHeader.startsWith("Bearer ")) {
         token = authHeader.split(" ")[1];
       }

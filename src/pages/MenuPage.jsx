@@ -53,24 +53,35 @@ const table = searchParams.get("table") || searchParams.get("tableNumber") || lo
     Beverages: [],
   };
 useEffect(() => {
-  if (!restaurantId) {
-    console.error("Restaurant ID missing! Redirecting to home.");
-    navigate("/");
+  let finalRestaurantId = restaurantId;
+  let finalTable = table;
+
+  if (!finalRestaurantId) {
+    finalRestaurantId = localStorage.getItem("restaurantId");
+  }
+  if (!finalTable) {
+    finalTable = localStorage.getItem("tableNumber") || "1";
+  }
+
+  if (!finalRestaurantId) {
+    console.error("Restaurant ID missing! Redirecting to scan.");
+    navigate("/scan");
     return;
   }
 
-  setRestaurant(restaurantId);
-  setTable(table || "1");
-
-  localStorage.setItem("restaurantId", restaurantId);
-  localStorage.setItem("tableNumber", table || "1");
-}, [restaurantId, navigate]);
+  setRestaurant(finalRestaurantId);
+  setTable(finalTable);
+  localStorage.setItem("restaurantId", finalRestaurantId);
+  localStorage.setItem("tableNumber", finalTable);
+}, [restaurantId, table, navigate, setRestaurant, setTable]);
 
 
 useEffect(() => {
   if (!restaurantId) return;
 
+
   const fetchMenu = async () => {
+    
     setLoading(true);
     try {
       const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
@@ -233,7 +244,7 @@ const categories = ["All", ...Object.keys(menuMap)];
                             </div>
 
                             <div className="menu-details">
-                              <span>{item.queries || "🍴"}</span>
+                              <span>{item.cuisine || "🍴"}</span>
                               <span>•</span>
                               <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
                             </div>

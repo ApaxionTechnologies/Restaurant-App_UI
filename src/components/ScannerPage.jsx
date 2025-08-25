@@ -52,13 +52,12 @@ export default function ScannerPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [cameraActive, setCameraActive] = useState(false);
 
-  // Parse a QR text and extract restaurantId and table in a robust way
   const parseQrText = (qrText) => {
     if (!qrText) return null;
     const text = String(qrText).trim();
     console.log("parseQrText raw:", text);
 
-    // 1) Try JSON
+   
     try {
       const parsed = JSON.parse(text);
       const restaurantId = parsed.restaurantId || parsed.restaurant || parsed.id || null;
@@ -68,12 +67,11 @@ export default function ScannerPage() {
         return { restaurantId, table };
       }
     } catch (e) {
-      // not JSON
+      
     }
 
-    // 2) Try as URL (query params or path)
     try {
-      // decode just in case it was encoded
+    
       const maybeUrl = decodeURIComponent(text);
       const url = new URL(maybeUrl.includes("://") ? maybeUrl : text);
       const restaurantId =
@@ -260,7 +258,7 @@ export default function ScannerPage() {
           {/* Image upload (has id/name for accessibility) */}
           <div style={{ marginTop: "20px" }}>
             <label htmlFor="qrUploadInput" style={{ display: "block", marginBottom: 8 }}>
-              📁 Upload QR image
+               Upload QR image
             </label>
             <input
               id="qrUploadInput"
@@ -274,7 +272,7 @@ export default function ScannerPage() {
 
           {scanResult && (
             <p style={{ marginTop: "15px", color: "green" }}>
-              ✅ Scanned QR: {scanResult}
+               Scanned QR: {scanResult}
             </p>
           )}
           {errorMsg && (

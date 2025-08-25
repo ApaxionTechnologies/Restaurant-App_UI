@@ -1,6 +1,5 @@
 
-// 🟢 Add Menu Item
-// controllers/MenuController.js
+//  Add Menu Item
 import mongoose from "mongoose";
 
 import Restaurant from "../models/Restaurant.js";
@@ -12,25 +11,25 @@ export const addMenuItem = async (req, res) => {
     }
 
     const restaurantId = req.restaurant.id;
-    const { name, price, category, queries, timeToPrepare } = req.body;
+    const { name, price, category, cuisine, timeToPrepare } = req.body;
 
     const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    // Ensure menu array exists
+    
     restaurant.menu = restaurant.menu || [];
 
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
-    // Add menu item
+  
     restaurant.menu.push({
       name,
       price,
       category,
       image: imagePath,
-      queries,
+      cuisine,
       prepTime: timeToPrepare,
     });
 
@@ -44,20 +43,17 @@ export const addMenuItem = async (req, res) => {
 };
 
 
+//  Get Menu by Restaurant ID or Name
 
-
-// Get menu by restaurant id OR name (robust)
 export const getMenuByRestaurantId = async (req, res) => {
-  const param = req.params.restaurantId; // could be ID
+  const param = req.params.restaurantId; 
   try {
     let restaurant = null;
 
-    // Agar param valid ObjectId hai
     if (mongoose.Types.ObjectId.isValid(param)) {
       restaurant = await Restaurant.findById(param);
     }
 
-    // Agar ID se nahi mila, optional fallback by name
     if (!restaurant) {
       const decodedName = decodeURIComponent(param);
       restaurant = await Restaurant.findOne({ restaurantName: decodedName });
@@ -69,7 +65,7 @@ export const getMenuByRestaurantId = async (req, res) => {
 
     const menu = Array.isArray(restaurant.menu) ? restaurant.menu : [];
 
-    // Ensure full image URLs
+   
     const hostPrefix = `${req.protocol}://${req.get("host")}`;
     const menuWithFullImage = menu.map((it) => ({
       ...it.toObject?.() ?? it,

@@ -35,14 +35,14 @@ const AddMenuItem = () => {
     category: "Starter",
     name: "",
     price: "",
-    queries: "Indian",
+    cuisine: "Indian",
     timeToPrepare: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
 
   const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
-  const queriesOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
+  const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -62,7 +62,7 @@ const AddMenuItem = () => {
     data.append("category", formData.category);
     data.append("name", formData.name);
     data.append("price", formData.price);
-    data.append("queries", formData.queries);
+    data.append("cuisine", formData.cuisine);
     data.append("timeToPrepare", formData.timeToPrepare);
     if (imageFile) data.append("image", imageFile);
 
@@ -85,7 +85,7 @@ const AddMenuItem = () => {
         category: "Starter",
         name: "",
         price: "",
-        queries: "Indian",
+        cuisine: "Indian",
         timeToPrepare: "",
       });
       setImageFile(null);
@@ -149,14 +149,14 @@ const AddMenuItem = () => {
             required
           />
 
-          <label>Queries</label>
+          <label>cuisine</label>
           <select
-            name="queries"
-            value={formData.queries}
+            name="cuisine"
+            value={formData.cuisine}
             onChange={handleChange}
             required
           >
-            {queriesOptions.map((opt, idx) => (
+            {cuisineOptions.map((opt, idx) => (
               <option key={idx} value={opt}>
                 {opt}
               </option>

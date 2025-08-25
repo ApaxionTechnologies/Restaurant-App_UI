@@ -139,7 +139,6 @@ import Restaurant from "../models/Restaurant.js";
 
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-// helpers to sign tokens
 const signAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || "15m" });
 };
@@ -147,7 +146,7 @@ const signRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: process.env.REFRESH_EXPIRES_IN || "7d" });
 };
 
-// Register a new restaurant
+
 export const registerRestaurant = async (req, res) => {
   try {
     const {
@@ -179,12 +178,12 @@ export const registerRestaurant = async (req, res) => {
       lastName,
       contact,
       email,
-      password, // ⚠️ In production: hash this
+      password, 
       tables,
       tagline,
       categories,
       address,
-      image: req.file ? `/uploads/${req.file.filename}` : null, // ✅ image path
+      image: req.file ? `/uploads/${req.file.filename}` : null, 
     });
 
     await newRestaurant.save();
@@ -200,7 +199,7 @@ export const registerRestaurant = async (req, res) => {
   }
 };
 
-// ✅ Login
+//  Login
 export const loginRestaurant = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -214,7 +213,6 @@ export const loginRestaurant = async (req, res) => {
       return res.status(401).json({ error: "Invalid password" });
     }
 
-    // ✅ Ab email aur name bhi token me dal rahe
     const token = jwt.sign(
       { id: restaurant._id, email: restaurant.email, 
     restaurantName: restaurant.restaurantName  },
@@ -236,9 +234,9 @@ export const loginRestaurant = async (req, res) => {
 // /auth/me - return current user based on cookie token
 export const getCurrentRestaurant = async (req, res) => {
   try {
-    let token = req.cookies?.token; // fallback
+    let token = req.cookies?.token; 
     if (!token && req.headers.authorization) {
-      token = req.headers.authorization.split(" ")[1]; // Bearer token
+      token = req.headers.authorization.split(" ")[1]; 
     }
 
     if (!token) return res.status(401).json({ error: "Not authenticated" });
@@ -247,7 +245,7 @@ export const getCurrentRestaurant = async (req, res) => {
     const restaurant = await Restaurant.findById(payload.id).select("-password");
     if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
-    return res.status(200).json({ restaurant }); // use `restaurant` instead of `user` for consistency
+    return res.status(200).json({ restaurant }); 
   } catch (err) {
     console.error("❌ getCurrentRestaurant error:", err);
     return res.status(401).json({ error: "Invalid or expired token" });
