@@ -407,7 +407,8 @@ export const registerRestaurant = async (req, res) => {
       lastName,
       contact,
       email,
-        password, 
+
+      password, 
       tables,
       tagline,
       categories,
