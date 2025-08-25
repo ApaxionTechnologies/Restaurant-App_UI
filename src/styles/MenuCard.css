@@ -303,7 +303,7 @@
     font-size: 0.9rem;
   }
 
-  /* Queries & prep time inline */
+  /* cuisine & prep time inline */
   .menu-grid.grid-2 .menu-card-content .menu-details,
   .menu-grid.grid-3 .menu-card-content .menu-details {
     display: flex;

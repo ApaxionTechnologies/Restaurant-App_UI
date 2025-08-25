@@ -1,4 +1,4 @@
-// src/pages/MenuPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -21,18 +21,23 @@ import {
 import "../styles/global.css";
 import "../styles/MenuCard.css";
 
+
 export default function MenuPage() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const { cart, addToCart, updateQty } = useCart();
-  const { restaurant, setRestaurant, table, setTable } = useRestaurant();
+  const { restaurant, setRestaurant, setTable } = useRestaurant();
+  const [searchParams] = useSearchParams();const { restaurantId: restaurantIdFromParams } = useParams();
 
-  const params = useParams();
-  const restaurantIdFromParam = params.restaurantId || params.id || null;
-  const restaurantIdFromQuery = searchParams.get("restaurant");
-  const tableFromQuery = searchParams.get("table");
+const restaurantIdFromQuery =
+  searchParams.get("restaurantId") ||
+  searchParams.get("restaurant") ||
+  searchParams.get("id") ||
+  searchParams.get("rest") ||
+  null;
 
+const restaurantId = restaurantIdFromParams || restaurantIdFromQuery;
+const table = searchParams.get("table") || searchParams.get("tableNumber") || localStorage.getItem("tableNumber") || "1";
   const [search, setSearch] = useState("");
   const [menuMap, setMenuMap] = useState({});
   const [favorites, setFavorites] = useState({});
@@ -47,72 +52,76 @@ export default function MenuPage() {
     Desserts: [],
     Beverages: [],
   };
+useEffect(() => {
+  let finalRestaurantId = restaurantId;
+  let finalTable = table;
 
-  // Initialize context + URL params + AOS
-  useEffect(() => {
-    if (restaurantIdFromParam || restaurantIdFromQuery) {
-      const rest = restaurantIdFromParam || restaurantIdFromQuery;
-      setRestaurant(rest);
+  if (!finalRestaurantId) {
+    finalRestaurantId = localStorage.getItem("restaurantId");
+  }
+  if (!finalTable) {
+    finalTable = localStorage.getItem("tableNumber") || "1";
+  }
+
+  if (!finalRestaurantId) {
+    console.error("Restaurant ID missing! Redirecting to scan.");
+    navigate("/scan");
+    return;
+  }
+
+  setRestaurant(finalRestaurantId);
+  setTable(finalTable);
+  localStorage.setItem("restaurantId", finalRestaurantId);
+  localStorage.setItem("tableNumber", finalTable);
+}, [restaurantId, table, navigate, setRestaurant, setTable]);
+
+
+useEffect(() => {
+  if (!restaurantId) return;
+
+
+  const fetchMenu = async () => {
+    
+    setLoading(true);
+    try {
+      const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
+      console.log("Fetched Menu Items:", res.data); 
+      const items = Array.isArray(res.data) ? res.data : [];
+      setDishes(items);
+      setMenuMap(buildMenuMap(items));
+      console.log("menuMap after build:", buildMenuMap(items)); 
+    } catch (err) {
+      console.error(err);
+      setMenuMap(defaultMenu);
+    } finally {
+      setLoading(false);
     }
-
-    if (tableFromQuery) setTable(tableFromQuery);
-
-    // Restore URL if missing
-    if ((!restaurantIdFromQuery && restaurant) || (!tableFromQuery && table)) {
-      const restParam = encodeURIComponent(restaurant);
-      const tableParam = encodeURIComponent(table);
-      navigate(`/menu?restaurant=${restParam}&table=${tableParam}`, { replace: true });
-    }
-
-    AOS.init({ duration: 600 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Helper: group flat array by category
-  const buildMenuMap = (items) => {
-    const map = {};
-    if (!Array.isArray(items)) return map;
-    items.forEach((it) => {
-      const cat = it.category || "Uncategorized";
-      if (!map[cat]) map[cat] = [];
-      map[cat].push(it);
-    });
-    return map;
   };
 
-  // Fetch menu whenever restaurant changes
-  useEffect(() => {
-    const fetchMenu = async () => {
-      if (!restaurant) {
-        setMenuMap(defaultMenu);
-        setDishes([]);
-        return;
-      }
+  fetchMenu();
+}, [restaurantId]);   
 
-      setLoading(true);
-      try {
-        const encoded = encodeURIComponent(restaurant);
-        const res = await axios.get(`http://localhost:5001/api/menu/${encoded}`);
-        const items = Array.isArray(res.data) ? res.data : [];
+useEffect(() => {
+  console.log("menuMap (changed):", menuMap);
+}, [menuMap]);
 
-        setDishes(items);
 
-        setMenuMap(buildMenuMap(items));
-        // after you get `items` from the API
-console.log("Fetched menu items:", items.length);
-console.table(items.map(it => ({ id: it._id, name: it.name, category: it.category })));
+const buildMenuMap = (items) => {
+  const map = {};
+  if (!Array.isArray(items)) return map;
+  items.forEach((it) => {
+    let cat = (it.category || "Uncategorized").trim();
+    cat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+    if (!map[cat]) map[cat] = [];
+    map[cat].push(it);
+  });
+  return map;
+};
 
-      } catch (err) {
-        console.error("Failed to fetch menu, loading default menu:", err);
-        setDishes([]);
-        setMenuMap(defaultMenu);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  AOS.init({ duration: 600, once: true }); 
+}, []);
 
-    fetchMenu();
-  }, [restaurant]);
 
   const toggleFavorite = (name) => {
     setFavorites((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -123,10 +132,13 @@ console.table(items.map(it => ({ id: it._id, name: it.name, category: it.categor
     return found ? found.qty : 0;
   };
 
-  const categories = ["All", ...Object.keys(menuMap)];
+const categories = ["All", ...Object.keys(menuMap)];
+
 
   return (
     <>
+
+    
       <ViewMenuNavbar />
       <div className="page-center fade-in">
         <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
@@ -212,9 +224,7 @@ console.table(items.map(it => ({ id: it._id, name: it.name, category: it.categor
       ? item.image
       : `http://localhost:5001/uploads/${item.image}`)
   : "";
-
-
-                      return (
+          return (
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
                           {imgSrc && <img src={imgSrc} alt={item.name} />}
                           <div className="menu-card-content">
@@ -234,7 +244,7 @@ console.table(items.map(it => ({ id: it._id, name: it.name, category: it.categor
                             </div>
 
                             <div className="menu-details">
-                              <span>{item.queries || "🍴"}</span>
+                              <span>{item.cuisine || "🍴"}</span>
                               <span>•</span>
                               <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
                             </div>

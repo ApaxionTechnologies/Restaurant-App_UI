@@ -53,7 +53,7 @@
 // export const useCart = () => useContext(CartContext);
 
 
-// src/context/CartContext.js
+
 import React, { createContext, useContext, useState } from "react";
 
 const CartContext = createContext();
@@ -62,7 +62,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [table, setTable] = useState(null);
 
-  // ✅ Add or update item quantity (no sound)
+
   const addToCart = (item) => {
     setCart((prev) => {
       const exists = prev.find((i) => i.name === item.name);
@@ -75,7 +75,7 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // ✅ Increase/decrease quantity
+ 
   const updateQty = (name, delta) => {
   setCart((prev) =>
     prev
@@ -84,12 +84,12 @@ export const CartProvider = ({ children }) => {
           ? { ...item, qty: item.qty + delta }
           : item
       )
-      .filter((item) => item.qty > 0) // 🗑️ Remove if qty is 0
+      .filter((item) => item.qty > 0) 
   );
 };
 
 
-  // ✅ Clear cart after order
+ 
   const clearCart = () => setCart([]);
 
   return (

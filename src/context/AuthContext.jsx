@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On mount, try to fetch current user (backend reads HttpOnly cookie)
   useEffect(() => {
     async function fetchMe() {
       try {

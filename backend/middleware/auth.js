@@ -1,20 +1,29 @@
-// middleware/auth.js
 import jwt from "jsonwebtoken";
 import Restaurant from "../models/Restaurant.js";
 
 export const requireAuth = async (req, res, next) => {
   try {
-    const token = req.cookies?.token;
-    if (!token) return res.status(401).json({ error: "Not authenticated" });
+    
+    let token = req.cookies?.token;
+
+    
+    if (!token && req.headers.authorization) {
+      const authHeader = req.headers.authorization; 
+      if (authHeader.startsWith("Bearer ")) {
+        token = authHeader.split(" ")[1];
+      }
+    }
+
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await Restaurant.findById(payload.id).select("-password");
-    if (!user) return res.status(401).json({ error: "User not found" });
+    const restaurant = await Restaurant.findById(payload.id).select("-password");
 
-    req.user = user; // attach for downstream handlers
+    if (!restaurant) return res.status(401).json({ message: "Restaurant not found" });
+
+    req.restaurant = restaurant;
     next();
   } catch (err) {
-    console.error("Auth middleware error:", err);
-    return res.status(401).json({ error: "Invalid or expired token" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

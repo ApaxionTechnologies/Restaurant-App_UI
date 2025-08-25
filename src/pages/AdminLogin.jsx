@@ -267,21 +267,13 @@ const handleSubmit = async (e) => {
     const data = await response.json();
 
     if (response.ok) {
-      // ✅ Token aur email save karo
-      localStorage.setItem("token", data.token);  // yeh line badal do
+   
+      localStorage.setItem("token", data.token);  
 localStorage.setItem("adminEmail", adminEmail);
-
-
-      // ✅ Success message show karo
-      alert("Login successful ✅");
-
-
-   // modal close karo
-      // ✅ Navigate to dashboard 
        navigate("/admin-dashboard");
        onClose();  
     } else {
-      // ✅ Error message UI me dikhao
+    
       setErrorMessage(data.error || "Invalid email or password");
     }
   } catch (error) {
@@ -294,7 +286,7 @@ localStorage.setItem("adminEmail", adminEmail);
   return (
     <div className="admin-login-overlay">
       <div className="admin-login-box">
-        {/* ✅ Working close button with correct prop */}
+     
         <button className="admin-close-btn" onClick={onClose}>✕</button>
 
         <h2 className="admin-login-title">Login</h2>

@@ -1,30 +1,41 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
-// Context
 const RestaurantContext = createContext();
 
-// Custom hook for easy usage
 export const useRestaurant = () => useContext(RestaurantContext);
 
 export const RestaurantProvider = ({ children }) => {
+  const location = useLocation();
+  const params = useParams();
+
   const [restaurant, setRestaurant] = useState("");
   const [table, setTable] = useState("");
 
-  // Step 2: Load from localStorage on first mount
   useEffect(() => {
-    const savedRestaurant = localStorage.getItem("restaurant");
-    const savedTable = localStorage.getItem("table");
+ 
+    let rId = params.restaurantId || null;
 
-    if (savedRestaurant && savedTable) {
-      setRestaurant(savedRestaurant);
-      setTable(savedTable);
-    }
-  }, []);
 
-  // Step 3: Save to localStorage whenever it changes
+    const query = new URLSearchParams(location.search);
+    if (!rId && query.get("restaurantId")) rId = query.get("restaurantId");
+    const tNum = query.get("table") || query.get("tableNumber");
+
+   
+    const savedRestaurant = localStorage.getItem("restaurantId");
+    const savedTable = localStorage.getItem("tableNumber");
+
+    if (rId) setRestaurant(rId);
+    else if (savedRestaurant) setRestaurant(savedRestaurant);
+
+    if (tNum) setTable(tNum);
+    else if (savedTable) setTable(savedTable);
+  }, [params.restaurantId, location.search]);
+
+
   useEffect(() => {
-    if (restaurant) localStorage.setItem("restaurant", restaurant);
-    if (table) localStorage.setItem("table", table);
+    if (restaurant) localStorage.setItem("restaurantId", restaurant);
+    if (table) localStorage.setItem("tableNumber", table);
   }, [restaurant, table]);
 
   return (
