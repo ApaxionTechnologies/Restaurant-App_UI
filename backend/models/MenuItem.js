@@ -17,7 +17,7 @@ const menuItemSchema = new mongoose.Schema({
     type: String,     // yaha file ka path ya image ka URL store hoga
     required: true
   },
-  queries: {
+  cuisine: {
     type: String,     // cuisine: Indian, Japanese, Chinese...
     required: true
   },

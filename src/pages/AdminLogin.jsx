@@ -103,27 +103,27 @@ export default function AdminLogin({ onClose }) {
 
       const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("adminEmail", adminEmail);
-
-        alert("Login successful ✅");
-
-        navigate("/admin-dashboard");
-        onClose();
-      } else {
-        setErrorMessage(data.error || "Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("An error occurred. Please try again.");
+    if (response.ok) {
+   
+      localStorage.setItem("token", data.token);  
+localStorage.setItem("adminEmail", adminEmail);
+       navigate("/admin-dashboard");
+       onClose();  
+    } else {
+    
+      setErrorMessage(data.error || "Invalid email or password");
     }
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    setErrorMessage("An error occurred. Please try again.");
+  }
+};
 
 
   return (
     <div className="admin-login-overlay">
       <div className="admin-login-box">
+     
         <button className="admin-close-btn" onClick={onClose}>✕</button>
 
         <h2 className="admin-login-title">Login</h2>

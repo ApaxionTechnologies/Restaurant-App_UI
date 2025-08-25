@@ -7,7 +7,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "./QRScanner.css";
 import Footer from "../components/Footer.jsx";
-import AdminLogin from "../pages/AdminLogin"; // adjust path if needed
+import AdminLogin from "../pages/AdminLogin"; 
 
 
 
@@ -38,27 +38,31 @@ export default function QRScanner() {
     }
   };
 
-  const handleScanSuccess = (decodedText) => {
-    stopScanner();
-    try {
-      // Try parsing as JSON
-      const qrData = JSON.parse(decodedText);
-      if (qrData.restaurant && qrData.table) {
-        localStorage.setItem("restaurantName", qrData.restaurant);
-        localStorage.setItem("tableNumber", qrData.table);
-        navigate(`/menu?restaurant=${encodeURIComponent(qrData.restaurant)}&table=${qrData.table}`);
-      } else {
-        setErrorMsg("Invalid QR code. Missing restaurant or table info.");
-      }
-    } catch (e) {
-      // Fallback: check if it's a URL
-      if (decodedText.startsWith("http")) {
-        window.location.href = decodedText;
-      } else {
-        setErrorMsg("Invalid QR format. Expected JSON or a valid URL.");
-      }
+const handleScanSuccess = (data) => {
+  if (!data) return;
+
+  try {
+    const qrInfo = JSON.parse(data);
+
+    console.log("Scanned QR Data:", qrInfo);
+    if (!qrInfo.restaurantId || !qrInfo.tableNumber) {
+      setErrorMsg("Invalid QR data: missing restaurantId or tableNumber");
+      return;
     }
-  };
+
+   
+    localStorage.setItem("restaurantId", qrInfo.restaurantId);
+    localStorage.setItem("table", qrInfo.table);
+    localStorage.setItem("restaurantName", qrInfo.restaurantName);
+
+ 
+    navigate(`/menu?restaurant=${qrInfo.restaurantId}&table=${qrInfo.table}`);
+  } catch (e) {
+    console.error("Invalid QR format", e);
+    setErrorMsg("Invalid QR data");
+  }
+};
+
 
   const startScanner = () => {
     if (!scanning) {
