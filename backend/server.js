@@ -180,6 +180,7 @@ app.use('/uploads', (req, res, next) => {
 }, express.static(path.join(__dirname, 'uploads')));
 
 
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // Security headers
 app.use(helmet());
 

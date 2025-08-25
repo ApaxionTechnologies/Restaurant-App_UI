@@ -12,13 +12,31 @@ const AddMenuItem = () => {
     localStorage.getItem("restaurant") || "My Restaurant"
   );
   const [adminEmail, setAdminEmail] = useState("");
+   const [restaurant, setRestaurant] = useState(null);
+  
+  
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
+  }, []);
+  
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
-    const storedToken = localStorage.getItem("token"); // ✅ changed (was adminToken)
+    const storedToken = localStorage.getItem("token");
 
     if (!storedEmail || !storedToken) {
-      navigate("/"); // agar login nahi hai toh home pe bhej do
+      navigate("/"); 
     } else {
       setAdminEmail(storedEmail);
     }
@@ -26,7 +44,7 @@ const AddMenuItem = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
-    localStorage.removeItem("token");   // ✅ changed (was adminToken)
+    localStorage.removeItem("token");  
     localStorage.removeItem("restaurant");
     navigate("/");
   };
@@ -67,7 +85,7 @@ const AddMenuItem = () => {
     if (imageFile) data.append("image", imageFile);
 
     try {
-      const token = localStorage.getItem("token"); // ✅ changed
+      const token = localStorage.getItem("token"); 
       if (!token) {
         alert("⚠️ No token found. Please log in again.");
         navigate("/");
@@ -76,7 +94,7 @@ const AddMenuItem = () => {
 
       await axios.post("http://localhost:5001/api/menu/add", data, {
         headers: {
-          Authorization: `Bearer ${token}`, // ✅ send token properly
+          Authorization: `Bearer ${token}`, 
         },
       });
 
@@ -102,6 +120,7 @@ const AddMenuItem = () => {
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
+        restaurant={restaurant}
       />
       <div className="add-menu-container">
         <h2>Add Menu Item</h2>

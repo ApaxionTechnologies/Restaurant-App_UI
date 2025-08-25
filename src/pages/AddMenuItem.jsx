@@ -14,6 +14,8 @@ const AddMenuItem = () => {
 
   const [message, setMessage] = useState("");
 
+
+
   // handle text input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,6 +26,8 @@ const AddMenuItem = () => {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
+
+  
   // handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();

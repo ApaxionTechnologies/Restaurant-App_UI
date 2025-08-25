@@ -7,16 +7,38 @@ import { FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
-
+import HomeHeader from "../components/HomeHeader";
+import axios from "axios";
+import { Helmet } from "react-helmet";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("");
   const [adminEmail, setAdminEmail] = useState("");
+ const [restaurant, setRestaurant] = useState(null);
+
+
+useEffect(() => {
+  const fetchMe = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log("me response:", res.data);
+
+     
+      setRestaurant(res.data.restaurant);
+    } catch (err) {
+      console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+    }
+  };
+  fetchMe();
+}, []);
 
 useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) {
-    navigate("/");
+    navigate("/");    
     return;
   }
 
@@ -30,41 +52,42 @@ useEffect(() => {
   }
 }, [navigate]);
 
+  useEffect(() => {
+  const favicon = document.querySelector("link[rel='icon']");
+  if (!favicon) return;
+
+  if (restaurant?.logoUrl) {
+    favicon.href = `${restaurant.logoUrl}?${new Date().getTime()}`; 
+  } else {
+    favicon.href = "%PUBLIC_URL%/favicon.ico";
+  }
+}, [restaurant]);
   const handleLogout = () => {
-    localStorage.removeItem("token"); 
-    navigate("/");
-  };
+  localStorage.removeItem("token"); 
+  setRestaurantName(""); 
+  document.title = "React App"; 
+
+  const favicon = document.querySelector("link[rel='icon']");
+  if (favicon) {
+    favicon.href = "%PUBLIC_URL%/favicon.ico?" + new Date().getTime();
+  }
+
+  navigate("/");
+};
+
 
   return (
     <div className="admin-dashboard-wrapper">
-
-      <header className="admin-header d-flex justify-content-between align-items-center p-3 shadow">
-        <div>
-          <h5 className="mb-0 fw-bold">{restaurantName}</h5>
-         {/*<span className="text-muted small">{adminEmail}</span>*/}
-        </div>
-        <div className="dropdown">
-          <FaUserCircle
-            size={30}
-            className="dropdown-toggle"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            style={{ cursor: "pointer" }}
-          />
-          <ul className="dropdown-menu dropdown-menu-end">
-            <li>
-              <span className="dropdown-item-text text-muted">{restaurantName}</span>
-            </li>
-            <li><hr className="dropdown-divider" /></li>
-            <li>
-              <button className="dropdown-item text-danger" onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
-        </div>
-      </header>
+ <Helmet>
+      <title>{restaurantName ? `${restaurantName}` : "React-App"}</title>
+    </Helmet>
+   <HomeHeader
+          isAdminDashboard={true}
+          restaurantName={restaurantName}
+          adminEmail={adminEmail}
+          onLogout={handleLogout}
+          restaurant={restaurant} 
+        />
 
 
       <main className="admin-dashboard-content container text-center mt-5">

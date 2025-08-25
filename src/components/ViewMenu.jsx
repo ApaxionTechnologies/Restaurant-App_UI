@@ -72,6 +72,8 @@
 // };
 // export default ViewMenu;
 ///////////////
+
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/ViewMenu.css";
@@ -112,17 +114,35 @@ const ViewMenu = () => {
     timeToPrepare: ""
   });
 
-  const fetchMenu = async () => {
-    try {
-      const res = await axios.get("http://localhost:5001/api/menu/all");
-      setMenuItems(res.data);
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
-  };
+  const [restaurant, setRestaurant] = useState(null);
+  
+  
   useEffect(() => {
-    fetchMenu();
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
   }, []);
+  
+
+ const fetchMenu = async () => {
+  try {
+    const res = await axios.get("http://localhost:5001/api/menu/all");
+    console.log("Menu API response:", res.data); 
+
+    setMenuItems(res.data.menu || res.data);
+  } catch (err) {
+    console.error("Fetch error:", err.message);
+  }
+};
 
   const handleDelete = async (id) => {
     const confirmed = window.confirm("Are you sure you want to delete this item?");
@@ -178,6 +198,7 @@ const ViewMenu = () => {
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
+        restaurant={restaurant} 
       />
       <div className="view-menu-container">
         <h2>View Menu</h2>
@@ -231,4 +252,3 @@ const ViewMenu = () => {
 
 export default ViewMenu;
 
-///////////////////

@@ -355,6 +355,8 @@
 // };
 //----------mera code ----//
 // controllers/restaurantController.js
+
+
 import Restaurant from "../models/Restaurant.js";
 
 import jwt from "jsonwebtoken";
@@ -405,6 +407,7 @@ export const registerRestaurant = async (req, res) => {
       lastName,
       contact,
       email,
+
       password, 
       tables,
       tagline,
