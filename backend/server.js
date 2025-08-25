@@ -157,8 +157,7 @@ import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurant.js";
 import menuRoutes from "./routes/menu.js";
 import fs from "fs";
-// if you made a separate authRoutes file, import that too:
-// import authRoutes from "./routes/authRoutes.js";
+
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -210,14 +209,15 @@ app.use(cookieParser());
 
 
 // ---- Routes ----
-// Note: decide if you want auth endpoints under /api/auth or re-use /api/restaurants
-// If your routes file already defines "/register" and "/login", mount appropriately.
 app.use("/api/restaurants", restaurantRoutes); // e.g. POST /api/restaurants/register
 app.use("/api/menu", menuRoutes);
 
+ main_palak
 app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 // If you created authRoutes separately: app.use("/api/auth", authRoutes);
+
+
 
 // ---- MongoDB connect + start server ----
 const PORT = process.env.PORT || 5001;
