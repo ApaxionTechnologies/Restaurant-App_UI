@@ -11,7 +11,23 @@ export default function RemoveItem() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
   const [adminEmail, setAdminEmail] = useState("");
-
+ const [restaurant, setRestaurant] = useState(null);
+  
+  
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
+  }, []);
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     if (!storedEmail) {
@@ -69,6 +85,7 @@ export default function RemoveItem() {
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
+        restaurant={restaurant}
       />
 
       <div className="container mt-4">

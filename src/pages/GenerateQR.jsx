@@ -24,7 +24,24 @@ export default function GenerateQR() {
 
 const [restaurantData, setRestaurantData] = useState(null);
 
-
+ const [restaurant, setRestaurant] = useState(null);
+  
+  
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
+  }, []);
+  
 useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -130,36 +147,33 @@ useEffect(() => {
       link.click();
     };
   };
-
 const downloadAllQRCodes = async () => {
   const zip = new JSZip();
+
   for (let i = 0; i < qrList.length; i++) {
     const canvas = qrRefs.current[i]?.querySelector("canvas");
     if (!canvas) continue;
 
-    const url = canvas.toDataURL("image/png");
-    const img = new Image();
-    img.src = url;
+    // Create a new canvas with tagline
+    const canvasWithTagline = document.createElement("canvas");
+    const ctx = canvasWithTagline.getContext("2d");
+    canvasWithTagline.width = canvas.width;
+    canvasWithTagline.height = canvas.height + 50;
 
-    await new Promise((resolve) => {
-      img.onload = () => {
-        const canvasWithTagline = document.createElement("canvas");
-        const ctx = canvasWithTagline.getContext("2d");
-        canvasWithTagline.width = canvas.width;
-        canvasWithTagline.height = canvas.height + 50;
-        ctx.drawImage(img, 0, 0);
-        ctx.font = "bold 20px Arial";
-        ctx.fillStyle = "#007bff";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("Powered by: Apaxion", canvas.width / 2, canvas.height + 25);
+    // Draw original QR
+    ctx.drawImage(canvas, 0, 0);
 
-        const dataUrl = canvasWithTagline.toDataURL("image/png");
-        const imgData = dataUrl.split(",")[1];
-        zip.file(`QR_Table_${qrList[i].table}_Apaxion.png`, imgData, { base64: true });
-        resolve();
-      };
-    });
+    // Draw tagline
+    ctx.font = "bold 20px Arial";
+    ctx.fillStyle = "#007bff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Powered by: Apaxion", canvas.width / 2, canvas.height + 25);
+
+    // Convert to data URL and add to zip
+    const dataUrl = canvasWithTagline.toDataURL("image/png");
+    const imgData = dataUrl.split(",")[1];
+    zip.file(`QR_Table_${qrList[i].table}_Apaxion.png`, imgData, { base64: true });
   }
 
   const blob = await zip.generateAsync({ type: "blob" });
@@ -179,6 +193,7 @@ const downloadAllQRCodes = async () => {
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
+        restaurant={restaurant}
       />
 
       <div className="generate-qr-wrapper">
@@ -296,6 +311,19 @@ const downloadAllQRCodes = async () => {
           </div>
         )}
       </div>
+      <div style={{ display: "none" }}>
+  {qrList.map((qr, idx) => (
+    <div key={idx} ref={(el) => (qrRefs.current[idx] = el)}>
+      <QRCodeCanvas
+        value={qr.value}
+        size={220}
+        includeMargin={true}
+        bgColor="#ffffff"
+        fgColor="#000000"
+      />
+    </div>
+  ))}
+</div>
 
       <Footer />
     </>

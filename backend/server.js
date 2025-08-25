@@ -180,6 +180,7 @@ app.use('/uploads', (req, res, next) => {
 }, express.static(path.join(__dirname, 'uploads')));
 
 
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // Security headers
 app.use(helmet());
 
@@ -212,7 +213,7 @@ app.use(cookieParser());
 app.use("/api/restaurants", restaurantRoutes); // e.g. POST /api/restaurants/register
 app.use("/api/menu", menuRoutes);
 
- main_palak
+
 app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 // If you created authRoutes separately: app.use("/api/auth", authRoutes);

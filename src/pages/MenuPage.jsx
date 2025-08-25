@@ -85,7 +85,7 @@ useEffect(() => {
     setLoading(true);
     try {
       const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
-      console.log("Fetched Menu Items:", res.data); 
+     
       const items = Array.isArray(res.data) ? res.data : [];
       setDishes(items);
       setMenuMap(buildMenuMap(items));

@@ -9,6 +9,23 @@ const TableManager = () => {
   const [tables, setTables] = useState(0);
   const [error, setError] = useState("");
   const restaurantEmail = localStorage.getItem("restaurantEmail");
+   const [restaurant, setRestaurant] = useState(null);
+  
+  
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
+  }, []);
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -81,11 +98,12 @@ const TableManager = () => {
 
   return (
     <div className="table-manager-wrapper">
-      {/* ✅ Pass props to HomeHeader */}
+
       <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantData ? restaurantData.restaurantName : ""}
         adminEmail={restaurantEmail}
+        restaurant={restaurant}
         onLogout={() => {
           localStorage.removeItem("restaurantEmail");
           window.location.reload();
