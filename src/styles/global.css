@@ -1,137 +1,151 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-/* Ensure root takes full height */
+/* ================================
+   🌐 Theme Variables
+   ================================ */
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc3545;
+  --danger-dark: #c82333;
+  --success: #22c55e;
+  --info: #17a2b8;
+  --text: #0f1724;
+  --muted: #6b7280;
+  --bg-gradient: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
+  --card-bg: #fff;
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================
+   🔄 Base Layout
+   ================================ */
 html, body, #root {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
-
+  background: var(--bg-gradient);
+  font-family: "Poppins", sans-serif;
+  color: var(--text);
 }
 
-/* Full-page centering utility */
 .page-center {
   flex: 1;
   display: flex;
-  flex-direction: column; /* Allow content to stack vertically */
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Align content to the top */
+  justify-content: flex-start;
   padding: 2rem;
   box-sizing: border-box;
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 100vh; /* Prevent overflow beyond the viewport */
+  overflow-y: auto;
+  max-height: 100vh;
   animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Optional fade-in */
+/* ================================
+   ✨ Animations
+   ================================ */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-/* Base button style */
-/* Base button style */
-.btn {
-  background: #007bff;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  font-size: 15px;
-}
-
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-}
-
-/* Small stepper buttons */
-.btn.small {
-  padding: 4px 10px;
-  font-size: 16px;
-  background: #17a2b8;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-
-/* Red cart button */
-.red {
-  background-color: #dc3545;
-}
-.red:hover {
-  background-color: #c82333;
-}
-
-/* Place order button */
-.place-order {
-  background-color: #28a745;
-  color: white;
-  margin-top: 1rem;
-}
-
-/* Cart Drawer */
-.cart-drawer {
-  animation: slideUp 0.4s ease-out;
-  position: absolute;
-  bottom: 60px;
-  right: 0;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  width: 280px;
-  z-index: 999;
-}
-
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-/* Bounce scale animation for feedback */
 @keyframes bounceScale {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
 .bounce {
   animation: bounceScale 0.3s ease-in-out;
 }
-/* Red cart button */
+
+/* ================================
+   🔘 Buttons
+   ================================ */
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Variants */
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+.btn-danger:hover { background: var(--danger-dark); }
+
+.btn-success {
+  background: var(--success);
+  color: #fff;
+}
+.btn-info {
+  background: var(--info);
+  color: #fff;
+}
+
+.btn.small {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* ================================
+   🛒 Cart Drawer
+   ================================ */
+.cart-drawer {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  width: 300px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  z-index: 999;
+  animation: slideUp 0.4s ease-out;
+}
+
 .cart-button {
-  background-color: #ef4444;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  background: var(--danger);
+  color: #fff;
+  padding: 0.6rem 1rem;
   border: none;
-  font-weight: 500;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
+.cart-button:hover { background: var(--danger-dark); }
 
-/* Green place order button */
 .place-order-button {
-  background-color: #22c55e;
-  color: white;
-  padding: 0.5rem 1.25rem;
+  background: var(--success);
+  color: #fff;
+  padding: 0.6rem 1.25rem;
   border: none;
   border-radius: 8px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
+  margin-top: 1rem;
 }
-
-
+.place-order-button:hover { background: #16a34a; }
