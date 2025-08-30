@@ -38,6 +38,7 @@ const menuItemSchema = new mongoose.Schema({
     default: 'Published',
     
   },
+  type: { type: String, enum: ["veg", "non-veg"], default: "veg" },
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Restaurant",

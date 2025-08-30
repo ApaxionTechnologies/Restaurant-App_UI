@@ -248,14 +248,186 @@
 //       </footer>
 //     </>
 //   );// src/pages/ViewMenu.jsx// src/pages/ViewMenu.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 
+// import "../styles/ViewMenu.css";
+// import "../styles/global.css"; // 👈 global card css
+
+// const ViewMenu = () => {
+//   const [filter, setFilter] = useState("All");
+
+//   const [menuItems, setMenuItems] = useState([
+//     {
+//       _id: 1,
+//       name: "Paneer Butter Masala",
+//       price: 220,
+//       description: "Rich creamy tomato-based curry.",
+//       image:
+//         "https://www.cookwithmanali.com/wp-content/uploads/2021/07/Paneer-Butter-Masala-500x500.jpg",
+//       status: "Published",
+//     },
+//     {
+//       _id: 2,
+//       name: "Veg Biryani",
+//       price: 180,
+//       description: "Aromatic basmati rice with spices.",
+//       image:
+//         "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/07/veg-biryani-recipe-500x500.jpg",
+//       status: "Draft",
+//     },
+//     {
+//       _id: 3,
+//       name: "Cheese Pizza",
+//       price: 350,
+//       description: "Cheesy delight with fresh toppings.",
+//       image:
+//         "https://static.toiimg.com/thumb/53110049.cms?imgsize=218117&width=800&height=800",
+//       status: "Published",
+//     },
+//   ]);
+
+//   const handleEdit = (id) => {
+//     alert(`Edit menu item: ${id}`);
+//   };
+
+//   const handleDelete = (id) => {
+//     setMenuItems((prev) => prev.filter((item) => item._id !== id));
+//   };
+
+//   const filteredItems = menuItems.filter(
+//     (item) => filter === "All" || item.status === filter
+//   );
+
+//   return (
+//     <div className="view-menu-page p-6">
+//       {/* Filter Dropdown */}
+//       <div className="filter-row mb-4">
+//         <label htmlFor="status-filter" className="mr-2 font-semibold">
+//           Filter:
+//         </label>
+//         <select
+//           id="status-filter"
+//           value={filter}
+//           onChange={(e) => setFilter(e.target.value)}
+//           className="filter-select"
+//         >
+//           <option value="All">All</option>
+//           <option value="Published">Published</option>
+//           <option value="Draft">Draft</option>
+//         </select>
+//       </div>
+
+//       {/* Menu Grid */}
+//       <div className="menu-grid grid-3">
+//         {filteredItems.map((item) => (
+//           <div key={item._id} className="menu-card">
+//             {/* Image */}
+//             <img src={item.image} alt={item.name} className="menu-card-img" />
+
+//             {/* Content */}
+//             <div className="menu-card-content">
+//               <div className="menu-title-price">
+//                 <h3>{item.name}</h3>
+//                 <span className="price">₹{item.price}</span>
+//               </div>
+
+//               <p className="menu-description">{item.description}</p>
+
+//               {/* Status */}
+//               <p className={`menu-status ${item.status.toLowerCase()}`}>
+//                 {item.status}
+//               </p>
+
+//               {/* Action row */}
+//               <div className="action-row">
+//                 <button
+//                   className="qty-btn"
+//                   onClick={() => handleEdit(item._id)}
+//                 >
+//                   Edit
+//                 </button>
+//                 <button
+//                   className="qty-btn"
+//                   onClick={() => handleDelete(item._id)}
+//                 >
+//                   Delete
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+
+//         {filteredItems.length === 0 && (
+//           <p className="no-items-text">No items found for this filter.</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ViewMenu;
+import axios from "axios";
 import "../styles/ViewMenu.css";
-import "../styles/global.css"; // 👈 global card css
+import { FaThList, FaThLarge, FaTh } from "react-icons/fa";
+import Footer from "../components/Footer.jsx";
+import HomeHeader from "../components/HomeHeader.jsx";
+import { useNavigate } from "react-router-dom";
+import "../styles/global.css";
+import "../styles/ViewMenu.css";
+import { useEffect,useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import * as bootstrap from 'bootstrap'; 
 
 const ViewMenu = () => {
   const [filter, setFilter] = useState("All");
+  const navigate = useNavigate();
+  const [restaurantName, setRestaurantName] = useState(
+    localStorage.getItem("restaurantName") || "My Restaurant"
+  );
+  const [adminEmail, setAdminEmail] = useState("");
+  const [restaurant, setRestaurant] = useState(null);
+const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
+
+
+const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
+useEffect(() => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach((el) => {
+    new bootstrap.Tooltip(el);
+  });
+},); 
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("adminEmail");
+    if (!storedEmail) {
+      navigate("/");
+    } else {
+      setAdminEmail(storedEmail);
+    }
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("restaurantName");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRestaurant(res.data.restaurant);
+      } catch (err) {
+        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      }
+    };
+    fetchMe();
+  }, []);
 
   const [menuItems, setMenuItems] = useState([
     {
@@ -266,15 +438,21 @@ const ViewMenu = () => {
       image:
         "https://www.cookwithmanali.com/wp-content/uploads/2021/07/Paneer-Butter-Masala-500x500.jpg",
       status: "Published",
+      type: "veg"
+      , cuisine: "Indian",
+      prepTime: "25 mins" 
     },
     {
       _id: 2,
-      name: "Veg Biryani",
+      name: "Biryani",
       price: 180,
       description: "Aromatic basmati rice with spices.",
       image:
         "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/07/veg-biryani-recipe-500x500.jpg",
       status: "Draft",
+      type: "non-veg",
+      cuisine: "Indian",
+      prepTime: "30 mins"
     },
     {
       _id: 3,
@@ -284,15 +462,26 @@ const ViewMenu = () => {
       image:
         "https://static.toiimg.com/thumb/53110049.cms?imgsize=218117&width=800&height=800",
       status: "Published",
+      type: "veg",
+      cuisine: "Italian",
+      prepTime: "20 mins"
     },
   ]);
 
-  const handleEdit = (id) => {
-    alert(`Edit menu item: ${id}`);
+ 
+  const handleDraft = (id) => {
+    setMenuItems((prev) =>
+      prev.map((item) => (item._id === id ? { ...item, status: "Draft" } : item))
+    );
   };
 
-  const handleDelete = (id) => {
-    setMenuItems((prev) => prev.filter((item) => item._id !== id));
+
+  const handlePublish = (id) => {
+    setMenuItems((prev) =>
+      prev.map((item) =>
+        item._id === id ? { ...item, status: "Published" } : item
+      )
+    );
   };
 
   const filteredItems = menuItems.filter(
@@ -300,69 +489,103 @@ const ViewMenu = () => {
   );
 
   return (
-    <div className="view-menu-page p-6">
-      {/* Filter Dropdown */}
-      <div className="filter-row mb-4">
-        <label htmlFor="status-filter" className="mr-2 font-semibold">
-          Filter:
-        </label>
-        <select
-          id="status-filter"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="filter-select"
-        >
-          <option value="All">All</option>
-          <option value="Published">Published</option>
-          <option value="Draft">Draft</option>
-        </select>
-      </div>
+    <>
+      <HomeHeader
+        isAdminDashboard={true}
+        restaurantName={restaurantName}
+        adminEmail={adminEmail}
+        onLogout={handleLogout}
+        restaurant={restaurant}
+      />
 
-      {/* Menu Grid */}
-      <div className="menu-grid grid-3">
-        {filteredItems.map((item) => (
-          <div key={item._id} className="menu-card">
-            {/* Image */}
-            <img src={item.image} alt={item.name} className="menu-card-img" />
+      <div className="view-menu-page p-6">
+    
+    <div className="filter-row">
+  {["All", "Published", "Draft"].map((option) => (
+    <button
+      key={option}
+      onClick={() => setFilter(option)}
+      className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
+    >
+      {option}
+    </button>
+  ))}
+</div>
 
-            {/* Content */}
-            <div className="menu-card-content">
-              <div className="menu-title-price">
-                <h3>{item.name}</h3>
-                <span className="price">₹{item.price}</span>
-              </div>
 
-              <p className="menu-description">{item.description}</p>
+        <div className="menu-grid grid-3">
+          {filteredItems.map((item) => (
+            <div key={item._id} className="card">
+          
+              <img src={item.image} alt={item.name} />
 
-              {/* Status */}
-              <p className={`menu-status ${item.status.toLowerCase()}`}>
-                {item.status}
-              </p>
+            
+              <div className="card-content">
+                <div className="menu-title-price">
+           
+       <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
 
-              {/* Action row */}
-              <div className="action-row">
-                <button
-                  className="qty-btn"
-                  onClick={() => handleEdit(item._id)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="qty-btn"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  Delete
-                </button>
+                  <h3 className="card-title">{item.name}</h3>
+                  <span className="card-price">₹{item.price}</span>
+                </div>
+
+       <p className="card-description">{item.description}</p>
+
+<div className="read-more-row">
+ {item.description && item.description.length > 0 && (
+  <button
+  type="button"
+  className=" read-more"
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  title={item.description || "No details available"}
+>
+  Read More
+</button>
+
+  )}
+  <div className="menu-details">
+    <span>{item.cuisine || "🍴"}</span>
+    <span>•</span>
+    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+  </div>
+</div>
+
+<div className="card-actions">
+  {filter !== "All" && (
+    item.status === "Published" ? (
+      <button
+        className="btn-global card-btn"
+        onClick={() => handleDraft(item._id)}
+      >
+        Move to Draft
+      </button>
+    ) : (
+      <button
+        className="btn-global card-btn"
+        onClick={() => handlePublish(item._id)}
+      >
+        Move to Published
+      </button>
+    )
+  )}
+</div>
+
+
               </div>
             </div>
-          </div>
-        ))}
+          ))}
 
-        {filteredItems.length === 0 && (
-          <p className="no-items-text">No items found for this filter.</p>
-        )}
+          {filteredItems.length === 0 && (
+            <p className="no-items-text">No items found for this filter.</p>
+          )}
+        </div>
       </div>
-    </div>
+
+      <footer className="footer">
+        <Footer />
+      </footer>
+    </>
   );
 };
 

@@ -200,10 +200,9 @@ display: -webkit-box;            /* for WebKit browsers */
   color: #444;
   margin-bottom: 4px;
   line-height: 1.4;
-  max-height: 2.8em;       /* 2 line ka height */
+  max-height: 2.8em;      
 }
 
-/* expanded state me pura text dikhe */
 .menu-description.expanded {
  -webkit-line-clamp: 2;
 line-clamp: 2;
@@ -215,7 +214,7 @@ line-clamp: 2;
 @media (max-width:520px) {
   .menu-description {
      -webkit-line-clamp: 2;
-line-clamp: 2;  /* same as desktop */
+line-clamp: 2; 
     max-height: 2.8em !important;
     font-size: 0.8rem !important;
     color: #0f172a !important;
@@ -234,6 +233,8 @@ line-clamp: 2;  /* same as desktop */
   font-size: 0.85rem;
   cursor: pointer;
   transition: color 0.2s ease;
+  border: none;
+  background: none;
 }
 
 .read-more:hover {
@@ -249,7 +250,7 @@ line-clamp: 2;  /* same as desktop */
   gap: 4px;
 }
 
-/* Actions */
+
 .action-row { display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:10px; }
 .add-btn { background:var(--accent); color:#fff; border:none; padding:9px 16px; border-radius:999px; cursor:pointer; font-weight:700; box-shadow:0 6px 14px rgba(37,99,235,0.12); transition:transform var(--trans), box-shadow var(--trans); }
 .add-btn:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(37,99,235,0.14); }
@@ -257,22 +258,20 @@ line-clamp: 2;  /* same as desktop */
 .qty-btn { width:34px; height:34px; border-radius:8px; border:1px solid rgba(0,0,0,0.06); background:#fff; color:var(--accent); font-weight:700; cursor:pointer; }
 .qty-btn:hover { background:var(--accent); color:#fff; }
 
-/* LIST VIEW (desktop) */
+
 .menu-grid.list .menu-card { flex-direction: row; align-items:stretch; }
 .menu-grid.list .menu-card img { width:140px; height:140px; object-fit:cover; border-radius:12px 0 0 12px; }
 .menu-grid.list .menu-card-content { padding-left:12px; }
 
-/* desktop → tablet tweaks */
+
 @media (max-width:900px) {
   .menu-grid.grid-3 { grid-template-columns: repeat(2, 1fr); }
   .menu-card img { max-height:150px; }
 }
 
-/* =========================
-   MOBILE: Consolidated, force-visible rules
-   ========================= */
+
 @media (max-width:520px) {
-  /* Force the container to grid single-column regardless of .list */
+ 
   .menu-grid,
   .menu-grid.grid-2,
   .menu-grid.grid-3,
@@ -283,12 +282,10 @@ line-clamp: 2;  /* same as desktop */
     padding: 0 12px !important;
     align-content: start !important;
   }
-
-  /* Make each card full-width stacked vertically */
   .menu-grid .menu-card {
     width: 100% !important;
     display: flex !important;
-    flex-direction: column !important; /* undo any row-layout from list view */
+    flex-direction: column !important; 
     align-items: stretch !important;
     margin: 0 !important;
     border-radius: 16px !important;
@@ -321,7 +318,6 @@ line-clamp: 2;  /* same as desktop */
   margin: 0;
 }
 
-  /* Top image behaviour for mobile single-card look */
   .menu-grid .menu-card img {
     width: 100% !important;
     height: 170px !important;
@@ -332,38 +328,29 @@ line-clamp: 2;  /* same as desktop */
     display: block !important;
   }
 
-  /* Restore content padding */
+
   .menu-grid .menu-card-content { padding: 12px !important; gap:8px !important; }
 
-  /* Ensure list-specific row styles do not persist */
   .menu-grid.list .menu-card,
   .menu-grid.list .menu-card-content { flex-direction: column !important; }
 
-  /* Buttons / action sizing */
   .menu-grid .action-row,
   .menu-grid .add-btn,
   .menu-grid .qty-controls { width:auto !important; justify-content:space-between !important; }
 
-  /* Hide any left-side badges or left-stripe that break single-column look */
   .menu-card .veg-badge,
   .menu-card .veg-square,
   .left-stripe,
   .card-left-border { display:none !important; visibility:hidden !important; }
 
-  /* Hide layout toggle on mobile (redundant but safe) */
   .layout-toggle { display:none !important; visibility:hidden !important; pointer-events:none !important; }
 
-  /* Typography / compact description */
-
-  /* Accent on mobile add button */
   .add-btn { min-width:110px !important; padding:9px 14px !important; background:#ff6b6b !important; box-shadow:0 8px 20px rgba(255,107,107,0.12) !important; }
   .add-btn:hover { box-shadow:0 12px 30px rgba(255,107,107,0.14) !important; transform:translateY(-3px) !important; }
 
   .qty-btn { border:1px solid rgba(15,23,42,0.06) !important; background:#fff !important; color:#0f172a !important; }
   .heart-icon { background:rgba(255,255,255,0.95) !important; border:1px solid rgba(15,23,42,0.03) !important; }
   .heart-icon:hover { background:#ff6b6b !important; color:#fff !important; }
-
-  /* simplify inner ring on mobile */
   .menu-card::after { box-shadow:none !important; }
 
   .menu-card:focus, .menu-card:active { outline:none !important; box-shadow:0 14px 40px rgba(15,23,42,0.08) !important; }
@@ -376,12 +363,11 @@ line-clamp: 2;  /* same as desktop */
   font-size: 0.85rem;
 }
 
-/* very small phones */
 @media (max-width:360px) {
   .menu-card img { height:140px !important; }
   .menu-card-content { padding:10px !important; }
   .add-btn { min-width:96px !important; padding:8px 10px !important; font-size:0.92rem !important; }
-}/* === Backdrop === */
+}
 .desc-backdrop {
   position: fixed;
   inset: 0;
@@ -394,7 +380,6 @@ line-clamp: 2;  /* same as desktop */
   overflow-y: auto;
 }
 
-/* === Tooltip Container === */
 .desc-tooltip {
   position: relative;
   background: var(--tooltip-bg);
@@ -585,7 +570,7 @@ line-clamp: 2;  /* same as desktop */
   flex-direction: column !important;
   justify-content: space-between;
   height: 100% !important;          /* make card fill its grid cell */
-  min-height: 380px;                /* tweak as needed for visual density */
+  min-height: 200px;                /* tweak as needed for visual density */
   border-radius: 16px !important;
   overflow: hidden !important;
   padding: 0 !important;
@@ -656,63 +641,53 @@ line-clamp: 2;  /* same as desktop */
 }
 
 
-/* Make title/price row compact */
+
 .menu-title-price { display:flex; justify-content:space-between; gap:12px; align-items:center; }
 .menu-title-price h3 { margin:0; font-size:1.05rem; font-weight:600; }
 .menu-title-price .price { margin:0; font-weight:700; }
 
-/* If you want three columns still, keep grid but cards will be stacked inside each cell */
-/* Adjust columns while preserving stacked card look */
 @media (min-width: 900px) {
   .menu-grid.grid-3 { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-  .menu-card img { height: 200px !important; } /* slight reduction on wider screens */
+  .menu-card img { height: 200px !important; } 
 }
-/* ===== Restore proper LIST view (row-layout) after the forced stacked rules =====
-   Put this AFTER the previously added force-stacked block. */
-/* ===== List view: make left image stretch to card height (upto button) ===== */
+
 .menu-grid.list .menu-card {
   display: flex !important;
   flex-direction: row !important;
-  align-items: stretch !important;   /* children stretch vertically */
+  align-items: stretch !important;  
   overflow: hidden;
-  min-height: 140px;                 /* adjust base height if needed */
+  min-height: 140px;                 
   border-radius: 12px !important;
 }
-
-/* Left image becomes a fixed-width column and stretches vertically */
 .menu-grid.list .menu-card img {
-  flex: 0 0 180px !important;        /* image column width (change 180px as desired) */
+  flex: 0 0 180px !important;       
   width: 180px !important;
-  height: 100% !important;           /* stretch to match card height */
-  object-fit: cover !important;      /* cover crop */
+  height: 100% !important;          
+  object-fit: cover !important;     
   border-radius: 12px 0 0 12px !important;
   display: block;
 }
 
-/* Content column fills remaining width and pushes actions to bottom */
 .menu-grid.list .menu-card-content {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important; /* pushes Add button to bottom */
+  justify-content: space-between !important; 
   padding: 12px !important;
   gap: 10px;
   flex: 1 1 auto;
-  min-width: 0;                        /* allow truncation of long text */
+  min-width: 0;                      
 }
 
-/* Make sure the action-row / add button stays at the bottom of the card */
 .menu-grid.list .action-row {
   margin-top: 8px;
   align-self: flex-end;
 }
 
-/* If you use a read-more row above actions, ensure it doesn't expand card height unexpectedly */
 .menu-grid.list .menu-description { 
--webkit-line-clamp: 3;   /* limit lines in list view */
-  line-clamp: 3;   /* limit lines in list view */
+-webkit-line-clamp: 3;   
+  line-clamp: 3;  
 }
 
-/* Mobile: revert to stacked image-on-top behaviour */
 @media (max-width: 520px) {
   .menu-grid.list .menu-card {
     flex-direction: column !important;
@@ -728,7 +703,6 @@ line-clamp: 2;  /* same as desktop */
   .menu-grid.list .menu-card-content { padding: 12px !important; }
 }
 
-/* Title/price row in list view */
 .menu-grid.list .menu-title-price { margin: 0; padding: 0; }
 .menu-grid.list .menu-title-price h3 { font-size: 1.02rem; }
 .menu-grid.list .menu-title-price .price { font-size: 0.98rem; }
@@ -802,4 +776,15 @@ line-clamp: 2;  /* same as desktop */
 @media (max-width: 520px) {
   .menu-grid.grid-2 { grid-template-columns: 1fr !important; max-width: none; margin: 0; padding: 0 12px; }
   .menu-grid.grid-2 .menu-card { max-width: none; width: 100%; }
+}
+.custom-tooltip.bs-tooltip-top .tooltip-inner {
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.35rem;
+}
+
+.custom-tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #3b82f6;
 }

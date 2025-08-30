@@ -57,6 +57,7 @@ const AddMenuItem = () => {
     description: "",
     status: "Published",
     discount: "",
+    vegType: "veg",
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -177,8 +178,6 @@ const AddMenuItem = () => {
     if (fileInputRef.current) fileInputRef.current.focus();
     return;
   }
-
-
     // proceed with submit
     const data = new FormData();
     data.append("category", formData.category);
@@ -189,6 +188,8 @@ const AddMenuItem = () => {
     data.append("ingredients", formData.ingredients);
     data.append("description", formData.description);
     data.append("status", formData.status);
+    data.append("type", formData.vegType.toLowerCase());
+
     if (formData.discount) data.append("discount", formData.discount);
     if (imageFile) data.append("image", imageFile);
 
@@ -217,6 +218,7 @@ const AddMenuItem = () => {
         description: "",
         status: "Published",
         discount: "",
+       vegType: "veg", 
       });
 
       if (imagePreview) {
@@ -248,6 +250,7 @@ const AddMenuItem = () => {
       description: "",
       status: "Published",
       discount: "",
+      vegType: "veg",
     });
 
     if (imagePreview) {
@@ -321,52 +324,95 @@ const AddMenuItem = () => {
                   </div>
                 </div>
 
-                <div className="form-grid">
-                  <div>
-                    <label>Category</label>
-                    <select
-                      ref={categoryRef}
-                      name="category"
-                      className={`select ${errors.category ? "error" : ""}`}
-                      value={formData.category}
-                      onChange={handleChange}
-                    >
-                      {categoryOptions.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+<div className="form-grid">
+  <div>
+    <label>Status</label>
+    <div className="radio-group">
+      <label>
+        <input
+          type="radio"
+          name="status"
+          value="Published"
+          onChange={handleChange}
+          checked={formData.status === "Published"}
+        />{" "}
+        Published
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="status"
+          value="Draft"
+          onChange={handleChange}
+          checked={formData.status === "Draft"}
+        />{" "}
+        Draft
+      </label>
+    </div>
+  </div>
 
-                  <div>
-                    <label>Status</label>
-                    <div className="radio-group">
-                      <label>
-                        <input
-                          type="radio"
-                          name="status"
-                          value="Published"
-                          onChange={handleChange}
-                          checked={formData.status === "Published"}
-                        />{" "}
-                        Published
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="status"
-                          value="Draft"
-                          onChange={handleChange}
-                          checked={formData.status === "Draft"}
-                        />{" "}
-                        Draft
-                      </label>
-                    </div>
-                  </div>
-                </div>
+  <div>
+    <label>Type</label>
+    <div className="radio-group">
+      <label>
+        <input
+          type="radio"
+           name="vegType"
+            value="veg"
+          checked={formData.vegType === "veg"}
+          onChange={handleChange}
+        />{" "}
+        Veg
+      </label>
+      <label>
+        <input
+          type="radio"
+           name="vegType"
+    value="non-veg"
+          checked={formData.vegType === "non-veg"}
+          onChange={handleChange}
+        />{" "}
+        Non-Veg
+      </label>
+    </div>
+  </div>
+</div>
+              <div className="form-grid">
+  <div>
+    <label>Category</label>
+    <select
+      ref={categoryRef}
+      name="category"
+      className={`select ${errors.category ? "error" : ""}`}
+      value={formData.category}
+      onChange={handleChange}
+    >
+      {categoryOptions.map((c) => (
+        <option key={c} value={c}>
+          {c}
+        </option>
+      ))}
+    </select>
+  </div>
 
-                <div className="form-grid">
+  <div>
+    <label>Cuisine</label>
+    <select
+      name="cuisine"
+      className="select"
+      value={formData.cuisine}
+      onChange={handleChange}
+    >
+      {cuisineOptions.map((c) => (
+        <option key={c} value={c}>
+          {c}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<div className="form-grid">
                   <div>
                     <label>Price (₹)</label>
                     <input
@@ -393,21 +439,7 @@ const AddMenuItem = () => {
                 </div>
 
                 <div className="form-grid">
-                  <div>
-                    <label>Cuisine</label>
-                    <select
-                      name="cuisine"
-                      className="select"
-                      value={formData.cuisine}
-                      onChange={handleChange}
-                    >
-                      {cuisineOptions.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                 <div style={{ gridColumn: "1 / -1", width: "100%" }}>
                   <div>
                     <label style={{ display: "block" }}>Time to Prepare (mins)</label>
                     <input
@@ -421,6 +453,7 @@ const AddMenuItem = () => {
                     />
                     <div className="help">Enter expected preparation time in minutes.</div>
                   </div>
+                </div>
                 </div>
 
                 <div className="form-full">

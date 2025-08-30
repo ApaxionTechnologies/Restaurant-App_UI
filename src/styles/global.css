@@ -1,180 +1,216 @@
 /* =========================
-   Card UI (global reusable)
+   Card.css — Global reusable card styles
    ========================= */
 
-/* ===== Grid base ===== */
-.menu-grid {
-  display: grid;
-  gap: 1.25rem;
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  align-content: start;
-  grid-auto-rows: 1fr;
-  animation: fadeIn .32s ease;
+/* Theme variables (optional: can also stay in :root) */
+:root {
+  --card-bg: #fff;
+  --card-border: rgba(0,0,0,0.06);
+  --card-radius: 16px;
+  --card-shadow: 0 10px 28px rgba(12,12,12,0.06);
+  --card-pad: 16px;
+  --card-trans: 0.25s ease;
+  --accent-color: #ff6b6b;
+  --text-color: #131313;
+  --muted-color: #6b6b6b;
+  
+ 
 }
-.menu-grid.grid-3 { grid-template-columns: repeat(3, 1fr); }
-.menu-grid.grid-2 { grid-template-columns: repeat(2, 1fr); }
-.menu-grid.list { display: flex; flex-direction: column; gap: 1rem; }
 
-/* ===== Card surface ===== */
-.menu-card {
-  background: linear-gradient(180deg, rgba(255,255,252,0.98), rgba(251,246,239,0.97));
-  border-radius: 18px;
-  overflow: visible;
+/* =========================
+   Card base
+   ========================= */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: relative;
-  transition: transform 0.28s ease, box-shadow 0.28s ease;
-  height: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 6px 18px rgba(18, 20, 20, 0.08);
-  min-height: 1px;
+  box-shadow: var(--card-shadow);
+  transition: transform var(--card-trans), box-shadow var(--card-trans);
+  border: 1px solid var(--card-border);
 }
 
-.menu-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 34px rgba(18,20,20,0.10);
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 34px rgba(12,12,12,0.1);
 }
 
-/* ===== Image ===== */
-.menu-card img {
+/* Card Image */
+.card img {
   width: 100%;
-  display: block;
+  height: auto;
   object-fit: cover;
-  transition: transform 0.6s ease;
-  border-radius: 12px 12px 10px 10px;
-  aspect-ratio: 4/3;
-  max-height: 170px;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  display: block;
 }
-.menu-card img:hover { transform: scale(1.04); }
 
-/* ===== Card Content ===== */
-.menu-card-content {
-  padding: 14px;
+/* Card Content */
+.card-content {
+  padding: var(--card-pad);
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex: 1;
-  justify-content: space-between;
-  background: transparent;
 }
 
-/* Title header */
-.menu-card-header {
-  background: rgba(255,255,255,0.65);
-  padding: 10px 12px;
-  margin: -14px -14px 6px -14px;
-  border-radius: 14px 14px 10px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+/* Card Title & Subtitle */
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted-color);
+  margin-top: 2px;
 }
 
-.menu-title-price {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.menu-title-price h3 {
+/* Card Price / Badge / Action Row */
+.card-price {
+  font-weight: 700;
+  color: var(--accent-color);
   font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-  color: #131313;
-}
-.menu-title-price .price {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #2563eb;
-  margin: 0;
 }
 
-/* ===== Description ===== */
-.menu-description {
+.card-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Buttons */
+
+
+
+/* Card description text */
+.card-description {
+  font-size: 0.9rem;
+  color: #444;
+  overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9rem;
-  color: #444;
-  margin-bottom: 4px;
-  line-height: 1.4;
-  max-height: 2.8em;
-}
-
-/* ===== Action Row (without add-btn color override) ===== */
-.action-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  gap: 10px;
-}
-
-/* Keep qty controls */
-.qty-controls {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-.qty-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.06);
-  background: #fff;
-  font-weight: 700;
-  cursor: pointer;
-}
-.qty-btn:hover {
-  background: #2563eb;
-  color: #fff;
-}
-
-/* ===== Responsive tweaks ===== */
-@media (max-width:900px) {
-  .menu-grid.grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .menu-card img { max-height:150px; }
-}
-@media (max-width:520px) {
-  .menu-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
-    padding: 0 12px !important;
-  }
-  .menu-card {
-    border-radius: 16px !important;
-    box-shadow: 0 10px 28px rgba(12,12,12,0.08) !important;
-    background: #fff !important;
-    border: 1px solid rgba(15,23,42,0.04) !important;
-  }
-  .menu-card img {
-    height: 170px !important;
-    border-radius: 14px 14px 0 0 !important;
-  }
-  .menu-card-content { padding: 12px !important; gap:8px !important; }
-}
-/* =========================
-   ViewMenu Page Tweaks
+  line-clamp: 2;
+}/* =========================
+   Button Styles (Global)
    ========================= */
-
-/* Hover transition for action buttons */
-.action-row button {
-  transition: background 0.25s ease, transform 0.25s ease;
+:root {
+  --primary-color: #ff6600;   /* accent for active / hover */
+  --primary-color-dark: #e65c00;
+  --btn-text: #fff;
+  --btn-bg: #fbf5ee;          /* default background */
+  --btn-border: #ff6600;      /* default border */
+  --btn-radius: 999px;        /* pill shape */
+  --btn-pad: 8px 14px;
+  --btn-trans: 0.25s ease;
+   --primary-500: #2563eb;
+  --primary-600: #1e4bd8;
+  --primary-700: #0d47a1;
 }
-.action-row button:hover {
+
+/* Base button style for cards & filters */
+.btn-global {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.14);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.96rem;
+  transition: transform .12s ease, box-shadow .12s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-global:hover {
+ 
   transform: translateY(-2px);
 }
 
-/* Smooth fade for grid */
-.menu-grid {
-  animation: fadeIn .35s ease-in-out;
+/* Active state (for filter buttons or current action) */
+.btn-global.active {
+  background-color: var(--primary-500);
+  color: #fff;
+  transform: scale(1.05);
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+
+/* Optional: different sizing for small buttons */
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* =========================
+   Card & Filter overrides
+   ========================= */
+.filter-btn {
+  composes: btn-global; /* if using CSS Modules / Tailwind-like compose */
+}
+
+.card-btn {
+  composes: btn-global;
+}
+
+
+/* Responsive for mobile */
+@media (max-width: 520px) {
+  .card {
+    border-radius: 14px;
+  }
+  .card img {
+    height: 170px;
+  }
+  .card-content {
+    padding: 12px;
+  }
+}
+.veg-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px; /* square look */
+  background: #fff;
+  margin-right: 6px; /* thoda gap from name */
+}
+
+.veg-indicator::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%; /* inner dot always round */
+  display: block;
+}
+
+.veg-indicator.veg {
+  border-color: #008000; 
+}
+
+.veg-indicator.veg::after {
+  background-color: #008000;
+}
+
+.veg-indicator.non-veg {
+  border-color: #d32f2f; 
+}
+
+.veg-indicator.non-veg::after {
+  background-color: #d32f2f;
+}.custom-tooltip.bs-tooltip-top .tooltip-inner {
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.35rem;
+}
+
+.custom-tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #3b82f6;
 }

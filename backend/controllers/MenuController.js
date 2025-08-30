@@ -10,7 +10,7 @@ export const addMenuItem = async (req, res) => {
     }
 
     const restaurantId = req.restaurant.id;
-    const { name, price, ingredients, description, category, cuisine, timeToPrepare } = req.body;
+    const { name, price, ingredients, description,type, category, cuisine, timeToPrepare } = req.body;
 
     const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
@@ -36,7 +36,8 @@ export const addMenuItem = async (req, res) => {
       prepTime: timeToPrepare,
       ingredients: ingredients ? (Array.isArray(ingredients) ? ingredients : [ingredients]) : [],
       description: req.body.description || "Delicious & fresh!",
-      status, // <-- saved status here
+      status, 
+      type: type || "veg" 
     });
 
     await restaurant.save();
@@ -84,6 +85,7 @@ export const getMenuByRestaurantId = async (req, res) => {
       image: it.image && !it.image.startsWith("http")
         ? `${hostPrefix}${it.image}`
         : it.image,
+         type: (it.type || "veg").toLowerCase()
     }));
 
 

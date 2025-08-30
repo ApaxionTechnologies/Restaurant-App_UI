@@ -4,6 +4,8 @@ import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useRestaurant } from "../context/RestaurantContext";
 import ViewMenuNavbar from "../components/ViewMenuNavbar";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import * as bootstrap from 'bootstrap'; 
 import AOS from "aos";
 import "aos/dist/aos.css";
 import axios from "axios";
@@ -95,8 +97,12 @@ useEffect(() => {
 
     // Ab response { restaurant, menu } aata hai
     setRestaurant(res.data.restaurant);
-
-    const items = Array.isArray(res.data.menu) ? res.data.menu : [];
+const items = Array.isArray(res.data.menu) 
+  ? res.data.menu.map(item => ({
+      ...item,
+      type: (item.type || "veg").toLowerCase()  // ensures every item has type
+    })) 
+  : [];
     setDishes(items);
     setMenuMap(buildMenuMap(items));
 
@@ -165,16 +171,13 @@ const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
 
 // close tooltip helper
 const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
-
-// handle read-more click: on mobile show tooltip, on desktop expand inline
-// replace your current handleReadMore with this:
-const handleReadMore = (item) => {
-  setTooltip({
-    visible: true,
-    title: item.name || "Details",
-    text: item.description || "No details available",
+useEffect(() => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach((el) => {
+    new bootstrap.Tooltip(el);
   });
-};
+}, [menuMap]); // re-initialize when menu changes
+
 
 // close tooltip on Escape key
 useEffect(() => {
@@ -305,13 +308,21 @@ const categories = ["All", ...Object.keys(menuMap)];
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
                           {imgSrc && <img src={imgSrc} alt={item.name} />}
                           <div className="menu-card-content">
-                           <div className="menu-title-price">
+<div className="menu-title-price">
+  <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
+
   <h3>{item.name}</h3>
   <p className="price">₹{item.price}</p>
-<span onClick={() => toggleFavorite(item.name)} className="heart-icon" style={{ cursor: "pointer" }}>
-                                {favorites[item.name] ? <FaHeart color="#ef4444" /> : <FaRegHeart />}
-                              </span>
+
+  <span
+    onClick={() => toggleFavorite(item.name)}
+    className="heart-icon"
+    style={{ cursor: "pointer" }}
+  >
+    {favorites[item.name] ? <FaHeart color="#ef4444" /> : <FaRegHeart />}
+  </span>
 </div>
+
 
 
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
@@ -325,12 +336,16 @@ const categories = ["All", ...Object.keys(menuMap)];
 
 <div className="read-more-row">
   {item.description && item.description.length > 0 && (
-    <span
-      className="read-more"
-      onClick={() => handleReadMore(item)}
-    >
-      Read More
-    </span>
+  <button
+  type="button"
+  className=" read-more"
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  title={item.description || "No details available"}
+>
+  Read More
+</button>
+
   )}
 
   <div className="menu-details">
@@ -359,7 +374,8 @@ const categories = ["All", ...Object.keys(menuMap)];
               );
             })}
         </div>
-      </div>{tooltip.visible && (
+      </div>
+      {tooltip.visible && (
   <>
     <div className="desc-backdrop" onClick={closeTooltip} />
     <div className="desc-tooltip" role="dialog" aria-modal="true">
