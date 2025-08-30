@@ -3,86 +3,6 @@
 
 
 
-// import React from "react";
-// import { Routes, Route, Navigate } from "react-router-dom";
-
-// // ✅ Pages
-// import HomePage from "./pages/HomePage";
-// import RegisterRestaurant from "./pages/RegisterRestaurant";
-// import AdminLogin from "./pages/AdminLogin";
-// import Login from "./pages/Login";
-// import MenuPage from "./pages/MenuPage"; 
-// import OrderSuccess from "./pages/OrderSuccess";
-// import AdminDashboard from "./pages/AdminDashboard";
-// import GenerateQR from "./pages/GenerateQR";
-// import RemoveItem from "./pages/RemoveItem";
-// import CurrentMenu from "./pages/CurrentMenu";
-// import FeedbackPage from "./pages/Feedbackpage";
-
-// // ✅ Components
-// import AddMenuItem from "./components/AddMenuItem";
-// import QRScanner from "./components/QRScanner";
-// import TableManager from "./components/TableManager";
-// import ViewMenu from "./components/ViewMenu";
-// import QRFileUploader from "./QRFileUploader";
-// import CartPage from "./components/cartpage";
-// import ScannerPage from "./components/ScannerPage";
-
-// // ✅ Styles
-// import "./styles/global.css";
-// import "./styles/MenuCard.css";
-// import "./styles/QRFileUploader.css";
-
-
-// import { RestaurantProvider } from "./context/RestaurantContext";
-
-// export default function App() {
-
-//   return (
-    
-//     <RestaurantProvider>
-//     <Routes>
-//       {/* ✅ Public Routes */}
-//       <Route path="/" element={<HomePage />} />
-//       <Route path="/login" element={<Login />} />
-//        <Route path="/scanner" element={<ScannerPage />} /> {/* ✅ New route */}
-
-//       {/* ✅ Restaurant & Admin Routes */}
-//       <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
-//       <Route path="/admin-login" element={<AdminLogin />} />
-//       <Route path="/admin-dashboard" element={<AdminDashboard />} />
-//       <Route path="/add-item" element={<AddMenuItem />} />
-//       <Route path="/view-menu" element={<ViewMenu />} />
-//       <Route path="/remove-item" element={<RemoveItem />} />
-//       <Route path="/generate-qr" element={<GenerateQR />} />
-//       <Route path="/current-menu" element={<CurrentMenu />} />
-
-//       {/* ✅ Customer QR Options */}
-//       <Route path="/scanner" element={<QRScanner />} />
-//       <Route path="/upload-qr" element={<QRFileUploader />} />
-
-//       {/* ✅ Customer Menu & Order */}
-
-//       <Route path="/menu" element={<MenuPage />} />
-
-//         <Route path="/feedback" element={<FeedbackPage />} />
-        
-//        <Route path="/cart" element={<CartPage />} />
-//       <Route path="/menu" element={<MenuPage />} />
-//       <Route path="/feedback" element={<FeedbackPage />} />
-//       <Route path="/cart" element={<CartPage />} />
-//       <Route path="/order-success" element={<OrderSuccess />} />
-
-//       {/* ✅ Admin Manage Tables */}
-//       <Route path="/table-manager" element={<TableManager />} />
-
-//       {/* ✅ Redirect unknown routes */}
-//       <Route path="*" element={<Navigate to="/" />} />
-
-//     </Routes>
-//     </RestaurantProvider>
-//   );
-// }
 
 // src/App.jsx
 
@@ -219,8 +139,8 @@
 
 
 
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React from "react"; 
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // ✅ Pages
 import HomePage from "./pages/HomePage";
@@ -245,58 +165,72 @@ import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
 
+
 // ✅ Styles
 import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
 
-
 import { RestaurantProvider } from "./context/RestaurantContext";
 
 export default function App() {
+  const location = useLocation();
+  const state = location.state || {};
 
   return (
-    
     <RestaurantProvider>
-    <Routes>
-      {/* ✅ Public Routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-       <Route path="/scanner" element={<ScannerPage />} /> {/* ✅ New route */}
+      <Routes>
+        {/* ✅ Public Routes */}
+        <Route
+          path="/"
+          element={
+            <>
+              <HomePage />
+              {/* Show AdminLogin modal if redirected from ProtectedRoute */}
+              {state.showAdminLogin && <AdminLogin />}
+            </>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/scanner" element={<ScannerPage />} />
 
-      {/* ✅ Restaurant & Admin Routes */}
-      <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/admin-dashboard" element={ <ProtectedRoute><AdminDashboard /></ProtectedRoute> } />
-      <Route path="/add-item" element={<AddMenuItem />} />
-      <Route path="/view-menu" element={<ViewMenu />} />
-      <Route path="/remove-item" element={<RemoveItem />} />
-      <Route path="/generate-qr" element={<GenerateQR />} />
-      <Route path="/current-menu" element={<CurrentMenu />} />
+        {/* ✅ Restaurant & Admin Routes */}
+        <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
 
-      {/* ✅ Customer QR Options */}
-      <Route path="/scanner" element={<QRScanner />} />
-      <Route path="/upload-qr" element={<QRFileUploader />} />
+        {/* Protected Admin Dashboard */}
+        <Route
+          path="/admin-dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* ✅ Customer Menu & Order */}
+        {/* ✅ Menu & Admin Components */}
+        <Route path="/add-item" element={<AddMenuItem />} />
+        <Route path="/view-menu" element={<ViewMenu />} />
+        <Route path="/remove-item" element={<RemoveItem />} />
+        <Route path="/generate-qr" element={<GenerateQR />} />
+        <Route path="/current-menu" element={<CurrentMenu />} />
 
+        {/* ✅ Customer QR Options */}
+        <Route path="/qr-scanner" element={<QRScanner />} />
+        <Route path="/upload-qr" element={<QRFileUploader />} />
 
+        {/* ✅ Customer Menu & Order */}
+        <Route path="/menu" element={<MenuPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/feedback" element={<FeedbackPage />} />
-        
-       <Route path="/cart" element={<CartPage />} />
-       <Route path="/menu" element={<MenuPage />} />
 
+        {/* ✅ Admin Manage Tables */}
+        <Route path="/table-manager" element={<TableManager />} />
 
-      <Route path="/feedback" element={<FeedbackPage />} />
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/order-success" element={<OrderSuccess />} />
-
-      {/* ✅ Admin Manage Tables */}
-      <Route path="/table-manager" element={<TableManager />} />
-
-      {/* ✅ Redirect unknown routes */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        {/* ✅ Redirect unknown routes */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </RestaurantProvider>
   );
 }

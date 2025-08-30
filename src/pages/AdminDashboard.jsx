@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; 
- // npm install jwt-decode
 import Footer from "../components/Footer";
 import { FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -88,8 +87,6 @@ useEffect(() => {
           onLogout={handleLogout}
           restaurant={restaurant} 
         />
-
-
       <main className="admin-dashboard-content container text-center mt-5">
         <h2>Welcome, Admin 👨‍💻</h2>
         <p className="lead">Manage your restaurant menu and settings below:</p>
