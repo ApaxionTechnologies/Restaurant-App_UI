@@ -14,7 +14,7 @@
     "aos": "^2.3.4",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
-    "bootstrap": "^5.3.7",
+    "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "canvas-confetti": "^1.9.3",
     "cors": "^2.8.5",

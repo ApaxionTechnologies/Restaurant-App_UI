@@ -1,4 +1,3 @@
-
 //  Add Menu Item
 import mongoose from "mongoose";
 
@@ -11,19 +10,23 @@ export const addMenuItem = async (req, res) => {
     }
 
     const restaurantId = req.restaurant.id;
-    const { name, price, category, cuisine, timeToPrepare } = req.body;
+    const { name, price, ingredients, description,type, category, cuisine, timeToPrepare } = req.body;
 
     const restaurant = await Restaurant.findById(restaurantId);
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    
     restaurant.menu = restaurant.menu || [];
 
     const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
 
-  
+    // === STATUS LOGIC ADDED ===
+    // Accept status from request (Published or Draft). Default to "Published" if not provided or invalid.
+    let rawStatus = (req.body.status || "Published").toString().trim();
+    const status = ["Published", "Draft"].includes(rawStatus) ? rawStatus : "Published";
+    // ==========================
+
     restaurant.menu.push({
       name,
       price,
@@ -31,6 +34,10 @@ export const addMenuItem = async (req, res) => {
       image: imagePath,
       cuisine,
       prepTime: timeToPrepare,
+      ingredients: ingredients ? (Array.isArray(ingredients) ? ingredients : [ingredients]) : [],
+      description: req.body.description || "Delicious & fresh!",
+      status, 
+      type: type || "veg" 
     });
 
     await restaurant.save();
@@ -46,7 +53,7 @@ export const addMenuItem = async (req, res) => {
 //  Get Menu by Restaurant ID or Name
 
 export const getMenuByRestaurantId = async (req, res) => {
-  const param = req.params.restaurantId; 
+  const param = req.params.restaurantId;
   try {
     let restaurant = null;
 
@@ -65,14 +72,33 @@ export const getMenuByRestaurantId = async (req, res) => {
 
     const menu = Array.isArray(restaurant.menu) ? restaurant.menu : [];
 
-   
+    const publishedMenu = menu.filter((it) => {
+      const s = (it.status || "").toString().trim().toLowerCase();
+      return s === "published";
+    });
+
+
     const hostPrefix = `${req.protocol}://${req.get("host")}`;
-    const menuWithFullImage = menu.map((it) => ({
+
+    const menuWithFullImage = publishedMenu.map((it) => ({
       ...it.toObject?.() ?? it,
-      image: it.image && !it.image.startsWith("http") ? `${hostPrefix}${it.image}` : it.image,
+      image: it.image && !it.image.startsWith("http")
+        ? `${hostPrefix}${it.image}`
+        : it.image,
+         type: (it.type || "veg").toLowerCase()
     }));
 
-    return res.status(200).json(menuWithFullImage);
+
+    return res.status(200).json({
+      restaurant: {
+        name: restaurant.restaurantName,
+        tagline: restaurant.tagline,
+        image: restaurant.image
+          ? `${hostPrefix}${restaurant.image}`
+          : null
+      },
+      menu: menuWithFullImage
+    });
   } catch (err) {
     console.error("Error in getMenuByRestaurantId:", err);
     return res.status(500).json({ message: "Server error", error: err.message });

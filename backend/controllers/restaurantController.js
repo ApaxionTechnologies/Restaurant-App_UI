@@ -310,7 +310,7 @@ export const registerRestaurant = async (req, res) => {
   }
 };
 
-// ✅ Login
+
 export const loginRestaurant = async (req, res) => {
   try {
     const { email, password } = req.body;
