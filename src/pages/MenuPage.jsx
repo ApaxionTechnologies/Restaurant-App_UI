@@ -21,13 +21,15 @@ import {
 import "../styles/global.css";
 import "../styles/MenuCard.css";
 
-
 export default function MenuPage() {
   const navigate = useNavigate();
 
   const { cart, addToCart, updateQty } = useCart();
   const { restaurant, setRestaurant, setTable } = useRestaurant();
   const [searchParams] = useSearchParams();const { restaurantId: restaurantIdFromParams } = useParams();
+  
+  const [expanded, setExpanded] = useState({});
+
 
 const restaurantIdFromQuery =
   searchParams.get("restaurantId") ||
@@ -35,6 +37,11 @@ const restaurantIdFromQuery =
   searchParams.get("id") ||
   searchParams.get("rest") ||
   null;
+
+const toggleExpand = (id) => {
+  setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+};
+
 
 const restaurantId = restaurantIdFromParams || restaurantIdFromQuery;
 const table = searchParams.get("table") || searchParams.get("tableNumber") || localStorage.getItem("tableNumber") || "1";
@@ -80,23 +87,27 @@ useEffect(() => {
   if (!restaurantId) return;
 
 
-  const fetchMenu = async () => {
-    
-    setLoading(true);
-    try {
-      const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
-     
-      const items = Array.isArray(res.data) ? res.data : [];
-      setDishes(items);
-      setMenuMap(buildMenuMap(items));
-      console.log("menuMap after build:", buildMenuMap(items)); 
-    } catch (err) {
-      console.error(err);
-      setMenuMap(defaultMenu);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchMenu = async () => {
+  setLoading(true);
+  try {
+    const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
+    console.log("API response:", res.data);
+
+    // Ab response { restaurant, menu } aata hai
+    setRestaurant(res.data.restaurant);
+
+    const items = Array.isArray(res.data.menu) ? res.data.menu : [];
+    setDishes(items);
+    setMenuMap(buildMenuMap(items));
+
+  } catch (err) {
+    console.error(err);
+    setMenuMap(defaultMenu);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   fetchMenu();
 }, [restaurantId]);   
@@ -132,14 +143,80 @@ useEffect(() => {
     return found ? found.qty : 0;
   };
 
+//   useEffect(() => {
+//   const fetchMe = async () => {
+//     try {
+//       const token = localStorage.getItem("token");
+//       const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+//         headers: { Authorization: `Bearer ${token}` }
+//       });
+//       console.log("me response:", res.data);
+
+     
+//       setRestaurant(res.data.restaurant);
+//     } catch (err) {
+//       console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+//     }
+//   };
+//   fetchMe();
+// }, []);
+// inside MenuPage function, beside other useState declarations:
+const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
+
+// close tooltip helper
+const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
+
+// handle read-more click: on mobile show tooltip, on desktop expand inline
+// replace your current handleReadMore with this:
+const handleReadMore = (item) => {
+  setTooltip({
+    visible: true,
+    title: item.name || "Details",
+    text: item.description || "No details available",
+  });
+};
+
+// close tooltip on Escape key
+useEffect(() => {
+  const onKey = (e) => { if (e.key === "Escape") closeTooltip(); };
+  window.addEventListener("keydown", onKey);
+  return () => window.removeEventListener("keydown", onKey);
+}, []);
+
+
 const categories = ["All", ...Object.keys(menuMap)];
 
 
   return (
     <>
-
-    
       <ViewMenuNavbar />
+     <div className={restaurant.image ? "restaurant-hero" : "default-cover"}>
+  {restaurant?.image ? (
+    <>
+     <img
+  src={
+    restaurant?.image
+      ? restaurant.image.startsWith("http")
+        ? restaurant.image
+        : `http://localhost:5001/uploads/${restaurant.image.replace(/^\/+/, "")}`
+      : "/burger.jpg"
+  }
+  alt={restaurant?.name}
+/>
+
+      <div className="restaurant-overlay">
+        <h1>{restaurant?.name}</h1>
+        <p>{restaurant.tagline}</p>
+      </div>
+    </>
+  ) : (
+    <div className="overlay-text">
+      <h1>{restaurant?.name}</h1>
+      <p>{restaurant.tagline}</p>
+    </div>
+  )}
+</div>
+
       <div className="page-center fade-in">
         <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
           <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>📋 Here's the Menu</h2>
@@ -228,26 +305,41 @@ const categories = ["All", ...Object.keys(menuMap)];
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
                           {imgSrc && <img src={imgSrc} alt={item.name} />}
                           <div className="menu-card-content">
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <h3>{item.name}</h3>
-                              <p className="price">₹{item.price}</p>
-                              <span onClick={() => toggleFavorite(item.name)} className="heart-icon" style={{ cursor: "pointer" }}>
+                           <div className="menu-title-price">
+  <h3>{item.name}</h3>
+  <p className="price">₹{item.price}</p>
+<span onClick={() => toggleFavorite(item.name)} className="heart-icon" style={{ cursor: "pointer" }}>
                                 {favorites[item.name] ? <FaHeart color="#ef4444" /> : <FaRegHeart />}
                               </span>
-                            </div>
+</div>
+
 
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem" }}>
                              
-                              <div className="menu-stars" aria-hidden>
-                                {[...Array(5)].map((_, i) => i < (item.rating || 4) ? <FaStar key={i} color="#fbbf24" size={14} /> : <FaRegStar key={i} color="#fbbf24" size={14} />)}
-                              </div>
+                             
                             </div>
 
-                            <div className="menu-details">
-                              <span>{item.cuisine || "🍴"}</span>
-                              <span>•</span>
-                              <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
-                            </div>
+<p className="menu-description">
+  {item.description}
+</p>
+
+<div className="read-more-row">
+  {item.description && item.description.length > 0 && (
+    <span
+      className="read-more"
+      onClick={() => handleReadMore(item)}
+    >
+      Read More
+    </span>
+  )}
+
+  <div className="menu-details">
+    <span>{item.cuisine || "🍴"}</span>
+    <span>•</span>
+    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+  </div>
+</div>
+
 
                             {qty === 0 ? (
                               <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
@@ -267,7 +359,30 @@ const categories = ["All", ...Object.keys(menuMap)];
               );
             })}
         </div>
+      </div>{tooltip.visible && (
+  <>
+    <div className="desc-backdrop" onClick={closeTooltip} />
+    <div className="desc-tooltip" role="dialog" aria-modal="true">
+      <div className="tt-header">
+        <div className="tt-title">{tooltip.title}</div>
+        <button 
+          className="tt-close" 
+          onClick={closeTooltip} 
+          aria-label="Close"
+        >
+          x
+        </button>
       </div>
+      <div className="tt-body">
+        <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+          {tooltip.text}
+        </p>
+      </div>
+    </div>
+  </>
+)}
+
+
     </>
   );
 }

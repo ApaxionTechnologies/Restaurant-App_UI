@@ -1,4 +1,6 @@
 /* HEADER */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
 .Home-Header {
   display: flex;
   justify-content: space-between;
@@ -51,6 +53,24 @@
   align-items: center;
   gap: 5px;
 } */
+
+.restaurant-name-text {
+  font-family: 'Pacifico', cursive;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ff7f50, #bd6b2b);
+
+  /* Proper cross-browser */
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent; /* Chrome, Safari */
+  color: transparent; /* fallback for others */
+
+  letter-spacing: 1px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 
 

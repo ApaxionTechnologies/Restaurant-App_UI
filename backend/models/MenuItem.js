@@ -24,6 +24,20 @@ const menuItemSchema = new mongoose.Schema({
   timeToPrepare: {
     type: String
   },
+  ingredients: {
+    type: [String], 
+    default: []
+  },
+  description: {
+    type: String,
+    default: "Delicious & fresh!"
+  },
+    status: {
+    type: String,
+    enum: ['Published', 'Draft'],
+    default: 'Published',
+    
+  },
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Restaurant",

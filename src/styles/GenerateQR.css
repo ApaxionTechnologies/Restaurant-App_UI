@@ -24,7 +24,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.45;
-  padding: 32px 20px;
   color: var(--text);
 }
 
@@ -34,6 +33,9 @@ body {
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 24px;
+  
+  min-height: calc(100vh - 80px); /* 80px header/footer ke liye adjust */
+   align-items: stretch;
 }
 
 .qr-card {
@@ -46,8 +48,11 @@ body {
   flex-direction: column;
   text-align: center;
   overflow: hidden;
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 0.5s ease-in-out; 
+    height: 100%;
+     padding-top: 8px;
 }
+
 
 .qr-card h2 {
   font-size: clamp(18px, 2vw, 20px);
@@ -61,6 +66,15 @@ body {
   color: var(--muted);
   margin-bottom: 20px;
 }
+
+.qr-image {
+  width: 100%;       
+  height: auto;     
+  max-width: 100%;  
+  border-radius: 12px; 
+  object-fit: contain; 
+}
+
 
 .qr-input-section input,
 .qr-input-section select,
@@ -85,12 +99,31 @@ body {
   transform: translateY(-1px);
 }
 .qr-preview-card {
+  position: relative;        
   background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow-1);
-  overflow: hidden;
+  overflow: visible;        
   animation: fadeIn 0.5s ease-in-out;
   text-align: center;
+  height: auto;            
+  min-height: 340px;         
+  padding-bottom:30px;      
+  box-sizing: border-box;
+}
+
+
+.qr-placeholder {
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+  padding: 2rem;
+  font-size: 1rem;
+  text-align: center;
+}
+.placeholder-bg {
+  background: transparent !important;
+  box-shadow: none;
 }
 
 .qr-bg {
@@ -112,6 +145,50 @@ body {
   box-shadow: var(--shadow-soft);
   display: inline-block;
 }
+/* ===== QR header: restaurant name + table number inline ===== */
+/* Paste this after .qr-overlay canvas or at the end of the file */
+
+.qr-header-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+
+.qr-restaurant-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: #bd6b2b; 
+  letter-spacing: -0.2px;
+  text-transform: none;
+}
+
+.qr-table-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, rgba(37,99,235,0.10), rgba(37,99,235,0.06));
+  color: var(--text);
+  font-weight: 800;
+  font-size: 18px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+  border: 1px solid rgba(14,22,35,0.03);
+}
+
+
+.qr-table-number {
+  color: var(--primary-500);
+  font-weight: 900;
+  margin-left: 6px;
+}
+
+.qr-preview-card .qr-header-inline { z-index: 3; }
 
 
 .view-menu-btn {
@@ -133,7 +210,7 @@ body {
 
 
 .qr-text-section {
-  padding: 20px;
+  padding: 8px;
   background: #fff;
 }
 
@@ -141,21 +218,33 @@ body {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--primary-500);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .qr-text-section p {
   font-size: 0.9rem;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-.qr-text-section .brand {
-  font-size: 0.95rem;
-  font-style: normal;
+.qr-preview-card .brand {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 0.78rem;      
   font-weight: 600;
-  color: var(--accent);
+  color: black;    
+  background: rgba(255,255,255,0.85); 
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(2,6,23,0.06);
+  z-index: 6;            
+  line-height: 1;
+  white-space: nowrap;
 }
+
+
+
 
 .qr-overlay canvas {
   width: 140px !important;
@@ -195,7 +284,7 @@ body {
   font-size: 1rem;
   background-color: transparent;
   border: 2px solid var(--primary-500);
-  color: var(--primary-500);
+  color:   #fff;
   padding: 10px 20px;
   border-radius: var(--radius);
   cursor: pointer;
@@ -249,4 +338,53 @@ label {
 @media (max-width: 480px) {
   body { padding: 18px 12px; }
   .qr-card { padding: 16px; }
+}
+/* =========================
+   Global Button Styles
+   ========================= */
+
+.btn {
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.96rem;
+  transition: transform .12s ease, box-shadow .12s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Primary button (blue gradient) */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.14);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* Secondary / outline button */
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-500);
+  color: var(--primary-500);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-500);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Disabled state */
+.btn:disabled,
+.btn-disabled {
+  background-color: #e0e0e0 !important;
+  color: #aaa !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
 }

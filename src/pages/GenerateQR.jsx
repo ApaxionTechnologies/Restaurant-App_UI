@@ -80,7 +80,6 @@ useEffect(() => {
     return;
   }
 
-  console.log("Generating QR for restaurant:", restaurantData._id); 
 
     const start = parseInt(startTable);
     const end = parseInt(endTable);
@@ -103,13 +102,17 @@ useEffect(() => {
   table: i,
   value: `http://localhost:3000/menu/${restaurantData._id}?table=${i}`
 });
+  console.log("Generating QR for restaurant:", restaurantData._id); 
+console.log("restaurantData:", restaurantData);
+console.log("restaurantData._id:", restaurantData?._id);
+
     }
     setQrList(list);
     setCurrentIndex(0);
   };
 
  const downloadSingleQR = async (index) => {
-  const qrElement = document.querySelector(".qr-preview-card"); // full card div
+  const qrElement = document.querySelector(".qr-preview-card");
   if (!qrElement) return;
 
   const canvas = await html2canvas(qrElement, {
@@ -141,7 +144,7 @@ const downloadAllQRCodes = async () => {
     zip.file(`QR_Table_${qrList[i].table}_Apaxion.png`, imgData, { base64: true });
 
     setCurrentIndex(i);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // delay to render properly
+    await new Promise((resolve) => setTimeout(resolve, 500)); 
   }
 
   const blob = await zip.generateAsync({ type: "blob" });
@@ -211,7 +214,7 @@ const downloadAllQRCodes = async () => {
            <div className="instruction-text">
           <p>Input the starting and ending table numbers to generate individual QR codes for each table.</p>
         </div>
-           <div className="text-center mt-4">
+           <div className="text-center">
           <img
             src="https://tse1.mm.bing.net/th/id/OIP.j3Q5KEdaACrCsdDg-xayvQHaDj?rs=1&pid=ImgDetMain&o=7&rm=3"
             alt="QR Code Example"
@@ -220,52 +223,80 @@ const downloadAllQRCodes = async () => {
         </div>
         </div>
        {/*  QR Display */}
-{qrList.length > 0 && (
-  <div className="qr-card d-flex flex-column">
-    <button
-      onClick={downloadAllQRCodes}
-      className="btn btn-dark mt-3 w-100"
-    >
-      <i className="bi bi-archive"></i> Download All QR
-    </button>
+{/* QR Display - Always visible */}
+<div className="qr-card d-flex flex-column">
+  <button
+    onClick={downloadAllQRCodes}
+    className="btn btn-dark mt-1 w-100"
+    disabled={qrList.length === 0} // disabled if no QR
+  >
+    <i className="bi bi-archive"></i> Download All QR
+  </button>
 
-    <button
-      onClick={() => downloadSingleQR(currentIndex)}
-      className="btn btn-primary mt-3 w-100"
-    >
-      <i className="bi bi-download"></i> Download QR
-    </button>
+  <button
+    onClick={() => downloadSingleQR(currentIndex)}
+    className="btn btn-primary mt-1 w-100"
+    disabled={qrList.length === 0} // disabled if no QR
+  >
+    <i className="bi bi-download"></i> Download QR
+  </button>
 
-    <div className="qr-preview-card mt-3">
-      <div className="qr-bg">
-        <div
-          className="qr-overlay"
-          ref={(el) => (qrRefs.current[currentIndex] = el)}
-        >
-          <QRCodeCanvas
-            value={qrList[currentIndex].value}
-            size={200}
-            includeMargin={true}
-            bgColor="#ffffff"
-            fgColor="#000000"
-          />
+<div
+  className="qr-preview-card mt-2"
+  style={ qrList.length === 0 
+    ? { background: "transparent", boxShadow: "none",textAlign: "center", color: "#888", padding: "40px 20px", border: "2px dashed #ccc" } 
+    : { background: "var(--card-bg)", boxShadow: "var(--shadow-1)" } }
+>
+    {qrList.length > 0 ? (
+      <>
+        <div className="qr-bg">
+        
+          <div
+            className="qr-overlay"
+            ref={(el) => (qrRefs.current[currentIndex] = el)}
+          >
+            <QRCodeCanvas
+              value={qrList[currentIndex].value}
+              size={200}
+              includeMargin={true}
+              bgColor="#ffffff"
+              fgColor="#000000"
+            />
+          </div>
+          <div className="view-menu-btn">View Our Menu</div>
         </div>
+{/* Restaurant name + Table number (inline) */}
+<div className="qr-header-inline" aria-hidden="true">
+  <div className="qr-restaurant-name">
+    {restaurantName || (restaurantData && restaurantData.restaurantName) || "Restaurant"}
+  </div>
+  <div className="qr-table-badge">
+    Table <span className="qr-table-number">{qrList[currentIndex].table}</span>
+  </div>
+</div>
 
-        <div className="view-menu-btn">View Our Menu</div>
-      </div>
-
-      <div className="qr-text-section">
-        <h3>SCAN & ORDER</h3>
-        <p>
-          Scan The QR Code with Your Smartphone Camera, read our digital
-          menu and order!
+        <div className="qr-text-section">
+          <h3>SCAN & ORDER</h3>
+          <p>
+            Scan The QR Code with Your Smartphone Camera, read our digital
+            menu and order!
+          </p>
+          <h4 className="brand">Powered by Apaxion</h4>
+        </div>
+      </>
+    ) : (
+      <div className="qr-placeholder text-center p-4">
+        <p className="text-muted">
+          No QR Generated Yet. <br /> Please enter a table range and click{" "}
+          <strong>Generate QR Codes</strong>.
         </p>
-        <div style={{fontWeight:700, color:"#bd6b2b"}}>{restaurantName}</div>
-        <h4 className="brand">Powered by Apaxion</h4>
       </div>
-    </div>
+    )}
+  </div>
 
-    <div className="qr-nav-arrows d-flex justify-content-between mt-3">
+  {/* Navigation arrows */}
+  {qrList.length > 0 && (
+    <div className="qr-nav-arrows d-flex justify-content-between mt-1">
       <button
         className="btn btn-outline-secondary"
         disabled={currentIndex === 0}
@@ -281,8 +312,9 @@ const downloadAllQRCodes = async () => {
         Next →
       </button>
     </div>
-  </div>
-)}
+  )}
+</div>
+
 
       </div>
       <div style={{ display: "none" }}>

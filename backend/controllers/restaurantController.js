@@ -414,7 +414,7 @@ export const registerRestaurant = async (req, res) => {
       categories,
       address,
 
-//       image: req.file ? `/uploads/${req.file.filename}` : null, 
+
 
       image: mainImageFile ? `/uploads/${mainImageFile.filename || mainImageFile.originalname ? mainImageFile.filename : mainImageFile}` : null,
       logoImage: logoImageFile ? `/uploads/${logoImageFile.filename}` : null,     // ✅ new
@@ -436,7 +436,7 @@ export const registerRestaurant = async (req, res) => {
   }
 };
 
-//  Login
+
 export const loginRestaurant = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -464,7 +464,7 @@ export const loginRestaurant = async (req, res) => {
   }
 };
 
-// /auth/me - return current user based on cookie token
+
 export const getCurrentRestaurant = async (req, res) => {
   try {
     let token = req.cookies?.token; 

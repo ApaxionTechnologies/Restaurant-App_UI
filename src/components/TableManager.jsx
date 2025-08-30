@@ -3,6 +3,7 @@ import axios from "axios";
 import "../styles/TableManager.css";
 import Footer from "./Footer";
 import HomeHeader from "../components/HomeHeader.jsx";
+import { useNavigate } from "react-router-dom";
 
 const TableManager = () => {
   const [restaurantData, setRestaurantData] = useState(null);
@@ -10,7 +11,9 @@ const TableManager = () => {
   const [error, setError] = useState("");
   const restaurantEmail = localStorage.getItem("restaurantEmail");
    const [restaurant, setRestaurant] = useState(null);
-  
+    const navigate = useNavigate();
+    const [restaurantName, setRestaurantName] = useState("My Restaurant");
+    const [adminEmail, setAdminEmail] = useState("");
   
   useEffect(() => {
     const fetchMe = async () => {
@@ -95,20 +98,23 @@ const TableManager = () => {
       alert("Failed to update tables");
     }
   };
+ const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminEmail");
+    navigate("/");
+  };
 
   return (
     <div className="table-manager-wrapper">
 
-      <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantData ? restaurantData.restaurantName : ""}
-        adminEmail={restaurantEmail}
-        restaurant={restaurant}
-        onLogout={() => {
-          localStorage.removeItem("restaurantEmail");
-          window.location.reload();
-        }}
-      />
+     <HomeHeader
+            isAdminDashboard={true}
+            restaurantName={restaurantName}
+            adminEmail={adminEmail}
+            onLogout={handleLogout}
+            restaurant={restaurant}
+          />
+    
       <div className="table-manager-container">
         <div className="table-manager-card">
           <h3>Manage Tables</h3>

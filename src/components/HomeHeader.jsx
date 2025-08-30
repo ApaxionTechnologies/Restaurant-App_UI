@@ -216,14 +216,14 @@ export default function HomeHeader({
       <header className="Home-Header">
         <div className="Header-left">
           {isAdminDashboard ? (
-            <img  src={
-    restaurant?.logoImage
-      ? restaurant.logoImage.startsWith("http")
-        ? restaurant.logoImage
-        : `http://localhost:5001${restaurant.logoImage}`
-      : "/burger.jpg"
-  } alt="Restaurant Logo" className="restaurant-logo" />
-          ) : (
+        <span className="restaurant-name-text">
+  {typeof restaurant?.restaurantName === "string" 
+     ? restaurant.restaurantName 
+     : typeof restaurant?.restaurant === "object"
+       ? restaurant.restaurant.restaurantName 
+       : "My Restaurant"}
+</span>
+  ) : (
             <>
               {!isRegisterPage && (
                 <button className="register-btn" onClick={() => navigate("/registerrestaurant")}>
@@ -238,17 +238,30 @@ export default function HomeHeader({
         </div>
 
       
-        <div className="header-right">
-          {isAdminDashboard ? (
-            <div className="profile-menu" ref={profileRef}>
-              <FaUserCircle className="profile-icon" onClick={handleProfileClick} />
-            </div>
-          ) : (
-            <button className="Header-link login-btn" onClick={() => setShowAdminModal(true)}>
-              <BsPersonLock style={{ color: "green", fontSize: "20px" }} /> Login
-            </button>
-          )}
-        </div>
+       <div className="header-right">
+  {isAdminDashboard ? (
+    <div className="profile-menu" ref={profileRef}>
+      <img
+        src={
+          restaurant?.logoImage
+            ? restaurant.logoImage.startsWith("http")
+              ? restaurant.logoImage
+              : `http://localhost:5001${restaurant.logoImage}`
+            : "/burger.jpg"
+        }
+        alt="Restaurant Logo"
+        className="profile-logo"
+        onClick={handleProfileClick} 
+        style={{ width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer" }}
+      />
+    </div>
+  ) : (
+    <button className="Header-link login-btn" onClick={() => setShowAdminModal(true)}>
+      <BsPersonLock style={{ color: "green", fontSize: "20px" }} /> Login
+    </button>
+  )}
+</div>
+
       </header>
       <div
         ref={dropdownRef}
