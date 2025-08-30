@@ -1,139 +1,3 @@
-// // controllers/restaurantController.js
-// import Restaurant from "../models/Restaurant.js";
-
-// // Register a new restaurant
-// export const registerRestaurant = async (req, res) => {
-//   try {
-//     const { restaurantName, firstName, lastName, contact, email, password, tables, address } = req.body;
-
-//     const existingRestaurant = await Restaurant.findOne({ email });
-//     if (existingRestaurant) {
-//       return res.status(400).json({ error: "Restaurant with this email already exists!" });
-//     }
-
-//     const newRestaurant = new Restaurant({
-//       restaurantName,
-//       firstName,
-//       lastName,
-//       contact,
-//       email,
-//       password, // In production, hash it!
-//       tables,
-//       address,
-//     });
-
-//     await newRestaurant.save();
-//     res.status(201).json({ message: "Restaurant registered successfully!", restaurant: newRestaurant });
-//   } catch (err) {
-//     console.error("❌ Registration error:", err);
-//     res.status(500).json({ error: "Registration failed" });
-//   }
-// };
-
-// // Login
-// export const loginRestaurant = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const restaurant = await Restaurant.findOne({ email });
-
-//     if (!restaurant || restaurant.password !== password) {
-//       return res.status(401).json({ error: "Invalid email or password" });
-//     }
-
-//     res.status(200).json({
-//       message: "Login successful",
-//       restaurant: {
-//         id: restaurant._id,
-//         name: restaurant.restaurantName,
-//         email: restaurant.email,
-//         tables: restaurant.tables,
-//       },
-//     });
-//   } catch (err) {
-//     console.error("❌ Login error:", err);
-//     res.status(500).json({ error: "Login failed" });
-//   }
-// };
-
-// // Get a restaurant by email
-// export const getRestaurantByEmail = async (req, res) => {
-//   try {
-//     const decodedEmail = decodeURIComponent(req.params.email);
-//     const restaurant = await Restaurant.findOne({ email: decodedEmail });
-
-//     if (!restaurant) {
-//       return res.status(404).json({ error: "Restaurant not found" });
-//     }
-
-//     res.status(200).json({ restaurant });
-//   } catch (err) {
-//     console.error("❌ Fetch error:", err);
-//     res.status(500).json({ error: "Failed to fetch restaurant" });
-//   }
-// };
-
-// // Update tables
-// export const updateTables = async (req, res) => {
-//   try {
-//     const decodedEmail = decodeURIComponent(req.params.email);
-//     const { tables } = req.body;
-
-//     const restaurant = await Restaurant.findOne({ email: decodedEmail });
-
-//     if (!restaurant) {
-//       return res.status(404).json({ error: "Restaurant not found" });
-//     }
-
-//     restaurant.tables = tables;
-//     await restaurant.save();
-
-//     res.status(200).json({ message: "Tables updated successfully" });
-//   } catch (err) {
-//     console.error("❌ Table update error:", err);
-//     res.status(500).json({ error: "Failed to update tables" });
-//   }
-// };
-
-// // Delete a restaurant
-// export const deleteRestaurant = async (req, res) => {
-//   try {
-//     const decodedEmail = decodeURIComponent(req.params.email);
-//     const result = await Restaurant.findOneAndDelete({ email: decodedEmail });
-
-//     if (!result) {
-//       return res.status(404).json({ error: "Restaurant not found" });
-//     }
-
-//     res.status(200).json({ message: "Restaurant deleted successfully" });
-//   } catch (err) {
-//     console.error("❌ Delete error:", err);
-//     res.status(500).json({ error: "Failed to delete restaurant" });
-//   }
-// };
-
-// // Update restaurant profile
-// export const updateRestaurant = async (req, res) => {
-//   try {
-//     const decodedEmail = decodeURIComponent(req.params.email);
-//     const updatedData = req.body;
-
-//     const updated = await Restaurant.findOneAndUpdate(
-//       { email: decodedEmail },
-//       updatedData,
-//       { new: true }
-//     );
-
-//     if (!updated) {
-//       return res.status(404).json({ error: "Restaurant not found" });
-//     }
-
-//     res.status(200).json({ message: "Restaurant updated", restaurant: updated });
-//   } catch (err) {
-//     console.error("❌ Update error:", err);
-//     res.status(500).json({ error: "Failed to update restaurant" });
-//   }
-// };
-
 // //------------23-08-2024 Updated Code Below------------//
 // import Restaurant from "../models/Restaurant.js";
 
@@ -353,22 +217,29 @@
 //     res.status(500).json({ error: "Failed to update restaurant" });
 //   }
 // };
-//----------mera code ----//
+
+
+  
+//29-08-2024 Updated Code Below//
 // controllers/restaurantController.js
 
-
 import Restaurant from "../models/Restaurant.js";
-
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+
+// ✅ Token signers
 const signAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || "15m" });
+  return jwt.sign(payload, process.env.JWT_SECRET || "default_secret", {
+    expiresIn: process.env.JWT_EXPIRES_IN || "15m",
+  });
 };
 const signRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.REFRESH_SECRET, { expiresIn: process.env.REFRESH_EXPIRES_IN || "7d" });
+  return jwt.sign(payload, process.env.REFRESH_SECRET || "refresh_secret", {
+    expiresIn: process.env.REFRESH_EXPIRES_IN || "7d",
+  });
 };
 
-
+// ✅ Register
 export const registerRestaurant = async (req, res) => {
   try {
     const {
@@ -386,14 +257,20 @@ export const registerRestaurant = async (req, res) => {
     const categories = req.body.categories ? JSON.parse(req.body.categories) : [];
     const address = req.body.address ? JSON.parse(req.body.address) : {};
 
-    const existingRestaurant = await Restaurant.findOne({ email });
+    // ✅ always lowercase email
+    const normalizedEmail = email.toLowerCase();
+
+    const existingRestaurant = await Restaurant.findOne({ email: normalizedEmail });
     if (existingRestaurant) {
       return res
         .status(400)
         .json({ error: "Restaurant with this email already exists!" });
     }
 
-    // Support both old single-file (req.file) and new multi-file (req.files) uploads
+    // ✅ Password hash
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ File uploads
     const files = req.files || {};
     const mainImageFile = (files.image && files.image[0]) || req.file || null;
     const logoImageFile = files.logoImage && files.logoImage[0];
@@ -406,37 +283,34 @@ export const registerRestaurant = async (req, res) => {
       firstName,
       lastName,
       contact,
-      email,
-
-      password, 
+      email: normalizedEmail,
+      password: hashedPassword,
       tables,
       tagline,
       categories,
       address,
 
-//       image: req.file ? `/uploads/${req.file.filename}` : null, 
-
-      image: mainImageFile ? `/uploads/${mainImageFile.filename || mainImageFile.originalname ? mainImageFile.filename : mainImageFile}` : null,
-      logoImage: logoImageFile ? `/uploads/${logoImageFile.filename}` : null,     // ✅ new
-      headerImage: headerImageFile ? `/uploads/${headerImageFile.filename}` : null, // ✅ new
-      footerImage: footerImageFile ? `/uploads/${footerImageFile.filename}` : null, // ✅ new
-
+      image: mainImageFile
+        ? `/uploads/${mainImageFile.filename || mainImageFile.originalname || mainImageFile}`
+        : null,
+      logoImage: logoImageFile ? `/uploads/${logoImageFile.filename}` : null,
+      headerImage: headerImageFile ? `/uploads/${headerImageFile.filename}` : null,
+      footerImage: footerImageFile ? `/uploads/${footerImageFile.filename}` : null,
     });
 
     await newRestaurant.save();
-    res
-      .status(201)
-      .json({
-        message: "Restaurant registered successfully!",
-        restaurant: newRestaurant,
-      });
+
+    res.status(201).json({
+      message: "Restaurant registered successfully!",
+      restaurant: newRestaurant,
+    });
   } catch (err) {
-    console.error("❌ Registration error:", err);
-    return res.status(500).json({ error: "Registration failed" });
+    console.error("❌ Registration error:", err.message);
+    return res.status(500).json({ error: "Registration failed", details: err.message });
   }
 };
 
-//  Login
+
 export const loginRestaurant = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -446,62 +320,66 @@ export const loginRestaurant = async (req, res) => {
       return res.status(401).json({ error: "Restaurant not found" });
     }
 
-    if (restaurant.password !== password) {
+    // ✅ Compare hash
+    const isMatch = await bcrypt.compare(password, restaurant.password);
+    if (!isMatch) {
       return res.status(401).json({ error: "Invalid password" });
     }
 
     const token = jwt.sign(
-      { id: restaurant._id, email: restaurant.email, 
-    restaurantName: restaurant.restaurantName  },
-      process.env.JWT_SECRET,
+      {
+        id: restaurant._id,
+        email: restaurant.email,
+        restaurantName: restaurant.restaurantName,
+      },
+      process.env.JWT_SECRET || "default_secret",
       { expiresIn: "1h" }
     );
 
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
-    console.error("Login Error:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("Login Error:", err.message);
+    res.status(500).json({ error: "Server error", details: err.message });
   }
 };
 
-// /auth/me - return current user based on cookie token
+// ✅ Get current restaurant
 export const getCurrentRestaurant = async (req, res) => {
   try {
-    let token = req.cookies?.token; 
+    let token = req.cookies?.token;
     if (!token && req.headers.authorization) {
-      token = req.headers.authorization.split(" ")[1]; 
+      token = req.headers.authorization.split(" ")[1];
     }
 
     if (!token) return res.status(401).json({ error: "Not authenticated" });
 
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET || "default_secret");
     const restaurant = await Restaurant.findById(payload.id).select("-password");
     if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
-    return res.status(200).json({ restaurant }); 
+    return res.status(200).json({ restaurant });
   } catch (err) {
-    console.error("❌ getCurrentRestaurant error:", err);
+    console.error("❌ getCurrentRestaurant error:", err.message);
     return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
-
-// logout - clear cookies
+// ✅ Logout
 export const logoutRestaurant = async (req, res) => {
   try {
     res.clearCookie("token");
     res.clearCookie("refreshToken");
     return res.status(200).json({ message: "Logged out" });
   } catch (err) {
-    console.error("❌ Logout error:", err);
+    console.error("❌ Logout error:", err.message);
     return res.status(500).json({ error: "Logout failed" });
   }
 };
 
-// Get a restaurant by email
+// ✅ Get by email
 export const getRestaurantByEmail = async (req, res) => {
   try {
-    const decodedEmail = decodeURIComponent(req.params.email);
+    const decodedEmail = decodeURIComponent(req.params.email).toLowerCase();
     const restaurant = await Restaurant.findOne({ email: decodedEmail });
 
     if (!restaurant) {
@@ -510,7 +388,7 @@ export const getRestaurantByEmail = async (req, res) => {
 
     res.status(200).json({ restaurant });
   } catch (err) {
-    console.error("❌ Fetch error:", err);
+    console.error("❌ Fetch error:", err.message);
     res.status(500).json({ error: "Failed to fetch restaurant" });
   }
 };
@@ -518,7 +396,7 @@ export const getRestaurantByEmail = async (req, res) => {
 // ✅ Update tables
 export const updateTables = async (req, res) => {
   try {
-    const decodedEmail = decodeURIComponent(req.params.email);
+    const decodedEmail = decodeURIComponent(req.params.email).toLowerCase();
     const { tables } = req.body;
 
     const restaurant = await Restaurant.findOne({ email: decodedEmail });
@@ -532,15 +410,15 @@ export const updateTables = async (req, res) => {
 
     res.status(200).json({ message: "Tables updated successfully" });
   } catch (err) {
-    console.error("❌ Table update error:", err);
+    console.error("❌ Table update error:", err.message);
     res.status(500).json({ error: "Failed to update tables" });
   }
 };
 
-// ✅ Delete a restaurant
+// ✅ Delete
 export const deleteRestaurant = async (req, res) => {
   try {
-    const decodedEmail = decodeURIComponent(req.params.email);
+    const decodedEmail = decodeURIComponent(req.params.email).toLowerCase();
     const result = await Restaurant.findOneAndDelete({ email: decodedEmail });
 
     if (!result) {
@@ -549,23 +427,23 @@ export const deleteRestaurant = async (req, res) => {
 
     res.status(200).json({ message: "Restaurant deleted successfully" });
   } catch (err) {
-    console.error("❌ Delete error:", err);
+    console.error("❌ Delete error:", err.message);
     res.status(500).json({ error: "Failed to delete restaurant" });
   }
 };
 
-// ✅ Update restaurant profile
+// ✅ Update profile
 export const updateRestaurant = async (req, res) => {
   try {
-    const decodedEmail = decodeURIComponent(req.params.email);
+    const decodedEmail = decodeURIComponent(req.params.email).toLowerCase();
     const updatedData = { ...req.body };
 
-    // ❌ Email cannot be changed after registration
+    // ❌ Email cannot be changed
     if ("email" in updatedData) {
       delete updatedData.email;
     }
 
-    // Handle JSON strings
+    // Parse JSON fields if needed
     if (updatedData.categories && typeof updatedData.categories === "string") {
       try {
         updatedData.categories = JSON.parse(updatedData.categories);
@@ -577,7 +455,7 @@ export const updateRestaurant = async (req, res) => {
       } catch {}
     }
 
-    // Handle files for image fields (main, logo, header, footer)
+    // Handle file uploads
     const files = req.files || {};
     const mainImageFile = (files.image && files.image[0]) || null;
     const logoImageFile = files.logoImage && files.logoImage[0];
@@ -599,11 +477,9 @@ export const updateRestaurant = async (req, res) => {
       return res.status(404).json({ error: "Restaurant not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Restaurant updated", restaurant: updated });
+    res.status(200).json({ message: "Restaurant updated", restaurant: updated });
   } catch (err) {
-    console.error("❌ Update error:", err);
+    console.error("❌ Update error:", err.message);
     res.status(500).json({ error: "Failed to update restaurant" });
   }
 };

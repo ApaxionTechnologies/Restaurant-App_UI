@@ -1,137 +1,216 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+/* =========================
+   Card.css — Global reusable card styles
+   ========================= */
 
-/* Ensure root takes full height */
-html, body, #root {
-  height: 100%;
+/* Theme variables (optional: can also stay in :root) */
+:root {
+  --card-bg: #fff;
+  --card-border: rgba(0,0,0,0.06);
+  --card-radius: 16px;
+  --card-shadow: 0 10px 28px rgba(12,12,12,0.06);
+  --card-pad: 16px;
+  --card-trans: 0.25s ease;
+  --accent-color: #ff6b6b;
+  --text-color: #131313;
+  --muted-color: #6b6b6b;
+  
+ 
+}
+
+/* =========================
+   Card base
+   ========================= */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
-
+  box-shadow: var(--card-shadow);
+  transition: transform var(--card-trans), box-shadow var(--card-trans);
+  border: 1px solid var(--card-border);
 }
 
-/* Full-page centering utility */
-.page-center {
-  flex: 1;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 34px rgba(12,12,12,0.1);
+}
+
+/* Card Image */
+.card img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  display: block;
+}
+
+/* Card Content */
+.card-content {
+  padding: var(--card-pad);
   display: flex;
-  flex-direction: column; /* Allow content to stack vertically */
-  align-items: center;
-  justify-content: flex-start; /* Align content to the top */
-  padding: 2rem;
-  box-sizing: border-box;
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 100vh; /* Prevent overflow beyond the viewport */
-  animation: fadeIn 0.5s ease-in-out;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
 
-/* Optional fade-in */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Card Title & Subtitle */
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
 }
-/* Base button style */
-/* Base button style */
-.btn {
-  background: #007bff;
-  color: white;
-  padding: 10px 18px;
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted-color);
+  margin-top: 2px;
+}
+
+/* Card Price / Badge / Action Row */
+.card-price {
+  font-weight: 700;
+  color: var(--accent-color);
+  font-size: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Buttons */
+
+
+
+/* Card description text */
+.card-description {
+  font-size: 0.9rem;
+  color: #444;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}/* =========================
+   Button Styles (Global)
+   ========================= */
+:root {
+  --primary-color: #ff6600;   /* accent for active / hover */
+  --primary-color-dark: #e65c00;
+  --btn-text: #fff;
+  --btn-bg: #fbf5ee;          /* default background */
+  --btn-border: #ff6600;      /* default border */
+  --btn-radius: 999px;        /* pill shape */
+  --btn-pad: 8px 14px;
+  --btn-trans: 0.25s ease;
+   --primary-500: #2563eb;
+  --primary-600: #1e4bd8;
+  --primary-700: #0d47a1;
+}
+
+/* Base button style for cards & filters */
+.btn-global {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(37,99,235,0.14);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  font-size: 15px;
+  font-size: 0.96rem;
+  transition: transform .12s ease, box-shadow .12s ease;
+  display: inline-block;
+  text-align: center;
 }
 
-.btn:hover {
+.btn-global:hover {
+ 
+  transform: translateY(-2px);
+}
+
+/* Active state (for filter buttons or current action) */
+.btn-global.active {
+  background-color: var(--primary-500);
+  color: #fff;
   transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
-/* Small stepper buttons */
-.btn.small {
-  padding: 4px 10px;
-  font-size: 16px;
-  background: #17a2b8;
-  color: white;
-  border: none;
-  border-radius: 5px;
+/* Optional: different sizing for small buttons */
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* =========================
+   Card & Filter overrides
+   ========================= */
+.filter-btn {
+  composes: btn-global; /* if using CSS Modules / Tailwind-like compose */
+}
+
+.card-btn {
+  composes: btn-global;
 }
 
 
-/* Red cart button */
-.red {
-  background-color: #dc3545;
+/* Responsive for mobile */
+@media (max-width: 520px) {
+  .card {
+    border-radius: 14px;
+  }
+  .card img {
+    height: 170px;
+  }
+  .card-content {
+    padding: 12px;
+  }
 }
-.red:hover {
-  background-color: #c82333;
-}
-
-/* Place order button */
-.place-order {
-  background-color: #28a745;
-  color: white;
-  margin-top: 1rem;
-}
-
-/* Cart Drawer */
-.cart-drawer {
-  animation: slideUp 0.4s ease-out;
-  position: absolute;
-  bottom: 60px;
-  right: 0;
+.veg-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px; /* square look */
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  width: 280px;
-  z-index: 999;
+  margin-right: 6px; /* thoda gap from name */
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.veg-indicator::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%; /* inner dot always round */
+  display: block;
 }
 
-/* Bounce scale animation for feedback */
-@keyframes bounceScale {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+.veg-indicator.veg {
+  border-color: #008000; 
 }
-.bounce {
-  animation: bounceScale 0.3s ease-in-out;
+
+.veg-indicator.veg::after {
+  background-color: #008000;
 }
-/* Red cart button */
-.cart-button {
-  background-color: #ef4444;
+
+.veg-indicator.non-veg {
+  border-color: #d32f2f; 
+}
+
+.veg-indicator.non-veg::after {
+  background-color: #d32f2f;
+}.custom-tooltip.bs-tooltip-top .tooltip-inner {
+  background-color: #3b82f6;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.35rem;
 }
 
-/* Green place order button */
-.place-order-button {
-  background-color: #22c55e;
-  color: white;
-  padding: 0.5rem 1.25rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
+.custom-tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #3b82f6;
 }
-
-

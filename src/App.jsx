@@ -170,6 +170,8 @@ import ProtectedRoute from "./components/ProtectRoute";
 import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
+import './styles/theme.css';
+import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
 
