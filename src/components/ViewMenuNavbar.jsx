@@ -34,7 +34,17 @@ const ViewMenuNavbar = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, [mobileOpen]);
 
-  const query = `?restaurantId=${restaurant || ""}&table=${table || 1}`;
+ 
+  const getRestaurantId = (r) => {
+    if (!r) return "";
+    if (typeof r === "string") return r;
+  
+    return r._id || r.id || "";
+  };
+const restaurantIdValue = getRestaurantId(restaurant) || localStorage.getItem("restaurantId") || "";
+const tableValue = table || localStorage.getItem("tableNumber") || 1;
+const query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}&table=${encodeURIComponent(tableValue)}`;
+
 
   return (
     <>

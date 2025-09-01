@@ -101,18 +101,14 @@ export default function ScannerPage() {
         return { restaurantId: finalRestaurantId, table };
       }
     } catch (e) {
-      // not a URL
+     
     }
-
-    // 3) Regex: try to find a 24-hex Mongo ObjectId
     const oidMatch = text.match(/[a-fA-F0-9]{24}/);
     const tableMatch = text.match(/(?:\?|&|=|\/)table(?:Number)?(?:=|\/)?(\d{1,4})/i);
     if (oidMatch || tableMatch) {
       console.log("parseQrText: regex result", { restaurantId: oidMatch?.[0] ?? null, table: tableMatch?.[1] ?? null });
       return { restaurantId: oidMatch?.[0] ?? null, table: tableMatch?.[1] ?? null };
     }
-
-    // 4) Last resort: pick last numeric (common when qr encodes something like /menu/<id>?table=2)
     const lastNum = text.match(/(\d{1,4})(?!.*\d)/);
     if (lastNum) {
       console.log("parseQrText: fallback last numeric", lastNum[1]);
@@ -122,37 +118,70 @@ export default function ScannerPage() {
     return null;
   };
 
-  const redirectToMenu = (qrText) => {
-    setErrorMsg("");
-    const parsed = parseQrText(qrText);
+  // const redirectToMenu = (qrText) => {
+  //   setErrorMsg("");
+  //   const parsed = parseQrText(qrText);
 
-    if (!parsed) {
-      setErrorMsg("Could not parse QR content. Check console for the raw decoded text.");
-      return;
-    }
+  //   if (!parsed) {
+  //     setErrorMsg("Could not parse QR content. Check console for the raw decoded text.");
+  //     return;
+  //   }
 
-    const restaurantId = parsed.restaurantId || localStorage.getItem("restaurantId");
-    const table = parsed.table || parsed.tableNumber || "1";
+  //   const restaurantId = parsed.restaurantId || localStorage.getItem("restaurantId");
+  //   const table = parsed.table || parsed.tableNumber || "1";
 
-    if (!restaurantId) {
-      // if restaurantId not found but table exists, still navigate but store only table
-      localStorage.setItem("tableNumber", table);
-      if (table) {
-        navigate(`/menu?table=${table}`);
-        return;
-      }
-      setErrorMsg("restaurantId missing in QR and not available in localStorage.");
-      return;
-    }
+  //   if (!restaurantId) {
+  //     // if restaurantId not found but table exists, still navigate but store only table
+  //     localStorage.setItem("tableNumber", table);
+  //     if (table) {
+  //       navigate(`/menu?table=${table}`);
+  //       return;
+  //     }
+  //     setErrorMsg("restaurantId missing in QR and not available in localStorage.");
+  //     return;
+  //   }
 
-    // Save both and navigate using canonical query params
-    localStorage.setItem("restaurantId", restaurantId);
-    localStorage.setItem("tableNumber", table);
-    console.log("Redirecting to menu with:", { restaurantId, table });
-    navigate(`/menu?restaurantId=${restaurantId}&table=${table}`);
-  };
+  //   // Save both and navigate using canonical query params
+  //   localStorage.setItem("restaurantId", restaurantId);
+  //   localStorage.setItem("tableNumber", table);
+  //   console.log("Redirecting to menu with:", { restaurantId, table });
+  //   navigate(`/menu?restaurantId=${restaurantId}&table=${table}`);
+  // };
 
   // Camera scanning handler
+const redirectToMenu = (qrText) => {
+  setErrorMsg("");
+  const parsed = parseQrText(qrText);
+
+  if (!parsed) {
+    setErrorMsg("Could not parse QR content. Check console for the raw decoded text.");
+    return;
+  }
+
+  const extractedId = parsed.restaurantId || localStorage.getItem("restaurantId");
+  const table = parsed.table || parsed.tableNumber || "1";
+
+  if (!extractedId) {
+    localStorage.setItem("tableNumber", table);
+    if (table) {
+      navigate(`/menu?table=${table}`);
+      return;
+    }
+    setErrorMsg("restaurantId missing in QR and not available in localStorage.");
+    return;
+  }
+  const rid = typeof extractedId === "object" ? (extractedId._id || extractedId.id || "") : extractedId;
+  if (!rid) {
+    setErrorMsg("restaurantId parsed but invalid.");
+    return;
+  }
+
+  localStorage.setItem("restaurantId", rid);
+  localStorage.setItem("tableNumber", table);
+  console.log("Redirecting to menu with:", { restaurantId: rid, table });
+  navigate(`/menu?restaurantId=${encodeURIComponent(rid)}&table=${encodeURIComponent(table)}`);
+};
+
   const handleScan = (result) => {
     if (!result) return;
     const qrText = result?.text || result;
@@ -165,7 +194,6 @@ export default function ScannerPage() {
     setErrorMsg("Unable to access camera or scan QR. Check console for details.");
   };
 
-  // Image upload -> detect QR (scales large images down)
   const handleImageUpload = (event) => {
     setErrorMsg("");
     const file = event.target.files?.[0];
@@ -181,7 +209,6 @@ export default function ScannerPage() {
       const img = new Image();
       img.src = reader.result;
       img.onload = () => {
-        // scale large images to max 1024 dimension to keep getImageData reasonable
         const maxDim = 1024;
         const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
         const w = Math.round(img.width * scale);
@@ -254,8 +281,6 @@ export default function ScannerPage() {
               </button>
             </div>
           )}
-
-          {/* Image upload (has id/name for accessibility) */}
           <div style={{ marginTop: "20px" }}>
             <label htmlFor="qrUploadInput" style={{ display: "block", marginBottom: 8 }}>
                Upload QR image

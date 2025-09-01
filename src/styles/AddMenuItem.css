@@ -236,13 +236,12 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
 }
 .btn-primary:hover { transform: translateY(-3px); }
 .btn.btn-ghost {
-  color: #000;                 /* black text */
-  background: transparent;     /* keep ghost style */
+  color: #000;                
+  background: transparent;     
   border: 1px solid rgba(0,0,0,0.06);
   transition: background 0.18s, color 0.18s;
 }
 
-/* keep it black on hover too (adjust background if you want a subtle hover) */
 .btn.btn-ghost:hover,
 .btn.btn-ghost:focus {
   color: #000;
