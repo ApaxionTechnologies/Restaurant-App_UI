@@ -222,13 +222,11 @@ const downloadAllQRCodes = async () => {
           />
         </div>
         </div>
-       {/*  QR Display */}
-{/* QR Display - Always visible */}
 <div className="qr-card d-flex flex-column">
   <button
     onClick={downloadAllQRCodes}
     className="btn btn-dark mt-1 w-100"
-    disabled={qrList.length === 0} // disabled if no QR
+    disabled={qrList.length === 0}
   >
     <i className="bi bi-archive"></i> Download All QR
   </button>
@@ -236,7 +234,7 @@ const downloadAllQRCodes = async () => {
   <button
     onClick={() => downloadSingleQR(currentIndex)}
     className="btn btn-primary mt-1 w-100"
-    disabled={qrList.length === 0} // disabled if no QR
+    disabled={qrList.length === 0} 
   >
     <i className="bi bi-download"></i> Download QR
   </button>
@@ -265,7 +263,6 @@ const downloadAllQRCodes = async () => {
           </div>
           <div className="view-menu-btn">View Our Menu</div>
         </div>
-{/* Restaurant name + Table number (inline) */}
 <div className="qr-header-inline" aria-hidden="true">
   <div className="qr-restaurant-name">
     {restaurantName || (restaurantData && restaurantData.restaurantName) || "Restaurant"}
@@ -294,7 +291,6 @@ const downloadAllQRCodes = async () => {
     )}
   </div>
 
-  {/* Navigation arrows */}
   {qrList.length > 0 && (
     <div className="qr-nav-arrows d-flex justify-content-between mt-1">
       <button

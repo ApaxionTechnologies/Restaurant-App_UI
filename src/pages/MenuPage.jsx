@@ -61,6 +61,29 @@ const table = searchParams.get("table") || searchParams.get("tableNumber") || lo
     Desserts: [],
     Beverages: [],
   };
+// useEffect(() => {
+//   let finalRestaurantId = restaurantId;
+//   let finalTable = table;
+
+//   if (!finalRestaurantId) {
+//     finalRestaurantId = localStorage.getItem("restaurantId");
+//   }
+//   if (!finalTable) {
+//     finalTable = localStorage.getItem("tableNumber") || "1";
+//   }
+
+//   if (!finalRestaurantId) {
+//     console.error("Restaurant ID missing! Redirecting to scan.");
+//     navigate("/scan");
+//     return;
+//   }
+
+//   setRestaurant(finalRestaurantId);
+//   setTable(finalTable);
+//   localStorage.setItem("restaurantId", finalRestaurantId);
+//   localStorage.setItem("tableNumber", finalTable);
+// }, [restaurantId, table, navigate, setRestaurant, setTable]);
+
 useEffect(() => {
   let finalRestaurantId = restaurantId;
   let finalTable = table;
@@ -77,13 +100,17 @@ useEffect(() => {
     navigate("/scan");
     return;
   }
+  const ridForContext = typeof finalRestaurantId === "object"
+    ? (finalRestaurantId._id || finalRestaurantId.id || "")
+    : finalRestaurantId;
 
-  setRestaurant(finalRestaurantId);
+  setRestaurant(ridForContext); 
   setTable(finalTable);
-  localStorage.setItem("restaurantId", finalRestaurantId);
+
+
+  if (ridForContext) localStorage.setItem("restaurantId", ridForContext);
   localStorage.setItem("tableNumber", finalTable);
 }, [restaurantId, table, navigate, setRestaurant, setTable]);
-
 
 useEffect(() => {
   if (!restaurantId) return;
@@ -94,13 +121,13 @@ useEffect(() => {
   try {
     const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
     console.log("API response:", res.data);
-
-    // Ab response { restaurant, menu } aata hai
     setRestaurant(res.data.restaurant);
+       const rid = res.data.restaurant?._id || res.data.restaurant?.id || restaurantId;
+      if (rid) localStorage.setItem("restaurantId", rid);
 const items = Array.isArray(res.data.menu) 
   ? res.data.menu.map(item => ({
       ...item,
-      type: (item.type || "veg").toLowerCase()  // ensures every item has type
+      type: (item.type || "veg").toLowerCase()  
     })) 
   : [];
     setDishes(items);
@@ -149,37 +176,19 @@ useEffect(() => {
     return found ? found.qty : 0;
   };
 
-//   useEffect(() => {
-//   const fetchMe = async () => {
-//     try {
-//       const token = localStorage.getItem("token");
-//       const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       console.log("me response:", res.data);
 
-     
-//       setRestaurant(res.data.restaurant);
-//     } catch (err) {
-//       console.error("Fetch /me failed -", err.response?.status, err.response?.data);
-//     }
-//   };
-//   fetchMe();
-// }, []);
-// inside MenuPage function, beside other useState declarations:
 const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
 
-// close tooltip helper
+
 const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
 useEffect(() => {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach((el) => {
     new bootstrap.Tooltip(el);
   });
-}, [menuMap]); // re-initialize when menu changes
+}, [menuMap]); 
 
 
-// close tooltip on Escape key
 useEffect(() => {
   const onKey = (e) => { if (e.key === "Escape") closeTooltip(); };
   window.addEventListener("keydown", onKey);
@@ -193,36 +202,47 @@ const categories = ["All", ...Object.keys(menuMap)];
   return (
     <>
       <ViewMenuNavbar />
-     <div className={restaurant.image ? "restaurant-hero" : "default-cover"}>
+  <div className={restaurant?.image ? "restaurant-hero" : "default-cover"}>
   {restaurant?.image ? (
     <>
-     <img
-  src={
-    restaurant?.image
-      ? restaurant.image.startsWith("http")
-        ? restaurant.image
-        : `http://localhost:5001/uploads/${restaurant.image.replace(/^\/+/, "")}`
-      : "/burger.jpg"
-  }
-  alt={restaurant?.name}
-/>
-
+      <img
+        src={
+          restaurant.image.startsWith("http")
+            ? restaurant.image
+            : `http://localhost:5001/uploads/${restaurant.image.replace(/^\/+/, "")}`
+        }
+        alt={restaurant?.name || "Restaurant"}
+      />
       <div className="restaurant-overlay">
-        <h1>{restaurant?.name}</h1>
-        <p>{restaurant.tagline}</p>
+        <h1>{restaurant?.name || "Loading..."}</h1>
+        <p>{restaurant?.tagline || ""}</p>
       </div>
     </>
   ) : (
     <div className="overlay-text">
-      <h1>{restaurant?.name}</h1>
-      <p>{restaurant.tagline}</p>
+      <h1>{restaurant?.name || "Restaurant"}</h1>
+      <p>{restaurant?.tagline || ""}</p>
     </div>
   )}
 </div>
 
+
       <div className="page-center fade-in">
         <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
-          <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>📋 Here's the Menu</h2>
+         <h2
+  style={{
+    textAlign: "center",
+    marginBottom: "1.5rem",
+    padding: "0.5rem 1rem",
+    fontWeight: "600",
+    fontSize: "1.8rem",
+    color: "#333",
+  
+  }}
+>
+  📋 Here's the Menu
+</h2>
+
 
           <input
             type="text"
@@ -329,29 +349,31 @@ const categories = ["All", ...Object.keys(menuMap)];
                              
                              
                             </div>
-
 <p className="menu-description">
-  {item.description}
+  {item.description?.length > 80
+    ? (
+      <>
+        {item.description.slice(0, 80)}...
+        <span
+          className="read-more"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title={item.description}
+        >
+          Read More
+        </span>
+      </>
+    )
+    : item.description
+  }
 </p>
 
-<div className="read-more-row">
-  {item.description && item.description.length > 0 && (
-  <button
-  type="button"
-  className=" read-more"
-  data-bs-toggle="tooltip"
-  data-bs-placement="top"
-  title={item.description || "No details available"}
->
-  Read More
-</button>
 
-  )}
-
-  <div className="menu-details">
-    <span>{item.cuisine || "🍴"}</span>
-    <span>•</span>
-    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+<div className="card-footer">
+<div className="cuisine-time">
+  <span>{item.cuisine || "🍴"}</span>
+  <span>•</span>
+  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
   </div>
 </div>
 

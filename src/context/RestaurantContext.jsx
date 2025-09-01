@@ -9,19 +9,16 @@ export const RestaurantProvider = ({ children }) => {
   const location = useLocation();
   const params = useParams();
 
-  const [restaurant, setRestaurant] = useState("");
+  const [restaurant, setRestaurant] = useState(null); 
   const [table, setTable] = useState("");
 
   useEffect(() => {
- 
     let rId = params.restaurantId || null;
-
 
     const query = new URLSearchParams(location.search);
     if (!rId && query.get("restaurantId")) rId = query.get("restaurantId");
     const tNum = query.get("table") || query.get("tableNumber");
 
-   
     const savedRestaurant = localStorage.getItem("restaurantId");
     const savedTable = localStorage.getItem("tableNumber");
 
@@ -32,9 +29,16 @@ export const RestaurantProvider = ({ children }) => {
     else if (savedTable) setTable(savedTable);
   }, [params.restaurantId, location.search]);
 
-
   useEffect(() => {
-    if (restaurant) localStorage.setItem("restaurantId", restaurant);
+    if (restaurant) {
+      const rid =
+        typeof restaurant === "object"
+          ? restaurant._id || restaurant.id
+          : restaurant;
+
+      if (rid) localStorage.setItem("restaurantId", rid);
+    }
+
     if (table) localStorage.setItem("tableNumber", table);
   }, [restaurant, table]);
 

@@ -429,44 +429,86 @@ useEffect(() => {
     fetchMe();
   }, []);
 
-  const [menuItems, setMenuItems] = useState([
-    {
-      _id: 1,
-      name: "Paneer Butter Masala",
-      price: 220,
-      description: "Rich creamy tomato-based curry.",
-      image:
-        "https://www.cookwithmanali.com/wp-content/uploads/2021/07/Paneer-Butter-Masala-500x500.jpg",
-      status: "Published",
-      type: "veg"
-      , cuisine: "Indian",
-      prepTime: "25 mins" 
-    },
-    {
-      _id: 2,
-      name: "Biryani",
-      price: 180,
-      description: "Aromatic basmati rice with spices.",
-      image:
-        "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/07/veg-biryani-recipe-500x500.jpg",
-      status: "Draft",
-      type: "non-veg",
-      cuisine: "Indian",
-      prepTime: "30 mins"
-    },
-    {
-      _id: 3,
-      name: "Cheese Pizza",
-      price: 350,
-      description: "Cheesy delight with fresh toppings.",
-      image:
-        "https://static.toiimg.com/thumb/53110049.cms?imgsize=218117&width=800&height=800",
-      status: "Published",
-      type: "veg",
-      cuisine: "Italian",
-      prepTime: "20 mins"
-    },
-  ]);
+const [menuItems, setMenuItems] = useState([
+  {
+    _id: 1,
+    name: "Paneer Butter Masala",
+    price: 220,
+    description: "Rich creamy tomato-based curry with soft paneer cubes.",
+    image: "https://cdn.pixabay.com/photo/2018/06/18/16/05/biryani-3482749_960_720.jpg",
+    status: "Published",
+    type: "veg",
+    cuisine: "Indian",
+    prepTime: "25 mins"
+  },
+  {
+    _id: 2,
+    name: "Chicken Biryani",
+    price: 280,
+    description: "Aromatic basmati rice cooked with tender chicken and spices.",
+    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/12/chicken-biryani-recipe.jpg",
+    status: "Published",
+    type: "non-veg",
+    cuisine: "Indian",
+    prepTime: "35 mins"
+  },
+  {
+    _id: 3,
+    name: "Cheese Pizza",
+    price: 350,
+    description: "Cheesy delight with fresh toppings and a crispy crust.",
+    image: "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_960_720.jpg",
+    status: "Published",
+    type: "veg",
+    cuisine: "Italian",
+    prepTime: "20 mins"
+  },
+  {
+    _id: 4,
+    name: "Ras Malai",
+    price: 150,
+    description: "Soft paneer balls soaked in sweetened, flavored milk.",
+  image: "/images.jpeg",
+    status: "Published",
+    type: "veg",
+    cuisine: "Indian",
+    prepTime: "25 mins"
+  },
+  {
+    _id: 5,
+    name: "Veg Manchurian",
+    price: 200,
+    description: "Deep-fried veggie balls tossed in a spicy Indo-Chinese sauce.",
+    image: "/manchurian.png",
+    status: "Draft",
+    type: "veg",
+    cuisine: "Chinese",
+    prepTime: "30 mins"
+  },
+  {
+    _id: 6,
+    name: "Dino's Pizza",
+    price: 320,
+    description: "Classic Italian pizza topped with fresh mozzarella and basil.",
+    image:"/image.png",
+    status: "Draft",
+    type: "veg",
+    cuisine: "Italian",
+    prepTime: "18 mins"
+  },
+  {
+    _id: 7,
+    name: "Butter Naan",
+    price: 60,
+    description: "Soft Indian flatbread brushed with butter.",
+    image:  "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=500&q=60",
+    status: "Published",
+    type: "veg",
+    cuisine: "Indian",
+    prepTime: "15 mins"
+  }
+]);
+
 
  
   const handleDraft = (id) => {
@@ -528,48 +570,55 @@ useEffect(() => {
                   <h3 className="card-title">{item.name}</h3>
                   <span className="card-price">₹{item.price}</span>
                 </div>
+<p className="card-description">
+  {item.description?.length > 80
+    ? (
+      <>
+        {item.description.slice(0, 80)}...
+        <span
+          className="read-more"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title={item.description}
+        >
+          Read More
+        </span>
+      </>
+    )
+    : item.description
+  }
+</p>
 
-       <p className="card-description">{item.description}</p>
 
-<div className="read-more-row">
- {item.description && item.description.length > 0 && (
-  <button
-  type="button"
-  className=" read-more"
-  data-bs-toggle="tooltip"
-  data-bs-placement="top"
-  title={item.description || "No details available"}
->
-  Read More
-</button>
-
-  )}
-  <div className="menu-details">
+<div className="card-footer">
+  <div className="cuisine-time">
     <span>{item.cuisine || "🍴"}</span>
     <span>•</span>
     <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
   </div>
+
+  <div className="footer-actions">
+    {filter !== "All" && (
+      item.status === "Published" ? (
+        <button
+          className="btn-global"
+          onClick={() => handleDraft(item._id)}
+        >
+          Move to Draft
+        </button>
+      ) : (
+        <button
+          className="btn-global"
+          onClick={() => handlePublish(item._id)}
+        >
+          Move to Published
+        </button>
+      )
+    )}
+  </div>
 </div>
 
-<div className="card-actions">
-  {filter !== "All" && (
-    item.status === "Published" ? (
-      <button
-        className="btn-global card-btn"
-        onClick={() => handleDraft(item._id)}
-      >
-        Move to Draft
-      </button>
-    ) : (
-      <button
-        className="btn-global card-btn"
-        onClick={() => handlePublish(item._id)}
-      >
-        Move to Published
-      </button>
-    )
-  )}
-</div>
+
 
 
               </div>
