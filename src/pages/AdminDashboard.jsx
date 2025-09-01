@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode"; 
- // npm install jwt-decode
 import Footer from "../components/Footer";
 import { FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -88,9 +87,7 @@ useEffect(() => {
           onLogout={handleLogout}
           restaurant={restaurant} 
         />
-
-
-      <main className="admin-dashboard-content container text-center mt-5">
+      {/* <main className="admin-dashboard-content container text-center mt-5">
         <h2>Welcome, Admin 👨‍💻</h2>
         <p className="lead">Manage your restaurant menu and settings below:</p>
 
@@ -101,7 +98,43 @@ useEffect(() => {
           <Link to="/generate-qr" className="btn btn-primary btn-lg">🔗 Generate Table QR</Link>
           <Link to="/table-manager" className="btn btn-warning btn-lg">🪑 Manage Tables</Link>
         </div>
-      </main>
+      </main> */}
+      <main className="admin-dashboard-content container text-center mt-5">
+  <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
+  <p className="lead text-muted">Manage your restaurant menu and settings below:</p>
+
+  <div className="dashboard-grid mt-5">
+    <Link to="/view-menu" className="dashboard-card view">
+      <span className="icon">📋</span>
+      <h5>View Menu</h5>
+      <p>See your restaurant’s full menu.</p>
+    </Link>
+
+    <Link to="/add-item" className="dashboard-card add">
+      <span className="icon">➕</span>
+      <h5>Add Menu Item</h5>
+      <p>Add new dishes and beverages.</p>
+    </Link>
+
+    <Link to="/remove-item" className="dashboard-card remove">
+      <span className="icon">❌</span>
+      <h5>Remove Menu Item</h5>
+      <p>Delete items no longer available.</p>
+    </Link>
+
+    <Link to="/generate-qr" className="dashboard-card qr">
+      <span className="icon">🔗</span>
+      <h5>Generate Table QR</h5>
+      <p>Create QR codes for table ordering.</p>
+    </Link>
+
+    <Link to="/table-manager" className="dashboard-card tables">
+      <span className="icon">🪑</span>
+      <h5>Manage Tables</h5>
+      <p>Organize seating and reservations.</p>
+    </Link>
+  </div>
+</main>
 
       <Footer />
     </div>
