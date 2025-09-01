@@ -62,7 +62,7 @@ body, html {
 
 
 
-/* Grid layout */
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -70,7 +70,6 @@ body, html {
   margin-bottom: 3rem;
 }
 
-/* Card base */
 .dashboard-card {
   background: white;
   border-radius: 1rem;
@@ -107,7 +106,6 @@ body, html {
   margin: 0;
 }
 
-/* Themed colors */
 .dashboard-card.view { border-top: 4px solid #17a2b8; }
 .dashboard-card.add { border-top: 4px solid #28a745; }
 .dashboard-card.remove { border-top: 4px solid #dc3545; }
