@@ -294,7 +294,6 @@ const downloadAllQRCodes = async () => {
     )}
   </div>
 
-  {/* Navigation arrows */}
   {qrList.length > 0 && (
     <div className="qr-nav-arrows d-flex justify-content-between mt-1">
       <button

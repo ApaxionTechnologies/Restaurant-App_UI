@@ -94,13 +94,11 @@ useEffect(() => {
   try {
     const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
     console.log("API response:", res.data);
-
-    // Ab response { restaurant, menu } aata hai
     setRestaurant(res.data.restaurant);
 const items = Array.isArray(res.data.menu) 
   ? res.data.menu.map(item => ({
       ...item,
-      type: (item.type || "veg").toLowerCase()  // ensures every item has type
+      type: (item.type || "veg").toLowerCase()  
     })) 
   : [];
     setDishes(items);
@@ -149,37 +147,19 @@ useEffect(() => {
     return found ? found.qty : 0;
   };
 
-//   useEffect(() => {
-//   const fetchMe = async () => {
-//     try {
-//       const token = localStorage.getItem("token");
-//       const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       console.log("me response:", res.data);
 
-     
-//       setRestaurant(res.data.restaurant);
-//     } catch (err) {
-//       console.error("Fetch /me failed -", err.response?.status, err.response?.data);
-//     }
-//   };
-//   fetchMe();
-// }, []);
-// inside MenuPage function, beside other useState declarations:
 const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
 
-// close tooltip helper
+
 const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
 useEffect(() => {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach((el) => {
     new bootstrap.Tooltip(el);
   });
-}, [menuMap]); // re-initialize when menu changes
+}, [menuMap]); 
 
 
-// close tooltip on Escape key
 useEffect(() => {
   const onKey = (e) => { if (e.key === "Escape") closeTooltip(); };
   window.addEventListener("keydown", onKey);
@@ -222,7 +202,20 @@ const categories = ["All", ...Object.keys(menuMap)];
 
       <div className="page-center fade-in">
         <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
-          <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>📋 Here's the Menu</h2>
+         <h2
+  style={{
+    textAlign: "center",
+    marginBottom: "1.5rem",
+    padding: "0.5rem 1rem",
+    fontWeight: "600",
+    fontSize: "1.8rem",
+    color: "#333",
+  
+  }}
+>
+  📋 Here's the Menu
+</h2>
+
 
           <input
             type="text"
@@ -329,29 +322,31 @@ const categories = ["All", ...Object.keys(menuMap)];
                              
                              
                             </div>
-
 <p className="menu-description">
-  {item.description}
+  {item.description?.length > 80
+    ? (
+      <>
+        {item.description.slice(0, 80)}...
+        <span
+          className="read-more"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title={item.description}
+        >
+          Read More
+        </span>
+      </>
+    )
+    : item.description
+  }
 </p>
 
-<div className="read-more-row">
-  {item.description && item.description.length > 0 && (
-  <button
-  type="button"
-  className=" read-more"
-  data-bs-toggle="tooltip"
-  data-bs-placement="top"
-  title={item.description || "No details available"}
->
-  Read More
-</button>
 
-  )}
-
-  <div className="menu-details">
-    <span>{item.cuisine || "🍴"}</span>
-    <span>•</span>
-    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+<div className="card-footer">
+<div className="cuisine-time">
+  <span>{item.cuisine || "🍴"}</span>
+  <span>•</span>
+  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
   </div>
 </div>
 
