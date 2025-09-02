@@ -367,53 +367,526 @@
 // };
 
 // export default ViewMenu;
+
+// import axios from "axios";
+// import "../styles/ViewMenu.css";
+// import { FaThList, FaThLarge, FaTh } from "react-icons/fa";
+// import Footer from "../components/Footer.jsx";
+// import HomeHeader from "../components/HomeHeader.jsx";
+// import { useNavigate } from "react-router-dom";
+// import "../styles/global.css";
+// import "../styles/ViewMenu.css";
+// import { useEffect,useState } from "react";
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min';
+// import * as bootstrap from 'bootstrap'; 
+// import { useParams } from "react-router-dom";
+
+// const ViewMenu = () => {
+//   const [filter, setFilter] = useState("All");
+//     const { restaurantId } = useParams();
+//   const navigate = useNavigate();
+//   const [restaurantName, setRestaurantName] = useState(
+//     localStorage.getItem("restaurantName") || "My Restaurant"
+//   );
+//   const [adminEmail, setAdminEmail] = useState("");
+//   const [restaurant, setRestaurant] = useState(null);
+// const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
+// const [menu, setMenu] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+// const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
+// useEffect(() => {
+//   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+//   tooltipTriggerList.forEach((el) => {
+//     new bootstrap.Tooltip(el);
+//   });
+// },); 
+ 
+//   // ✅ No hooks below conditions
+//   if (loading) {
+//     return <div className="loading">Loading menu...</div>;
+//   }
+ 
+//   if (error) {
+//     return <div className="error">{error}</div>;
+//   }
+//   useEffect(() => {
+//     const storedEmail = localStorage.getItem("adminEmail");
+//     if (!storedEmail) {
+//       navigate("/");
+//     } else {
+//       setAdminEmail(storedEmail);
+//     }
+//   }, [navigate]);
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("adminEmail");
+//     localStorage.removeItem("restaurantName");
+//     navigate("/");
+//   };
+
+//   useEffect(() => {
+//     const fetchMe = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+//         const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         setRestaurant(res.data.restaurant);
+//       } catch (err) {
+//         console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+//       }
+//     };
+//     fetchMe();
+//   }, []);
+
+//    useEffect(() => {
+//     const fetchMenu = async () => {
+//       try {
+//         setLoading(true);
+//         const response = await axios.get(
+//           `http://localhost:5001/api/menu/${restaurantId}`
+//         );
+//         setMenu(response.data.menu);
+//         setRestaurant(response.data.restaurant);
+//         setError("");
+//       } catch (err) {
+//         console.error("Error fetching menu:", err);
+//         setError("Failed to load menu. Please try again later.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+ 
+//     if (restaurantId) {
+//       fetchMenu();
+//     }
+//   }, [restaurantId]);
+ 
+// const [menuItems, setMenuItems] = useState([
+//   {
+//     _id: 1,
+//     name: "Paneer Butter Masala",
+//     price: 220,
+//     description: "Rich creamy tomato-based curry with soft paneer cubes.",
+//     image: "https://cdn.pixabay.com/photo/2018/06/18/16/05/biryani-3482749_960_720.jpg",
+//     status: "Published",
+//     type: "veg",
+//     cuisine: "Indian",
+//     prepTime: "25 mins"
+//   },
+//   {
+//     _id: 2,
+//     name: "Chicken Biryani",
+//     price: 280,
+//     description: "Aromatic basmati rice cooked with tender chicken and spices.",
+//     image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/12/chicken-biryani-recipe.jpg",
+//     status: "Published",
+//     type: "non-veg",
+//     cuisine: "Indian",
+//     prepTime: "35 mins"
+//   },
+//   {
+//     _id: 3,
+//     name: "Cheese Pizza",
+//     price: 350,
+//     description: "Cheesy delight with fresh toppings and a crispy crust.",
+//     image: "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_960_720.jpg",
+//     status: "Published",
+//     type: "veg",
+//     cuisine: "Italian",
+//     prepTime: "20 mins"
+//   },
+//   {
+//     _id: 4,
+//     name: "Ras Malai",
+//     price: 150,
+//     description: "Soft paneer balls soaked in sweetened, flavored milk.",
+//   image: "/images.jpeg",
+//     status: "Published",
+//     type: "veg",
+//     cuisine: "Indian",
+//     prepTime: "25 mins"
+//   },
+//   {
+//     _id: 5,
+//     name: "Veg Manchurian",
+//     price: 200,
+//     description: "Deep-fried veggie balls tossed in a spicy Indo-Chinese sauce.",
+//     image: "/manchurian.png",
+//     status: "Draft",
+//     type: "veg",
+//     cuisine: "Chinese",
+//     prepTime: "30 mins"
+//   },
+//   {
+//     _id: 6,
+//     name: "Dino's Pizza",
+//     price: 320,
+//     description: "Classic Italian pizza topped with fresh mozzarella and basil.",
+//     image:"/image.png",
+//     status: "Draft",
+//     type: "veg",
+//     cuisine: "Italian",
+//     prepTime: "18 mins"
+//   },
+//   {
+//     _id: 7,
+//     name: "Butter Naan",
+//     price: 60,
+//     description: "Soft Indian flatbread brushed with butter.",
+//     image:  "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=500&q=60",
+//     status: "Published",
+//     type: "veg",
+//     cuisine: "Indian",
+//     prepTime: "15 mins"
+//   }
+// ]);
+
+
+ 
+//   const handleDraft = (id) => {
+//     setMenuItems((prev) =>
+//       prev.map((item) => (item._id === id ? { ...item, status: "Draft" } : item))
+//     );
+//   };
+
+
+//   const handlePublish = (id) => {
+//     setMenuItems((prev) =>
+//       prev.map((item) =>
+//         item._id === id ? { ...item, status: "Published" } : item
+//       )
+//     );
+//   };
+
+//   const filteredItems = menuItems.filter(
+//     (item) => filter === "All" || item.status === filter
+//   );
+
+//   return (
+//     <>
+//       <HomeHeader
+//         isAdminDashboard={true}
+//         restaurantName={restaurantName}
+//         adminEmail={adminEmail}
+//         onLogout={handleLogout}
+//         restaurant={restaurant}
+//       />
+
+//       <div className="view-menu-page p-6">
+    
+//     <div className="filter-row">
+//   {["All", "Published", "Draft"].map((option) => (
+//     <button
+//       key={option}
+//       onClick={() => setFilter(option)}
+//       className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
+//     >
+//       {option}
+//     </button>
+//   ))}
+// </div>
+
+
+//         <div className="menu-grid grid-3">
+//           {filteredItems.map((item) => (
+//             <div key={item._id} className="card">
+          
+//               <img src={item.image} alt={item.name} />
+
+            
+//               <div className="card-content">
+//                 <div className="menu-title-price">
+           
+//        <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
+
+//                   <h3 className="card-title">{item.name}</h3>
+//                   <span className="card-price">₹{item.price}</span>
+//                 </div>
+// <p className="card-description">
+//   {item.description?.length > 80
+//     ? (
+//       <>
+//         {item.description.slice(0, 80)}...
+//         <span
+//           className="read-more"
+//           data-bs-toggle="tooltip"
+//           data-bs-placement="top"
+//           title={item.description}
+//         >
+//           Read More
+//         </span>
+//       </>
+//     )
+//     : item.description
+//   }
+// </p>
+
+
+// <div className="card-footer">
+//   <div className="cuisine-time">
+//     <span>{item.cuisine || "🍴"}</span>
+//     <span>•</span>
+//     <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+//   </div>
+
+//   <div className="footer-actions">
+//     {filter !== "All" && (
+//       item.status === "Published" ? (
+//         <button
+//           className="btn-global"
+//           onClick={() => handleDraft(item._id)}
+//         >
+//           Move to Draft
+//         </button>
+//       ) : (
+//         <button
+//           className="btn-global"
+//           onClick={() => handlePublish(item._id)}
+//         >
+//           Move to Published
+//         </button>
+//       )
+//     )}
+//   </div>
+// </div>
+
+
+
+
+//               </div>
+//             </div>
+//           ))}
+
+//           {filteredItems.length === 0 && (
+//             <p className="no-items-text">No items found for this filter.</p>
+//           )}
+//         </div>
+//       </div>
+
+//       <footer className="footer">
+//         <Footer />
+//       </footer>
+//     </>
+//   );
+// };
+
+// export default ViewMenu;import React, { useEffect, useState } from "react";
+
+
+
+// import axios from "axios";
+// import { useNavigate, useParams } from "react-router-dom";
+// import Footer from "../components/Footer.jsx";
+// import HomeHeader from "../components/HomeHeader.jsx";
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min';
+// import * as bootstrap from 'bootstrap';
+// import "../styles/global.css";
+// import "../styles/ViewMenu.css";
+// import { useEffect } from "react";
+// import { useState } from "react";
+
+// const ViewMenu = () => {
+//   const navigate = useNavigate();
+//   const { restaurantId } = useParams();
+
+//   const [filter, setFilter] = useState("All");
+//   const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
+//   const [adminEmail, setAdminEmail] = useState("");
+//   const [restaurant, setRestaurant] = useState(null);
+//   const [menuItems, setMenuItems] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   // Bootstrap tooltips
+//   useEffect(() => {
+//     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+//     tooltipTriggerList.forEach((el) => new bootstrap.Tooltip(el));
+//   }, []);
+
+//   // Check admin authentication
+//   useEffect(() => {
+//     const storedEmail = localStorage.getItem("adminEmail");
+//     if (!storedEmail) navigate("/");
+//     else setAdminEmail(storedEmail);
+//   }, [navigate]);
+
+//   // Fetch restaurant info
+//   useEffect(() => {
+//     const fetchMe = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+//         const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         setRestaurant(res.data.restaurant);
+//       } catch (err) {
+//         console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+//       }
+//     };
+//     fetchMe();
+//   }, []);
+
+//   // Fetch menu
+//   useEffect(() => {
+//     const fetchMenu = async () => {
+//       if (!restaurantId) return;
+//       try {
+//         setLoading(true);
+//         const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
+//         const fetchedMenu = res.data.menu || [];
+//         setMenuItems(fetchedMenu);
+//         setRestaurant(res.data.restaurant || null);
+//         setError("");
+//       } catch (err) {
+//         console.error("Error fetching menu:", err);
+//         setError("Failed to load menu. Please try again later.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchMenu();
+//   }, [restaurantId]);
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("adminEmail");
+//     localStorage.removeItem("restaurantName");
+//     navigate("/");
+//   };
+
+//   const handleDraft = (id) => {
+//   setMenuItems(prev =>
+//     prev.map(item => item._id === id ? { ...item, status: "Draft" } : item)
+//   );
+// };
+
+// const handlePublish = (id) => {
+//   setMenuItems(prev =>
+//     prev.map(item => item._id === id ? { ...item, status: "Published" } : item)
+//   );
+// };
+
+// const filteredItems = menuItems.filter(
+//   item => filter === "All" || item.status === filter
+// );
+
+
+//   return (
+//     <>
+//       <HomeHeader
+//         isAdminDashboard={true}
+//         restaurantName={restaurantName}
+//         adminEmail={adminEmail}
+//         onLogout={handleLogout}
+//         restaurant={restaurant}
+//       />
+
+//       <div className="view-menu-page p-6">
+//         {loading && <div className="loading">Loading menu...</div>}
+//         {error && <div className="error">{error}</div>}
+
+//         <div className="filter-row">
+//           {["All", "Published", "Draft"].map(option => (
+//             <button
+//               key={option}
+//               onClick={() => setFilter(option)}
+//               className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
+//             >
+//               {option}
+//             </button>
+//           ))}
+//         </div>
+
+//         <div className="menu-grid grid-3">
+//           {filteredItems.map(item => (
+//             <div key={item._id} className="card">
+//               <img src={item.image} alt={item.name} />
+//               <div className="card-content">
+//                 <div className="menu-title-price">
+//                   <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
+//                   <h3 className="card-title">{item.name}</h3>
+//                   <span className="card-price">₹{item.price}</span>
+//                 </div>
+
+//                 <p className="card-description">
+//                   {item.description?.length > 80
+//                     ? <>
+//                         {item.description.slice(0, 80)}...
+//                         <span data-bs-toggle="tooltip" data-bs-placement="top" title={item.description}>Read More</span>
+//                       </>
+//                     : item.description
+//                   }
+//                 </p>
+
+//                 <div className="card-footer">
+//                   <div className="cuisine-time">
+//                     <span>{item.cuisine || "🍴"}</span>
+//                     <span>•</span>
+//                     <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+//                   </div>
+
+//                   <div className="footer-actions">
+//   {filter !== "All" && (
+//     item.status === "Published"
+//       ? <button className="btn-global" onClick={() => handleDraft(item._id)}>Move to Draft</button>
+//       : <button className="btn-global" onClick={() => handlePublish(item._id)}>Move to Published</button>
+//   )}
+// </div>
+
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+
+//           {filteredItems.length === 0 && <p className="no-items-text">No items found for this filter.</p>}
+//         </div>
+//       </div>
+
+//       <footer className="footer">
+//         <Footer />
+//       </footer>
+//     </>
+//   );
+// };
+
+// export default ViewMenu;
+
+
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/ViewMenu.css";
-import { FaThList, FaThLarge, FaTh } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../components/Footer.jsx";
 import HomeHeader from "../components/HomeHeader.jsx";
-import { useNavigate } from "react-router-dom";
-import "../styles/global.css";
-import "../styles/ViewMenu.css";
-import { useEffect,useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import * as bootstrap from 'bootstrap'; 
+import * as bootstrap from 'bootstrap';
+import "../styles/global.css";
+import "../styles/ViewMenu.css";
 
 const ViewMenu = () => {
-  const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
-  const [restaurantName, setRestaurantName] = useState(
-    localStorage.getItem("restaurantName") || "My Restaurant"
-  );
+  const { restaurantId } = useParams();
+
+  const [filter, setFilter] = useState("All");
+  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
   const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
-const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
-
-
-const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
-useEffect(() => {
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipTriggerList.forEach((el) => {
-    new bootstrap.Tooltip(el);
-  });
-},); 
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltipTriggerList.forEach((el) => new bootstrap.Tooltip(el));
+  }, []);
+  useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
-    if (!storedEmail) {
-      navigate("/");
-    } else {
-      setAdminEmail(storedEmail);
-    }
+    if (!storedEmail) navigate("/");
+    else setAdminEmail(storedEmail);
   }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("adminEmail");
-    localStorage.removeItem("restaurantName");
-    navigate("/");
-  };
-
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -428,107 +901,53 @@ useEffect(() => {
     };
     fetchMe();
   }, []);
+ useEffect(() => {
+  const fetchMenu = async () => {
+    if (!restaurantId) return;
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
+      const fetchedMenu = (response.data.menu || []).map((item, index) => ({
+        ...item,
+        _id: item._id || `temp-${index}`, 
+      }));
+      setMenuItems(fetchedMenu);
+      setRestaurant(response.data.restaurant || null);
+      setError("");
+    } catch (err) {
+      console.error("Error fetching menu:", err);
+      setError("Failed to load menu. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchMenu();
+}, [restaurantId]);
 
-const [menuItems, setMenuItems] = useState([
-  {
-    _id: 1,
-    name: "Paneer Butter Masala",
-    price: 220,
-    description: "Rich creamy tomato-based curry with soft paneer cubes.",
-    image: "https://cdn.pixabay.com/photo/2018/06/18/16/05/biryani-3482749_960_720.jpg",
-    status: "Published",
-    type: "veg",
-    cuisine: "Indian",
-    prepTime: "25 mins"
-  },
-  {
-    _id: 2,
-    name: "Chicken Biryani",
-    price: 280,
-    description: "Aromatic basmati rice cooked with tender chicken and spices.",
-    image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/12/chicken-biryani-recipe.jpg",
-    status: "Published",
-    type: "non-veg",
-    cuisine: "Indian",
-    prepTime: "35 mins"
-  },
-  {
-    _id: 3,
-    name: "Cheese Pizza",
-    price: 350,
-    description: "Cheesy delight with fresh toppings and a crispy crust.",
-    image: "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_960_720.jpg",
-    status: "Published",
-    type: "veg",
-    cuisine: "Italian",
-    prepTime: "20 mins"
-  },
-  {
-    _id: 4,
-    name: "Ras Malai",
-    price: 150,
-    description: "Soft paneer balls soaked in sweetened, flavored milk.",
-  image: "/images.jpeg",
-    status: "Published",
-    type: "veg",
-    cuisine: "Indian",
-    prepTime: "25 mins"
-  },
-  {
-    _id: 5,
-    name: "Veg Manchurian",
-    price: 200,
-    description: "Deep-fried veggie balls tossed in a spicy Indo-Chinese sauce.",
-    image: "/manchurian.png",
-    status: "Draft",
-    type: "veg",
-    cuisine: "Chinese",
-    prepTime: "30 mins"
-  },
-  {
-    _id: 6,
-    name: "Dino's Pizza",
-    price: 320,
-    description: "Classic Italian pizza topped with fresh mozzarella and basil.",
-    image:"/image.png",
-    status: "Draft",
-    type: "veg",
-    cuisine: "Italian",
-    prepTime: "18 mins"
-  },
-  {
-    _id: 7,
-    name: "Butter Naan",
-    price: 60,
-    description: "Soft Indian flatbread brushed with butter.",
-    image:  "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=500&q=60",
-    status: "Published",
-    type: "veg",
-    cuisine: "Indian",
-    prepTime: "15 mins"
-  }
-]);
+  const handleLogout = () => {
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("restaurantName");
+    navigate("/");
+  };
 
-
- 
   const handleDraft = (id) => {
-    setMenuItems((prev) =>
-      prev.map((item) => (item._id === id ? { ...item, status: "Draft" } : item))
+    setMenuItems(prev =>
+      prev.map(item => item._id.toString() === id.toString() ? { ...item, status: "Draft" } : item)
     );
   };
 
-
   const handlePublish = (id) => {
-    setMenuItems((prev) =>
-      prev.map((item) =>
-        item._id === id ? { ...item, status: "Published" } : item
-      )
+    setMenuItems(prev =>
+      prev.map(item => item._id.toString() === id.toString() ? { ...item, status: "Published" } : item)
     );
   };
 
   const filteredItems = menuItems.filter(
-    (item) => filter === "All" || item.status === filter
+    item => filter === "All" || item.status === filter
   );
+
+  if (loading) return <div className="loading">Loading menu...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <>
@@ -541,93 +960,71 @@ const [menuItems, setMenuItems] = useState([
       />
 
       <div className="view-menu-page p-6">
-    
-    <div className="filter-row">
-  {["All", "Published", "Draft"].map((option) => (
-    <button
-      key={option}
-      onClick={() => setFilter(option)}
-      className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
-    >
-      {option}
-    </button>
-  ))}
-</div>
-
+        <div className="filter-row">
+          {["All", "Published", "Draft"].map(option => (
+            <button
+              key={option}
+              onClick={() => setFilter(option)}
+              className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
 
         <div className="menu-grid grid-3">
-          {filteredItems.map((item) => (
+          {filteredItems.length === 0 && <p className="no-items-text">No items found for this filter.</p>}
+          {filteredItems.map(item => (
             <div key={item._id} className="card">
-          
               <img src={item.image} alt={item.name} />
-
-            
               <div className="card-content">
                 <div className="menu-title-price">
-           
-       <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
-
+                  <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
                   <h3 className="card-title">{item.name}</h3>
                   <span className="card-price">₹{item.price}</span>
                 </div>
-<p className="card-description">
-  {item.description?.length > 80
-    ? (
-      <>
-        {item.description.slice(0, 80)}...
-        <span
-          className="read-more"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title={item.description}
-        >
-          Read More
-        </span>
-      </>
-    )
-    : item.description
-  }
-</p>
 
+                <p className="card-description">
+                  {item.description?.length > 80
+                    ? <>
+                        {item.description.slice(0, 80)}...
+                        <span
+                          className="read-more"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title={item.description}
+                        >
+                          Read More
+                        </span>
+                      </>
+                    : item.description
+                  }
+                </p>
 
-<div className="card-footer">
-  <div className="cuisine-time">
-    <span>{item.cuisine || "🍴"}</span>
-    <span>•</span>
-    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
-  </div>
+                <div className="card-footer">
+                  <div className="cuisine-time">
+                    <span>{item.cuisine || "🍴"}</span>
+                    <span>•</span>
+                    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+                  </div>
 
-  <div className="footer-actions">
-    {filter !== "All" && (
-      item.status === "Published" ? (
-        <button
-          className="btn-global"
-          onClick={() => handleDraft(item._id)}
-        >
-          Move to Draft
-        </button>
-      ) : (
-        <button
-          className="btn-global"
-          onClick={() => handlePublish(item._id)}
-        >
-          Move to Published
-        </button>
-      )
-    )}
-  </div>
-</div>
-
-
-
-
+                  <div className="footer-actions">
+                    {filter !== "All" && (
+                      item.status === "Published" ? (
+                        <button className="btn-global" onClick={() => handleDraft(item._id)}>
+                          Move to Draft
+                        </button>
+                      ) : (
+                        <button className="btn-global" onClick={() => handlePublish(item._id)}>
+                          Move to Published
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
-
-          {filteredItems.length === 0 && (
-            <p className="no-items-text">No items found for this filter.</p>
-          )}
         </div>
       </div>
 

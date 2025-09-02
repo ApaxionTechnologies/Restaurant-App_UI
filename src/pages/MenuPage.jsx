@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -46,7 +45,10 @@ const toggleExpand = (id) => {
 
 
 const restaurantId = restaurantIdFromParams || restaurantIdFromQuery;
-const table = searchParams.get("table") || searchParams.get("tableNumber") || localStorage.getItem("tableNumber") || "1";
+const table =
+  searchParams.get("table") ||
+  searchParams.get("tableNumber") ||
+  null;
   const [search, setSearch] = useState("");
   const [menuMap, setMenuMap] = useState({});
   const [favorites, setFavorites] = useState({});
@@ -91,8 +93,9 @@ useEffect(() => {
   if (!finalRestaurantId) {
     finalRestaurantId = localStorage.getItem("restaurantId");
   }
+
   if (!finalTable) {
-    finalTable = localStorage.getItem("tableNumber") || "1";
+    finalTable = null;
   }
 
   if (!finalRestaurantId) {
@@ -100,16 +103,17 @@ useEffect(() => {
     navigate("/scan");
     return;
   }
-  const ridForContext = typeof finalRestaurantId === "object"
-    ? (finalRestaurantId._id || finalRestaurantId.id || "")
-    : finalRestaurantId;
 
-  setRestaurant(ridForContext); 
+  const ridForContext =
+    typeof finalRestaurantId === "object"
+      ? finalRestaurantId._id || finalRestaurantId.id || ""
+      : finalRestaurantId;
+
+  setRestaurant(ridForContext);
   setTable(finalTable);
 
-
   if (ridForContext) localStorage.setItem("restaurantId", ridForContext);
-  localStorage.setItem("tableNumber", finalTable);
+  if (finalTable) localStorage.setItem("tableNumber", finalTable); 
 }, [restaurantId, table, navigate, setRestaurant, setTable]);
 
 useEffect(() => {
@@ -370,23 +374,33 @@ const categories = ["All", ...Object.keys(menuMap)];
 
 
 <div className="card-footer">
-<div className="cuisine-time">
-  <span>{item.cuisine || "🍴"}</span>
-  <span>•</span>
-  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
-  </div>
+  {table ? (
+    <div className="cuisine-time" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <span>{item.cuisine || "🍴"}</span>
+        <span>•</span>
+        <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+      </div>
+
+      {qty === 0 ? (
+        <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
+      ) : (
+        <div className="qty-controls">
+          <button className="qty-btn" onClick={() => updateQty(item.name, -1)}><FaMinus /></button>
+          <div className="qty-display">{qty}</div>
+          <button className="qty-btn" onClick={() => updateQty(item.name, 1)}><FaPlus /></button>
+        </div>
+      )}
+    </div>
+  ) : (
+    <div className="cuisine-time" style={{ display: "flex", justifyContent: "flex-end", width: "100%", gap: "0.5rem" }}>
+      <span>{item.cuisine || "🍴"}</span>
+      <span>•</span>
+      <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+    </div>
+  )}
 </div>
 
-
-                            {qty === 0 ? (
-                              <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
-                            ) : (
-                              <div className="qty-controls">
-                                <button className="qty-btn" onClick={() => updateQty(item.name, -1)}><FaMinus /></button>
-                                <div className="qty-display">{qty}</div>
-                                <button className="qty-btn" onClick={() => updateQty(item.name, 1)}><FaPlus /></button>
-                              </div>
-                            )}
                           </div>
                         </div>
                       );
