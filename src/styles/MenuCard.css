@@ -1,4 +1,4 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap');
 :root {
   --page-bg: #f5efe4;
   --card-bg: linear-gradient(180deg, rgba(255,255,252,0.98), rgba(251,246,239,0.97));
@@ -56,7 +56,7 @@ html, body {
 .layout-toggle button:hover,
 .layout-toggle button:focus {
   background: rgba(255,107,107,0.08); 
-  color: #ff6b6b;
+  color: #3e2723;
   transform: translateY(-1px);
   outline: none;
 }
@@ -64,7 +64,7 @@ html, body {
 .layout-toggle button.active,
 .layout-toggle button[aria-pressed="true"],
 .layout-toggle button.is-active {
-  background: #ff6b6b;
+  background: #3e2723;
   color: #fff;
   box-shadow: 0 8px 20px rgba(255,107,107,0.12);
   transform: translateY(-2px);
@@ -729,6 +729,12 @@ line-clamp: 2;
   object-fit: cover !important;
   border-radius: 14px 14px 0 0 !important;
 }
+.add-btn {
+    min-width: 90px !important;   /* thoda chhota */
+    padding: 7px 12px !important; /* kam padding */
+    font-size: 0.85rem !important; /* text bhi chhota */
+  }
+
 
 @media (min-width: 1200px) {
   .menu-grid.grid-2 {
@@ -827,6 +833,10 @@ line-clamp: 2;
     margin-top: 4px !important;
   }
 }
+
+h3 {
+    font-size: 1.2rem !important; 
+  }
 @media (max-width:520px) {
   .menu-card img {
     height: 140px !important;
@@ -858,5 +868,92 @@ line-clamp: 2;
   
   .action-row {
     margin-top: 4px !important;
+  }
+}
+@media (max-width: 520px) {
+  .restaurant-overlay h1 {
+    font-size: 1.3rem !important;
+  }
+  .restaurant-overlay p {
+    font-size: 0.85rem !important;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1rem !important; 
+  }
+  
+
+  .menu-title-price h3 {
+    font-size: 0.9rem !important;
+  }
+
+  .menu-description {
+    font-size: 0.75rem !important;
+  }
+
+  .price {
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .restaurant-overlay h1 {
+    font-size: 1.1rem !important;
+  }
+ h2 {
+    font-size: 1.1rem;
+  }
+  h3 {
+    font-size: 0.9rem !important;
+  }
+}
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  color: #3e2723;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.custom-tooltip .tooltip-inner {
+  background-color: #3e2723 !important; 
+  color: #fcefe9 !important;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.5rem;
+  max-width: 260px;
+  white-space: normal;
+  box-shadow: 0 8px 24px rgba(62, 39, 35, 0.35);
+}
+
+.custom-tooltip .tooltip-arrow::before {
+  border-top-color: #3e2723 !important;
+}
+.add-btn {
+  background-color: #3e2723 !important; 
+  color: #fff !important; 
+  border: none;
+}
+
+@media (min-width: 992px) {
+   .add-btn {
+    margin-bottom: 8px;
+  }
+}
+.menu-grid.grid-2 .add-btn {
+  background-color: #3e2723 !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(62, 39, 35, 0.25) !important;
+}
+@media (min-width: 992px) {
+  .menu-card-content {
+    padding-left: 18px !important;  /* left side zyada space */
+    padding-right: 16px !important; /* right thoda normal */
   }
 }
