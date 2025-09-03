@@ -98,10 +98,11 @@ useEffect(() => {
     }
     const list = [];
     for (let i = start; i <= end; i++) {
-     list.push({
+list.push({
   table: i,
-  value: `http://localhost:3000/menu/${restaurantData._id}?table=${i}`
+  value: `http://localhost:3000/menu?restaurantId=${restaurantData._id}&table=${i}`
 });
+
   console.log("Generating QR for restaurant:", restaurantData._id); 
 console.log("restaurantData:", restaurantData);
 console.log("restaurantData._id:", restaurantData?._id);

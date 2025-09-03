@@ -65,8 +65,9 @@ useEffect(() => {
 
 const handleGenerateQR = () => {
   if (!restaurantData?._id) return;
-  setQrValue(`http://localhost:3000/menu/${restaurantData._id}`);
+  setQrValue(`http://localhost:3000/menu?restaurantId=${restaurantData._id}`);
 };
+
 
 
   const downloadMenuQR = async () => {
