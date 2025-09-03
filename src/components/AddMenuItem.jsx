@@ -63,13 +63,12 @@ const AddMenuItem = () => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageError, setImageError] = useState("");
-  const [formError, setFormError] = useState(""); // toaster/form error
-  const [errors, setErrors] = useState({}); // field-level errors: { name:true, price:true, category:true, image:true }
+  const [formError, setFormError] = useState("");
+  const [errors, setErrors] = useState({});
 
   const fileInputRef = useRef(null);
   const toastTimerRef = useRef(null);
 
-  // refs to focus first invalid field
   const nameRef = useRef(null);
   const priceRef = useRef(null);
   const categoryRef = useRef(null);
@@ -79,7 +78,7 @@ const AddMenuItem = () => {
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-    // clear field error as user types/selects
+
     setErrors((s) => {
       const copy = { ...s };
       if (copy[name]) delete copy[name];
@@ -89,7 +88,7 @@ const AddMenuItem = () => {
       ...prev,
       [name]: type === "number" ? value : value,
     }));
-    // also clear global errors
+
     if (formError) setFormError("");
   };
 
@@ -97,7 +96,6 @@ const AddMenuItem = () => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
 
-    // reset error
     setImageError("");
     setFormError("");
     setErrors((s) => {
@@ -106,7 +104,6 @@ const AddMenuItem = () => {
       return copy;
     });
 
-    // size check (2MB limit)
     if (file.size > 2 * 1024 * 1024) {
       setImageError("File too large! Max size is 2MB.");
       e.target.value = "";
@@ -115,7 +112,6 @@ const AddMenuItem = () => {
       return;
     }
 
-    // type check
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       setImageError("Only JPG or PNG images are allowed.");
       e.target.value = "";
@@ -141,44 +137,63 @@ const AddMenuItem = () => {
 
   useEffect(() => {
     return () => {
-      // cleanup preview url
       if (imagePreview) {
         try {
           URL.revokeObjectURL(imagePreview);
         } catch (err) {}
       }
-      // cleanup toast timer
       if (toastTimerRef.current) {
         clearTimeout(toastTimerRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showFormError = (msg) => {
     setFormError(msg);
-
-    // clear any existing timer
     if (toastTimerRef.current) {
       clearTimeout(toastTimerRef.current);
     }
-    // auto-dismiss after 4s
     toastTimerRef.current = setTimeout(() => {
       setFormError("");
       toastTimerRef.current = null;
     }, 4000);
   };
 
+  const validateRequiredFields = () => {
+    const newErrors = {};
+    if (!formData.name || !formData.name.trim()) newErrors.name = "Item name required";
+    if (formData.price === "" || formData.price === null) newErrors.price = "Price required";
+    if (formData.timeToPrepare === "" || formData.timeToPrepare === null)
+      newErrors.timeToPrepare = "Preparation time required";
+    if (!formData.cuisine || !formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
+
+    if (Object.keys(newErrors).length) {
+      setErrors((s) => ({ ...s, ...newErrors }));
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   if (!imageFile) {
-    setErrors({ image: true });
-    showFormError("Please upload an image before saving.");
-    if (fileInputRef.current) fileInputRef.current.focus();
-    return;
-  }
-    // proceed with submit
+    const ok = validateRequiredFields();
+    if (!ok) {
+      if (errors && errors.name && nameRef.current) {
+        nameRef.current.focus();
+      } else if (errors && errors.price && priceRef.current) {
+        priceRef.current.focus();
+      }
+      return;
+    }
+
+    if (!imageFile) {
+      setErrors((s) => ({ ...s, image: true }));
+      showFormError("Please upload an image before saving.");
+      if (fileInputRef.current) fileInputRef.current.focus();
+      return;
+    }
+
     const data = new FormData();
     data.append("category", formData.category);
     data.append("name", formData.name);
@@ -218,7 +233,7 @@ const AddMenuItem = () => {
         description: "",
         status: "Published",
         discount: "",
-       vegType: "veg", 
+        vegType: "veg",
       });
 
       if (imagePreview) {
@@ -256,9 +271,7 @@ const AddMenuItem = () => {
     if (imagePreview) {
       try {
         URL.revokeObjectURL(imagePreview);
-      } catch (err) {
-        // ignore
-      }
+      } catch (err) {}
     }
     setImageFile(null);
     setImagePreview(null);
@@ -266,7 +279,6 @@ const AddMenuItem = () => {
     setFormError("");
     setErrors({});
 
-    // clear native file input so it shows empty
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -292,7 +304,6 @@ const AddMenuItem = () => {
 
           <div className="card-body">
             <div style={{ flex: 1 }}>
-              {/* TOASTER / FORM ERROR */}
               {formError && (
                 <div className="toast toast-error" role="alert" aria-live="assertive">
                   {formError}
@@ -303,14 +314,17 @@ const AddMenuItem = () => {
                 <div className="form-grid">
                   <div>
                     <label>Item Name</label>
-                    <input
-                      ref={nameRef}
-                      name="name"
-                      className={`input ${errors.name ? "error" : ""}`}
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
+                    <div className="field-wrapper">
+                      <input
+                        ref={nameRef}
+                        name="name"
+                        className={`input ${errors.name ? "error" : ""}`}
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                      {errors.name && <span className="error-message">{errors.name}</span>}
+                    </div>
                   </div>
 
                   <div>
@@ -324,106 +338,60 @@ const AddMenuItem = () => {
                   </div>
                 </div>
 
-<div className="form-grid">
-  <div>
-    <label>Status</label>
-    <div className="radio-group">
-      <label>
-        <input
-          type="radio"
-          name="status"
-          value="Published"
-          onChange={handleChange}
-          checked={formData.status === "Published"}
-        />{" "}
-        Published
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="status"
-          value="Draft"
-          onChange={handleChange}
-          checked={formData.status === "Draft"}
-        />{" "}
-        Draft
-      </label>
-    </div>
-  </div>
+                <div className="form-grid">
+                  <div>
+                    <label>Category</label>
+                    <select
+                      ref={categoryRef}
+                      name="category"
+                      className={`select ${errors.category ? "error" : ""}`}
+                      value={formData.category}
+                      onChange={handleChange}
+                    >
+                      {categoryOptions.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.category && <span className="error-message">{errors.category}</span>}
+                  </div>
 
-  <div>
-    <label>Type</label>
-    <div className="radio-group">
-      <label>
-        <input
-          type="radio"
-           name="vegType"
-            value="veg"
-          checked={formData.vegType === "veg"}
-          onChange={handleChange}
-        />{" "}
-        Veg
-      </label>
-      <label>
-        <input
-          type="radio"
-           name="vegType"
-    value="non-veg"
-          checked={formData.vegType === "non-veg"}
-          onChange={handleChange}
-        />{" "}
-        Non-Veg
-      </label>
-    </div>
-  </div>
-</div>
-              <div className="form-grid">
-  <div>
-    <label>Category</label>
-    <select
-      ref={categoryRef}
-      name="category"
-      className={`select ${errors.category ? "error" : ""}`}
-      value={formData.category}
-      onChange={handleChange}
-    >
-      {categoryOptions.map((c) => (
-        <option key={c} value={c}>
-          {c}
-        </option>
-      ))}
-    </select>
-  </div>
+                  <div>
+                    <label>Cuisine</label>
+                    <div className="field-wrapper">
+                      <select
+                        name="cuisine"
+                        className={`select ${errors.cuisine ? "error" : ""}`}
+                        value={formData.cuisine}
+                        onChange={handleChange}
+                      >
+                        {cuisineOptions.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.cuisine && <span className="error-message">{errors.cuisine}</span>}
+                    </div>
+                  </div>
+                </div>
 
-  <div>
-    <label>Cuisine</label>
-    <select
-      name="cuisine"
-      className="select"
-      value={formData.cuisine}
-      onChange={handleChange}
-    >
-      {cuisineOptions.map((c) => (
-        <option key={c} value={c}>
-          {c}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
-
-<div className="form-grid">
+                <div className="form-grid">
                   <div>
                     <label>Price (₹)</label>
-                    <input
-                      ref={priceRef}
-                      type="number"
-                      name="price"
-                      className={`input ${errors.price ? "error" : ""}`}
-                      value={formData.price}
-                      onChange={handleChange}
-                      required
-                    />
+                    <div className="field-wrapper">
+                      <input
+                        ref={priceRef}
+                        type="number"
+                        name="price"
+                        className={`input ${errors.price ? "error" : ""}`}
+                        value={formData.price}
+                        onChange={handleChange}
+                        required
+                      />
+                      {errors.price && <span className="error-message">{errors.price}</span>}
+                    </div>
                   </div>
 
                   <div>
@@ -439,21 +407,79 @@ const AddMenuItem = () => {
                 </div>
 
                 <div className="form-grid">
-                 <div style={{ gridColumn: "1 / -1", width: "100%" }}>
                   <div>
-                    <label style={{ display: "block" }}>Time to Prepare (mins)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      name="timeToPrepare"
-                      className="input"
-                      value={formData.timeToPrepare}
-                      onChange={handleChange}
-                      placeholder="e.g. 30"
-                    />
-                    <div className="help">Enter expected preparation time in minutes.</div>
+                    <label>Type</label>
+                    <div className="radio-group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="vegType"
+                          value="veg"
+                          checked={formData.vegType === "veg"}
+                          onChange={handleChange}
+                        />{" "}
+                        Veg
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="vegType"
+                          value="non-veg"
+                          checked={formData.vegType === "non-veg"}
+                          onChange={handleChange}
+                        />{" "}
+                        Non-Veg
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label>Status</label>
+                    <div className="radio-group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="status"
+                          value="Published"
+                          onChange={handleChange}
+                          checked={formData.status === "Published"}
+                        />{" "}
+                        Published
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="status"
+                          value="Draft"
+                          onChange={handleChange}
+                          checked={formData.status === "Draft"}
+                        />{" "}
+                        Draft
+                      </label>
+                    </div>
                   </div>
                 </div>
+
+                <div className="form-grid">
+                  <div style={{ gridColumn: "1 / -1", width: "100%" }}>
+                    <div>
+                      <label style={{ display: "block" }}>Time to Prepare (mins)</label>
+                      <div className="field-wrapper">
+                        <input
+                          type="number"
+                          min="0"
+                          name="timeToPrepare"
+                          className={`input ${errors.timeToPrepare ? "error" : ""}`}
+                          value={formData.timeToPrepare}
+                          onChange={handleChange}
+                          placeholder="e.g. 30"
+                        />
+                        {errors.timeToPrepare && (
+                          <span className="error-message">{errors.timeToPrepare}</span>
+                        )}
+                      </div>
+                      <div className="help">Enter expected preparation time in minutes.</div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="form-full">
@@ -470,7 +496,12 @@ const AddMenuItem = () => {
                   <button type="submit" className="btn btn-primary">
                     Save Item
                   </button>
-                  <button type="button" className="btn btn-ghost" onClick={handleReset} style={{ color: "#000" }}>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={handleReset}
+                    style={{ color: "#000" }}
+                  >
                     Reset
                   </button>
                 </div>

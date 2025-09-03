@@ -34,7 +34,7 @@ body {
   grid-template-columns: 1fr 360px;
   gap: 24px;
   
-  min-height: calc(100vh - 80px); /* 80px header/footer ke liye adjust */
+  min-height: calc(100vh - 80px); 
    align-items: stretch;
 }
 
@@ -145,8 +145,6 @@ body {
   box-shadow: var(--shadow-soft);
   display: inline-block;
 }
-/* ===== QR header: restaurant name + table number inline ===== */
-/* Paste this after .qr-overlay canvas or at the end of the file */
 
 .qr-header-inline {
   display: inline-flex;
@@ -339,9 +337,6 @@ label {
   body { padding: 18px 12px; }
   .qr-card { padding: 16px; }
 }
-/* =========================
-   Global Button Styles
-   ========================= */
 
 .btn {
   padding: 12px 20px;
@@ -354,8 +349,6 @@ label {
   display: inline-block;
   text-align: center;
 }
-
-/* Primary button (blue gradient) */
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
   color: #fff;
@@ -365,8 +358,6 @@ label {
 .btn-primary:hover {
   transform: translateY(-2px);
 }
-
-/* Secondary / outline button */
 .btn-outline {
   background-color: transparent;
   border: 2px solid var(--primary-500);
@@ -379,7 +370,6 @@ label {
   transform: scale(1.05);
 }
 
-/* Disabled state */
 .btn:disabled,
 .btn-disabled {
   background-color: #e0e0e0 !important;
