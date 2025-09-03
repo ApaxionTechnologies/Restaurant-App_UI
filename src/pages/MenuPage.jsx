@@ -63,29 +63,6 @@ const table =
     Desserts: [],
     Beverages: [],
   };
-// useEffect(() => {
-//   let finalRestaurantId = restaurantId;
-//   let finalTable = table;
-
-//   if (!finalRestaurantId) {
-//     finalRestaurantId = localStorage.getItem("restaurantId");
-//   }
-//   if (!finalTable) {
-//     finalTable = localStorage.getItem("tableNumber") || "1";
-//   }
-
-//   if (!finalRestaurantId) {
-//     console.error("Restaurant ID missing! Redirecting to scan.");
-//     navigate("/scan");
-//     return;
-//   }
-
-//   setRestaurant(finalRestaurantId);
-//   setTable(finalTable);
-//   localStorage.setItem("restaurantId", finalRestaurantId);
-//   localStorage.setItem("tableNumber", finalTable);
-// }, [restaurantId, table, navigate, setRestaurant, setTable]);
-
 useEffect(() => {
   let finalRestaurantId = restaurantId;
   let finalTable = table;
@@ -129,11 +106,17 @@ useEffect(() => {
        const rid = res.data.restaurant?._id || res.data.restaurant?.id || restaurantId;
       if (rid) localStorage.setItem("restaurantId", rid);
 const items = Array.isArray(res.data.menu) 
-  ? res.data.menu.map(item => ({
-      ...item,
-      type: (item.type || "veg").toLowerCase()  
-    })) 
+  ? res.data.menu
+      .filter(item => {
+        const status = (item.status || "").toString().trim().toLowerCase();
+        return status === "published";  
+      })
+      .map(item => ({
+        ...item,
+        type: (item.type || "veg").toLowerCase()  
+      }))
   : [];
+
     setDishes(items);
     setMenuMap(buildMenuMap(items));
 
