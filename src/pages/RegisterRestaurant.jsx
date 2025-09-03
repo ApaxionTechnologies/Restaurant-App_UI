@@ -488,7 +488,6 @@ export default function RegisterRestaurant() {
     validate({ ...formData, address: updatedAddress });
   };
 
-  // ✅ keep everything the same, but force email to lowercase on input
   const handleChange = (e) => {
     const { name } = e.target;
     let { value } = e.target;

@@ -1,19 +1,31 @@
-.register-page { 
+/* Page background with subtle gradient animation */
+.register-page {
   background: linear-gradient(135deg, #dff1ff, #fdecea, #e0f7fa);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 80px 15px 40px 15px; 
+  padding: 80px 15px 40px 15px;
   box-sizing: border-box;
 }
 
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism styled card */
 .register-form {
-  background-color: #fff;
-  padding: 20px 30px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 30px 40px;
+  border-radius: 16px;
   max-width: 700px;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -23,38 +35,45 @@
   overflow: visible;
 }
 
-/* Title styles */
+/* Title with modern accent */
 .form-title {
   text-align: center;
-  margin-bottom: 30px;
-  font-weight: bold;
-  font-size: 28px;
-  color: #333;
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 30px;
+  color: #2c3e50;
+  letter-spacing: 1px;
 }
 
 .title-divider {
-  width: 60px;
-  height: 3px;
-  background-color: #28a745;
-  margin: 0 auto 0.8rem auto;
-  border-radius: 10px;
+  width: 70px;
+  height: 4px;
+  background: linear-gradient(to right, #28a745, #20c997);
+  margin: 0.6rem auto 0 auto;
+  border-radius: 20px;
 }
 
+/* Subtitle */
 .register-form h2 {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: #666;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Form layout */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 22px;
 }
 
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Form groups */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -66,63 +85,53 @@
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 3px;
-  color: #222;
+  gap: 6px;
+  color: #2d3436;
   font-size: 0.95rem;
 }
 
-.full-width {
-  grid-column: 1 / -1; /* span both columns */
-}
-
-.form-group select,
-.form-group input {
-  min-height: 46px;
-}
-
-/* Inputs and textareas */
+/* Inputs */
 input,
 textarea,
 .custom-phone-input,
 select {
   padding: 12px 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
   outline: none;
+  background: #fff;
+  transition: all 0.3s ease;
 }
 
-/* File upload input */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
+}
+
+/* File input */
 input[type="file"] {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  width: 100%;
   background-color: #fdfdfd;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
 }
 
-/* Dropdown select */
+/* Select dropdown */
 select {
   background-color: white;
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 40px; /* space for arrow */
-  line-height: normal;
+  padding-right: 40px;
   height: 46px;
-  display: flex;
-  align-items: center;
 }
 
 /* Dropdown arrow */
-select::after {
+.form-group select {
+  position: relative;
+}
+.form-group select::after {
   content: "▼";
   position: absolute;
   right: 14px;
@@ -133,7 +142,7 @@ select::after {
   pointer-events: none;
 }
 
-/* Error styles */
+/* Error */
 input.error,
 textarea.error,
 .custom-phone-input.error,
@@ -142,12 +151,15 @@ select.error {
   background-color: #fff0f0;
 }
 
+/* Error text */
 .form-group small {
   color: #dc3545;
   font-size: 0.8rem;
   margin-top: 4px;
   display: block;
 }
+
+/* Password popup */
 .password-popup {
   position: relative;
   background-color: #fff0f0;
@@ -165,67 +177,47 @@ select.error {
 /* Submit button */
 .register-form button,
 .btn-block {
-  padding: 12px;
-  background: linear-gradient(to right, #28a745, #218838);
+  padding: 14px;
+  background: linear-gradient(90deg, #28a745, #20c997);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
 }
 
 .register-form button:hover {
-  background-color: #1e7e34;
-  transform: scale(1.01);
+  background: linear-gradient(90deg, #20c997, #28a745);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(40, 167, 69, 0.3);
 }
 
 /* Animations */
 @keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+  .form-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 600px) {
-  .form-title {
-    font-size: 1.6rem;
-  }
+  .form-title { font-size: 1.7rem; }
 }
 
-.register-form::after {
-  content: "";
-  height: 50px;
-  display: block;
-}
-
-/* Admin login modal styles */
+/* Admin Login modal */
 .admin-login-overlay {
   position: fixed;
   top: 0;
@@ -243,19 +235,33 @@ select.error {
 .admin-login-modal {
   background: white;
   padding: 30px;
-  border-radius: 12px;
+  border-radius: 14px;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   z-index: 10000;
 }
 
+/* Creative Close button (floating icon style) */
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 22px;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4e50, #f9d423);
+  color: white;
+  font-size: 18px;
   border: none;
-  background: none;
   cursor: pointer;
-  z-index: 10001;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  transform: rotate(90deg) scale(1.1);
+  background: linear-gradient(135deg, #f9d423, #ff4e50);
 }
