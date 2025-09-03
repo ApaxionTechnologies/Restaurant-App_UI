@@ -5,7 +5,6 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Header */
 .dashboard-header {
   background: #f8f9fa;
   padding: 1rem 1.5rem;
@@ -39,7 +38,7 @@
   color: #0056b3;
 }
 
-/* Dropdown Menu */
+
 .profile-menu {
   position: absolute;
   top: 50px;
@@ -67,7 +66,7 @@
   word-break: break-word;
 }
 
-/* Logout Button */
+
 .logout-btn {
   width: 100%;
   background: #dc3545;

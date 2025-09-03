@@ -170,11 +170,32 @@ const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
 const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
 useEffect(() => {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipTriggerList.forEach((el) => {
-    new bootstrap.Tooltip(el);
-  });
-}, [menuMap]); 
+  const tooltips = [...tooltipTriggerList].map(
+    (el) =>
+      new bootstrap.Tooltip(el, {
+        trigger: "hover focus click",
+        placement: "top",
+        customClass: "custom-tooltip",
+      })
+  );
 
+
+  const handleDocumentClick = (event) => {
+    tooltips.forEach((tooltip) => {
+      const triggerEl = tooltip._element;
+      if (!triggerEl.contains(event.target)) {
+        tooltip.hide(); 
+      }
+    });
+  };
+
+  document.addEventListener("click", handleDocumentClick);
+
+  return () => {
+    tooltips.forEach((tooltip) => tooltip.dispose());
+    document.removeEventListener("click", handleDocumentClick);
+  };
+}, [selectedCategory]); 
 
 useEffect(() => {
   const onKey = (e) => { if (e.key === "Escape") closeTooltip(); };
@@ -222,8 +243,9 @@ const categories = ["All", ...Object.keys(menuMap)];
     marginBottom: "1.5rem",
     padding: "0.5rem 1rem",
     fontWeight: "600",
-    fontSize: "1.8rem",
-    color: "#333",
+    fontSize: "1.5rem",
+  color:" #3e2723",
+  
   
   }}
 >
@@ -262,17 +284,18 @@ const categories = ["All", ...Object.keys(menuMap)];
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    style={{
-                      margin: "0.3rem",
-                      padding: "0.4rem 0.8rem",
-                      borderRadius: "20px",
-                      border: selectedCategory === category ? "2px solid #3b82f6" : "1px solid #ccc",
-                      background: selectedCategory === category ? "#eff6ff" : "#fff",
-                      color: selectedCategory === category ? "#1d4ed8" : "#333",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                    }}
+                   style={{
+    margin: "0.3rem",
+    padding: "0.4rem 0.8rem",
+    borderRadius: "20px",
+    border: selectedCategory === category ? "1px solid #3e2723" : "1px solid #ccc",
+    background: selectedCategory === category ? "#3e2723" : "#fff",
+    color: selectedCategory === category ? "#fff" : "#333",
+    fontWeight: "bold",
+    fontsize:"1rem",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  }}
                   >
                     {category} ({count})
                   </button>
@@ -416,8 +439,6 @@ const categories = ["All", ...Object.keys(menuMap)];
     </div>
   </>
 )}
-
-
     </>
   );
 }
