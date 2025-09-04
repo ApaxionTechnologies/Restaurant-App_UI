@@ -103,12 +103,12 @@ useEffect(() => {
   <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
   <p className="lead text-muted">Manage your restaurant menu and settings below:</p>
 
-  <div className="dashboard-grid mt-5">
-    <Link to="/view-menu" className="dashboard-card view">
-      <span className="icon">📋</span>
-      <h5>View Menu</h5>
-      <p>See your restaurant’s full menu.</p>
-    </Link>
+ <div className="dashboard-grid mt-5">
+   <Link to={`/menu/${restaurant?.restaurantName || "restaurant"}`} className="dashboard-card view">
+  <span className="icon">📋</span>
+  <h5>View Menu</h5>
+  <p>See your restaurant's full menu.</p>
+  </Link>
 
     <Link to="/add-item" className="dashboard-card add">
       <span className="icon">➕</span>
@@ -127,6 +127,12 @@ useEffect(() => {
       <h5>Generate Table QR</h5>
       <p>Create QR codes for table ordering.</p>
     </Link>
+
+     <Link to="/generate-menu-qr" className="dashboard-card add">
+      <span className="icon">➕</span>
+      <h5>Generate Menu QR</h5>
+      <p>Create QR codes for Restaurant Menu.</p>
+    </Link> 
 
     <Link to="/table-manager" className="dashboard-card tables">
       <span className="icon">🪑</span>

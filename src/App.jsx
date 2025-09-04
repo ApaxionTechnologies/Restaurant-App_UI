@@ -174,6 +174,7 @@ import './styles/theme.css';
 import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
+import GenerateMenuQR from "./pages/GenerateMenuQR";
 
 export default function App() {
   const location = useLocation();
@@ -211,10 +212,11 @@ export default function App() {
         />
 
         {/* ✅ Menu & Admin Components */}
-        <Route path="/add-item" element={<AddMenuItem />} />
-        <Route path="/view-menu" element={<ViewMenu />} />
+        <Route path="/add-item" element={<AddMenuItem />} />   
+           <Route path="/menu/:restaurantId" element={<ViewMenu />} />
         <Route path="/remove-item" element={<RemoveItem />} />
         <Route path="/generate-qr" element={<GenerateQR />} />
+        <Route path ="/generate-menu-qr" element={< GenerateMenuQR/>}/>
         <Route path="/current-menu" element={<CurrentMenu />} />
 
         {/* ✅ Customer QR Options */}

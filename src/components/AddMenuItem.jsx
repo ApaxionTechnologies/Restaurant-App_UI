@@ -216,13 +216,23 @@ const AddMenuItem = () => {
         return;
       }
 
-      await axios.post("http://localhost:5001/api/menu/add", data, {
+      const res =await axios.post("http://localhost:5001/api/menu/add", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+    const createdItem = res.data.item || res.data;
+      const normalizedNew = {
+    ...createdItem,
+    statusNormalized: (createdItem.status ?? "").toString().trim().toLowerCase() || "draft",
+    status:
+      (createdItem.status ?? "").toString().trim().toLowerCase() === "published"
+        ? "Published"
+        : "Draft",
+  };
       alert("✅ Menu item added successfully!");
+      navigate("/admin-dashboard");
       setFormData({
         category: "Starter",
         name: "",
@@ -248,6 +258,7 @@ const AddMenuItem = () => {
       setErrors({});
 
       if (fileInputRef.current) fileInputRef.current.value = "";
+      
     } catch (err) {
       console.error("❌ Error adding item:", err.response?.data || err.message);
       showFormError("❌ Failed to add item: " + (err.response?.data?.message || "Please try again."));

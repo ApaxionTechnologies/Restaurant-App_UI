@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -46,7 +45,10 @@ const toggleExpand = (id) => {
 
 
 const restaurantId = restaurantIdFromParams || restaurantIdFromQuery;
-const table = searchParams.get("table") || searchParams.get("tableNumber") || localStorage.getItem("tableNumber") || "1";
+const table =
+  searchParams.get("table") ||
+  searchParams.get("tableNumber") ||
+  null;
   const [search, setSearch] = useState("");
   const [menuMap, setMenuMap] = useState({});
   const [favorites, setFavorites] = useState({});
@@ -61,29 +63,6 @@ const table = searchParams.get("table") || searchParams.get("tableNumber") || lo
     Desserts: [],
     Beverages: [],
   };
-// useEffect(() => {
-//   let finalRestaurantId = restaurantId;
-//   let finalTable = table;
-
-//   if (!finalRestaurantId) {
-//     finalRestaurantId = localStorage.getItem("restaurantId");
-//   }
-//   if (!finalTable) {
-//     finalTable = localStorage.getItem("tableNumber") || "1";
-//   }
-
-//   if (!finalRestaurantId) {
-//     console.error("Restaurant ID missing! Redirecting to scan.");
-//     navigate("/scan");
-//     return;
-//   }
-
-//   setRestaurant(finalRestaurantId);
-//   setTable(finalTable);
-//   localStorage.setItem("restaurantId", finalRestaurantId);
-//   localStorage.setItem("tableNumber", finalTable);
-// }, [restaurantId, table, navigate, setRestaurant, setTable]);
-
 useEffect(() => {
   let finalRestaurantId = restaurantId;
   let finalTable = table;
@@ -91,8 +70,9 @@ useEffect(() => {
   if (!finalRestaurantId) {
     finalRestaurantId = localStorage.getItem("restaurantId");
   }
+
   if (!finalTable) {
-    finalTable = localStorage.getItem("tableNumber") || "1";
+    finalTable = null;
   }
 
   if (!finalRestaurantId) {
@@ -100,16 +80,17 @@ useEffect(() => {
     navigate("/scan");
     return;
   }
-  const ridForContext = typeof finalRestaurantId === "object"
-    ? (finalRestaurantId._id || finalRestaurantId.id || "")
-    : finalRestaurantId;
 
-  setRestaurant(ridForContext); 
+  const ridForContext =
+    typeof finalRestaurantId === "object"
+      ? finalRestaurantId._id || finalRestaurantId.id || ""
+      : finalRestaurantId;
+
+  setRestaurant(ridForContext);
   setTable(finalTable);
 
-
   if (ridForContext) localStorage.setItem("restaurantId", ridForContext);
-  localStorage.setItem("tableNumber", finalTable);
+  if (finalTable) localStorage.setItem("tableNumber", finalTable); 
 }, [restaurantId, table, navigate, setRestaurant, setTable]);
 
 useEffect(() => {
@@ -125,11 +106,17 @@ useEffect(() => {
        const rid = res.data.restaurant?._id || res.data.restaurant?.id || restaurantId;
       if (rid) localStorage.setItem("restaurantId", rid);
 const items = Array.isArray(res.data.menu) 
-  ? res.data.menu.map(item => ({
-      ...item,
-      type: (item.type || "veg").toLowerCase()  
-    })) 
+  ? res.data.menu
+      .filter(item => {
+        const status = (item.status || "").toString().trim().toLowerCase();
+        return status === "published";  
+      })
+      .map(item => ({
+        ...item,
+        type: (item.type || "veg").toLowerCase()  
+      }))
   : [];
+
     setDishes(items);
     setMenuMap(buildMenuMap(items));
 
@@ -183,11 +170,32 @@ const [tooltip, setTooltip] = useState({ visible: false, title: "", text: "" });
 const closeTooltip = () => setTooltip({ visible: false, title: "", text: "" });
 useEffect(() => {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipTriggerList.forEach((el) => {
-    new bootstrap.Tooltip(el);
-  });
-}, [menuMap]); 
+  const tooltips = [...tooltipTriggerList].map(
+    (el) =>
+      new bootstrap.Tooltip(el, {
+        trigger: "hover focus click",
+        placement: "top",
+        customClass: "custom-tooltip",
+      })
+  );
 
+
+  const handleDocumentClick = (event) => {
+    tooltips.forEach((tooltip) => {
+      const triggerEl = tooltip._element;
+      if (!triggerEl.contains(event.target)) {
+        tooltip.hide(); 
+      }
+    });
+  };
+
+  document.addEventListener("click", handleDocumentClick);
+
+  return () => {
+    tooltips.forEach((tooltip) => tooltip.dispose());
+    document.removeEventListener("click", handleDocumentClick);
+  };
+}, [selectedCategory]); 
 
 useEffect(() => {
   const onKey = (e) => { if (e.key === "Escape") closeTooltip(); };
@@ -235,8 +243,9 @@ const categories = ["All", ...Object.keys(menuMap)];
     marginBottom: "1.5rem",
     padding: "0.5rem 1rem",
     fontWeight: "600",
-    fontSize: "1.8rem",
-    color: "#333",
+    fontSize: "1.5rem",
+  color:" #3e2723",
+  
   
   }}
 >
@@ -275,17 +284,18 @@ const categories = ["All", ...Object.keys(menuMap)];
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    style={{
-                      margin: "0.3rem",
-                      padding: "0.4rem 0.8rem",
-                      borderRadius: "20px",
-                      border: selectedCategory === category ? "2px solid #3b82f6" : "1px solid #ccc",
-                      background: selectedCategory === category ? "#eff6ff" : "#fff",
-                      color: selectedCategory === category ? "#1d4ed8" : "#333",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                    }}
+                   style={{
+    margin: "0.3rem",
+    padding: "0.4rem 0.8rem",
+    borderRadius: "20px",
+    border: selectedCategory === category ? "1px solid #3e2723" : "1px solid #ccc",
+    background: selectedCategory === category ? "#3e2723" : "#fff",
+    color: selectedCategory === category ? "#fff" : "#333",
+    fontWeight: "bold",
+    fontsize:"1rem",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  }}
                   >
                     {category} ({count})
                   </button>
@@ -370,23 +380,33 @@ const categories = ["All", ...Object.keys(menuMap)];
 
 
 <div className="card-footer">
-<div className="cuisine-time">
-  <span>{item.cuisine || "🍴"}</span>
-  <span>•</span>
-  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
-  </div>
+  {table ? (
+    <div className="cuisine-time" style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+      <div style={{ display: "flex", gap: "0.5rem" }}>
+        <span>{item.cuisine || "🍴"}</span>
+        <span>•</span>
+        <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+      </div>
+
+      {qty === 0 ? (
+        <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
+      ) : (
+        <div className="qty-controls">
+          <button className="qty-btn" onClick={() => updateQty(item.name, -1)}><FaMinus /></button>
+          <div className="qty-display">{qty}</div>
+          <button className="qty-btn" onClick={() => updateQty(item.name, 1)}><FaPlus /></button>
+        </div>
+      )}
+    </div>
+  ) : (
+    <div className="cuisine-time" style={{ display: "flex", justifyContent: "flex-end", width: "100%", gap: "0.5rem" }}>
+      <span>{item.cuisine || "🍴"}</span>
+      <span>•</span>
+      <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+    </div>
+  )}
 </div>
 
-
-                            {qty === 0 ? (
-                              <button className="add-btn" onClick={() => addToCart(item)}>Add</button>
-                            ) : (
-                              <div className="qty-controls">
-                                <button className="qty-btn" onClick={() => updateQty(item.name, -1)}><FaMinus /></button>
-                                <div className="qty-display">{qty}</div>
-                                <button className="qty-btn" onClick={() => updateQty(item.name, 1)}><FaPlus /></button>
-                              </div>
-                            )}
                           </div>
                         </div>
                       );
@@ -419,8 +439,6 @@ const categories = ["All", ...Object.keys(menuMap)];
     </div>
   </>
 )}
-
-
     </>
   );
 }
