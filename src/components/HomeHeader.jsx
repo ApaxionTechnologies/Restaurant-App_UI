@@ -7,7 +7,8 @@ import { BsPersonLock } from "react-icons/bs";
 import AdminLogin from "../pages/AdminLogin";
 import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
-import { MdOutlineRestartAlt } from "react-icons/md";
+// import { MdOutlineRestartAlt } from "react-icons/md" MdOutlineRestartAlt;
+import { GrRestaurant } from "react-icons/gr";
 
 export default function HomeHeader({
   isAdminDashboard = false,
@@ -102,7 +103,7 @@ export default function HomeHeader({
                 </button>
               )}
               {isRegisterPage && (
-               <MdOutlineRestartAlt className="Restaurant-icon" title="Back to Home" onClick={() => navigate("/")} />
+               < GrRestaurant className="Restaurant-icon" title="Back to Home" onClick={() => navigate("/")} />
   
 
               )}

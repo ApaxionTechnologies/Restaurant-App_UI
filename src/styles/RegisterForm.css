@@ -5,9 +5,10 @@
   animation: gradientShift 12s ease infinite;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;   /* ✅ Center vertically & horizontally */
   padding: 80px 15px 40px 15px;
   box-sizing: border-box;
+  min-height: 100vh;     /* ✅ Full screen height to center */
 }
 
 @keyframes gradientShift {
@@ -95,15 +96,16 @@ input,
 textarea,
 .custom-phone-input,
 select {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  padding: 14px 16px;          /* ✅ more padding */
+  border-radius: 12px;         /* ✅ smoother corners */
+  border: 1.5px solid #ccc;    /* ✅ slightly thicker */
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
   outline: none;
   background: #fff;
   transition: all 0.3s ease;
+  min-height: 50px;            /* ✅ fixed height for uniform look */
 }
 
 input:focus,
@@ -124,7 +126,7 @@ select {
   background-color: white;
   appearance: none;
   padding-right: 40px;
-  height: 46px;
+  height: 50px;                /* ✅ match inputs */
 }
 
 /* Dropdown arrow */
