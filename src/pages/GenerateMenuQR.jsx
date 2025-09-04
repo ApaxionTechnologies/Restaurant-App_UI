@@ -72,9 +72,11 @@ const handleGenerateQR = () => {
 
   const downloadMenuQR = async () => {
     if (!previewRef.current) return;
+    
+  await new Promise(resolve => setTimeout(resolve, 300));
     const canvas = await html2canvas(previewRef.current, {
       useCORS: true,
-      scale: 2,
+      scale: 4,
     });
 
     const dataUrl = canvas.toDataURL("image/png");

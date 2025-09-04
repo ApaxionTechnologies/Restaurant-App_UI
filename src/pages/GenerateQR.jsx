@@ -116,9 +116,10 @@ console.log("restaurantData._id:", restaurantData?._id);
   const qrElement = document.querySelector(".qr-preview-card");
   if (!qrElement) return;
 
+  await new Promise(resolve => setTimeout(resolve, 300));
   const canvas = await html2canvas(qrElement, {
     useCORS: true,
-    scale: 2, 
+    scale: 4, 
   });
 
   const dataUrl = canvas.toDataURL("image/png");
@@ -135,9 +136,10 @@ const downloadAllQRCodes = async () => {
     const qrElement = document.querySelector(".qr-preview-card");
     if (!qrElement) continue;
 
+  await new Promise(resolve => setTimeout(resolve, 300));
     const canvas = await html2canvas(qrElement, {
       useCORS: true,
-      scale: 2,
+      scale: 4,
     });
 
     const dataUrl = canvas.toDataURL("image/png");
