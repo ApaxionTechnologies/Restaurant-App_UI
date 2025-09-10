@@ -260,6 +260,13 @@ export const registerRestaurant = async (req, res) => {
     // ✅ always lowercase email
     const normalizedEmail = email.toLowerCase();
 
+    const existingRestaurantName = await Restaurant.findOne({ restaurantName });
+if (existingRestaurantName) {
+  return res
+    .status(400)
+    .json({ error: "Restaurant name already exists!" });
+}
+
     const existingRestaurant = await Restaurant.findOne({ email: normalizedEmail });
     if (existingRestaurant) {
       return res
