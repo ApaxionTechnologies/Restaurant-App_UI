@@ -79,7 +79,6 @@ html, body {
 .layout-toggle button .icon {
   color: inherit !important;
 }
-
 .menu-grid {
   display: grid;
   gap: 1.25rem;

@@ -133,6 +133,7 @@ import { BsPersonLock } from "react-icons/bs";
 import AdminLogin from "../pages/AdminLogin";
 import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
+import { Home } from "lucide-react";
 
 export default function HomeHeader({
   isAdminDashboard = false,
@@ -150,15 +151,12 @@ export default function HomeHeader({
   const dropdownRef = useRef(null);
   const [anchor, setAnchor] = useState({ top: 80, left: window.innerWidth - 230 });
 
-  // compute coords for fixed dropdown (so it won't get clipped)
   const computeAnchor = () => {
     if (!profileRef.current) return;
     const rect = profileRef.current.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY + 8; // 8px gap
+    const top = rect.bottom + window.scrollY + 8; 
     const minWidth = 210;
-    // align right edge of dropdown with right edge of icon
     let left = rect.right + window.scrollX - minWidth;
-    // keep inside viewport
     if (left < 8) left = 8;
     if (left + minWidth > window.innerWidth - 8) left = window.innerWidth - minWidth - 8;
     return { top, left, minWidth };
@@ -207,7 +205,6 @@ export default function HomeHeader({
       window.removeEventListener("resize", handleResizeScroll);
       window.removeEventListener("scroll", handleResizeScroll);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDropdownopen]);
 
 
@@ -226,12 +223,18 @@ export default function HomeHeader({
   ) : (
             <>
               {!isRegisterPage && (
-                <button className="register-btn" onClick={() => navigate("/registerrestaurant")}>
+                <button className="register-btn btn-global" style={{ height: "50px", fontSize: "16px" }}  onClick={() => navigate("/registerrestaurant")}>
+                
                   Register as Restaurant
                 </button>
               )}
-              {isRegisterPage && (
-                <FaHome className="home-icon" title="Back to Home" onClick={() => navigate("/")} />
+              {isRegisterPage && (<Home
+    className="home-icon"
+    size={26}
+    strokeWidth={2}
+    style={{ cursor: "pointer", color: "#333" }}
+    onClick={() => navigate("/")}
+  />
               )}
             </>
           )}
@@ -256,8 +259,8 @@ export default function HomeHeader({
       />
     </div>
   ) : (
-    <button className="Header-link login-btn" onClick={() => setShowAdminModal(true)}>
-      <BsPersonLock style={{ color: "green", fontSize: "20px" }} /> Login
+    <button className=" btn-global " style={{ height: "50px", fontSize: "16px" }}  onClick={() => setShowAdminModal(true)}>
+      <BsPersonLock style={{ color: "white", fontSize: "20px" }} /> Login
     </button>
   )}
 </div>
@@ -292,7 +295,7 @@ export default function HomeHeader({
           className="dropdown-item"
           onClick={() => {
             setShowDropdownopen(false);
-            navigate("/");
+            navigate("/edit-restaurant-profile");
           }}
         >
           Edit Profile

@@ -7,8 +7,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
 import HomeHeader from "../components/HomeHeader";
-import axios from "axios";
 import { Helmet } from "react-helmet";
+import { getMyRestaurant } from "../services/apiService";
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("");
@@ -19,14 +19,9 @@ export default function AdminDashboard() {
 useEffect(() => {
   const fetchMe = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log("me response:", res.data);
-
-     
-      setRestaurant(res.data.restaurant);
+             const token = localStorage.getItem("token");
+            const res = await getMyRestaurant(token);
+      setRestaurant(res.restaurant);
     } catch (err) {
       console.error("Fetch /me failed -", err.response?.status, err.response?.data);
     }

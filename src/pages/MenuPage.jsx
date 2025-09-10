@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import * as bootstrap from 'bootstrap'; 
 import AOS from "aos";
 import "aos/dist/aos.css";
-import axios from "axios";
+import { getMenuByRestaurant } from "../services/apiService";
 import {
   FaHeart,
   FaRegHeart,
@@ -16,6 +16,7 @@ import {
   FaThLarge,
   FaPlus,
   FaMinus,
+  FaTimes,
 } from "react-icons/fa";
 import "../styles/global.css";
 import "../styles/MenuCard.css";
@@ -94,13 +95,14 @@ export default function MenuPage() {
     const fetchMenu = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5001/api/menu/${restaurantId}`);
-        console.log("API response:", res.data);
-        setRestaurant(res.data.restaurant);
-        const rid = res.data.restaurant?._id || res.data.restaurant?.id || restaurantId;
+       
+      const res = await getMenuByRestaurant(restaurantId);;
+        console.log("API response:", res);
+        setRestaurant(res.restaurant);
+        const rid = res.restaurant?._id || res.restaurant?.id || restaurantId;
         if (rid) localStorage.setItem("restaurantId", rid);
-        const items = Array.isArray(res.data.menu) 
-          ? res.data.menu
+        const items = Array.isArray(res.menu) 
+          ? res.menu
               .filter(item => {
                 const status = (item.status || "").toString().trim().toLowerCase();
                 return status === "published";  
@@ -271,95 +273,61 @@ export default function MenuPage() {
 
       <div className="page-center fade-in">
         <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
-          <input
-            type="text"
-            placeholder="🔍 Search dishes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              padding: "0.5rem 1rem",
-              fontSize: "1rem",
-              margin: "0.5rem auto 0.3rem", 
-              width: "60%",
-              display: "block",
-              border: "1px solid #ddd",
-              borderRadius: "50px",
-              outline: "none",
-              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.05)",
-              transition: "all 0.3s ease",
-            }}
-            onFocus={(e) => (e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.3)")}
-            onBlur={(e) => (e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.05)")}
-          />
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            {isMobile ? (
-              <button
-                onClick={() => setIsCategoryDrawerOpen(true)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.3rem",
-                  padding: "0.5rem 0.6rem",
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  background: "#fff",
-                  fontWeight: "bold",
-                  fontSize: "0.85rem",
-                }}
-              >
-                ☰ {selectedCategory || "All"}
-              </button>
-            ) : (
-              <div style={{ textAlign: "left", flexGrow: 1 }}>
-                {categories.map((category) => {
-                  const count =
-                    category === "All"
-                      ? Object.values(menuMap).flat().length
-                      : (menuMap[category]?.length || 0);
-                  return (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      style={{
-                        margin: "0.3rem",
-                        padding: "0.4rem 0.8rem",
-                        borderRadius: "20px",
-                        border:
-                          selectedCategory === category
-                            ? "1px solid #3e2723"
-                            : "1px solid #ccc",
-                        background:
-                          selectedCategory === category ? "#3e2723" : "#fff",
-                        color: selectedCategory === category ? "#fff" : "#333",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {category} ({count})
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-            <div
+         
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1rem",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}>
+            <input
+              type="text"
+              placeholder="🔍 Search dishes..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "flex-end",
-                marginBottom: "10px",
-                marginLeft: "auto",
+                padding: "0.5rem 1rem",
+                fontSize: "1rem",
+                width: "60%",
+                border: "1px solid #ddd",
+                borderRadius: "50px",
+                outline: "none",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.05)",
+                transition: "all 0.3s ease",
+                flexGrow: 1,
+                maxWidth: "400px",
               }}
-            >
+              onFocus={(e) => (e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.3)")}
+              onBlur={(e) => (e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.05)")}
+            />
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}>
+              {isMobile && (
+                <button
+                  onClick={() => setIsCategoryDrawerOpen(true)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                    padding: "0.5rem 1rem",
+                    border: "1px solid #ccc",
+                    borderRadius: "25px",
+                    background: "#fff",
+                    fontWeight: "bold",
+                    fontSize: "0.85rem",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                   {selectedCategory || "All"} ☰ 
+                </button>
+              )}
+              
               <div className="layout-toggle" role="toolbar" aria-label="Layout toggle">
                 <button
                   onClick={() => setLayout("list")}
@@ -385,6 +353,56 @@ export default function MenuPage() {
               </div>
             </div>
           </div>
+          {!isMobile && (
+            <div style={{ 
+              textAlign: "left", 
+              marginBottom: "1rem",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "0.5rem",
+            }}>
+              {categories.map((category) => {
+                const count =
+                  category === "All"
+                    ? Object.values(menuMap).flat().length
+                    : (menuMap[category]?.length || 0);
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      borderRadius: "25px",
+                      border:
+                        selectedCategory === category
+                          ? "1px solid #3e2723"
+                          : "1px solid #ccc",
+                      background:
+                        selectedCategory === category ? "#3e2723" : "#fff",
+                      color: selectedCategory === category ? "#fff" : "#333",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      transition: "all 0.2s ease",
+                      whiteSpace: "nowrap",
+                    }}
+                    onMouseOver={(e) => {
+                      if (selectedCategory !== category) {
+                        e.target.style.background = "#f5f5f5";
+                      }
+                    }}
+                    onMouseOut={(e) => {
+                      if (selectedCategory !== category) {
+                        e.target.style.background = "#fff";
+                      }
+                    }}
+                  >
+                    {category} ({count})
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {loading && <p style={{ textAlign: "center" }}>Loading menu...</p>}
 
@@ -500,44 +518,98 @@ export default function MenuPage() {
       </div>
 
       {isMobile && isCategoryDrawerOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "70%",
-            height: "100%",
-            background: "#fff",
-            boxShadow: "2px 0 8px rgba(0,0,0,0.2)",
-            zIndex: 9999,
-            padding: "1rem",
-            overflowY: "auto",
-          }}
-        >
-          <h3 style={{ marginBottom: "1rem" }}>Categories</h3>
-          {categories.map((category) => (
-            <div
-              key={category}
-              onClick={() => {
-                setSelectedCategory(category);
-                setIsCategoryDrawerOpen(false);
-              }}
-              style={{
-                padding: "0.6rem",
-                cursor: "pointer",
-                fontWeight: selectedCategory === category ? "bold" : "normal",
-                background:
-                  selectedCategory === category ? "#3e2723" : "transparent",
-                color: selectedCategory === category ? "#fff" : "#333",
-                borderRadius: "6px",
-                marginBottom: "0.4rem",
-              }}
-            >
-              {category}
+        <>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              right: 0,
+              width: "65%", 
+             maxWidth: "220px",
+              height: "auto",
+              maxHeight: "80%",
+              background: "#fff",
+              boxShadow: "-2px 0 8px rgba(0,0,0,0.2)",
+              zIndex: 9999,
+              padding: "1rem",
+              overflowY: "auto",
+              borderRadius: "12px 0 0 12px",
+              marginTop: "80px",
+              marginRight: "10px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "600" }}>Categories</h3>
+              <button 
+                onClick={() => setIsCategoryDrawerOpen(false)}
+                style={{ 
+                  background: "transparent", 
+                  border: "none", 
+                  fontSize: "1.2rem",
+                  cursor: "pointer",
+                  color: "#666"
+                }}
+              >
+                <FaTimes />
+              </button>
             </div>
-          ))}
-        </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {categories.map((category) => {
+                const count =
+                  category === "All"
+                    ? Object.values(menuMap).flat().length
+                    : (menuMap[category]?.length || 0);
+                return (
+                  <div
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setIsCategoryDrawerOpen(false);
+                    }}
+                    style={{
+                      padding: "0.8rem 1rem",
+                      cursor: "pointer",
+                      fontWeight: selectedCategory === category ? "600" : "normal",
+                      background:
+                        selectedCategory === category ? "#f0f0f0" : "transparent",
+                      color: selectedCategory === category ? "#3e2723" : "#333",
+                      borderRadius: "8px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <span>{category}</span>
+                    <span style={{ 
+                      fontSize: "0.8rem", 
+                      background: selectedCategory === category ? "#3e2723" : "#f0f0f0",
+                      color: selectedCategory === category ? "#fff" : "#666",
+                      padding: "0.2rem 0.6rem",
+                      borderRadius: "12px",
+                      fontWeight: "500"
+                    }}>
+                      {count}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div 
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0,0,0,0.3)",
+              zIndex: 9998,
+            }}
+            onClick={() => setIsCategoryDrawerOpen(false)}
+          />
+        </>
       )}
     </>
   );
-}
+} 
