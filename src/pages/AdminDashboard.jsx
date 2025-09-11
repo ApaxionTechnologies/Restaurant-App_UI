@@ -115,6 +115,11 @@ useEffect(() => {
       <h5>Add Menu Item</h5>
       <p>Add new dishes and beverages.</p>
     </Link>
+    <Link to="/add-bulk-items" className="dashboard-card add">
+      <span className="icon">📁</span>
+      <h5>Add Bulk Item</h5>
+      <p>Add all items with a single file</p>
+    </Link>
 
     <Link to="/remove-item" className="dashboard-card remove">
       <span className="icon">❌</span>

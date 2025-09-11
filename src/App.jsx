@@ -175,6 +175,7 @@ import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
+import { BulkItemUpload } from "./pages/BulkItemUpload";
 
 export default function App() {
   const location = useLocation();
@@ -228,6 +229,7 @@ export default function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/add-bulk-items" element={<BulkItemUpload />} />
 
         {/* ✅ Admin Manage Tables */}
         <Route path="/table-manager" element={<TableManager />} />
