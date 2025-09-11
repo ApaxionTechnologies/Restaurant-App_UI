@@ -223,7 +223,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import * as bootstrap from 'bootstrap';
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
-
+import toast from "react-hot-toast";
+import { getMyRestaurant, getMenuByRestaurant ,updateMenuStatus } from "../services/apiService.js";
 const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
@@ -273,18 +274,16 @@ const ViewMenu = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+           setLoading(true);
       const token = localStorage.getItem("token");
-      
+
       const [restaurantRes, menuRes] = await Promise.all([
-        axios.get("http://localhost:5001/api/restaurants/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`http://localhost:5001/api/menu/${restaurantId}`)
+        getMyRestaurant(token),
+        getMenuByRestaurant(restaurantId),
       ]);
 
-      setRestaurant(restaurantRes.data.restaurant);
-      const fetchedMenu = (menuRes.data.menu || [])
+      setRestaurant(restaurantRes.restaurant);
+      const fetchedMenu = (menuRes.menu || [])
         .filter(item => {
           if (!item._id) {
             console.warn("Menu item missing _id, skipping:", item);
@@ -308,103 +307,30 @@ const ViewMenu = () => {
     }
   };
 
-  const handleStatusChange = async (menuItemId, newStatus) => {
-    if (!menuItemId) {
-      console.warn("No ID provided for status change");
-      alert("This menu item doesn't have a valid ID. Please refresh the page and try again.");
-      return;
-    }
-    try {
+const handleStatusChange = async (menuItemId, newStatus) => {
+  if (!menuItemId) {
+    console.warn("No ID provided for status change");
+    toast.error("This menu item doesn't have a valid ID. Please refresh the page and try again.");
+    return;
+  }
+  try {
+   
       const token = localStorage.getItem("token");
-      const response = await axios.put(`http://localhost:5001/api/menu/${menuItemId}/status`, {
-        status: newStatus,
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setMenuItems(prev =>
-        prev.map(item =>
-          item._id === menuItemId
-            ? { ...item, status: newStatus, statusNormalized: newStatus.toLowerCase() }
-            : item
-        )
-      );
-    } catch (err) {
-      console.error(`Failed to change status to ${newStatus}`, err);
-      console.error("Error response:", err.response?.data);
-      alert(`Failed to update item status. Please try again. Error: ${err.response?.data?.message || err.message}`);
-    }
-  };
-
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setEditFormData({
-      name: item.name || "",
-      price: item.price || "",
-      category: item.category || "Starter",
-      cuisine: item.cuisine || "Indian",
-      prepTime: item.prepTime || item.timeToPrepare || "",
-      ingredients: Array.isArray(item.ingredients) ? item.ingredients.join(", ") : item.ingredients || "",
-      description: item.description || "",
-      status: item.status || "Published",
-      type: item.type || "veg",
-      discount: item.discount || ""
-    });
-    setShowEditModal(true);
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const formData = new FormData();
-      
-      Object.keys(editFormData).forEach(key => {
-        formData.append(key, editFormData[key]);
-      });
-
-      const response = await axios.put(`http://localhost:5001/api/menu/${editingItem._id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      setMenuItems(prev =>
-        prev.map(item =>
-          item._id === editingItem._id
-            ? { ...item, ...response.data.menuItem }
-            : item
-        )
-      );
-
-      setShowEditModal(false);
-      setEditingItem(null);
-      alert("Menu item updated successfully!");
-    } catch (err) {
-      console.error("Error updating menu item:", err);
-      alert(`Failed to update menu item: ${err.response?.data?.message || err.message}`);
-    }
-  };
-
-  const handleDelete = async (menuItemId) => {
-    if (!window.confirm("Are you sure you want to delete this menu item?")) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5001/api/menu/${menuItemId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      setMenuItems(prev => prev.filter(item => item._id !== menuItemId));
-      alert("Menu item deleted successfully!");
-    } catch (err) {
-      console.error("Error deleting menu item:", err);
-      alert(`Failed to delete menu item: ${err.response?.data?.message || err.message}`);
-    }
-  };
+      await updateMenuStatus(menuItemId, newStatus, token);
+    
+    setMenuItems(prev =>
+      prev.map(item =>
+        item._id === menuItemId
+          ? { ...item, status: newStatus, statusNormalized: newStatus.toLowerCase() }
+          : item
+      )
+    );
+  } catch (err) {
+    console.error(`Failed to change status to ${newStatus}`, err);
+    console.error("Error response:", err.response?.data);
+    toast.error(`Failed to update item status. Please try again. Error: ${err.response?.data?.message || err.message}`);
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
