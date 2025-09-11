@@ -139,7 +139,7 @@
 
 
 
-import React from "react"; 
+import React from "react";  
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // ✅ Pages
@@ -154,6 +154,7 @@ import GenerateQR from "./pages/GenerateQR";
 import RemoveItem from "./pages/RemoveItem";
 import CurrentMenu from "./pages/CurrentMenu";
 import FeedbackPage from "./pages/Feedbackpage";
+import GenerateMenuQR from "./pages/GenerateMenuQR";
 
 // ✅ Components
 import AddMenuItem from "./components/AddMenuItem";
@@ -165,7 +166,6 @@ import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
 
-
 // ✅ Styles
 import "./styles/global.css";
 import "./styles/MenuCard.css";
@@ -174,7 +174,6 @@ import './styles/theme.css';
 import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
-import GenerateMenuQR from "./pages/GenerateMenuQR";
 
 export default function App() {
   const location = useLocation();
@@ -189,7 +188,6 @@ export default function App() {
           element={
             <>
               <HomePage />
-              {/* Show AdminLogin modal if redirected from ProtectedRoute */}
               {state.showAdminLogin && <AdminLogin />}
             </>
           }
@@ -201,7 +199,7 @@ export default function App() {
         <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
         <Route path="/admin-login" element={<AdminLogin />} />
 
-        {/* Protected Admin Dashboard */}
+        {/* ✅ Protected Admin Dashboard */}
         <Route
           path="/admin-dashboard"
           element={
@@ -212,11 +210,13 @@ export default function App() {
         />
 
         {/* ✅ Menu & Admin Components */}
-        <Route path="/add-item" element={<AddMenuItem />} />   
-           <Route path="/menu/:restaurantId" element={<ViewMenu />} />
+        <Route path="/add-item" element={<AddMenuItem />} /> 
+        <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
+
+        <Route path="/menu/:restaurantId" element={<ViewMenu />} />
         <Route path="/remove-item" element={<RemoveItem />} />
         <Route path="/generate-qr" element={<GenerateQR />} />
-        <Route path ="/generate-menu-qr" element={< GenerateMenuQR/>}/>
+        <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
         <Route path="/current-menu" element={<CurrentMenu />} />
 
         {/* ✅ Customer QR Options */}
