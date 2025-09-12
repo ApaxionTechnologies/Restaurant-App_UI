@@ -9,6 +9,7 @@ import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
 import { Home } from "lucide-react";
 
+
 export default function HomeHeader({
   isAdminDashboard = false,
   restaurant=null,
@@ -79,6 +80,7 @@ export default function HomeHeader({
       window.removeEventListener("resize", handleResizeScroll);
       window.removeEventListener("scroll", handleResizeScroll);
     };
+
   }, [showDropdownopen]);
 
 
@@ -102,6 +104,7 @@ export default function HomeHeader({
                   Register as Restaurant
                 </button>
               )}
+
               {isRegisterPage && (<Home
     className="home-icon"
     size={26}
