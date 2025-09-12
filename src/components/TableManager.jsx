@@ -1,144 +1,145 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "../styles/TableManager.css";
-import Footer from "./Footer";
-import HomeHeader from "../components/HomeHeader.jsx";
-import { useNavigate } from "react-router-dom";
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import "../styles/TableManager.css";
+// import Footer from "./Footer";
+// import HomeHeader from "../components/HomeHeader.jsx";
+// import { useNavigate } from "react-router-dom";
+// import toast from "react-hot-toast";
 
-const TableManager = () => {
-  const [restaurantData, setRestaurantData] = useState(null);
-  const [tables, setTables] = useState(0);
-  const [error, setError] = useState("");
-  const restaurantEmail = localStorage.getItem("restaurantEmail");
-   const [restaurant, setRestaurant] = useState(null);
-    const navigate = useNavigate();
-    const [restaurantName, setRestaurantName] = useState("My Restaurant");
-    const [adminEmail, setAdminEmail] = useState("");
+// const TableManager = () => {
+//   const [restaurantData, setRestaurantData] = useState(null);
+//   const [tables, setTables] = useState(0);
+//   const [error, setError] = useState("");
+//   const restaurantEmail = localStorage.getItem("restaurantEmail");
+//    const [restaurant, setRestaurant] = useState(null);
+//     const navigate = useNavigate();
+//     const [restaurantName, setRestaurantName] = useState("My Restaurant");
+//     const [adminEmail, setAdminEmail] = useState("");
   
-  useEffect(() => {
-    const fetchMe = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setRestaurant(res.data.restaurant);
-      } catch (err) {
-        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
-      }
-    };
-    fetchMe();
-  }, []);
+//   useEffect(() => {
+//     const fetchMe = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+//         const res = await axios.get("http://localhost:5001/api/restaurants/me", {
+//           headers: { Authorization: `Bearer ${token}` }
+//         });
+//         setRestaurant(res.data.restaurant);
+//       } catch (err) {
+//         console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+//       }
+//     };
+//     fetchMe();
+//   }, []);
 
-  useEffect(() => {
-    const fetchRestaurantData = async () => {
-      try {
-        if (!restaurantEmail) {
-          setError("Restaurant email is missing.");
-          return;
-        }
+//   useEffect(() => {
+//     const fetchRestaurantData = async () => {
+//       try {
+//         if (!restaurantEmail) {
+//           setError("Restaurant email is missing.");
+//           return;
+//         }
 
-        const encodedEmail = encodeURIComponent(restaurantEmail);
-        const response = await axios.get(
-          `http://localhost:5001/api/restaurants/${encodedEmail}`
-        );
+//         const encodedEmail = encodeURIComponent(restaurantEmail);
+//         const response = await axios.get(
+//           `http://localhost:5001/api/restaurants/${encodedEmail}`
+//         );
 
-        if (response.data.restaurant) {
-          setRestaurantData(response.data.restaurant);
-          setTables(response.data.restaurant.tables);
-        } else {
-          setError("No restaurant data found for this email.");
-        }
-      } catch (err) {
-        console.error("Failed to fetch restaurant data", err);
-        setError("Error fetching restaurant data. Please try again later.");
-      }
-    };
+//         if (response.data.restaurant) {
+//           setRestaurantData(response.data.restaurant);
+//           setTables(response.data.restaurant.tables);
+//         } else {
+//           setError("No restaurant data found for this email.");
+//         }
+//       } catch (err) {
+//         console.error("Failed to fetch restaurant data", err);
+//         setError("Error fetching restaurant data. Please try again later.");
+//       }
+//     };
 
-    if (restaurantEmail) {
-      fetchRestaurantData();
-    } else {
-      setError("Restaurant email is missing.");
-    }
-  }, [restaurantEmail]);
+//     if (restaurantEmail) {
+//       fetchRestaurantData();
+//     } else {
+//       setError("Restaurant email is missing.");
+//     }
+//   }, [restaurantEmail]);
 
-  const handleIncrement = () => {
-    const updated = tables + 1;
-    setTables(updated);
-    updateTablesOnBackend(updated);
-  };
+//   const handleIncrement = () => {
+//     const updated = tables + 1;
+//     setTables(updated);
+//     updateTablesOnBackend(updated);
+//   };
 
-  const handleDecrement = () => {
-    const updated = tables > 0 ? tables - 1 : 0;
-    setTables(updated);
-    updateTablesOnBackend(updated);
-  };
+//   const handleDecrement = () => {
+//     const updated = tables > 0 ? tables - 1 : 0;
+//     setTables(updated);
+//     updateTablesOnBackend(updated);
+//   };
 
-  const updateTablesOnBackend = async (updatedTables) => {
-    try {
-      const encodedEmail = encodeURIComponent(restaurantEmail);
-      await axios.put(
-        `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
-        { tables: updatedTables }
-      );
-    } catch (err) {
-      alert("Failed to update tables on backend");
-    }
-  };
+//   const updateTablesOnBackend = async (updatedTables) => {
+//     try {
+//       const encodedEmail = encodeURIComponent(restaurantEmail);
+//       await axios.put(
+//         `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
+//         { tables: updatedTables }
+//       );
+//     } catch (err) {
+//   toast.error("Failed to update tables on backend");
+//     }
+//   };
 
-  const handleSubmit = async () => {
-    try {
-      const encodedEmail = encodeURIComponent(restaurantEmail);
-      await axios.put(
-        `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
-        { tables }
-      );
-      alert("Tables updated successfully!");
-    } catch (err) {
-      alert("Failed to update tables");
-    }
-  };
- const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminEmail");
-    navigate("/");
-  };
+//   const handleSubmit = async () => {
+//     try {
+//       const encodedEmail = encodeURIComponent(restaurantEmail);
+//       await axios.put(
+//         `http://localhost:5001/api/restaurants/${encodedEmail}/tables`,
+//         { tables }
+//       );
+//       toast.success("Tables updated successfully!");
+//     } catch (err) {
+//       toast.error("Failed to update tables");
+//     }
+//   };
+//  const handleLogout = () => {
+//     localStorage.removeItem("token");
+//     localStorage.removeItem("adminEmail");
+//     navigate("/");
+//   };
 
-  return (
-    <div className="table-manager-wrapper">
+//   return (
+//     <div className="table-manager-wrapper">
 
-     <HomeHeader
-            isAdminDashboard={true}
-            restaurantName={restaurantName}
-            adminEmail={adminEmail}
-            onLogout={handleLogout}
-            restaurant={restaurant}
-          />
+//      <HomeHeader
+//             isAdminDashboard={true}
+//             restaurantName={restaurantName}
+//             adminEmail={adminEmail}
+//             onLogout={handleLogout}
+//             restaurant={restaurant}
+//           />
     
-      <div className="table-manager-container">
-        <div className="table-manager-card">
-          <h3>Manage Tables</h3>
-          <h6>
-            {restaurantData ? restaurantData.restaurantName : "Restaurant"} <br />
-            Current Tables: {tables}
-          </h6>
+//       <div className="table-manager-container">
+//         <div className="table-manager-card">
+//           <h3>Manage Tables</h3>
+//           <h6>
+//             {restaurantData ? restaurantData.restaurantName : "Restaurant"} <br />
+//             Current Tables: {tables}
+//           </h6>
 
-          <div className="button-group">
-            <button onClick={handleDecrement}>-</button>
-            <span className="table-count">{tables}</span>
-            <button onClick={handleIncrement}>+</button>
-          </div>
+//           <div className="button-group">
+//             <button onClick={handleDecrement}>-</button>
+//             <span className="table-count">{tables}</span>
+//             <button onClick={handleIncrement}>+</button>
+//           </div>
 
-          <button className="save-button" onClick={handleSubmit}>
-            Save Changes
-          </button>
+//           <button className="save-button" onClick={handleSubmit}>
+//             Save Changes
+//           </button>
 
-          {error && <div className="alert-danger">{error}</div>}
-        </div>
-      </div>
-      <Footer />
-    </div>
-  );
-};
+//           {error && <div className="alert-danger">{error}</div>}
+//         </div>
+//       </div>
+//       <Footer />
+//     </div>
+//   );
+// };
 
-export default TableManager;
+// export default TableManager;

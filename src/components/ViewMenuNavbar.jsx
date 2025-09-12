@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
@@ -18,7 +17,6 @@ const ViewMenuNavbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileRef = useRef();
 
-  
   useEffect(() => {
     if (location.pathname.includes("/feedback")) setActive("feedback");
     else if (location.pathname.includes("/cart")) setActive("cart");
@@ -41,11 +39,20 @@ const ViewMenuNavbar = () => {
   
     return r._id || r.id || "";
   };
-const restaurantIdValue = getRestaurantId(restaurant) || localStorage.getItem("restaurantId") || "";
-const tableValue = table || localStorage.getItem("tableNumber") || 1;
-const query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}&table=${encodeURIComponent(tableValue)}`;
 
+  const restaurantIdValue =
+  getRestaurantId(restaurant) || localStorage.getItem("restaurantId") || "";
 
+const tableValue =
+  table || localStorage.getItem("tableNumber") || "";
+
+let query = "";
+if (restaurantIdValue) {
+  query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}`;
+  if (tableValue) {
+    query += `&table=${encodeURIComponent(tableValue)}`;
+  }
+}
   return (
     <>
       <nav className="vm-navbar">
@@ -62,7 +69,7 @@ const query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}&table=${en
             </button>
           </div>
 
-          <div className="vm-brand">PAGES</div>
+          <div className="vm-brand">MENU</div>
 
          
           <ul className="vm-nav">
@@ -78,21 +85,23 @@ const query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}&table=${en
               </li>
             ))}
 
-            <li className="vm-divider" />
+          {tableValue && (
+  <>
+    <li className="vm-divider" />
+    <li className="vm-nav-item vm-nav-desktop-only">
+      <Link
+        to={`/cart${query}`}
+        className={`vm-nav-link icon-btn ${active === "cart" ? "active" : ""}`}
+        onClick={() => setMobileOpen(false)}
+      >
+        <FaShoppingCart className="cart-icon" />
+      </Link>
+    </li>
+    <CartDrawer />
+  </>
+)}
 
-
-            <li className="vm-nav-item vm-nav-desktop-only">
-              <Link
-                to={`/cart${query}`}
-                className={`vm-nav-link icon-btn ${active === "cart" ? "active" : ""}`}
-                onClick={() => setMobileOpen(false)}
-              >
-                <FaShoppingCart className="cart-icon" />
-              </Link>
-            </li>
-
-            <CartDrawer />
-          </ul>
+</ul>
         </div>
       </nav>
 
@@ -114,16 +123,19 @@ const query = `?restaurantId=${encodeURIComponent(restaurantIdValue)}&table=${en
               </Link>
             </li>
           ))}
-          <li className="vm-mobile-item">
-            <Link
-              to={`/cart${query}`}
-              className={`vm-mobile-link ${active === "cart" ? "active" : ""}`}
-              onClick={() => setMobileOpen(false)}
-            >
-              <FaShoppingCart className="cart-icon" />
-            </Link>
-          </li>
-        </ul>
+            {tableValue && (
+  <li className="vm-mobile-item">
+    <Link
+      to={`/cart${query}`}
+      className={`vm-mobile-link ${active === "cart" ? "active" : ""}`}
+      onClick={() => setMobileOpen(false)}
+    >
+      <FaShoppingCart className="cart-icon" />
+    </Link>
+  </li>
+)}
+
+</ul>
       </div>
     </>
   );

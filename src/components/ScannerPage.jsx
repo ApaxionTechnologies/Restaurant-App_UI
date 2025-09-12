@@ -1,44 +1,3 @@
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-// import Footer from "./Footer";
-
-// export default function ScannerPage() {
-//   const navigate = useNavigate();
-
-//   return (
-//     <>
-//       <div className="home-container">
-//         {/* Scanner Section */}
-//         <div className="home-card">
-//           <h1 className="mb-3">📷 QR Scanner</h1>
-//           <p className="mb-4">Scan your table QR to begin ordering.</p>
-//           <div className="action-buttons">
-//             {/* Later you can integrate actual QR scanner library here */}
-//             <button
-//               className="btn btn-primary scan-btn"
-//               onClick={() => navigate("/scanner")}
-//             >
-//               🚀 Start Scanning
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Back Button */}
-//         <div style={{ marginTop: "20px" }}>
-//           <button className="header-btn" onClick={() => navigate("/")}>
-//             ⬅️ Back to Home
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Footer */}
-//       <div className="footer">
-//         <Footer />
-//       </div>
-//     </>
-//   );
-// }
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { QrReader } from "react-qr-reader";
@@ -70,39 +29,28 @@ export default function ScannerPage() {
       
     }
 
-    try {
-    
-      const maybeUrl = decodeURIComponent(text);
-      const url = new URL(maybeUrl.includes("://") ? maybeUrl : text);
-      const restaurantId =
-        url.searchParams.get("restaurantId") ||
-        url.searchParams.get("restaurant") ||
-        url.searchParams.get("id") ||
-        null;
-      const table =
-        url.searchParams.get("table") ||
-        url.searchParams.get("tableNumber") ||
-        url.searchParams.get("t") ||
-        null;
+   try {
+  const maybeUrl = decodeURIComponent(text);
+  const url = new URL(maybeUrl.includes("://") ? maybeUrl : text);
+  const restaurantId =
+    url.searchParams.get("restaurantId") ||
+    url.searchParams.get("restaurant") ||
+    url.searchParams.get("id") ||
+    null;
+  const table =
+    url.searchParams.get("table") ||
+    url.searchParams.get("tableNumber") ||
+    url.searchParams.get("t") ||
+    null;
 
-      let finalRestaurantId = restaurantId;
-      if (!finalRestaurantId) {
-        const parts = url.pathname.split("/").filter(Boolean);
-        const menuIndex = parts.indexOf("menu");
-        if (menuIndex >= 0 && parts[menuIndex + 1]) {
-          finalRestaurantId = parts[menuIndex + 1];
-        } else if (parts.length > 0) {
-          finalRestaurantId = parts[parts.length - 1];
-        }
-      }
+  if (restaurantId || table) {
+    console.log("parseQrText: URL result", { restaurantId, table });
+    return { restaurantId, table };
+  }
+} catch (e) {
+ 
+}
 
-      if (finalRestaurantId || table) {
-        console.log("parseQrText: URL result", { restaurantId: finalRestaurantId, table });
-        return { restaurantId: finalRestaurantId, table };
-      }
-    } catch (e) {
-     
-    }
     const oidMatch = text.match(/[a-fA-F0-9]{24}/);
     const tableMatch = text.match(/(?:\?|&|=|\/)table(?:Number)?(?:=|\/)?(\d{1,4})/i);
     if (oidMatch || tableMatch) {
@@ -117,38 +65,6 @@ export default function ScannerPage() {
 
     return null;
   };
-
-  // const redirectToMenu = (qrText) => {
-  //   setErrorMsg("");
-  //   const parsed = parseQrText(qrText);
-
-  //   if (!parsed) {
-  //     setErrorMsg("Could not parse QR content. Check console for the raw decoded text.");
-  //     return;
-  //   }
-
-  //   const restaurantId = parsed.restaurantId || localStorage.getItem("restaurantId");
-  //   const table = parsed.table || parsed.tableNumber || "1";
-
-  //   if (!restaurantId) {
-  //     // if restaurantId not found but table exists, still navigate but store only table
-  //     localStorage.setItem("tableNumber", table);
-  //     if (table) {
-  //       navigate(`/menu?table=${table}`);
-  //       return;
-  //     }
-  //     setErrorMsg("restaurantId missing in QR and not available in localStorage.");
-  //     return;
-  //   }
-
-  //   // Save both and navigate using canonical query params
-  //   localStorage.setItem("restaurantId", restaurantId);
-  //   localStorage.setItem("tableNumber", table);
-  //   console.log("Redirecting to menu with:", { restaurantId, table });
-  //   navigate(`/menu?restaurantId=${restaurantId}&table=${table}`);
-  // };
-
-  // Camera scanning handler
 const redirectToMenu = (qrText) => {
   setErrorMsg("");
   const parsed = parseQrText(qrText);
@@ -159,7 +75,7 @@ const redirectToMenu = (qrText) => {
   }
 
   const extractedId = parsed.restaurantId || localStorage.getItem("restaurantId");
-  const table = parsed.table || parsed.tableNumber || "1";
+  const table = parsed.table || parsed.tableNumber || "";
 
   if (!extractedId) {
     localStorage.setItem("tableNumber", table);
@@ -178,8 +94,13 @@ const redirectToMenu = (qrText) => {
 
   localStorage.setItem("restaurantId", rid);
   localStorage.setItem("tableNumber", table);
-  console.log("Redirecting to menu with:", { restaurantId: rid, table });
-  navigate(`/menu?restaurantId=${encodeURIComponent(rid)}&table=${encodeURIComponent(table)}`);
+  console.log("Redirecting to menu with:", { restaurantId: rid, table });  if (table) {
+    navigate(
+      `/menu?restaurantId=${encodeURIComponent(rid)}&table=${encodeURIComponent(table)}`
+    );
+  } else {
+    navigate(`/menu?restaurantId=${encodeURIComponent(rid)}`);
+  }
 };
 
   const handleScan = (result) => {

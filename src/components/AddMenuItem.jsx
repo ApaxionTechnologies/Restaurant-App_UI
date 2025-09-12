@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "../styles/AddMenuItem.css";
 import Footer from "./Footer";
 import HomeHeader from "./HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getMyRestaurant, addMenuItem } from "../services/apiService.js";
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
@@ -18,12 +19,10 @@ const AddMenuItem = () => {
     const fetchMe = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setRestaurant(res.data.restaurant);
+       const res = await getMyRestaurant(token);
+        setRestaurant(res.restaurant);
       } catch (err) {
-        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+        console.error("Fetch /me failed -", err);
       }
     };
     fetchMe();
@@ -215,14 +214,19 @@ const AddMenuItem = () => {
         navigate("/");
         return;
       }
+      const res = await addMenuItem(data, token);
+      const createdItem = res.item || res;
 
-      await axios.post("http://localhost:5001/api/menu/add", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      alert("✅ Menu item added successfully!");
+      const normalizedNew = {
+    ...createdItem,
+    statusNormalized: (createdItem.status ?? "").toString().trim().toLowerCase() || "draft",
+    status:
+      (createdItem.status ?? "").toString().trim().toLowerCase() === "published"
+        ? "Published"
+        : "Draft",
+  };
+      toast.success("✅ Menu item added successfully!");
+      navigate("/admin-dashboard");
       setFormData({
         category: "Starter",
         name: "",
@@ -248,6 +252,7 @@ const AddMenuItem = () => {
       setErrors({});
 
       if (fileInputRef.current) fileInputRef.current.value = "";
+      
     } catch (err) {
       console.error("❌ Error adding item:", err.response?.data || err.message);
       showFormError("❌ Failed to add item: " + (err.response?.data?.message || "Please try again."));
