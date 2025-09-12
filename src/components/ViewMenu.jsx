@@ -228,7 +228,7 @@ import * as bootstrap from 'bootstrap';
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
-import { getMyRestaurant, getMenuByRestaurant ,updateMenuStatus } from "../services/apiService.js";
+import { getMyRestaurant, getMenuByRestaurant ,updateMenuStatus,deleteMenuItem,} from "../services/apiService.js";
 const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
@@ -286,6 +286,20 @@ const ViewMenu = () => {
       console.error("Error fetching data:", err);
       setError("Failed to load data. Please try again later.");
     } finally { setLoading(false); }
+  };
+
+  const handleDelete = async (menuItemId) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await deleteMenuItem(menuItemId, token);
+
+      setMenuItems((prev) => prev.filter((m) => m._id !== menuItemId));
+      toast.success("Item deleted successfully!");
+    } catch (err) {
+      toast.error(`Delete failed: ${err.message}`);
+    }
   };
 
 const handleStatusChange = async (menuItemId, newStatus) => {
@@ -369,15 +383,34 @@ const handleStatusChange = async (menuItemId, newStatus) => {
                   </p>
 
                   <div className="card-footer">
-                    <button
+                    {/* <button
   className="btn btn-sm btn-outline-primary"
   onClick={() => navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } })}
 >
   ✏️ Edit
-</button>
+</button> */}
+                  <div className="card-footer d-flex justify-content-between align-items-center">
+  <div className="cuisine-time">
+    <span>{item.cuisine || "🍴"}</span> •{" "}
+    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+  </div>
 
-                    <div className="cuisine-time">
-                      <span>{item.cuisine || "🍴"}</span> • <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+  <div className="d-flex gap-2">
+    <button
+      className="btn btn-sm btn-success action-btn"
+      onClick={() =>
+        navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } })
+      }
+    >
+      ✏️Edit
+    </button>
+                        <button
+                        className="btn btn-sm btn-danger action-btn"
+                        onClick={() => handleDelete(item._id)}
+                         >
+                        🗑️ Delete
+                       </button>
+                     </div>
                     </div>
                     <div className="footer-actions">
                       {item.status === "Published"
