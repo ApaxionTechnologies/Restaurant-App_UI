@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import toast from "react-hot-toast";
 
 export default function Cart({ cart = [], table = null }) {
   const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ export default function Cart({ cart = [], table = null }) {
 
   const handleOrder = async (payOnline) => {
     if (cart.length === 0) {
-      alert("Cart is empty.");
+      toast.error("Cart is empty.");
       return;
     }
     const receiptId = uuidv4().slice(0, 8);
@@ -27,13 +28,13 @@ export default function Cart({ cart = [], table = null }) {
       });
 
       if (payOnline) {
-        alert("Redirecting to payment gateway (not implemented)...");
+        toast.error("Redirecting to payment gateway (not implemented)...");
       } else {
-        alert(`Order placed! Receipt ID: ${receiptId}`);
+        toast.success(`Order placed! Receipt ID: ${receiptId}`);
       }
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("Failed to place order. Try again.");
+      toast.error("Failed to place order. Try again.");
     } finally {
       setLoading(false);
     }

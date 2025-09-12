@@ -8,6 +8,8 @@ import "../styles/GenerateQR.css";
 import Footer from "../components/Footer.jsx";
 import HomeHeader from "../components/HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getMyRestaurant ,fetchMe } from "../services/apiService.js";
 
 export default function GenerateMenuQR() {
   const navigate = useNavigate();
@@ -16,19 +18,16 @@ export default function GenerateMenuQR() {
   const [restaurantData, setRestaurantData] = useState(null);
   const [qrValue, setQrValue] = useState("");
   const previewRef = useRef(null);
-
  const [restaurant, setRestaurant] = useState(null);
   
   useEffect(() => {
     const fetchMe = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setRestaurant(res.data.restaurant);
+                    const res = await getMyRestaurant(token);
+        setRestaurant(res.restaurant);
       } catch (err) {
-        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+        console.error("Fetch /me failed -", err);
       }
     };
     fetchMe();
@@ -43,17 +42,15 @@ useEffect(() => {
 
   const fetchRestaurantData = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const data = await fetchMe(token);
+        const restaurantInfo = data.restaurant;
+        setRestaurantName(restaurantInfo.restaurantName);
+        setAdminEmail(restaurantInfo.email);
+        setRestaurantData(restaurantInfo);
 
-      const data = response.data.restaurant;
-      setRestaurantName(data.restaurantName);
-      setAdminEmail(data.email);
-      setRestaurantData(data); 
     } catch (err) {
       console.error("Failed to fetch restaurant data:", err);
-      alert("Session expired, please login again.");
+      toast.error("Session expired, please login again.");
       localStorage.removeItem("token");
       localStorage.removeItem("adminEmail");
       navigate("/");
@@ -65,15 +62,18 @@ useEffect(() => {
 
 const handleGenerateQR = () => {
   if (!restaurantData?._id) return;
-  setQrValue(`http://localhost:3000/menu/${restaurantData._id}`);
+  setQrValue(`http://localhost:3000/menu?restaurantId=${restaurantData._id}`);
 };
+
 
 
   const downloadMenuQR = async () => {
     if (!previewRef.current) return;
+    
+  await new Promise(resolve => setTimeout(resolve, 300));
     const canvas = await html2canvas(previewRef.current, {
       useCORS: true,
-      scale: 2,
+      scale: 4,
     });
 
     const dataUrl = canvas.toDataURL("image/png");

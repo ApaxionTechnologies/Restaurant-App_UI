@@ -69,7 +69,7 @@ if (restaurantIdValue) {
             </button>
           </div>
 
-          <div className="vm-brand">PAGES</div>
+          <div className="vm-brand">MENU</div>
 
          
           <ul className="vm-nav">

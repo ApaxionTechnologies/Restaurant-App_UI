@@ -458,12 +458,12 @@
 
 
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "../styles/AddMenuItem.css";
 import Footer from "./Footer";
 import HomeHeader from "./HomeHeader.jsx";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getMyRestaurant, addMenuItem } from "../services/apiService.js";
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
@@ -482,12 +482,10 @@ const AddMenuItem = () => {
     const fetchMe = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5001/api/restaurants/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setRestaurant(res.data.restaurant);
+       const res = await getMyRestaurant(token);
+        setRestaurant(res.restaurant);
       } catch (err) {
-        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+        console.error("Fetch /me failed -", err);
       }
     };
     fetchMe();
@@ -611,7 +609,71 @@ const AddMenuItem = () => {
       setFormError("Please upload an image.");
       return;
     }
-    toast.success(editItem ? "✅ Edit mode form opened!" : "✅ New item form ready!");
+
+    const data = new FormData();
+    data.append("category", formData.category);
+    data.append("name", formData.name);
+    data.append("price", formData.price);
+    data.append("cuisine", formData.cuisine);
+    data.append("timeToPrepare", formData.timeToPrepare);
+    data.append("ingredients", formData.ingredients);
+    data.append("description", formData.description);
+    data.append("status", formData.status);
+    data.append("type", formData.vegType.toLowerCase());
+
+    if (formData.discount) data.append("discount", formData.discount);
+    if (imageFile) data.append("image", imageFile);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        showFormError("⚠️ No token found. Please log in again.");
+        navigate("/");
+        return;
+      }
+      const res = await addMenuItem(data, token);
+      const createdItem = res.item || res;
+
+      const normalizedNew = {
+    ...createdItem,
+    statusNormalized: (createdItem.status ?? "").toString().trim().toLowerCase() || "draft",
+    status:
+      (createdItem.status ?? "").toString().trim().toLowerCase() === "published"
+        ? "Published"
+        : "Draft",
+  };
+      toast.success("✅ Menu item added successfully!");
+      navigate("/admin-dashboard");
+      setFormData({
+        category: "Starter",
+        name: "",
+        price: "",
+        cuisine: "Indian",
+        timeToPrepare: "",
+        ingredients: "",
+        description: "",
+        status: "Published",
+        discount: "",
+        vegType: "veg",
+      });
+
+      if (imagePreview) {
+        try {
+          URL.revokeObjectURL(imagePreview);
+        } catch (err) {}
+      }
+      setImageFile(null);
+      setImagePreview(null);
+      setImageError("");
+      setFormError("");
+      setErrors({});
+
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      
+    } catch (err) {
+      console.error("❌ Error adding item:", err.response?.data || err.message);
+      showFormError("❌ Failed to add item: " + (err.response?.data?.message || "Please try again."));
+    }
   };
 
   const handleReset = () => {

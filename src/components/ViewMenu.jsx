@@ -227,7 +227,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import * as bootstrap from 'bootstrap';
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
-
+import toast from "react-hot-toast";
+import { getMyRestaurant, getMenuByRestaurant ,updateMenuStatus } from "../services/apiService.js";
 const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
@@ -256,17 +257,23 @@ const ViewMenu = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
+           setLoading(true);
       const token = localStorage.getItem("token");
 
       const [restaurantRes, menuRes] = await Promise.all([
-        axios.get("http://localhost:5001/api/restaurants/me", { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`http://localhost:5001/api/menu/${restaurantId}`)
+        getMyRestaurant(token),
+        getMenuByRestaurant(restaurantId),
       ]);
 
-      setRestaurant(restaurantRes.data.restaurant);
-      const fetchedMenu = (menuRes.data.menu || [])
-        .filter(item => !!item._id)
+      setRestaurant(restaurantRes.restaurant);
+      const fetchedMenu = (menuRes.menu || [])
+        .filter(item => {
+          if (!item._id) {
+            console.warn("Menu item missing _id, skipping:", item);
+            return false;
+          }
+          return true;
+        })
         .map(item => ({
           ...item,
           statusNormalized: (item.status || "draft").toLowerCase(),
@@ -281,20 +288,30 @@ const ViewMenu = () => {
     } finally { setLoading(false); }
   };
 
-  const handleStatusChange = async (menuItemId, newStatus) => {
-    if (!menuItemId) return alert("Menu item ID missing. Refresh the page.");
-    try {
+const handleStatusChange = async (menuItemId, newStatus) => {
+  if (!menuItemId) {
+    console.warn("No ID provided for status change");
+    toast.error("This menu item doesn't have a valid ID. Please refresh the page and try again.");
+    return;
+  }
+  try {
+   
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5001/api/menu/${menuItemId}/status`, { status: newStatus }, { headers: { Authorization: `Bearer ${token}` } });
-
-      setMenuItems(prev => prev.map(item =>
-        item._id === menuItemId ? { ...item, status: newStatus, statusNormalized: newStatus.toLowerCase() } : item
-      ));
-    } catch (err) {
-      console.error("Failed to change status:", err);
-      alert(`Failed to update item status. Error: ${err.response?.data?.message || err.message}`);
-    }
-  };
+      await updateMenuStatus(menuItemId, newStatus, token);
+    
+    setMenuItems(prev =>
+      prev.map(item =>
+        item._id === menuItemId
+          ? { ...item, status: newStatus, statusNormalized: newStatus.toLowerCase() }
+          : item
+      )
+    );
+  } catch (err) {
+    console.error(`Failed to change status to ${newStatus}`, err);
+    console.error("Error response:", err.response?.data);
+    toast.error(`Failed to update item status. Please try again. Error: ${err.response?.data?.message || err.message}`);
+  }
+};
 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
