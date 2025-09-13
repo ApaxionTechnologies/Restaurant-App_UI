@@ -223,7 +223,7 @@ export default function HomeHeader({
   ) : (
             <>
               {!isRegisterPage && (
-                <button className="register-btn btn-global" style={{ height: "50px", fontSize: "16px" }}  onClick={() => navigate("/registerrestaurant")}>
+                <button className="btn-global" style={{ height: "50px", fontSize: "16px" }}  onClick={() => navigate("/registerrestaurant")}>
                 
                   Register as Restaurant
                 </button>

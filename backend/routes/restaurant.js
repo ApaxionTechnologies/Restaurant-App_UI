@@ -40,18 +40,18 @@
 
 
 import express from "express";
-import multer from "multer";
-import {
+import multer from "multer";import {
   registerRestaurant,
   loginRestaurant,
   getRestaurantByEmail,
   updateTables,
   deleteRestaurant,
   updateRestaurant,
-  getCurrentRestaurant, // ✅ import this
+  getCurrentRestaurant,
+  updateProfile, 
 } from "../controllers/restaurantController.js";
 
-import { requireAuth } from "../middleware/auth.js"; // ✅ import auth middleware
+import { requireAuth } from "../middleware/auth.js"; 
 
 const router = express.Router();
 
@@ -73,6 +73,11 @@ const uploadFields = upload.fields([
   { name: "headerImage", maxCount: 1 }, // ✅ new
   { name: "footerImage", maxCount: 1 }, // ✅ new
 ]);
+
+router.put('/profile', requireAuth, upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'logoImage', maxCount: 1 }
+]), updateProfile);
 
 // Routes
 router.post("/register", uploadFields, registerRestaurant);

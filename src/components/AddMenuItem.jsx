@@ -497,7 +497,7 @@ const AddMenuItem = () => {
                   />
                 </div>
 
-                <div className="form-actions">
+                <div className="form-actionss">
                   <button type="submit" className="btn btn-primary">
                     Save Item
                   </button>
