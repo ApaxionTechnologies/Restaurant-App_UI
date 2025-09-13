@@ -100,3 +100,54 @@
   font-size: 1rem;
   padding: 2rem 0;
 }
+
+
+/* --- Action Buttons (Edit, Delete, Draft/Publish) --- */
+.action-btn,
+.btn-global {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;              /* same padding for consistency */
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;             /* rounded corners */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.15s ease;
+}
+
+.action-btn:active,
+.btn-global:active {
+  transform: scale(0.96);
+}
+
+/* Edit (green) */
+.btn-success.action-btn {
+  background-color: #28a745;
+  color: #fff;
+}
+.btn-success.action-btn:hover {
+  background-color: #218838;
+}
+
+/* Delete (red) */
+.btn-danger.action-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+.btn-danger.action-btn:hover {
+  background-color: #c82333;
+}
+
+/* Draft / Publish (blue) */
+.btn-global {
+  background-color: #007bff;
+  color: #fff;
+}
+.btn-global:hover {
+  background-color: #0069d9;
+}
+
+
+

@@ -9,12 +9,10 @@ const AddMenuItem = () => {
     price: "",
     category: "",
     image: null,
-    restaurantEmail: "", // link menu item with restaurant
+    restaurantEmail: "",
   });
 
   const [message, setMessage] = useState("");
-
-
 
   // handle text input
   const handleChange = (e) => {
