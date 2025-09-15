@@ -27,6 +27,7 @@ import QRFileUploader from "./QRFileUploader";
 import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
+import OrderManagement from "./components/OrderManagement";
 
 // ✅ Styles
 import "./styles/global.css";
@@ -92,6 +93,7 @@ export default function App() {
         <Route path="/generate-qr" element={<GenerateQR />} />
         <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
         <Route path="/current-menu" element={<CurrentMenu />} />
+        <Route path="/order-management" element={<OrderManagement />} />
 
           {/* ✅ Customer QR Options */}
           <Route path="/qr-scanner" element={<QRScanner />} />

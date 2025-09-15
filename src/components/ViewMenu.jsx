@@ -228,6 +228,7 @@ import * as bootstrap from 'bootstrap';
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
+import { Trash2 } from "lucide-react";
 import { getMyRestaurant, getMenuByRestaurant ,updateMenuStatus,deleteMenuItem,} from "../services/apiService.js";
 const ViewMenu = () => {
   const navigate = useNavigate();
@@ -364,7 +365,13 @@ const handleStatusChange = async (menuItemId, newStatus) => {
           ) : (
             filteredItems.map(item => (
               <div key={item._id} className="card">
-                <img src={item.image} alt={item.name} onError={e => e.target.src = "/placeholder-food.jpg"} />
+                <div className="card-img-wrapper">
+  <img
+    src={item.image}
+    alt={item.name}
+    onError={(e) => (e.target.src = "/placeholder-food.jpg")}
+  />
+  </div>
                 <div className="card-content">
                   <div className="menu-title-price">
                     <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
@@ -383,12 +390,6 @@ const handleStatusChange = async (menuItemId, newStatus) => {
                   </p>
 
                   <div className="card-footer">
-                    {/* <button
-  className="btn btn-sm btn-outline-primary"
-  onClick={() => navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } })}
->
-  ✏️ Edit
-</button> */}
                   <div className="card-footer d-flex justify-content-between align-items-center">
   <div className="cuisine-time">
     <span>{item.cuisine || "🍴"}</span> •{" "}
@@ -397,30 +398,31 @@ const handleStatusChange = async (menuItemId, newStatus) => {
 
   <div className="d-flex gap-2">
     <button
-      className="btn btn-sm btn-success action-btn"
+      className="btn-global btn-edit"
       onClick={() =>
         navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } })
       }
     >
-      ✏️Edit
+      Edit
     </button>
-                        <button
-                        className="btn btn-sm btn-danger action-btn"
-                        onClick={() => handleDelete(item._id)}
-                         >
-                        🗑️ Delete
-                       </button>
-                     </div>
-                    </div>
-                    <div className="footer-actions">
-                      {item.status === "Published"
-                        ? <button className="btn-global" onClick={() => handleStatusChange(item._id, "Draft")}>Move to Draft</button>
-                        : <button className="btn-global" onClick={() => handleStatusChange(item._id, "Published")}>Move to Published</button>
-                      }
-                    </div>
-                  </div>
+    
                 </div>
+                </div>
+                <div className="footer-actions">
+                {item.status === "Published"
+                ? <button className="btn-global" onClick={() => handleStatusChange(item._id, "Draft")}> Draft</button>
+                : <button className="btn-global" onClick={() => handleStatusChange(item._id, "Published")}> Published</button>
+                  }
+                </div>
+                 </div>
               </div>
+               <button
+            className="btn-global btn-delete"
+            onClick={() => handleDelete(item._id)}
+           >
+          <Trash2 size={16} />
+          </button>
+            </div>
             ))
           )}
         </div>
