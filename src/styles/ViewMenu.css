@@ -102,52 +102,51 @@
 }
 
 
-/* --- Action Buttons (Edit, Delete, Draft/Publish) --- */
-.action-btn,
+
+/* Footer buttons row */
+.footer-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* Global button shape */
 .btn-global {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 14px;              /* same padding for consistency */
-  font-size: 0.9rem;
-  font-weight: 500;
+  min-width: 90px;        /* keeps Draft/Published same width */
+  padding: 6px 14px;
+  font-size: 0.85rem;
   border: none;
-  border-radius: 6px;             /* rounded corners */
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.15s ease;
+  text-align: center;
 }
 
-.action-btn:active,
-.btn-global:active {
-  transform: scale(0.96);
+/* Edit button */
+.btn-edit {
+  background: #28a745;
+  color: white;
+  margin-top:12px;
+}
+.btn-edit:hover {
+  background: #218838;
 }
 
-/* Edit (green) */
-.btn-success.action-btn {
-  background-color: #28a745;
-  color: #fff;
+/* Draft/Published button */
+.btn-status {
+  background: #007bff;
+  color: white;
 }
-.btn-success.action-btn:hover {
-  background-color: #218838;
-}
-
-/* Delete (red) */
-.btn-danger.action-btn {
-  background-color: #dc3545;
-  color: #fff;
-}
-.btn-danger.action-btn:hover {
-  background-color: #c82333;
+.btn-status:hover {
+  background: #0056b3;
 }
 
-/* Draft / Publish (blue) */
-.btn-global {
-  background-color: #007bff;
-  color: #fff;
+/* Delete button */
+.btn-delete {
+  background: #ff4d4d;
+  color: white;
 }
-.btn-global:hover {
-  background-color: #0069d9;
+.btn-delete:hover {
+  background: #e60000;
 }
-
-
 
