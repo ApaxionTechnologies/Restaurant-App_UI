@@ -16,6 +16,7 @@ import CurrentMenu from "./pages/CurrentMenu";
 import FeedbackPage from "./pages/Feedbackpage";
 import ForgotPassword from "./pages/forgotPassword";
 import EditRestaurantProfile from "./pages/EditRestaurantProfile";
+import ResetPasswordPage from "./pages/ResetPasswordForm";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
 
 // ✅ Components
@@ -55,6 +56,7 @@ export default function App() {
           },
         }}
       />
+      
         <Routes>
           {/* ✅ Public Routes */}
           <Route
@@ -74,6 +76,8 @@ export default function App() {
           <Route path="/admin-login" element={<AdminLogin />} />             
 <Route path ="/edit-restaurant-profile" element={<EditRestaurantProfile/>}/>
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          
+<Route path="/reset-password" element={<ResetPasswordPage />} />
           {/* Protected Admin Dashboard */}
           <Route
             path="/admin-dashboard"

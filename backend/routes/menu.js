@@ -31,7 +31,7 @@ import {
   updateMenuStatus,
   updateMenuItem,
   deleteMenuItem,
-  getMenuItem
+  getMenuItem,
 } from "../controllers/MenuController.js";
 import multer from "multer";
  
@@ -47,6 +47,4 @@ router.put("/:id/status", updateMenuStatus);
 router.put("/:id", requireAuth, upload.single("image"), updateMenuItem);
 router.delete("/:id", requireAuth, deleteMenuItem);
 router.get("/item/:id", getMenuItem);
- 
 export default router;
- 
