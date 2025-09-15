@@ -86,6 +86,34 @@ const addressSchema = new mongoose.Schema(
   { _id: false }
 );
 
+
+const bulkItemFileSchema = new mongoose.Schema(
+  {
+    fileLocalName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    filePath: {
+      type: String,
+      required: true,
+    },
+    fileOriginalName: {
+      type: String,
+      required: true,
+    },
+    uploadedBy: {
+      type: String,
+      required: true,
+    }
+  },
+  {     
+    timestamps: true,
+  }
+);
+
+
+
 const restaurantSchema = new mongoose.Schema({
   restaurantName: { type: String, unique: true, required: true },
   ownerName: { type: String, required: true },   // ✅ added
@@ -104,6 +132,8 @@ const restaurantSchema = new mongoose.Schema({
   headerImage: { type: String },                 // header/banner
   footerImage: { type: String },                 // footer image
   menu: { type: Array, default: [] },
+  bulkItemFiles: { type: [bulkItemFileSchema], default: [] },
+  rejectedItem: { type: Array, default: [] },
 });
 
 const Restaurant =

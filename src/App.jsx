@@ -38,6 +38,9 @@ import './styles/theme.css';
 import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
+import GenerateMenuQR from "./pages/GenerateMenuQR";
+import { BulkItemUpload } from "./pages/BulkItemUpload";
+
 import { Toaster } from "react-hot-toast";
 export default function App() {
   const location = useLocation();
@@ -103,11 +106,13 @@ export default function App() {
           <Route path="/qr-scanner" element={<QRScanner />} />
           <Route path="/upload-qr" element={<QRFileUploader />} />
 
-          {/* ✅ Customer Menu & Order */}
-          <Route path="/menu" element={<MenuPage />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/order-success" element={<OrderSuccess />} />
-          <Route path="/feedback" element={<FeedbackPage />} />
+        {/* ✅ Customer Menu & Order */}
+        <Route path="/menu" element={<MenuPage />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/add-bulk-items" element={<BulkItemUpload />} />
+
 
           {/* ✅ Admin Manage Tables */}
           <Route path="/table-manager" element={<TableManager />} />
