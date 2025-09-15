@@ -38,7 +38,6 @@ import './styles/theme.css';
 import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
-import GenerateMenuQR from "./pages/GenerateMenuQR";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 
 import { Toaster } from "react-hot-toast";

@@ -167,6 +167,164 @@ export const updateMenuStatus = async (req, res) => {
   }
 };
 
+export const updateMenuItem = async (req, res) => {
+  try {
+    if (!req.restaurant) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { id } = req.params;
+    const restaurantId = req.restaurant.id;
+    const {
+      name,
+      price,
+      ingredients,
+      description,
+      type,
+      category,
+      cuisine,
+      timeToPrepare,
+      status,
+      discount,
+    } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid menu item ID format" });
+    }
+
+    const menuItemId = new mongoose.Types.ObjectId(id);
+    const restaurant = await Restaurant.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    const menuItemIndex = restaurant.menu.findIndex(
+      (item) => item._id && item._id.toString() === menuItemId.toString()
+    );
+
+    if (menuItemIndex === -1) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    // Update fields
+    const updateData = {
+      name,
+      price,
+      category,
+      cuisine,
+      prepTime: timeToPrepare,
+      ingredients: ingredients
+        ? Array.isArray(ingredients)
+          ? ingredients
+          : [ingredients]
+        : [],
+      description: description || "Delicious & fresh!",
+      status: status || "Published",
+      type: type || "veg",
+      discount: discount ? parseFloat(discount) : 0,
+    };
+
+    // Handle image update if new file is uploaded
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
+
+    // Update the menu item
+    Object.assign(restaurant.menu[menuItemIndex], updateData);
+    console.log("Before save:", restaurant.menu[menuItemIndex]);
+    await restaurant.save();
+    console.log("After save:", restaurant.menu[menuItemIndex]);
+
+    res.json({
+      message: "Menu item updated successfully",
+      menuItem: restaurant.menu[menuItemIndex],
+    });
+  } catch (error) {
+    console.error("Error updating menu item:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const deleteMenuItem = async (req, res) => {
+  try {
+    if (!req.restaurant) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { id } = req.params;
+    const restaurantId = req.restaurant.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid menu item ID format" });
+    }
+
+    const menuItemId = new mongoose.Types.ObjectId(id);
+    const restaurant = await Restaurant.findById(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    // Find the menu item index
+    const menuItemIndex = restaurant.menu.findIndex(
+      (item) => item._id && item._id.toString() === menuItemId.toString()
+    );
+
+    if (menuItemIndex === -1) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    // Remove the menu item
+    restaurant.menu.splice(menuItemIndex, 1);
+    await restaurant.save();
+
+    res.json({ message: "Menu item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting menu item:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getMenuItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid menu item ID format" });
+    }
+
+    const menuItemId = new mongoose.Types.ObjectId(id);
+    const restaurant = await Restaurant.findOne({ "menu._id": menuItemId });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    const menuItem = restaurant.menu.find(
+      (item) => item._id && item._id.toString() === menuItemId.toString()
+    );
+
+    if (!menuItem) {
+      return res.status(404).json({ message: "Menu item not found" });
+    }
+
+    const hostPrefix = `${req.protocol}://${req.get("host")}`;
+    const menuItemWithFullImage = {
+      ...(menuItem.toObject?.() ?? menuItem),
+      image:
+        menuItem.image && !menuItem.image.startsWith("http")
+          ? `${hostPrefix}${menuItem.image}`
+          : menuItem.image,
+    };
+
+    res.json({ menuItem: menuItemWithFullImage });
+  } catch (error) {
+    console.error("Error getting menu item:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 export const addBulkMenuItem = async (req, res) => {
   try {
     if (!req.restaurant) {
@@ -202,9 +360,9 @@ export const addBulkMenuItem = async (req, res) => {
 
     // restaurant.bulkItemFiles.push(bulkItemFileDoc);
 
-    const fileDoc = await new BulkFileDetails(bulkItemFileDoc)
+    const fileDoc = await new BulkFileDetails(bulkItemFileDoc);
 
-    const fileRes = await fileDoc.save()
+    const fileRes = await fileDoc.save();
 
     const filePath = req.file ? `./uploads/${req.file.filename}` : "";
 
