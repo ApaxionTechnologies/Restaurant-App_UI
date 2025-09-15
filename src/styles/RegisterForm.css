@@ -867,36 +867,79 @@ input[type="password"]::-webkit-password-toggle-button {
     display: none;
 }
 .password-requirements {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 5px 0 4px 0;
 }
-
 
 .requirements-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #495057;
+  display: none;
 }
 
-.requirement {
+.requirements-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.requirements-list li {
+  flex: 1 1 45%;
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  font-size: 12px;
+  margin-bottom: 0;
+  line-height: 1.3;
 }
 
-.requirement i {
-  margin-right: 8px;
-  font-size: 0.9rem;
+.requirement-icon {
+  margin-right: 6px;
+  font-size: 10px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.requirement .valid {
-  color: #28a745;
+/* Valid/Invalid states */
+.requirements-list li.valid {
+  color: #059669;
 }
 
-.requirement .invalid {
+.requirements-list li.valid .requirement-icon {
+  background-color: #10b981;
+  color: white;
+}
+
+.requirements-list li.invalid {
+ color: #dc3545;
+}
+
+.requirements-list li.invalid .requirement-icon {
+  background-color: #e5e7eb;
   color: #dc3545;
 }
 
+@media (max-width: 480px) {
+  .password-requirements {
+    margin: 6px 0 2px 0;
+  }
+  
+  .requirements-list {
+    gap: 6px 12px;
+  }
+  
+  .requirements-list li {
+    flex: 1 1 100%;
+    font-size: 11px;
+  }
+}.password-requirements {
+  background: none !important;
+  border: none !important;
+}

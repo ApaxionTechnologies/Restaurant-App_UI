@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
 
 :root {
   --primary-500: #2563eb;
@@ -33,7 +31,6 @@ body {
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 24px;
-  
   min-height: calc(100vh - 80px); 
    align-items: stretch;
 }
@@ -107,8 +104,8 @@ body {
   animation: fadeIn 0.5s ease-in-out;
   text-align: center;
   height: auto;            
-  min-height: 340px;         
-  padding-bottom:30px;      
+  min-height: 300px;         
+  padding-bottom:16px;      
   box-sizing: border-box;
 }
 
@@ -130,7 +127,7 @@ body {
   position: relative;
   background: url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80")
               no-repeat center/cover;
-  padding: 32px 20px;
+  padding:  20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -208,7 +205,7 @@ body {
 
 
 .qr-text-section {
-  padding: 8px;
+
   background: #fff;
 }
 
@@ -216,7 +213,6 @@ body {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--primary-500);
-  margin-bottom: 8px;
 }
 
 .qr-text-section p {
@@ -228,7 +224,6 @@ body {
 .qr-preview-card .brand {
   position: absolute;
   right: 12px;
-  bottom: 8px;
   font-size: 0.78rem;      
   font-weight: 600;
   color: black;    
@@ -239,16 +234,40 @@ body {
   z-index: 6;            
   line-height: 1;
   white-space: nowrap;
+ 
+  
 }
-
-
-
-
 .qr-overlay canvas {
   width: 140px !important;
   height: 140px !important;
 }
 
+.qr-nav-arrows button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.2);
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.qr-nav-arrows button:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+}
+
+.qr-nav-arrows button:disabled {  
+   background-color: #e0e0e0;
+ color: white !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
 
 
 .qr-card button,
@@ -261,7 +280,7 @@ body {
   font-size: 0.96rem;
   transition: transform .12s ease, box-shadow .12s ease;
   width: 100%;
-  margin-top: 12px;
+  margin-top: 10px;
   background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
   color: #fff;
   box-shadow: 0 10px 30px rgba(37,99,235,0.14);
@@ -271,36 +290,6 @@ body {
 .download-btn:hover {
   transform: translateY(-2px);
 }
-
-.qr-nav-arrows {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-}
-
-.qr-nav-arrows button {
-  font-size: 1rem;
-  background-color: transparent;
-  border: 2px solid var(--primary-500);
-  color:   #fff;
-  padding: 10px 20px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.qr-nav-arrows button:hover {
-  background-color: var(--primary-500);
-  color: white;
-  transform: scale(1.05);
-}
-
-.qr-nav-arrows button:disabled {
-  background-color: #e0e0e0;
-  color: #aaa;
-  cursor: not-allowed;
-}
-
 label {
   display: block;
   font-size: 0.88rem;
@@ -329,7 +318,7 @@ label {
 
   .qr-preview-card {
     order: 2;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 }
 
@@ -377,4 +366,138 @@ label {
   cursor: not-allowed !important;
   box-shadow: none !important;
   transform: none !important;
+}
+
+
+
+
+
+/* GenerateQR.css */
+.generate-qr-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+
+  
+}
+
+.table-manager-card, .qr-generator-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 300px; 
+  max-width: 500px;
+  padding-bottom: 4px !important;
+}
+
+.table-manager-card h3, .qr-generator-card h3 {
+  color: #333;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qr-preview-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.qr-bg {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+}
+
+.qr-overlay {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.view-menu-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 500;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.qr-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.qr-restaurant-name {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+
+.qr-table-badge {
+  background: #f8f9fa;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.qr-table-number {
+  font-weight: 700;
+  color: #6a11cb;
+}
+
+.qr-text-section h3 {
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.qr-text-section p {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+.qr-placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .generate-qr-wrapper {
+    flex-direction: column;
+  }
+  
+  .table-manager-card, .qr-generator-card {
+    max-width: 100%;
+  }
+  
+  .qr-header-inline {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
+
+.brand {
+  font-size: 0.7rem !important; /* Smaller font */
+  padding: 3px 6px !important; /* Reduced padding */
+  margin-top: 5px;
 }

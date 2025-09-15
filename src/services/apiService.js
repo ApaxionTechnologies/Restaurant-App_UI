@@ -132,3 +132,20 @@ export const deleteMenuItem = async (menuItemId, token) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const updateRestaurantTables = async (token, tableCount) => {
+  try {
+    const response = await API.put(
+      "/restaurants/tables",  
+      { tables: tableCount },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || "Failed to update tables");
+  }
+};

@@ -1,5 +1,7 @@
-// src/utils/passwordValidation.js
-
+import { 
+  FaCheck, 
+  FaTimesCircle 
+} from "react-icons/fa";
 export const validatePassword = (password) => {
   const uppercase = /[A-Z]/;
   const lowercase = /[a-z]/;
@@ -21,52 +23,29 @@ export const validatePassword = (password) => {
   };
 };
 
+
 export const PasswordRequirements = ({ password }) => {
   const validation = validatePassword(password);
-  
+
+  const requirements = [
+    { label: "At least 6 characters", valid: validation.hasMinLength },
+    { label: "One uppercase letter", valid: validation.hasUppercase },
+    { label: "One lowercase letter", valid: validation.hasLowercase },
+    { label: "One number", valid: validation.hasNumber },
+    { label: "One special character", valid: validation.hasSpecialChar },
+  ];
+
   return (
     <div className="password-requirements">
-      <p className="requirements-title">Password must include:</p>
-      <div className="requirement">
-        {validation.hasMinLength ? (
-          <i className="fas fa-check valid"></i>
-        ) : (
-          <i className="fas fa-times-circle invalid"></i>
-        )}
-        <span>At least 6 characters</span>
-      </div>
-      <div className="requirement">
-        {validation.hasUppercase ? (
-          <i className="fas fa-check valid"></i>
-        ) : (
-          <i className="fas fa-times-circle invalid"></i>
-        )}
-        <span>One uppercase letter</span>
-      </div>
-      <div className="requirement">
-        {validation.hasLowercase ? (
-          <i className="fas fa-check valid"></i>
-        ) : (
-          <i className="fas fa-times-circle invalid"></i>
-        )}
-        <span>One lowercase letter</span>
-      </div>
-      <div className="requirement">
-        {validation.hasNumber ? (
-          <i className="fas fa-check valid"></i>
-        ) : (
-          <i className="fas fa-times-circle invalid"></i>
-        )}
-        <span>One number</span>
-      </div>
-      <div className="requirement">
-        {validation.hasSpecialChar ? (
-          <i className="fas fa-check valid"></i>
-        ) : (
-          <i className="fas fa-times-circle invalid"></i>
-        )}
-        <span>One special character</span>
-      </div>
+      <p className="requirements-title">Password must contain:</p>
+      <ul className="requirements-list">
+        {requirements.map((req, idx) => (
+          <li key={idx} className={req.valid ? "valid" : "invalid"}>
+            {req.valid ? <FaCheck className="requirement-icon" /> : <FaTimesCircle className="requirement-icon" />}
+            {req.label}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

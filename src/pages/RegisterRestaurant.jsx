@@ -3273,10 +3273,11 @@ const [restaurantName, setRestaurantName] = useState("");
       <div className="error-message">{errors.password}</div>
     )}
   </div>
-  {formData.password && (
-    <PasswordRequirements password={formData.password} />
-  )}
-      </div>
+ 
+     <div className="password-requirements-container">
+      <PasswordRequirements password={formData.password} />
+    </div>
+ </div>
 
 
                   <div className="form-group mt-4 password-field">

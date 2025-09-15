@@ -562,3 +562,38 @@ if (req.files.logoImage) {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+
+export const updateRestaurantTables = async (req, res) => {
+  try {
+    const restaurantId = req.restaurant._id || req.restaurant.id; 
+    
+    const { tables } = req.body;
+
+    if (tables === undefined || tables === null) {
+      return res.status(400).json({ error: "Tables count is required" });
+    }
+
+    if (tables < 0) {
+      return res.status(400).json({ error: "Tables count cannot be negative" });
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      restaurantId,
+      { tables },
+      { new: true }
+    ).select("-password");
+
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    res.status(200).json({
+      message: "Tables count updated successfully",
+      restaurant,
+    });
+  } catch (err) {
+    console.error("❌ Table update error:", err.message);
+    res.status(500).json({ error: "Failed to update tables count" });
+  }
+};

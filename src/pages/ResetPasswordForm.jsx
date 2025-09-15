@@ -367,7 +367,7 @@ export default function ResetPasswordPage() {
           </div>
 
           <form onSubmit={handleResetSubmit} className="login-form" noValidate>
-            {/* New Password */}
+          
             <div
               className={`form-group ${
                 fieldErrors.password ? "has-error" : ""
@@ -384,8 +384,6 @@ export default function ResetPasswordPage() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={handlePasswordChange}
-                    onFocus={() => setShowPasswordRequirements(true)}
-                    onBlur={() => setShowPasswordRequirements(false)}
                     placeholder="Enter your new password"
                     className={fieldErrors.password ? "error" : ""}
                     disabled={isLoading}
@@ -399,21 +397,17 @@ export default function ResetPasswordPage() {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-
-                {/* Password Requirements Container - UPDATED */}
-                {showPasswordRequirements && password && !isPasswordValid && (
+                
                   <div className="password-requirements-container">
                     <PasswordRequirements password={password} />
                   </div>
-                )}
+              
 
                 {fieldErrors.password && (
                   <div className="error-message">{fieldErrors.password}</div>
                 )}
               </div>
             </div>
-
-            {/* Confirm Password */}
             <div
               className={`form-group ${
                 fieldErrors.confirmPassword ? "has-error" : ""

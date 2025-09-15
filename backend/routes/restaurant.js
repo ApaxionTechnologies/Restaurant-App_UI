@@ -49,6 +49,8 @@ import multer from "multer";import {
   updateRestaurant,
   getCurrentRestaurant,
   updateProfile, 
+  
+   updateRestaurantTables
 } from "../controllers/restaurantController.js";
 
 import { requireAuth } from "../middleware/auth.js"; 
@@ -80,6 +82,8 @@ router.put('/profile', requireAuth, upload.fields([
 ]), updateProfile);
 
 // Routes
+
+router.put("/tables", requireAuth, updateRestaurantTables);
 router.post("/register", uploadFields, registerRestaurant);
 router.post("/login", loginRestaurant);
 router.get("/me", requireAuth, getCurrentRestaurant); 
@@ -89,6 +93,7 @@ router.put("/:email", uploadFields, updateRestaurant);
 router.delete("/:email", deleteRestaurant);
 router.get("/me", requireAuth, getCurrentRestaurant); 
 router.get("/:email", getRestaurantByEmail);
+
 export default router;
 
 // import express from "express";

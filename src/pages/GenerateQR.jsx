@@ -313,8 +313,6 @@ const downloadAllQRCodes = async () => {
     </div>
   )}
 </div>
-
-
       </div>
       <div style={{ display: "none" }}>
   {qrList.map((qr, idx) => (
