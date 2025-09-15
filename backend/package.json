@@ -19,6 +19,9 @@
     "jimp": "^1.6.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.0.3",
-    "qrcode-reader": "^1.0.4"
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10",
+    "qrcode-reader": "^1.0.4",
+    "xlsx": "^0.18.5"
   }
 }
