@@ -82,18 +82,6 @@ useEffect(() => {
           onLogout={handleLogout}
           restaurant={restaurant} 
         />
-      {/* <main className="admin-dashboard-content container text-center mt-5">
-        <h2>Welcome, Admin 👨‍💻</h2>
-        <p className="lead">Manage your restaurant menu and settings below:</p>
-
-        <div className="d-flex flex-column gap-3 mt-4">
-          <Link to="/view-menu" className="btn btn-info btn-lg">📋 View Menu</Link>
-          <Link to="/add-item" className="btn btn-success btn-lg">➕ Add Menu Item</Link>
-          <Link to="/remove-item" className="btn btn-danger btn-lg">❌ Remove Menu Item</Link>
-          <Link to="/generate-qr" className="btn btn-primary btn-lg">🔗 Generate Table QR</Link>
-          <Link to="/table-manager" className="btn btn-warning btn-lg">🪑 Manage Tables</Link>
-        </div>
-      </main> */}
       <main className="admin-dashboard-content container text-center mt-5">
   <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
   <p className="lead text-muted">Manage your restaurant menu and settings below:</p>
@@ -109,6 +97,11 @@ useEffect(() => {
       <span className="icon">➕</span>
       <h5>Add Menu Item</h5>
       <p>Add new dishes and beverages.</p>
+    </Link>
+    <Link to="/add-bulk-items" className="dashboard-card add">
+      <span className="icon">📁</span>
+      <h5>Add Bulk Item</h5>
+      <p>Add all items with a single file</p>
     </Link>
 
     <Link to="/remove-item" className="dashboard-card remove">
@@ -134,6 +127,12 @@ useEffect(() => {
       <h5>Manage Tables</h5>
       <p>Organize seating and reservations.</p>
     </Link>
+     {/* ✅ New Order Management Card */}
+          <Link to="/order-management" className="dashboard-card orders">
+            <span className="icon">🛒</span>
+            <h5>Order Management</h5>
+            <p>View placed orders by tables & dishes.</p>
+          </Link>
   </div>
 </main>
 

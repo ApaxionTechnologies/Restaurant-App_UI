@@ -11,12 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormField } from "../store/formSlice";
-import { getMyRestaurant } from "../services/apiService";
+import { getMyRestaurant, updateRestaurantProfile , logoutRestaurant} from "../services/apiService"; 
 import HomeHeader from "../components/HomeHeader";
 import { jwtDecode } from "jwt-decode"; 
 import Footer from "../components/Footer";
-
-
+import { resetForm } from "../store/formSlice"; 
 export default function EditRestaurantProfile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,9 +35,9 @@ export default function EditRestaurantProfile() {
   const [hasStates, setHasStates] = useState(false);
   const [hasCities, setHasCities] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
-const [restaurant, setRestaurant] = useState(null);
-const [restaurantName, setRestaurantName] = useState("");
-const [adminEmail, setAdminEmail] = useState("");
+  const [restaurant, setRestaurant] = useState(null);
+  const [restaurantName, setRestaurantName] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
 
   const safeFormData = {
     ...formData,
@@ -53,28 +52,34 @@ const [adminEmail, setAdminEmail] = useState("");
   };
 
   useEffect(() => {
-  const fetchMe = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    const fetchMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      const res = await getMyRestaurant(token);
-      setRestaurant(res.restaurant || res);
+        const res = await getMyRestaurant(token);
+        setRestaurant(res.restaurant || res);
 
-      const decoded = jwtDecode(token);
-      setAdminEmail(decoded.email);
-      setRestaurantName(decoded.restaurantName || "My Restaurant");
-    } catch (err) {
-      console.error("❌ Failed to fetch admin/restaurant:", err);
-    }
-  };
-  fetchMe();
-}, []);
+        const decoded = jwtDecode(token);
+        setAdminEmail(decoded.email);
+        setRestaurantName(decoded.restaurantName || "My Restaurant");
+      } catch (err) {
+        console.error("❌ Failed to fetch admin/restaurant:", err);
+      }
+    };
+    fetchMe();
+  }, []);
 
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  setRestaurantName("");
-  navigate("/");
+const handleLogout = async () => {
+  try {
+    await logoutRestaurant();   
+    dispatch(resetForm());      
+    localStorage.removeItem("token"); 
+    setRestaurantName("");      
+    navigate("/");              
+  } catch (error) {
+    console.error("❌ Logout error:", error);
+  }
 };
 
 
@@ -157,58 +162,59 @@ const handleLogout = () => {
     validate({ ...formData, address: updatedAddress });
   };
 
-
   useEffect(() => {
-  const fetchRestaurantData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    const fetchRestaurantData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      const data = await getMyRestaurant(token);
-      console.log("🍔 Restaurant data from API:", data);
+        const data = await getMyRestaurant(token);
+        console.log("🍔 Restaurant data from API:", data);
 
-      const restaurant = data.restaurant || data;
-      dispatch(setFormField({ field: "restaurantName", value: restaurant.restaurantName || "" }));
-      dispatch(setFormField({ field: "ownerName", value: restaurant.ownerName || "" }));
-      dispatch(setFormField({ field: "contact", value: restaurant.contact || "" }));
-      dispatch(setFormField({ field: "tagline", value: restaurant.tagline || "" }));
-      dispatch(setFormField({ field: "email", value: restaurant.email || "" }));
-      if (restaurant.address) {
-        dispatch(
-          setFormField({
-            field: "address",
-            value: {
-              line1: restaurant.address.line1 || "",
-              line2: restaurant.address.line2 || "",
-              country: restaurant.address.country || "",
-              state: restaurant.address.state || "",
-              city: restaurant.address.city || "",
-              pincode: restaurant.address.pincode || "",
-            },
-          })
-        );
+        const restaurant = data.restaurant || data;
+        dispatch(setFormField({ field: "restaurantName", value: restaurant.restaurantName || "" }));
+        dispatch(setFormField({ field: "ownerName", value: restaurant.ownerName || "" }));
+        dispatch(setFormField({ field: "contact", value: restaurant.contact || "" }));
+        dispatch(setFormField({ field: "tagline", value: restaurant.tagline || "" }));
+        dispatch(setFormField({ field: "email", value: restaurant.email || "" }));
+        
+        if (restaurant.address) {
+          dispatch(
+            setFormField({
+              field: "address",
+              value: {
+                line1: restaurant.address.line1 || "",
+                line2: restaurant.address.line2 || "",
+                country: restaurant.address.country || "",
+                state: restaurant.address.state || "",
+                city: restaurant.address.city || "",
+                pincode: restaurant.address.pincode || "",
+              },
+            })
+          );
+        }
+        
+        if (restaurant.image) {
+          dispatch(setFormField({ field: "image", value: restaurant.image }));
+          dispatch(setFormField({ field: "previewImage", value: restaurant.image }));
+          setPreviewImage(restaurant.image);
+        }
+
+        if (restaurant.logoImage) {
+          dispatch(setFormField({ field: "logoImage", value: restaurant.logoImage }));
+          dispatch(setFormField({ field: "previewLogo", value: restaurant.logoImage }));
+          setPreviewLogo(restaurant.logoImage);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("❌ Failed to fetch restaurant data:", error);
+        setIsLoading(false);
       }
-      if (restaurant.image) {
-        dispatch(setFormField({ field: "image", value: restaurant.image }));
-        dispatch(setFormField({ field: "previewImage", value: restaurant.image }));
-        setPreviewImage(restaurant.image);
-      }
+    };
 
-      if (restaurant.logoImage) {
-        dispatch(setFormField({ field: "logoImage", value: restaurant.logoImage }));
-        dispatch(setFormField({ field: "previewLogo", value: restaurant.logoImage }));
-        setPreviewLogo(restaurant.logoImage);
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error("❌ Failed to fetch restaurant data:", error);
-      setIsLoading(false);
-    }
-  };
-
-  fetchRestaurantData();
-}, [dispatch]);
+    fetchRestaurantData();
+  }, [dispatch]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -309,18 +315,20 @@ const handleLogout = () => {
       newErrors.password =
         "Password must be at least 6 characters and include uppercase, lowercase, number, and special character.";
     }
-    if (data.password !== data.confirmPassword)
+    if (data.password && data.password !== data.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
+    }
 
     setErrors(newErrors);
     return newErrors;
   };
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    const currentErrors = validate(formData);
-
+    
     setTouched({
       restaurantName: true,
       ownerName: true,
@@ -335,16 +343,67 @@ const handleLogout = () => {
       confirmPassword: true,
     });
 
-    if (Object.keys(currentErrors).length === 0) {
-      toast.success("Profile updated .");
-
-      dispatch(setFormField({ field: "password", value: "" }));
-      dispatch(setFormField({ field: "confirmPassword", value: "" }));
-      setCurrentPassword("");
-    } else {
+    const currentErrors = validate(formData);
+    
+    if (Object.keys(currentErrors).length > 0) {
       toast.error("Please correct the errors in the form.");
+      setIsSubmitting(false);
+      return;
     }
-    setIsSubmitting(false);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Authentication token not found. Please log in again.");
+        navigate("/login");
+        return;
+      }
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("restaurantName", formData.restaurantName);
+      formDataToSend.append("ownerName", formData.ownerName);
+      formDataToSend.append("contact", formData.contact);
+      formDataToSend.append("tagline", formData.tagline || "");
+      formDataToSend.append("email", formData.email);
+      
+      formDataToSend.append("address[line1]", formData.address.line1);
+      formDataToSend.append("address[line2]", formData.address.line2 || "");
+      formDataToSend.append("address[country]", formData.address.country);
+      formDataToSend.append("address[state]", formData.address.state || "");
+      formDataToSend.append("address[city]", formData.address.city || "");
+      formDataToSend.append("address[pincode]", formData.address.pincode);
+      if (currentPassword) {
+        formDataToSend.append("currentPassword", currentPassword);
+      }
+      if (formData.password) {
+        formDataToSend.append("password", formData.password);
+      }
+      if (formData.image instanceof File) {
+        formDataToSend.append("image", formData.image);
+      }
+      if (formData.logoImage instanceof File) {
+        formDataToSend.append("logoImage", formData.logoImage);
+      }
+      const response = await updateRestaurantProfile(formDataToSend, token);
+     if (response.success) {
+  toast.success("Profile updated successfully!");
+  navigate("/admin-dashboard")
+  dispatch(setFormField({ field: "password", value: "" }));
+  dispatch(setFormField({ field: "confirmPassword", value: "" }));
+  setCurrentPassword("");
+  const { restaurant } = await getMyRestaurant(token);
+  setRestaurant(restaurant);
+  if (restaurant.image) setPreviewImage(restaurant.image);
+  if (restaurant.logoImage) setPreviewLogo(restaurant.logoImage);
+} else {
+  toast.error(response.message || "Failed to update profile");
+}
+    } catch (error) {
+      console.error("Update error:", error);
+      toast.error(error.response?.data?.message || "An error occurred while updating the profile");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const customSelectStyles = {
@@ -394,6 +453,7 @@ const handleLogout = () => {
     }),
   };
 
+  
   if (isLoading) {
     return (
       <div className="register-page">

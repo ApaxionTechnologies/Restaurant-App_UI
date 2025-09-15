@@ -28,7 +28,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 3rem; /* 👈 This adds space above the footer */
+  margin-bottom: 3rem;
 }
 
 
@@ -94,7 +94,6 @@ body, html {
   margin-bottom: 0.75rem;
 }
 
-/* Texts */
 .dashboard-card h5 {
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -111,3 +110,4 @@ body, html {
 .dashboard-card.remove { border-top: 4px solid #dc3545; }
 .dashboard-card.qr { border-top: 4px solid #007bff; }
 .dashboard-card.tables { border-top: 4px solid #ffc107; }
+.dashboard-card.orders { border-top: 4px solid #6f42c1; }

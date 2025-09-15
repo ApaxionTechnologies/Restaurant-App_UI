@@ -91,3 +91,61 @@ export const logoutRestaurant = async () => {
     throw error.response?.data || error.message;
   }
 };
+export const updateRestaurantProfile = async (formData, token) => {
+  try {
+    const response = await API.put("/restaurants/profile", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Update profile error:', error);
+    throw error.response?.data || error;
+  }
+};
+
+
+export const updateMenuItem = async (menuItemId, formData, token) => {
+  try {
+    const res = await API.put(`/menu/${menuItemId}`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const deleteMenuItem = async (menuItemId, token) => {
+  try {
+    const res = await API.delete(`/menu/${menuItemId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const updateRestaurantTables = async (token, tableCount) => {
+  try {
+    const response = await API.put(
+      "/restaurants/tables",  
+      { tables: tableCount },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || "Failed to update tables");
+  }
+};

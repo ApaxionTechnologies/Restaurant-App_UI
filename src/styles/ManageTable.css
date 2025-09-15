@@ -1,0 +1,128 @@
+
+.generate-qr-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.table-manager-card, .qr-generator-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.table-manager-card h3, .qr-generator-card h3 {
+  color: #333;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qr-preview-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.qr-bg {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  border-radius: 12px;
+  padding: 25px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.qr-overlay {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.view-menu-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 500;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.qr-header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.qr-restaurant-name {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+
+.qr-table-badge {
+  background: #f8f9fa;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.qr-table-number {
+  font-weight: 700;
+  color: #6a11cb;
+}
+
+.qr-text-section h3 {
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.qr-text-section p {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+
+
+
+
+
+.qr-placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .generate-qr-wrapper {
+    flex-direction: column;
+  }
+  
+  .table-manager-card, .qr-generator-card {
+    max-width: 100%;
+  }
+  
+  .qr-header-inline {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
