@@ -2544,9 +2544,10 @@ import { Toaster, toast } from "react-hot-toast";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setFormField, resetForm } from "../store/formSlice";
-import { registerRestaurant } from "../services/apiService";
+import { registerRestaurant ,logoutRestaurant } from "../services/apiService";
 
 
+import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 
 const BASE_URL = "http://localhost:5001/api";
 
@@ -2569,6 +2570,7 @@ export default function RegisterRestaurant() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [hasStates, setHasStates] = useState(false);
   const [hasCities, setHasCities] = useState(false);
+const [restaurantName, setRestaurantName] = useState("");
 
   const safeFormData = {
     ...formData,
@@ -2630,20 +2632,7 @@ export default function RegisterRestaurant() {
     };
   }, []);
 
-  const validatePassword = (password) => {
-    const minLength = /.{6,}/;
-    const uppercase = /[A-Z]/;
-    const lowercase = /[a-z]/;
-    const number = /[0-9]/;
-    const specialChar = /[!@#$%^&*(),.?":{}|<>]/;
-    return (
-      minLength.test(password) &&
-      uppercase.test(password) &&
-      lowercase.test(password) &&
-      number.test(password) &&
-      specialChar.test(password)
-    );
-  };
+ 
 
   const isValidImageType = (file) => {
     if (!file) return false;
@@ -2781,9 +2770,9 @@ export default function RegisterRestaurant() {
     if (hasCities && !city) newErrors.city = "City is required.";
     if (!data.email || !/\S+@\S+\.\S+/.test(data.email))
       newErrors.email = "Enter a valid email.";
-    if (!data.password || !validatePassword(data.password))
-      newErrors.password =
-        "Password must be at least 6 characters and include uppercase, lowercase, number, and special character.";
+     const passwordValidation = validatePassword(data.password);
+    if (!data.password || !passwordValidation.isValid)
+      newErrors.password = "Password does not meet all requirements";
 
     if (data.password !== data.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match.";
@@ -2791,6 +2780,7 @@ export default function RegisterRestaurant() {
     setErrors(newErrors);
     return newErrors;
   };
+
 
   const validateStep1 = (data) => {
     const newErrors = {};
@@ -2960,6 +2950,17 @@ export default function RegisterRestaurant() {
     { number: 2, title: "Login Credentials" },
   ];
 
+  const handleLogout = async () => {
+    try {
+      await logoutRestaurant();   
+      dispatch(resetForm());      
+      localStorage.removeItem("token"); 
+      setRestaurantName("");      
+      navigate("/");              
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+    }
+  };
   return (
     <>
       <HomeHeader />
@@ -3251,46 +3252,57 @@ export default function RegisterRestaurant() {
 
                 <div className="form-grid">
                   <div className="form-group mt-4 password-field">
-                    <label><i className="fas fa-lock me-2 blue-icon" />Password</label>
-                    <div className="input-with-icon">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className={errors.password ? "error" : ""}
-                        placeholder="Create a strong password"
-                      />
-                      <i
-                        className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
-                        onClick={() => setShowPassword(!showPassword)}
-                      ></i>
-                    </div>
-                    {errors.password && (
-                      <div className="password-requirements">
-                        <small>Must include: uppercase, lowercase, number, special character, and at least 6 characters</small>
-                        </div>
-                    )}
-                  </div>
+     <label><i className="fas fa-lock me-2 blue-icon" />Password</label>
+  <div className="field-wrapper">
+    <div className="input-with-icon">
+      <input
+        type={showPassword ? "text" : "password"}
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        className={errors.password && touched.password ? "error" : ""}
+        placeholder="Create a strong password"
+      />
+      <i
+        className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
+        onClick={() => setShowPassword(!showPassword)}
+      ></i>
+    </div>
+    {errors.password && touched.password && (
+      <div className="error-message">{errors.password}</div>
+    )}
+  </div>
+ 
+     <div className="password-requirements-container">
+      <PasswordRequirements password={formData.password} />
+    </div>
+ </div>
+
 
                   <div className="form-group mt-4 password-field">
                     <label><i className="fas fa-lock me-2 blue-icon" />Confirm Password</label>
-                    <div className="input-with-icon">
-                      <input
-                        type={showConfirmPassword ? "text" : "password"}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className={errors.confirmPassword ? "error" : ""}
-                        placeholder="Confirm your password"
-                      />
-                      <i
-                        className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      ></i>
-                    </div>
-                    {errors.confirmPassword && <small>{errors.confirmPassword}</small>}
-                  </div>
+        <div className="field-wrapper">
+          
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.confirmPassword && touched.confirmPassword ? "error" : ""}
+              placeholder="Confirm your password"
+            />
+            <i
+              className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            ></i>
+        
+          {errors.confirmPassword && touched.confirmPassword && (
+            <div className="error-message">{errors.confirmPassword}</div>
+          )}
+        </div>
+      </div>
                 </div>
 
                 <div className="form-actions">

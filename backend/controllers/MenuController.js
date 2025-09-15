@@ -194,8 +194,10 @@ export const updateMenuItem = async (req, res) => {
 
     // Update the menu item
     Object.assign(restaurant.menu[menuItemIndex], updateData);
+console.log("Before save:", restaurant.menu[menuItemIndex]);
+await restaurant.save();
+console.log("After save:", restaurant.menu[menuItemIndex]);
 
-    await restaurant.save();
 
     res.json({ message: "Menu item updated successfully", menuItem: restaurant.menu[menuItemIndex] });
   } catch (error) {

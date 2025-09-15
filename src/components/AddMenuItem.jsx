@@ -265,17 +265,16 @@ const AddMenuItem = () => {
 
       let res;
       if (isEditMode) {
-        // ✅ Call update API if edit mode
-        res = await updateMenuItem(itemId, data, token);
-        toast.success("✅ Menu item updated successfully!");
-        toast("⚠️ Note: No Edit API found, item duplicated instead!");
-      } else {
-        // ✅ Call add API if new item
-        res = await addMenuItem(data, token);
-        toast.success("✅ Menu item added successfully!");
-      }
-
-      navigate("/admin-dashboard");
+  const updatedItem = await updateMenuItem(itemId, data, token);
+  console.log("Updated item:", updatedItem);
+  toast.success("✅ Menu item updated successfully!");
+  
+  navigate("/admin-dashboard", { state: { updatedItem } });
+} else {
+  const newItem = await addMenuItem(data, token);
+  toast.success("✅ Menu item added successfully!");
+  navigate("/admin-dashboard", { state: { newItem } });
+}
 
       setFormData({
         category: "Starter",
