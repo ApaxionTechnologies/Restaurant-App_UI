@@ -260,6 +260,13 @@ export const registerRestaurant = async (req, res) => {
     // ✅ always lowercase email
     const normalizedEmail = email.toLowerCase();
 
+    const existingRestaurantName = await Restaurant.findOne({ restaurantName });
+if (existingRestaurantName) {
+  return res
+    .status(400)
+    .json({ error: "Restaurant name already exists!" });
+}
+
     const existingRestaurant = await Restaurant.findOne({ email: normalizedEmail });
     if (existingRestaurant) {
       return res
@@ -481,5 +488,112 @@ export const updateRestaurant = async (req, res) => {
   } catch (err) {
     console.error("❌ Update error:", err.message);
     res.status(500).json({ error: "Failed to update restaurant" });
+  }
+};
+
+
+
+
+// ✅ Update profile - FIX THIS TO USE ES6 EXPORT
+export const updateProfile = async (req, res) => {
+  try {
+    const restaurantId = req.restaurant.id;
+    const updates = { ...req.body };
+    
+    // Parse address if it's sent as a string
+    if (updates.address && typeof updates.address === 'string') {
+      updates.address = JSON.parse(updates.address);
+    }
+    
+    // Handle image uploads
+    if (req.files) {
+   if (req.files.image) {
+  updates.image = `/uploads/${req.files.image[0].filename}`;
+}
+if (req.files.logoImage) {
+  updates.logoImage = `/uploads/${req.files.logoImage[0].filename}`;
+}
+
+    }
+    
+    // Password update logic
+    if (updates.password) {
+      if (!updates.currentPassword) {
+        return res.status(400).json({ error: 'Current password is required to set a new password' });
+      }
+      
+      const restaurant = await Restaurant.findById(restaurantId);
+      const isMatch = await bcrypt.compare(updates.currentPassword, restaurant.password);
+      
+      if (!isMatch) {
+        return res.status(400).json({ error: 'Current password is incorrect' });
+      }
+      
+      updates.password = await bcrypt.hash(updates.password, 10);
+    }
+    
+    // Remove currentPassword from updates
+    delete updates.currentPassword;
+    
+    // Update restaurant
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      restaurantId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select('-password'); // Exclude password from the response
+    
+    if (!restaurant) {
+      return res.status(404).json({ error: 'Restaurant not found' });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      restaurant
+    });
+  } catch (error) {
+    console.error('Update error:', error);
+    
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ error: errors.join(', ') });
+    }
+    
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+export const updateRestaurantTables = async (req, res) => {
+  try {
+    const restaurantId = req.restaurant._id || req.restaurant.id; 
+    
+    const { tables } = req.body;
+
+    if (tables === undefined || tables === null) {
+      return res.status(400).json({ error: "Tables count is required" });
+    }
+
+    if (tables < 0) {
+      return res.status(400).json({ error: "Tables count cannot be negative" });
+    }
+
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      restaurantId,
+      { tables },
+      { new: true }
+    ).select("-password");
+
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    res.status(200).json({
+      message: "Tables count updated successfully",
+      restaurant,
+    });
+  } catch (err) {
+    console.error("❌ Table update error:", err.message);
+    res.status(500).json({ error: "Failed to update tables count" });
   }
 };

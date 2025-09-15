@@ -100,3 +100,53 @@
   font-size: 1rem;
   padding: 2rem 0;
 }
+
+
+
+/* Footer buttons row */
+.footer-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* Global button shape */
+.btn-global {
+  min-width: 90px;        /* keeps Draft/Published same width */
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Edit button */
+.btn-edit {
+  background: #28a745;
+  color: white;
+  margin-top:12px;
+}
+.btn-edit:hover {
+  background: #218838;
+}
+
+/* Draft/Published button */
+.btn-status {
+  background: #007bff;
+  color: white;
+}
+.btn-status:hover {
+  background: #0056b3;
+}
+
+/* Delete button */
+.btn-delete {
+  background: #ff4d4d;
+  color: white;
+}
+.btn-delete:hover {
+  background: #e60000;
+}
+

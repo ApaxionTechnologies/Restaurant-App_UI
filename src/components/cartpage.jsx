@@ -6,6 +6,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "./CartDrawer.css";
 import ViewMenuNavbar from "./ViewMenuNavbar";
+import toast from "react-hot-toast";
 
 export default function CartPage() {
   const { cart, table, clearCart, updateQty } = useCart();
@@ -33,7 +34,7 @@ export default function CartPage() {
       });
     } catch (err) {
       console.error("Error saving order:", err);
-      alert("Failed to place order. Try again.");
+      toast.error("Failed to place order. Try again.");
     }
   };
 

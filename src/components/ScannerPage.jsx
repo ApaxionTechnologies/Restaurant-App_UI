@@ -29,39 +29,28 @@ export default function ScannerPage() {
       
     }
 
-    try {
-    
-      const maybeUrl = decodeURIComponent(text);
-      const url = new URL(maybeUrl.includes("://") ? maybeUrl : text);
-      const restaurantId =
-        url.searchParams.get("restaurantId") ||
-        url.searchParams.get("restaurant") ||
-        url.searchParams.get("id") ||
-        null;
-      const table =
-        url.searchParams.get("table") ||
-        url.searchParams.get("tableNumber") ||
-        url.searchParams.get("t") ||
-        null;
+   try {
+  const maybeUrl = decodeURIComponent(text);
+  const url = new URL(maybeUrl.includes("://") ? maybeUrl : text);
+  const restaurantId =
+    url.searchParams.get("restaurantId") ||
+    url.searchParams.get("restaurant") ||
+    url.searchParams.get("id") ||
+    null;
+  const table =
+    url.searchParams.get("table") ||
+    url.searchParams.get("tableNumber") ||
+    url.searchParams.get("t") ||
+    null;
 
-      let finalRestaurantId = restaurantId;
-      if (!finalRestaurantId) {
-        const parts = url.pathname.split("/").filter(Boolean);
-        const menuIndex = parts.indexOf("menu");
-        if (menuIndex >= 0 && parts[menuIndex + 1]) {
-          finalRestaurantId = parts[menuIndex + 1];
-        } else if (parts.length > 0) {
-          finalRestaurantId = parts[parts.length - 1];
-        }
-      }
+  if (restaurantId || table) {
+    console.log("parseQrText: URL result", { restaurantId, table });
+    return { restaurantId, table };
+  }
+} catch (e) {
+ 
+}
 
-      if (finalRestaurantId || table) {
-        console.log("parseQrText: URL result", { restaurantId: finalRestaurantId, table });
-        return { restaurantId: finalRestaurantId, table };
-      }
-    } catch (e) {
-     
-    }
     const oidMatch = text.match(/[a-fA-F0-9]{24}/);
     const tableMatch = text.match(/(?:\?|&|=|\/)table(?:Number)?(?:=|\/)?(\d{1,4})/i);
     if (oidMatch || tableMatch) {

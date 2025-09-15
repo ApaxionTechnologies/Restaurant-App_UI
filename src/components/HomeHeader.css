@@ -17,18 +17,13 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  font-size: 32px;
 }
 
 .Header-logo {
   height: 40px;
   width: auto;
 }
-
-/* .Header-right {
-  display: flex;
-  align-items: center;
-  gap: 0px;
-} */
 
 .Header-link {
   background: none;
@@ -64,8 +59,8 @@
   background-clip: text;
   -webkit-background-clip: text;
 
-  -webkit-text-fill-color: transparent; /* Chrome, Safari */
-  color: transparent; /* fallback for others */
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 
   letter-spacing: 1px;
   -webkit-font-smoothing: antialiased;
@@ -77,9 +72,8 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px; /* space between login and app download */
+  gap: 20px;
 }
-
 .login-link {
   color: black;
   text-decoration: none;
@@ -91,7 +85,7 @@
 
 .BsPersonLock {
   color: #27b10b;
-  font-size: 60px; /* Increase size */
+  font-size: 60px;
   cursor: pointer;
 }
 
@@ -174,6 +168,7 @@
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
+
 
 .dropdown-item:last-child {
   border-bottom-left-radius: 12px;
