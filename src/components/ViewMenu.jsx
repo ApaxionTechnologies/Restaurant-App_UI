@@ -733,9 +733,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Footer from "../components/Footer.jsx";
 import HomeHeader from "../components/HomeHeader.jsx";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import * as bootstrap from 'bootstrap';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import * as bootstrap from "bootstrap";
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
@@ -747,7 +747,9 @@ const ViewMenu = () => {
   const location = useLocation();
 
   const [filter, setFilter] = useState("All");
-  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurantName") || "My Restaurant");
+  const [restaurantName, setRestaurantName] = useState(
+    localStorage.getItem("restaurantName") || "My Restaurant"
+  );
   const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
@@ -914,7 +916,7 @@ useEffect(() => {
           {filteredItems.length === 0 ? (
             <p className="no-items-text">No items found for this filter.</p>
           ) : (
-            filteredItems.map(item => (
+            filteredItems.map((item) => (
               <div key={item._id} className="card">
                 <div className="card-img-wrapper">
   <img
@@ -925,7 +927,11 @@ useEffect(() => {
   </div>
                 <div className="card-content">
                   <div className="menu-title-price">
-                    <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
+                    <span
+                      className={`veg-indicator ${
+                        item.type?.toLowerCase() || "veg"
+                      }`}
+                    ></span>
                     <h3 className="card-title">{item.name}</h3>
                     <span className="card-price">₹{item.price}</span>
                   </div>
