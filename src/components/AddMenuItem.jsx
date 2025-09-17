@@ -24,8 +24,7 @@ const AddMenuItem = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const token = localStorage.getItem("token");
-       const res = await getMyRestaurant(token);
+       const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
       } catch (err) {
         console.error("Fetch /me failed -", err);
@@ -257,22 +256,14 @@ const AddMenuItem = () => {
     if (imageFile) data.append("image", imageFile);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        showFormError("⚠️ No token found. Please log in again.");
-        navigate("/");
-        return;
-      }
-
-      let res;
       if (isEditMode) {
-  const updatedItem = await updateMenuItem(itemId, data, token);
+  const updatedItem = await updateMenuItem(itemId, data);
   console.log("Updated item:", updatedItem);
   toast.success("✅ Menu item updated successfully!");
   
   navigate("/admin-dashboard", { state: { updatedItem } });
 } else {
-  const newItem = await addMenuItem(data, token);
+  const newItem = await addMenuItem(data);
   toast.success("✅ Menu item added successfully!");
   navigate("/admin-dashboard", { state: { newItem } });
 }

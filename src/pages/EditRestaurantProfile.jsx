@@ -54,13 +54,11 @@ export default function EditRestaurantProfile() {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await getMyRestaurant(token);
+       
+        const res = await getMyRestaurant();
         setRestaurant(res.restaurant || res);
 
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(localStorage.getItem("token"));
         setAdminEmail(decoded.email);
         setRestaurantName(decoded.restaurantName || "My Restaurant");
       } catch (err) {
@@ -165,10 +163,7 @@ const handleLogout = async () => {
   useEffect(() => {
     const fetchRestaurantData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const data = await getMyRestaurant(token);
+        const data = await getMyRestaurant();
         console.log("🍔 Restaurant data from API:", data);
 
         const restaurant = data.restaurant || data;
@@ -384,14 +379,14 @@ const handleLogout = async () => {
       if (formData.logoImage instanceof File) {
         formDataToSend.append("logoImage", formData.logoImage);
       }
-      const response = await updateRestaurantProfile(formDataToSend, token);
+      const response = await updateRestaurantProfile(formDataToSend);
      if (response.success) {
   toast.success("Profile updated successfully!");
   navigate("/admin-dashboard")
   dispatch(setFormField({ field: "password", value: "" }));
   dispatch(setFormField({ field: "confirmPassword", value: "" }));
   setCurrentPassword("");
-  const { restaurant } = await getMyRestaurant(token);
+  const { restaurant } = await getMyRestaurant();
   setRestaurant(restaurant);
   if (restaurant.image) setPreviewImage(restaurant.image);
   if (restaurant.logoImage) setPreviewLogo(restaurant.logoImage);

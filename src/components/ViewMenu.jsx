@@ -67,7 +67,6 @@ useEffect(() => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const idToUse = localStorage.getItem("restaurantId") || restaurantId;
 
       if (!idToUse) {
@@ -77,7 +76,7 @@ useEffect(() => {
       }
 
       const [restaurantRes, menuRes] = await Promise.all([
-        getMyRestaurant(token),
+        getMyRestaurant(),
         getMenuByRestaurant(idToUse)
       ]);
 
@@ -115,8 +114,7 @@ useEffect(() => {
 
   const handleDeleteConfirm = async (menuItemId) => {
     try {
-      const token = localStorage.getItem("token");
-      await deleteMenuItem(menuItemId, token);
+      await deleteMenuItem(menuItemId);
       setMenuItems(prev => prev.filter(m => m._id !== menuItemId));
       toast.success("Item deleted successfully!");
     } catch (err) {
@@ -131,8 +129,7 @@ useEffect(() => {
       return;
     }
     try {
-      const token = localStorage.getItem("token");
-      await updateMenuStatus(menuItemId, newStatus, token);
+      await updateMenuStatus(menuItemId, newStatus);
 
       setMenuItems(prev =>
         prev.map(item =>
@@ -153,6 +150,7 @@ useEffect(() => {
     localStorage.removeItem("adminEmail");
     localStorage.removeItem("restaurantName");
     localStorage.removeItem("token");
+    localStorage.removeItem("restaurantId")
     navigate("/");
   };
 

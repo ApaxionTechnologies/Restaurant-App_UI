@@ -1,30 +1,28 @@
-// src/components/ProtectedRoute.js
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(null); // null = unknown, true/false = auth status
+  const [isAuth, setIsAuth] = useState(null); 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (token) {
-      setIsAuth(true); // user logged in
+      setIsAuth(true); 
     } else {
-      setIsAuth(false); // not logged in
+      setIsAuth(false); 
     }
   }, []);
 
   if (isAuth === null) {
-    // token check hone tak kuch render na karo
     return <div>Loading...</div>;
   }
 
   if (!isAuth) {
-    return <Navigate to="/" replace />; // redirect if not logged in
+    return <Navigate to="/" replace />;
   }
 
-  return children; // render protected page
+  return children; 
 };
 
 export default ProtectedRoute;

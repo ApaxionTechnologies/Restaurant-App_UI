@@ -19,11 +19,11 @@ export default function AdminDashboard() {
 useEffect(() => {
   const fetchMe = async () => {
     try {
-             const token = localStorage.getItem("token");
-            const res = await getMyRestaurant(token);
+            const res = await getMyRestaurant();
       setRestaurant(res.restaurant);
     } catch (err) {
       console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+      navigate("/");
     }
   };
   fetchMe();
@@ -56,6 +56,7 @@ useEffect(() => {
     favicon.href = "%PUBLIC_URL%/favicon.ico";
   }
 }, [restaurant]);
+
   const handleLogout = () => {
   localStorage.removeItem("token"); 
   setRestaurantName(""); 

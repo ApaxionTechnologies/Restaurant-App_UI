@@ -22,8 +22,7 @@ const TableManager = ({ restaurant, onTablesUpdated }) => {
     
     setIsUpdating(true);
     try {
-      const token = localStorage.getItem("token");
-      await updateRestaurantTables(token, tableCount);
+      await updateRestaurantTables( tableCount);
       toast.success("Table count updated successfully!");
       onTablesUpdated(tableCount);
     } catch (err) {
@@ -333,16 +332,11 @@ export default function GenerateQR() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
+    
     const fetchRestaurantData = async () => {
       try {
         setIsLoading(true);
-        const data = await getMyRestaurant(token);
+        const data = await getMyRestaurant();
         setRestaurant(data.restaurant || data);
         setIsLoading(false);
       } catch (err) {
