@@ -62,6 +62,7 @@ const AddMenuItem = () => {
     status: "Published",
     discount: "",
     vegType: "veg",
+    
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -97,7 +98,7 @@ const AddMenuItem = () => {
         name: editItem.name || "",
         price: editItem.price || "",
         cuisine: editItem.cuisine || "Indian",
-        timeToPrepare: editItem.timeToPrepare || "",
+        timeToPrepare: editItem.prepTime|| "",
         ingredients: editItem.ingredients || "",
         description: editItem.description || "",
         status: editItem.status || "Published",
@@ -246,7 +247,7 @@ const AddMenuItem = () => {
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("cuisine", formData.cuisine);
-    data.append("timeToPrepare", formData.timeToPrepare);
+    data.append("prepTime", formData.timeToPrepare);
     data.append("ingredients", formData.ingredients);
     data.append("description", formData.description);
     data.append("status", formData.status);
@@ -499,7 +500,7 @@ const AddMenuItem = () => {
                 {errors.timeToPrepare && <span className="error-message">{errors.timeToPrepare}</span>}
               </div>
 
-              <div>
+              <div style={{ marginBottom: '5px' }}>
                 <label>Description</label>
                 <textarea
                   name="description"

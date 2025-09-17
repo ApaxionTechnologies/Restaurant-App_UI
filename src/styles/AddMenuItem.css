@@ -240,13 +240,14 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
 
 .form-actionss { display:flex; gap: 50px; align-items:center;}
 .btn {
-  padding:10px 16px;
+  padding:10px 14px;
   border-radius:10px;
   font-weight:700;
   border:none;
   cursor:pointer;
   font-size:0.96rem;
   transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+ 
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
@@ -269,7 +270,7 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
   box-shadow: none;
 }
 .mini { font-size:0.82rem; color:var(--muted); }
-/* Right Panel Header */
+
 .right-header {
   display: flex;
   justify-content: space-between;
@@ -380,7 +381,6 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
   .field-wrapper .error-message { right: 8px; top: -8px; font-size: 0.66rem; padding: 3px 6px; }
   .field-wrapper { min-height: 56px; }
 }
-
 
 .upload-btn.error {
   color: red; 

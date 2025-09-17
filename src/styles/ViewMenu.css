@@ -101,9 +101,6 @@
   padding: 2rem 0;
 }
 
-
-
-/* Footer buttons row */
 .footer-actions {
   margin-top: 12px;
   display: flex;
@@ -111,9 +108,8 @@
   gap: 10px;
 }
 
-/* Global button shape */
 .btn-global {
-  min-width: 90px;        /* keeps Draft/Published same width */
+  min-width: 90px;        
   padding: 6px 14px;
   font-size: 0.85rem;
   border: none;
@@ -122,17 +118,16 @@
   text-align: center;
 }
 
-/* Edit button */
 .btn-edit {
   background: #28a745;
   color: white;
   margin-top:12px;
+  
 }
 .btn-edit:hover {
   background: #218838;
 }
 
-/* Draft/Published button */
 .btn-status {
   background: #007bff;
   color: white;
@@ -141,12 +136,36 @@
   background: #0056b3;
 }
 
-/* Delete button */
 .btn-delete {
-  background: #ff4d4d;
+  background:#dc2626;
   color: white;
 }
 .btn-delete:hover {
-  background: #e60000;
+  background:#dc2626;
 }
 
+.btn-delete-circular {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color:#dc2626;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.btn-delete-circular:hover {
+  background-color: #dc2626;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+ 
