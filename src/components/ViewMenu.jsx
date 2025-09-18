@@ -874,10 +874,14 @@ useEffect(() => {
     navigate("/");
   };
 
+  // const handleEdit = (item) => {
+  //   navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } });
+  // };
+  // ViewMenu.jsx - update the handleEdit function
   const handleEdit = (item) => {
-    navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } });
+  navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } });
   };
-
+  
   const handleAddMenuItem = () => {
     navigate("/add-menu");
   };
@@ -955,14 +959,12 @@ useEffect(() => {
   </div>
 
   <div className="d-flex gap-2">
-    <button
-      className="btn-global btn-edit"
-      onClick={() =>
-        navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } })
-      }
-    >
-      Edit
-    </button>
+   <button
+  className="btn-global btn-edit"
+  onClick={() => handleEdit(item)}
+>
+  Edit
+</button>
     
                 </div>
                 </div>

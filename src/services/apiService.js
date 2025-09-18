@@ -108,6 +108,22 @@ export const updateRestaurantProfile = async (formData, token) => {
 };
 
 
+// export const updateMenuItem = async (menuItemId, formData, token) => {
+//   try {
+//     const res = await API.put(`/menu/${menuItemId}`, formData, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//     return res.data;
+//   } catch (error) {
+//     throw error.response?.data || error.message;
+//   }
+// };
+
+// apiService.js - update the updateMenuItem function
+
 export const updateMenuItem = async (menuItemId, formData, token) => {
   try {
     const res = await API.put(`/menu/${menuItemId}`, formData, {
@@ -116,7 +132,7 @@ export const updateMenuItem = async (menuItemId, formData, token) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    return res.data;
+    return res.data.menuItem; // Return the updated menu item
   } catch (error) {
     throw error.response?.data || error.message;
   }
