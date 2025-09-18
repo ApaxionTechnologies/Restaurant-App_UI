@@ -1,227 +1,3 @@
-// import React, { useState } from "react";
-// import {
-//   FaLock,
-//   FaEye,
-//   FaEyeSlash,
-//   FaCheck,
-//   FaTimesCircle,
-//   FaArrowLeft
-// } from "react-icons/fa";
-
-// const ResetPasswordForm = ({ onResetSuccess, onBackToLogin }) => {
-//   const [password, setPassword] = useState("");
-//   const [confirmPassword, setConfirmPassword] = useState("");
-//   const [showPassword, setShowPassword] = useState(false);
-//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState("");
-//   const [fieldErrors, setFieldErrors] = useState({});
-
-//   const validatePassword = (password) => {
-//     const uppercase = /[A-Z]/;
-//     const lowercase = /[a-z]/;
-//     const number = /[0-9]/;
-//     const specialChar = /[!@#$%^&*(),.?":{}|<>]/;
-
-//     return {
-//       hasMinLength: password?.length >= 6,
-//       hasUppercase: uppercase.test(password),
-//       hasLowercase: lowercase.test(password),
-//       hasNumber: number.test(password),
-//       hasSpecialChar: specialChar.test(password),
-//       isValid: password?.length >= 6 &&
-//         uppercase.test(password) &&
-//         lowercase.test(password) &&
-//         number.test(password) &&
-//         specialChar.test(password)
-//     };
-//   };
-
-//   const validateResetForm = () => {
-//     const errors = {};
-//     let isValid = true;
-
-//     const passwordValidation = validatePassword(password);
-    
-//     if (!password) {
-//       errors.password = "Password is required";
-//       isValid = false;
-//     } else if (!passwordValidation.isValid) {
-//       errors.password = "Password does not meet all requirements";
-//       isValid = false;
-//     }
-
-//     if (!confirmPassword) {
-//       errors.confirmPassword = "Please confirm your password";
-//       isValid = false;
-//     } else if (password !== confirmPassword) {
-//       errors.confirmPassword = "Passwords do not match";
-//       isValid = false;
-//     }
-
-//     setFieldErrors(errors);
-//     return isValid;
-//   };
-
-//   const handleResetSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-
-//     if (!validateResetForm()) {
-//       return;
-//     }
-
-//     setIsLoading(true);
-
-//     try {
-//       await new Promise(resolve => setTimeout(resolve, 1500));
-//       onResetSuccess();
-//     } catch (err) {
-//       setError("Failed to reset password. Please try again.");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   const handleInputChange = (field, value) => {
-//     if (field === 'password') setPassword(value);
-//     if (field === 'confirmPassword') setConfirmPassword(value);
-    
-//     if (fieldErrors[field]) {
-//       setFieldErrors({ ...fieldErrors, [field]: "" });
-//     }
-//     if (error) {
-//       setError("");
-//     }
-//   };
-
-//   const passwordValidation = validatePassword(password);
-
-//   return (
-//     <form onSubmit={handleResetSubmit} className="login-form" noValidate>
-//       <div className={`form-group ${fieldErrors.password ? "has-error" : ""}`}>
-//         <label htmlFor="new-password">New Password</label>
-//         <div className="field-wrapper">
-//           <div className="input-container">
-//             <span className="input-icon">
-//               <FaLock />
-//             </span>
-//             <input
-//               id="new-password"
-//               type={showPassword ? "text" : "password"}
-//               value={password}
-//               onChange={(e) => handleInputChange('password', e.target.value)}
-//               placeholder="Enter your new password"
-//               className={fieldErrors.password ? "error" : ""}
-//               disabled={isLoading}
-//             />
-//             <button 
-//               type="button" 
-//               className="password-toggle"
-//               onClick={() => setShowPassword(!showPassword)}
-//             >
-//               {showPassword ? <FaEyeSlash /> : <FaEye />}
-//             </button>
-//           </div>
-          
-//           <div className="password-requirements">
-//             <p className="requirements-title">Password must include:</p>
-//             <div className="requirement">
-//               {passwordValidation.hasMinLength ? <FaCheck className="valid" /> : <FaTimesCircle className="invalid" />}
-//               <span>At least 6 characters</span>
-//             </div>
-//             <div className="requirement">
-//               {passwordValidation.hasUppercase ? <FaCheck className="valid" /> : <FaTimesCircle className="invalid" />}
-//               <span>One uppercase letter</span>
-//             </div>
-//             <div className="requirement">
-//               {passwordValidation.hasLowercase ? <FaCheck className="valid" /> : <FaTimesCircle className="invalid" />}
-//               <span>One lowercase letter</span>
-//             </div>
-//             <div className="requirement">
-//               {passwordValidation.hasNumber ? <FaCheck className="valid" /> : <FaTimesCircle className="invalid" />}
-//               <span>One number</span>
-//             </div>
-//             <div className="requirement">
-//               {passwordValidation.hasSpecialChar ? <FaCheck className="valid" /> : <FaTimesCircle className="invalid" />}
-//               <span>One special character</span>
-//             </div>
-//           </div>
-          
-//           {fieldErrors.password && (
-//             <div className="error-message">{fieldErrors.password}</div>
-//           )}
-//         </div>
-//       </div>
-
-//       <div className={`form-group ${fieldErrors.confirmPassword ? "has-error" : ""}`}>
-//         <label htmlFor="confirm-password">Confirm Password</label>
-//         <div className="field-wrapper">
-//           <div className="input-container">
-//             <span className="input-icon">
-//               <FaLock />
-//             </span>
-//             <input
-//               id="confirm-password"
-//               type={showConfirmPassword ? "text" : "password"}
-//               value={confirmPassword}
-//               onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-//               placeholder="Confirm your new password"
-//               className={fieldErrors.confirmPassword ? "error" : ""}
-//               disabled={isLoading}
-//             />
-//             <button 
-//               type="button" 
-//               className="password-toggle"
-//               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-//             >
-//               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-//             </button>
-//           </div>
-//           {fieldErrors.confirmPassword && (
-//             <div className="error-message">{fieldErrors.confirmPassword}</div>
-//           )}
-//         </div>
-//       </div>
-
-//       {error && (
-//         <div className="error-message general-error">
-//           <span className="error-icon">!</span>
-//           {error}
-//         </div>
-//       )}
-      
-//       <button
-//         type="submit"
-//         style={{ height: "50px", fontSize: "16px" }}
-//         className={`btn-global ${isLoading ? "submitting" : ""}`}
-//         disabled={isLoading}
-//       >
-//         {isLoading ? (
-//           <>
-//             <span className="spinner"></span>
-//             Resetting password...
-//           </>
-//         ) : (
-//           "Reset Password"
-//         )}
-//       </button>
-
-//       <div className="login-footer">
-//         <button 
-//           className="back-to-login" 
-//           onClick={onBackToLogin}
-//           disabled={isLoading}
-//         >
-//           <FaArrowLeft /> Back to Login
-//         </button>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default ResetPasswordForm;
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -230,13 +6,14 @@ import {
   FaEyeSlash,
   FaArrowLeft,
   FaCheckCircle,
-  FaKey
+  FaKey,
+  FaTimes 
 } from "react-icons/fa";
 import "../styles/ForgotPassword.css";
 import "../styles/Login.css";
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPage({ onClose }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -252,6 +29,14 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate(-1); // Go back to previous page
+    }
+  };
+
   // Commented out for UI testing
   // useEffect(() => {
   //   const tokenFromUrl = searchParams.get("token");
@@ -265,7 +50,6 @@ export default function ResetPasswordPage() {
     setPassword(newPassword);
     setIsPasswordValid(validatePassword(newPassword).isValid);
     
-    // Clear error if any
     if (fieldErrors.password) {
       setFieldErrors({...fieldErrors, password: ""});
     }
@@ -317,6 +101,10 @@ export default function ResetPasswordPage() {
       <div className="reset-password-page">
         <div className="reset-password-container">
           <div className="reset-password-card">
+          
+            <button className="close-button" onClick={handleClose}>
+              <FaTimes />
+            </button>
             <h2>Invalid Reset Link</h2>
             <p>The password reset link is invalid or has expired.</p>
             <button className="btn-global" onClick={() => navigate("/login")}>
@@ -333,6 +121,10 @@ export default function ResetPasswordPage() {
       <div className="reset-password-page">
         <div className="reset-password-container">
           <div className="reset-password-card success-message">
+           
+            <button className="close-button" onClick={handleClose}>
+              <FaTimes />
+            </button>
             <div className="success-icon">
               <FaCheckCircle />
             </div>
@@ -354,6 +146,11 @@ export default function ResetPasswordPage() {
     <div className="reset-password-page">
       <div className="reset-password-container">
         <div className="reset-password-card">
+          
+          <button className="close-button" onClick={handleClose}>
+            <FaTimes />
+          </button>
+          
           <div className="login-header">
             <div className="header-icon">
               <FaKey />

@@ -6,7 +6,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import RegisterRestaurant from "./pages/RegisterRestaurant";
 import AdminLogin from "./pages/AdminLogin";
-import Login from "./pages/Login";
+//import Login from "./pages/Login";
 import MenuPage from "./pages/MenuPage"; 
 import OrderSuccess from "./pages/OrderSuccess";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -39,13 +39,14 @@ import './styles/ViewMenu.css';
 
 import { RestaurantProvider } from "./context/RestaurantContext";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
-
+import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { Toaster } from "react-hot-toast";
 export default function App() {
   const location = useLocation();
   const state = location.state || {};
 
  return (
+  <ConfirmationModalProvider>
     <RestaurantProvider>
       <> <Toaster
         position="top-center" 
@@ -70,7 +71,7 @@ export default function App() {
               </>
             }
           />
-          <Route path="/login" element={<Login />} />
+         
           <Route path="/scanner" element={<ScannerPage />} />
 
           {/* ✅ Restaurant & Admin Routes */}
@@ -121,5 +122,6 @@ export default function App() {
         </Routes>
       </>
     </RestaurantProvider>
+     </ConfirmationModalProvider>
   );
 }

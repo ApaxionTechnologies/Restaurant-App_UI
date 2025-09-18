@@ -48,7 +48,13 @@ export default function AdminLogin({ onClose }) {
     setFieldErrors(errors);
     return isValid;
   };
-
+const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      navigate(-1);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -109,11 +115,10 @@ export default function AdminLogin({ onClose }) {
       ) : (
         <div className="admin-login-container">
           <div className="admin-login-card">
-          {onClose && (
-                  <button className="close-button" onClick={onClose}>
-                    <FaTimes />
-                  </button>
-                )}
+           <button className="close-button" onClick={handleClose}>
+              <FaTimes />
+            </button>
+            
             <div className="login-header">
             
               <div className="header-icon">
@@ -184,8 +189,7 @@ export default function AdminLogin({ onClose }) {
                     <div className="error-message">{fieldErrors.password}</div>
                   )}
                 </div>
-                  
-<PasswordRequirements password={adminPassword} />
+                
               
               </div>
 

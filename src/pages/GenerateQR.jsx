@@ -32,8 +32,7 @@ const [restaurantData, setRestaurantData] = useState(null);
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await getMyRestaurant(token);
+        const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
       } catch (err) {
         console.error("Fetch /me failed -", err);
@@ -52,7 +51,7 @@ useEffect(() => {
 
   const fetchRestaurantData = async () => {
     try {
-     const data = await fetchMe(token);
+     const data = await getMyRestaurant();
              const restaurantInfo = data.restaurant;
              setRestaurantName(restaurantInfo.restaurantName);
              setAdminEmail(restaurantInfo.email);

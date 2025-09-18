@@ -1,4 +1,3 @@
-// OrderManagement.jsx
 import React, { useEffect, useState } from "react";
 import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
@@ -25,7 +24,7 @@ export default function OrderManagement() {
         setAdminEmail(decoded.email);
         setRestaurantName(decoded.restaurantName || "My Restaurant");
 
-        const res = await getMyRestaurant(token);
+        const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
 
         setOrders([
@@ -39,6 +38,13 @@ export default function OrderManagement() {
     };
     fetchMe();
   }, [navigate]);
+
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("adminEmail");
+  localStorage.removeItem("restaurant");
+  navigate("/"); // redirect to login/home
+};
 
   const handleUpdateStatus = (id, newStatus) => {
     setOrders((prev) =>
@@ -55,6 +61,7 @@ export default function OrderManagement() {
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         restaurant={restaurant}
+        onLogout={handleLogout} 
       />
 
       <main className="container mt-5">

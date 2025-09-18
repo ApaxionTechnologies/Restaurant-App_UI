@@ -8,7 +8,7 @@ import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
 import { DownloadButton } from "../components/ExcelTemplate";
 import { ItemCards } from "../components/ItemCards";
-
+import { uploadBulkMenuItems } from "../services/apiService";
 export const BulkItemUpload = () => {
   const [excelData, setExcelData] = useState(null);
   const [fileName, setFileName] = useState("");
@@ -147,19 +147,8 @@ export const BulkItemUpload = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5001/api/menu/bulkAddMenuItem",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const resData = response?.data;
-
+  
+    const resData = await uploadBulkMenuItems(file);
       if (resData.status === "Success") {
         // alert("Items added successfully!");
         setRejectedItems(resData?.data?.rejctedList);

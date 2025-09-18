@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import { getMyRestaurant, logoutRestaurant } from "../services/apiService.js";
 
 export const AuthContext = createContext();
 
@@ -8,27 +8,33 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchMe() {
+    async function fetchUser() {
       try {
-        const res = await axios.get("http://localhost:5001/api/auth/me", {
-          withCredentials: true,
-        });
-        setUser(res.data.user || null);
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found");
+
+        const res = await getMyRestaurant();
+        setUser(res.restaurant || null);
       } catch (err) {
         setUser(null);
       } finally {
         setLoading(false);
       }
     }
-    fetchMe();
+    fetchUser();
   }, []);
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:5001/api/auth/logout", {}, { withCredentials: true });
+      await logoutRestaurant(); 
     } catch (err) {
-      /* ignore */
+      console.warn("Logout API error ignored:", err);
     } finally {
+    
+      localStorage.removeItem("token");
+      localStorage.removeItem("restaurantId");
+      localStorage.removeItem("tableNumber");
+      localStorage.removeItem("adminEmail");
       setUser(null);
     }
   };

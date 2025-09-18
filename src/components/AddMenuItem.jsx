@@ -24,8 +24,7 @@ const AddMenuItem = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const token = localStorage.getItem("token");
-       const res = await getMyRestaurant(token);
+       const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
       } catch (err) {
         console.error("Fetch /me failed -", err);
@@ -62,6 +61,7 @@ const AddMenuItem = () => {
     status: "Published",
     discount: "",
     vegType: "veg",
+    
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -97,7 +97,7 @@ const AddMenuItem = () => {
         name: editItem.name || "",
         price: editItem.price || "",
         cuisine: editItem.cuisine || "Indian",
-        timeToPrepare: editItem.timeToPrepare || "",
+        timeToPrepare: editItem.prepTime|| "",
         ingredients: editItem.ingredients || "",
         description: editItem.description || "",
         status: editItem.status || "Published",
@@ -246,7 +246,7 @@ const AddMenuItem = () => {
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("cuisine", formData.cuisine);
-    data.append("timeToPrepare", formData.timeToPrepare);
+    data.append("prepTime", formData.timeToPrepare);
     data.append("ingredients", formData.ingredients);
     data.append("description", formData.description);
     data.append("status", formData.status);
@@ -256,22 +256,14 @@ const AddMenuItem = () => {
     if (imageFile) data.append("image", imageFile);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        showFormError("⚠️ No token found. Please log in again.");
-        navigate("/");
-        return;
-      }
-
-      let res;
       if (isEditMode) {
-  const updatedItem = await updateMenuItem(itemId, data, token);
+  const updatedItem = await updateMenuItem(itemId, data);
   console.log("Updated item:", updatedItem);
   toast.success("✅ Menu item updated successfully!");
   
   navigate("/admin-dashboard", { state: { updatedItem } });
 } else {
-  const newItem = await addMenuItem(data, token);
+  const newItem = await addMenuItem(data);
   toast.success("✅ Menu item added successfully!");
   navigate("/admin-dashboard", { state: { newItem } });
 }
@@ -499,7 +491,7 @@ const AddMenuItem = () => {
                 {errors.timeToPrepare && <span className="error-message">{errors.timeToPrepare}</span>}
               </div>
 
-              <div>
+              <div style={{ marginBottom: '5px' }}>
                 <label>Description</label>
                 <textarea
                   name="description"
