@@ -161,3 +161,61 @@ export const uploadBulkMenuItems = async (file) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const forgotPassword = async (email) => {
+  try {
+    const response = await API.post("/auth/forgot-password", { email });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const resetPassword = async (token, newPassword) => {
+  try {
+    const response = await API.post(`/auth/reset-password/${token}`, {
+      password: newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const createOrder = async (orderData) => {
+  try {
+    const res = await API.post("/orders", orderData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+export const getOrders = async () => {
+  try {
+    const res = await API.get("/orders");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw error.response?.data || error.message;
+  }
+};
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const res = await API.put(`/orders/${orderId}`, { status });
+    return res.data;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    throw error.response?.data || error.message;
+  }
+};
+export const updateOrderItems = async (orderId, items) => {
+  try {
+    const response = await API.put(`/orders/edit/${orderId}`, { items });
+    return response.data;
+  } catch (error) {
+    console.error("Update order items failed:", error);
+    throw error;
+  }
+};

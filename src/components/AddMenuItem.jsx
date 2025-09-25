@@ -346,8 +346,9 @@ const AddMenuItem = () => {
 
             <form onSubmit={handleSubmit} className="add-menu-form" noValidate>
               <div className="form-grid">
-                <div>
+                <div className="field-wrappers" >
                   <label>Item Name</label>
+                
                   <input
                     ref={nameRef}
                     name="name"
@@ -356,7 +357,7 @@ const AddMenuItem = () => {
                     onChange={handleChange}
                     required
                   />
-                  {errors.name && <span className="error-message">{errors.name}</span>}
+                  {errors.name && <div className="error-message">{errors.name}</div>}
                 </div>
 
                 <div>
@@ -404,7 +405,7 @@ const AddMenuItem = () => {
               </div>
 
               <div className="form-grid">
-                <div>
+                <div className="field-wrappers">
                   <label>Price (₹)</label>
                   <input
                     ref={priceRef}
@@ -414,7 +415,7 @@ const AddMenuItem = () => {
                     value={formData.price}
                     onChange={handleChange}
                   />
-                  {errors.price && <span className="error-message">{errors.price}</span>}
+                  {errors.price && <div className="error-message">{errors.price}</div>}
                 </div>
 
                 <div>
@@ -479,7 +480,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="field-wrappers">
                 <label>Time to Prepare (mins)</label>
                 <input
                   type="number"
@@ -488,7 +489,7 @@ const AddMenuItem = () => {
                   value={formData.timeToPrepare}
                   onChange={handleChange}
                 />
-                {errors.timeToPrepare && <span className="error-message">{errors.timeToPrepare}</span>}
+                {errors.timeToPrepare && <div className="error-message">{errors.timeToPrepare}</div>}
               </div>
 
               <div style={{ marginBottom: '5px' }}>
