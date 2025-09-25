@@ -2,10 +2,9 @@ body,
 html {
   margin: 0;
   padding: 0;
-  overflow-y: auto !important; /* ✅ don't force scroll */
+  overflow-y: auto !important; 
 }
 
-/* Ensure full height and centering */
 .table-manager-container {
   display: flex;
   justify-content: center;
@@ -27,7 +26,6 @@ html {
   text-align: center;
 }
 
-/* Headings */
 .table-manager-card h3 {
   font-size: 1.8rem;
   margin-bottom: 0.4rem;
@@ -146,14 +144,12 @@ html, body, #root {
   padding: 0;
 }
 
-/* Flex column so footer sticks to bottom only when needed */
 .table-manager-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* full screen height */
+  min-height: 100vh; 
 }
 
-/* Main content grows */
 .table-manager-container {
   flex: 1; 
   display: flex;
@@ -162,7 +158,6 @@ html, body, #root {
   padding: 2rem;
 }
 
-/* Card styling */
 .table-manager-card {
   background: #fff;
   padding: 2rem;
@@ -173,7 +168,6 @@ html, body, #root {
   width: 100%;
 }
 
-/* Buttons */
 .button-group {
   display: flex;
   justify-content: center;
@@ -202,7 +196,6 @@ html, body, #root {
   background: #43a047;
 }
 
-/* Error message */
 .alert-danger {
   margin-top: 1rem;
   color: red;

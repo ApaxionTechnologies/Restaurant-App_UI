@@ -9,7 +9,7 @@ import {
 import "../styles/ForgotPassword.css";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
-
+import { forgotPassword } from "../services/apiService"; 
 export default function ForgotPassword({ onClose, onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -34,25 +34,27 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
     return isValid;
   };
 
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
 
-    if (!validateEmailForm()) {
-      return;
-    }
+const handleEmailSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    setIsLoading(true);
+  if (!validateEmailForm()) {
+    return;
+  }
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setIsSubmitted(true);
-    } catch (err) {
-      setError("Failed to send reset instructions. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  setIsLoading(true);
+
+  try {
+    const res = await forgotPassword(email);  
+    console.log(res);                          
+    setIsSubmitted(true);
+  } catch (err) {
+    setError(err.error || "Failed to send reset instructions. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleInputChange = (field, value) => {
     if (field === 'email') setEmail(value);
@@ -139,7 +141,7 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
               
               <button
                 type="submit"
-                style={{ height: "50px", fontSize: "16px" }}
+                style={{  fontSize: "20px" }}
                 className={`btn-global ${isLoading ? "submitting" : ""}`}
                 disabled={isLoading}
               >
@@ -162,7 +164,7 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
               <p>We've sent password reset instructions to <strong>{email}</strong></p>
               <div className="demo-reset-link">
                 <p>Test:</p>
-                <Link to="/reset-password" className="reset-link-btn">
+                <Link to="/reset-passwords" className="reset-link-btn">
                   Click here to open Reset Form
                 </Link>
               </div>

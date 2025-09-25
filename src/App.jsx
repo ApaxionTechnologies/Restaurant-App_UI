@@ -34,9 +34,8 @@ import OrderManagement from "./components/OrderManagement";
 import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
-import './styles/theme.css';
-import './styles/ViewMenu.css';
 
+import './styles/ViewMenu.css';
 import { RestaurantProvider } from "./context/RestaurantContext";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
@@ -79,8 +78,8 @@ export default function App() {
           <Route path="/admin-login" element={<AdminLogin />} />             
 <Route path ="/edit-restaurant-profile" element={<EditRestaurantProfile/>}/>
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          
-<Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+
           {/* Protected Admin Dashboard */}
           <Route
             path="/admin-dashboard"
@@ -120,7 +119,9 @@ export default function App() {
           {/* ✅ Redirect unknown routes */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+       
       </>
+
     </RestaurantProvider>
      </ConfirmationModalProvider>
   );
