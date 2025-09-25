@@ -128,12 +128,11 @@ useEffect(() => {
       <h5>Manage Tables</h5>
       <p>Organize seating and reservations.</p>
     </Link>
-     {/* ✅ New Order Management Card */}
-          <Link to="/order-management" className="dashboard-card orders">
-            <span className="icon">🛒</span>
-            <h5>Order Management</h5>
-            <p>View placed orders by tables & dishes.</p>
-          </Link>
+    <Link to="/order-management" className="dashboard-card orders">
+      <span className="icon">🛒</span>
+      <h5>Order Management</h5>
+        <p>View placed orders by tables & dishes.</p>
+        </Link>
   </div>
 </main>
 

@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import { getMyRestaurant } from "../services/apiService";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { getOrders, updateOrderStatus } from "../services/apiService";
+
 
 export default function OrderManagement() {
   const navigate = useNavigate();
@@ -27,17 +29,28 @@ export default function OrderManagement() {
         const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
 
-        setOrders([
-          { id: 1, table: "T1", items: ["Pizza", "Coke"], status: "Pending" },
-          { id: 2, table: "T3", items: ["Burger"], status: "Preparing" },
-          { id: 3, table: "T5", items: ["Pasta", "Water"], status: "Completed" },
-        ]);
-      } catch (err) {
-        console.error("Fetch restaurant/orders failed -", err);
+        if (res.restaurant?._id) {
+        const ordersData = await getOrders(res.restaurant._id);
+        setOrders(ordersData.orders || []);
       }
-    };
-    fetchMe();
-  }, [navigate]);
+    } catch (err) {
+      console.error("Fetch restaurant/orders failed -", err);
+    }
+  };
+  fetchMe();
+}, [navigate]);
+
+  //       setOrders([
+  //         { id: 1, table: "T1", items: ["Pizza", "Coke"], status: "Pending" },
+  //         { id: 2, table: "T3", items: ["Burger"], status: "Preparing" },
+  //         { id: 3, table: "T5", items: ["Pasta", "Water"], status: "Completed" },
+  //       ]);
+  //     } catch (err) {
+  //       console.error("Fetch restaurant/orders failed -", err);
+  //     }
+  //   };
+  //   fetchMe();
+  // }, [navigate]);
 
 const handleLogout = () => {
   localStorage.removeItem("token");
@@ -46,13 +59,27 @@ const handleLogout = () => {
   navigate("/"); // redirect to login/home
 };
 
-  const handleUpdateStatus = (id, newStatus) => {
+  // const handleUpdateStatus = (id, newStatus) => {
+  //   setOrders((prev) =>
+  //     prev.map((order) =>
+  //       order.id === id ? { ...order, status: newStatus } : order
+  //     )
+  //   );
+  // };
+
+  const handleUpdateStatus = async (id, newStatus) => {
+  try {
+    await updateOrderStatus(id, newStatus);
     setOrders((prev) =>
       prev.map((order) =>
-        order.id === id ? { ...order, status: newStatus } : order
+        order._id === id ? { ...order, status: newStatus } : order
       )
     );
-  };
+  } catch (err) {
+    console.error("Failed to update status:", err);
+  }
+};
+
 
   return (
     <div className="order-management-wrapper">
@@ -85,8 +112,8 @@ const handleLogout = () => {
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
-                  <td>{order.table}</td>
-                  <td>{order.items.join(", ")}</td>
+                  <td>{order.tableNumber}</td>
+                   <td>{order.items.map(item => item.name).join(", ")}</td>
                   <td>{order.status}</td>
                   <td>
                     <button

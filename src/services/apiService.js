@@ -161,3 +161,70 @@ export const uploadBulkMenuItems = async (file) => {
     throw error.response?.data || error.message;
   }
 };
+
+
+
+// Place an order
+export const placeOrder = async (orderData) => {
+  try {
+    const res = await API.post("/orders", orderData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Fetch all orders for this restaurant
+export const getOrders = async (restaurantId) => {
+  try {
+    const res = await API.get(`/orders`, {
+      params: { restaurantId },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Update order status
+export const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const res = await API.put(`/orders/${orderId}`, { status: newStatus });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Edit an order (tableNo, items, status)
+export const editOrder = async (orderId, updatedData) => {
+  try {
+    const res = await API.put(`/orders/edit/${orderId}`, updatedData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const deleteOrder = async (orderId) => {
+  try {
+    const res = await API.delete(`/orders/delete/${orderId}`);
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Fetch single order by ID
+export const getOrderById = async (orderId) => {
+  try {
+    const res = await API.get(`/orders/${orderId}`);
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
