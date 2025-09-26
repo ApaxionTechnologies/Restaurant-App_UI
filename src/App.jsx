@@ -62,10 +62,6 @@ export default function App() {
             }}
           />
 
-          {/* Global Fixed Header */}
-          <HomeHeader />
-
-          {/* Main App Content */}
           <div className="app-content">
             <Routes>
               {/* Public Routes */}
@@ -73,13 +69,24 @@ export default function App() {
                 path="/"
                 element={
                   <>
+                    <HomeHeader /> {/* Only for Home page */}
                     <HomePage />
                     {state.showAdminLogin && <AdminLogin />}
+                    <Footer />
+                  </>
+                }
+              />
+              <Route
+                path="/registerrestaurant"
+                element={
+                  <>
+                    <HomeHeader />
+                    <RegisterRestaurant />
+                    <Footer />
                   </>
                 }
               />
               <Route path="/scanner" element={<ScannerPage />} />
-              <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
               <Route path="/admin-login" element={<AdminLogin />} />
               <Route path="/edit-restaurant-profile" element={<EditRestaurantProfile />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -87,7 +94,7 @@ export default function App() {
 
               {/* Protected Admin Dashboard */}
               <Route
-                path="/admin-dashboard"
+                path="/admin-dashboard/*"
                 element={
                   <ProtectedRoute>
                     <AdminDashboard />
@@ -123,9 +130,6 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
-
-          {/* Global Footer */}
-          <Footer />
         </>
       </RestaurantProvider>
     </ConfirmationModalProvider>
