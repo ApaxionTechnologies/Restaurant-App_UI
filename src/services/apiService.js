@@ -162,10 +162,27 @@ export const uploadBulkMenuItems = async (file) => {
   }
 };
 
+export const forgotPassword = async (email) => {
+  try {
+    const response = await API.post("/auth/forgot-password", { email });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
 
+export const resetPassword = async (token, newPassword) => {
+  try {
+    const response = await API.post(`/auth/reset-password/${token}`, {
+      password: newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
 
-// Place an order
-export const placeOrder = async (orderData) => {
+export const createOrder = async (orderData) => {
   try {
     const res = await API.post("/orders", orderData, {
       headers: { "Content-Type": "application/json" },
@@ -175,56 +192,30 @@ export const placeOrder = async (orderData) => {
     throw error.response?.data || error.message;
   }
 };
-
-// Fetch all orders for this restaurant
-export const getOrders = async (restaurantId) => {
+export const getOrders = async () => {
   try {
-    const res = await API.get(`/orders`, {
-      params: { restaurantId },
-    });
+    const res = await API.get("/orders");
     return res.data;
   } catch (error) {
+    console.error("Error fetching orders:", error);
     throw error.response?.data || error.message;
   }
 };
-
-// Update order status
-export const updateOrderStatus = async (orderId, newStatus) => {
+export const updateOrderStatus = async (orderId, status) => {
   try {
-    const res = await API.put(`/orders/${orderId}`, { status: newStatus });
+    const res = await API.put(`/orders/${orderId}`, { status });
     return res.data;
   } catch (error) {
+    console.error("Error updating order status:", error);
     throw error.response?.data || error.message;
   }
 };
-
-// Edit an order (tableNo, items, status)
-export const editOrder = async (orderId, updatedData) => {
+export const updateOrderItems = async (orderId, items) => {
   try {
-    const res = await API.put(`/orders/edit/${orderId}`, updatedData, {
-      headers: { "Content-Type": "application/json" },
-    });
-    return res.data;
+    const response = await API.put(`/orders/edit/${orderId}`, { items });
+    return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
-  }
-};
-
-export const deleteOrder = async (orderId) => {
-  try {
-    const res = await API.delete(`/orders/delete/${orderId}`);
-    return res.data;
-  } catch (error) {
-    throw error.response?.data || error.message;
-  }
-};
-
-// Fetch single order by ID
-export const getOrderById = async (orderId) => {
-  try {
-    const res = await API.get(`/orders/${orderId}`);
-    return res.data;
-  } catch (error) {
-    throw error.response?.data || error.message;
+    console.error("Update order items failed:", error);
+    throw error;
   }
 };

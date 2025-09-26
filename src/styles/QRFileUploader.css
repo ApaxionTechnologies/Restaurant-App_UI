@@ -1,7 +1,6 @@
 /* src/components/QRFileUploader.css */
 
 .qr-upload-bg {
-  background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
