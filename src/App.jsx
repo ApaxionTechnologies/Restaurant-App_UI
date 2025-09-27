@@ -44,6 +44,9 @@ import './styles/ViewMenu.css';
 import { RestaurantProvider } from "./context/RestaurantContext";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
+import "./styles/theme.css";
+import "./styles/ViewMenu.css";
+
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
