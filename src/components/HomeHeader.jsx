@@ -51,24 +51,22 @@ export default function HomeHeader({
     });
   };
 
-  useEffect(() => {
+useEffect(() => {
   const handleScroll = () => {
     if (window.scrollY > 0) {
-      if (!scrolled) {
-        setScrolled(true);
-        sessionStorage.setItem("headerScrolled", "true");
-      }
+      setScrolled(true);
     } else {
-      if (scrolled) {
-        setScrolled(false);
-        sessionStorage.setItem("headerScrolled", "false");
-      }
+      setScrolled(false);
     }
   };
 
   window.addEventListener("scroll", handleScroll, { passive: true });
+
+  // Run once on mount in case user reloads page scrolled
+  handleScroll();
+
   return () => window.removeEventListener("scroll", handleScroll);
-}, [scrolled]);
+}, []);
 
 
   

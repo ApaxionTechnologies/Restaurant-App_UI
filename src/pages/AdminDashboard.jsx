@@ -6,7 +6,7 @@ import { FaUserCircle } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
-import HomeHeader from "../components/HomeHeader"; // Can be reused for admin
+import HomeHeader from "../components/HomeHeader"; 
 import { Helmet } from "react-helmet";
 import { getMyRestaurant } from "../services/apiService";
 
