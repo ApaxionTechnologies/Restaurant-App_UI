@@ -13,6 +13,9 @@ import "../styles/ForgotPassword.css";
 import "../styles/Login.css";
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 
+import { useParams } from "react-router-dom";
+ import { resetPassword } from "../services/apiService"; // import upar
+import toast from "react-hot-toast";
 export default function ResetPasswordPage({ onClose }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,6 +31,8 @@ export default function ResetPasswordPage({ onClose }) {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+const { token } = useParams(); // URL se token mil jayega
 
   const handleClose = () => {
     if (onClose) {
@@ -79,22 +84,33 @@ export default function ResetPasswordPage({ onClose }) {
     return isValid;
   };
 
-  const handleResetSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
 
-    if (!validateResetForm()) return;
+const handleResetSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setResetSuccess(true);
-    } catch {
-      setError("Failed to reset password. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (!validateResetForm()) return;
+
+  setIsLoading(true);
+  try {
+    // const tokenFromUrl = searchParams.get("token"); // 👈 URL se token lelo
+    // if (!tokenFromUrl) {
+    //   setError("Invalid or expired reset link.");
+    //   setIsLoading(false);
+    //   return;
+    // }
+
+    const res = await resetPassword(token, password); 
+    console.log(res); 
+    setResetSuccess(true);
+    toast.success("Password Updated Successfully")
+  } catch (err) {
+    setError(err.error || "Failed to reset password. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   if (!tokenValid) {
     return (
@@ -246,6 +262,7 @@ export default function ResetPasswordPage({ onClose }) {
 
             <button
               type="submit"
+             style={{ height: "50px", fontSize: "20px" }}
               className={`btn-global reset-btn ${isLoading ? "submitting" : ""}`}
               disabled={isLoading}
             >

@@ -39,68 +39,62 @@ import Footer from "./components/Footer";
 import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
-import "./styles/theme.css";
-import "./styles/ViewMenu.css";
 
+import './styles/ViewMenu.css';
+import { RestaurantProvider } from "./context/RestaurantContext";
+import { BulkItemUpload } from "./pages/BulkItemUpload";
+import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const location = useLocation();
   const state = location.state || {};
 
-  return (
-    <ConfirmationModalProvider>
-      <RestaurantProvider>
-        <>
-          {/* Notifications */}
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            toastOptions={{
-              duration: 3000,
-              style: { fontSize: "14px", textAlign: "center" },
-            }}
+ return (
+  <ConfirmationModalProvider>
+    <RestaurantProvider>
+      <> <Toaster
+        position="top-center" 
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            fontSize: "14px",
+            textAlign: "center", 
+          },
+        }}
+      />
+      
+        <Routes>
+          {/* ✅ Public Routes */}
+          <Route
+            path="/"
+            element={
+              <>
+                <HomePage />
+                {state.showAdminLogin && <AdminLogin />}
+              </>
+            }
           />
+         
+          <Route path="/scanner" element={<ScannerPage />} />
 
-          <div className="app-content">
-            <Routes>
-              {/* Public Routes */}
-              <Route
-                path="/"
-                element={
-                  <>
-                    <HomeHeader /> {/* Only for Home page */}
-                    <HomePage />
-                    {state.showAdminLogin && <AdminLogin />}
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/registerrestaurant"
-                element={
-                  <>
-                    <HomeHeader />
-                    <RegisterRestaurant />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route path="/scanner" element={<ScannerPage />} />
-              <Route path="/admin-login" element={<AdminLogin />} />
-              <Route path="/edit-restaurant-profile" element={<EditRestaurantProfile />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
+          {/* ✅ Restaurant & Admin Routes */}
+          <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
+          <Route path="/admin-login" element={<AdminLogin />} />             
+<Route path ="/edit-restaurant-profile" element={<EditRestaurantProfile/>}/>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
-              {/* Protected Admin Dashboard */}
-              <Route
-                path="/admin-dashboard/*"
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
+          {/* Protected Admin Dashboard */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
               {/* Menu & Admin Components */}
               <Route path="/add-item" element={<AddMenuItem />} />
@@ -126,12 +120,13 @@ export default function App() {
               {/* Admin Manage Tables */}
               <Route path="/table-manager" element={<TableManager />} />
 
-              {/* Redirect unknown routes */}
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </div>
-        </>
-      </RestaurantProvider>
-    </ConfirmationModalProvider>
+          {/* ✅ Redirect unknown routes */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+       
+      </>
+
+    </RestaurantProvider>
+     </ConfirmationModalProvider>
   );
 }
