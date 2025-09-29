@@ -202,7 +202,7 @@ const handleClose = () => {
               
               <button
                 type="submit"
-                style={{ height: "50px", fontSize: "16px" }}
+                style={{ height: "50px", fontSize: "20px" }}
                 className={` btn-global  ${isSubmitting ? "submitting" : ""}`}
                 disabled={isSubmitting}
               >

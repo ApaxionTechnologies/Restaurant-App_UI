@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
-import { useCart } from "../context/CartContext";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart, updateQty } from "../store/CartSlice"; 
 import { useRestaurant } from "../context/RestaurantContext";
 import ViewMenuNavbar from "../components/ViewMenuNavbar";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,10 +21,11 @@ import {
 } from "react-icons/fa";
 import "../styles/global.css";
 import "../styles/MenuCard.css";
-
+ import CartDrawer from "../components/CartDrawer";
 export default function MenuPage() {
   const navigate = useNavigate();
-  const { cart, addToCart, updateQty } = useCart();
+  const cart = useSelector((state) => state.cart.items); // Redux selector
+  const dispatch = useDispatch(); // Redux dispatch
   const { restaurant, setRestaurant, setTable } = useRestaurant();
   const [searchParams] = useSearchParams();
   const { restaurantId: restaurantIdFromParams } = useParams();
@@ -95,8 +97,7 @@ export default function MenuPage() {
     const fetchMenu = async () => {
       setLoading(true);
       try {
-       
-      const res = await getMenuByRestaurant(restaurantId);;
+        const res = await getMenuByRestaurant(restaurantId);
         console.log("API response:", res);
         setRestaurant(res.restaurant);
         const rid = res.restaurant?._id || res.restaurant?.id || restaurantId;
@@ -202,6 +203,7 @@ export default function MenuPage() {
       tooltipRefs.current.clear();
     };
   }, [selectedCategory, layout, dishes]);
+  
   useEffect(() => {
     const handleTouchStart = (e) => {
       const target = e.target;
@@ -243,6 +245,22 @@ export default function MenuPage() {
       document.removeEventListener('touchstart', handleTouchStart);
     };
   }, [isMobile]);
+
+  // Add to cart handler using Redux
+  const handleAddToCart = (item) => {
+   dispatch(addToCart({
+  name: item.name,
+  menuItemId: item._id, // ✅ important
+  price: item.price,
+  qty: 1
+}));
+
+  };
+
+  // Update quantity handler using Redux
+  const handleUpdateQty = (name, change) => {
+    dispatch(updateQty({ name, change }));
+  };
 
   return (
     <>
@@ -471,32 +489,31 @@ export default function MenuPage() {
                                     <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
                                   </div>
 
-                               <div className="qty-controls">
-  <button
-    className="qty-btn"
-    onClick={() => qty > 0 && updateQty(item.name, -1)}
-    disabled={qty === 0}
-    style={{ opacity: qty === 0 ? 0.5 : 1, cursor: qty === 0 ? "not-allowed" : "pointer" }}
-  >
-    <FaMinus />
-  </button>
+                                  <div className="qty-controls">
+                                    <button
+                                      className="qty-btn"
+                                      onClick={() => qty > 0 && handleUpdateQty(item.name, -1)}
+                                      disabled={qty === 0}
+                                      style={{ opacity: qty === 0 ? 0.5 : 1, cursor: qty === 0 ? "not-allowed" : "pointer" }}
+                                    >
+                                      <FaMinus />
+                                    </button>
 
-  <div className="qty-display">{qty}</div>
+                                    <div className="qty-display">{qty}</div>
 
-  <button
-    className="qty-btn"
-    onClick={() => {
-      if (qty === 0) {
-        addToCart(item);   
-      } else {
-        updateQty(item.name, 1); 
-      }
-    }}
-  >
-    <FaPlus />
-  </button>
-</div>
-
+                                    <button
+                                      className="qty-btn"
+                                      onClick={() => {
+                                        if (qty === 0) {
+                                          handleAddToCart(item);   
+                                        } else {
+                                          handleUpdateQty(item.name, 1); 
+                                        }
+                                      }}
+                                    >
+                                      <FaPlus />
+                                    </button>
+                                  </div>
                                 </div>
                               ) : (
                                 <div className="cuisine-time" style={{ display: "flex", justifyContent: "flex-end", width: "100%", gap: "0.5rem" }}>
@@ -525,7 +542,7 @@ export default function MenuPage() {
               top: 0,
               right: 0,
               width: "65%", 
-             maxWidth: "220px",
+              maxWidth: "220px",
               height: "auto",
               maxHeight: "80%",
               background: "#fff",
@@ -608,8 +625,9 @@ export default function MenuPage() {
             }}
             onClick={() => setIsCategoryDrawerOpen(false)}
           />
+          <CartDrawer />
         </>
       )}
     </>
   );
-} 
+}

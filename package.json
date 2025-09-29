@@ -41,6 +41,7 @@
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.10",
+    "react-data-table-component": "^7.7.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
     "react-hot-toast": "^2.6.0",
@@ -52,6 +53,7 @@
     "react-select": "^5.10.2",
     "react-spinners": "^0.17.0",
     "redux-persist": "^6.0.0",
+    "styled-components": "^6.1.19",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },

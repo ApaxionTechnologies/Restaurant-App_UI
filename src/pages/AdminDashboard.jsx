@@ -7,9 +7,10 @@ import { FcDataConfiguration } from "react-icons/fc";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
-import HomeHeader from "../components/HomeHeader";
+import HomeHeader from "../components/HomeHeader"; 
 import { Helmet } from "react-helmet";
 import { getMyRestaurant } from "../services/apiService";
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("");
@@ -43,7 +44,9 @@ export default function AdminDashboard() {
     try {
       const decoded = jwtDecode(token);
       setAdminEmail(decoded.email);
+      
       setRestaurantName(decoded.restaurantName || "My Restaurant");
+
     } catch (err) {
       console.error("Invalid token", err);
       navigate("/");
@@ -55,16 +58,20 @@ export default function AdminDashboard() {
     if (!favicon) return;
 
     if (restaurant?.logoUrl) {
+
       favicon.href = `${restaurant.logoUrl}?${new Date().getTime()}`;
+
     } else {
       favicon.href = "%PUBLIC_URL%/favicon.ico";
     }
   }, [restaurant]);
 
   const handleLogout = () => {
+
     localStorage.removeItem("token");
     setRestaurantName("");
     document.title = "React App";
+
 
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) {
@@ -79,6 +86,10 @@ export default function AdminDashboard() {
       <Helmet>
         <title>{restaurantName ? `${restaurantName}` : "React-App"}</title>
       </Helmet>
+
+
+      {/* Admin Header */}
+
       <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
@@ -107,6 +118,7 @@ export default function AdminDashboard() {
             <h5>Add Menu Item</h5>
             <p>Add new dishes and beverages.</p>
           </Link>
+
           <Link to="/add-bulk-items" className="dashboard-card add">
             <span className="icon">📁</span>
             <h5>Add Bulk Item</h5>
@@ -131,15 +143,23 @@ export default function AdminDashboard() {
             <p>Create QR codes for Restaurant Menu.</p>
           </Link>
 
+
           <Link to="/table-manager" className="dashboard-card tables">
             <span className="icon">🪑</span>
             <h5>Manage Tables</h5>
             <p>Organize seating and reservations.</p>
           </Link>
           {/* ✅ New Order Management Card */}
+
           <Link to="/order-management" className="dashboard-card orders">
             <span className="icon">🛒</span>
             <h5>Order Management</h5>
+            <p>View placed orders by tables & dishes.</p>
+            </Link>
+
+             <Link to="/tax-management" className="dashboard-card orders">
+            <span className="icon">🛒</span>
+            <h5>Tax Slab Management</h5>
             <p>View placed orders by tables & dishes.</p>
           </Link>
           <Link to="/config" className="dashboard-card orders">
