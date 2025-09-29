@@ -219,3 +219,57 @@ export const updateOrderItems = async (orderId, items) => {
     throw error;
   }
 };
+
+
+// Add new tax slab
+export const addTaxSlab = async (slabData) => {
+  try {
+    const res = await API.post("/tax-slabs", slabData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Get all tax slabs
+export const getTaxSlabs = async () => {
+  try {
+    const res = await API.get("/tax-slabs");
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+// Update a tax slab
+export const updateTaxSlab = async (slabId, slabData) => {
+  try {
+    const res = await API.put(`/tax-slabs/${slabId}`, slabData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const calculateBillPreview = async (items) => {
+  try {
+    const res = await axios.post("/api/orders/calculate", { items });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching bill preview:", error);
+    throw error;
+  }
+};
+export const deleteOrder = async (orderId) => {
+  try {
+    const res = await API.delete(`/orders/${orderId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Delete order failed:", error);
+    throw error.response?.data || error.message;
+  }
+};
