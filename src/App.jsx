@@ -18,7 +18,7 @@ import ForgotPassword from "./pages/forgotPassword";
 import EditRestaurantProfile from "./pages/EditRestaurantProfile";
 import ResetPasswordPage from "./pages/ResetPasswordForm";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
-
+import TaxSlabManagement from "./components/TaxSlabManagement";
 // ✅ Components
 import AddMenuItem from "./components/AddMenuItem";
 import QRScanner from "./components/QRScanner";
@@ -100,7 +100,7 @@ export default function App() {
         <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
         <Route path="/current-menu" element={<CurrentMenu />} />
         <Route path="/order-management" element={<OrderManagement />} />
-
+        <Route path="/tax-management" element={<TaxSlabManagement />} />
           {/* ✅ Customer QR Options */}
           <Route path="/qr-scanner" element={<QRScanner />} />
           <Route path="/upload-qr" element={<QRFileUploader />} />

@@ -1,36 +1,31 @@
+import { calculateBillPreview, createOrder } from "../services/apiService.js";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart, updateQty } from "../store/CartSlice";
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "../styles/CartPage.css";
 import { useState, useEffect } from "react";
 import ViewMenuNavbar from "./ViewMenuNavbar";
 import "./CartDrawer.css";
-import { calculateBill } from "../utils/calcBill";
-import { createOrder } from "../services/apiService.js";
 
 export default function CartPage() {
   const cart = useSelector((state) => state.cart.items || []);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [table, setTable] = useState(null);
   const [instructions, setInstructions] = useState("");
+  const [billPreview, setBillPreview] = useState({
+    subtotal: 0,
+    totalDiscount: 0,
+    totalGst: 0,
+    cgst: 0,
+    sgst: 0,
+    total: 0,
+    items: []
+  });
 
-  // defensive: ensure calculateBill always has an object to destructure from
-  const calc = calculateBill(cart) || {};
-  const {
-    items: billItems = [],
-    subtotal = 0,
-    totalDiscount = 0,
-    totalGst = 0,
-    sgst = 0,
-    cgst = 0,
-    total = 0,
-  } = calc;
-
-  const finalTotal = Number(total ?? 0);
+  const fmt = (n) => (Number(n || 0)).toFixed(2);
 
   useEffect(() => {
     const tableParam = searchParams.get("table");
@@ -41,9 +36,7 @@ export default function CartPage() {
       localStorage.setItem("tableNumber", tableParam);
     } else {
       const storedTable = localStorage.getItem("tableNumber");
-      if (storedTable) {
-        setTable(storedTable);
-      }
+      if (storedTable) setTable(storedTable);
     }
 
     if (restaurantParam) {
@@ -53,8 +46,39 @@ export default function CartPage() {
 
   const restaurantId = searchParams.get("restaurantId") || localStorage.getItem("restaurantId");
 
-  const handleUpdateQty = (name, change) => {
-    dispatch(updateQty({ name, change }));
+  const fetchBillPreview = async () => {
+    if (!cart || cart.length === 0) {
+      setBillPreview({
+        subtotal: 0,
+        totalDiscount: 0,
+        totalGst: 0,
+        cgst: 0,
+        sgst: 0,
+        total: 0,
+        items: []
+      });
+      return;
+    }
+
+    const items = cart.map(i => ({
+      menuItemId: i.menuItemId,
+      quantity: i.qty
+    }));
+
+    try {
+      const preview = await calculateBillPreview(items);
+      setBillPreview(preview);
+    } catch (err) {
+      console.error("Error calculating bill:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBillPreview();
+  }, [cart]);
+
+  const handleUpdateQty = (menuItemId, change) => {
+    dispatch(updateQty({ menuItemId, change }));
   };
 
   const handleClearCart = () => {
@@ -73,25 +97,19 @@ export default function CartPage() {
     try {
       const orderData = {
         tableNumber: parseInt(table),
-        items: billItems.map((item) => ({
-          name: item.name,
-          quantity: item.qty || 0,
-          price: item.price || 0,
-          discount: item.discount || 0,
-          gstRate: item.gstRate || 5,
-          type: item.type || "veg",
+        items: cart.map(item => ({
+          menuItemId: item.menuItemId,
+          quantity: item.qty
         })),
-        subtotal: subtotal,
-        totalDiscount: totalDiscount,
-        totalGst: totalGst,
-        sgst: sgst,
-        cgst: cgst,
-        totalAmount: total,
-        taxAmount: totalGst,
-
-        finalTotal: finalTotal,
+        subtotal: billPreview.subtotal,
+        totalDiscount: billPreview.totalDiscount,
+        totalGst: billPreview.totalGst,
+        cgst: billPreview.cgst,
+        sgst: billPreview.sgst,
+        totalAmount: billPreview.total,
+        taxAmount: billPreview.totalGst,
         instructions: instructions,
-        restaurantId: restaurantId,
+        restaurantId: restaurantId
       };
 
       const result = await createOrder(orderData);
@@ -101,7 +119,7 @@ export default function CartPage() {
       const orderTime = now.toLocaleTimeString("en-IN", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true,
+        hour12: true
       });
 
       handleClearCart();
@@ -109,13 +127,13 @@ export default function CartPage() {
         state: {
           cart,
           table,
-          total: finalTotal,
+          total: billPreview.total,
           orderId: result.order.orderId,
           orderNo: result.order.orderNo,
           orderDate,
           orderTime,
-          instructions,
-        },
+          instructions
+        }
       });
     } catch (error) {
       console.error("Error placing order:", error);
@@ -124,9 +142,6 @@ export default function CartPage() {
       setIsPlacingOrder(false);
     }
   };
-
-  // helper to safely format numbers
-  const fmt = (n) => (Number(n || 0)).toFixed(2);
 
   return (
     <>
@@ -163,28 +178,30 @@ export default function CartPage() {
                   <span className="header-qty">Qty</span>
                   <span className="header-price">Price</span>
                 </div>
+<div className="cart-items-list">
+  {cart.map((item, idx) => (
+    <div className="cart-item-row" key={`${item.name}-${idx}`}>
+      <div className="item-info" style={{ display: "flex", alignItems: "center" }}>
+        <span className={`veg-badge ${item.type === "veg" ? "veg" : "non-veg"}`}></span>
+        <span className="item-name">{item.name}</span>
+      </div>
 
-                <div className="cart-items-list">
-                  {cart.map((item, idx) => (
-                    <div className="cart-item-row" key={`${item.name}-${idx}`}>
-                      <div className="item-info" style={{ display: "flex", alignItems: "center" }}>
-                        <span className={`veg-badge ${item.type === "veg" ? "veg" : "non-veg"}`}></span>
-                        <span className="item-name">{item.name}</span>
-                      </div>
+      <div className="quantity-controls">
+      
+ <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, -1)} disabled={isPlacingOrder}>−</button>
+        <span className="quantity">{item.qty || 0}</span>
+        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, 1)} disabled={isPlacingOrder}>+</button>
+      </div>
 
-                      <div className="quantity-controls">
-                        <button className="qty-btn" onClick={() => handleUpdateQty(item.name, -1)} disabled={isPlacingOrder}>−</button>
-                        <span className="quantity">{item.qty || 0}</span>
-                        <button className="qty-btn" onClick={() => handleUpdateQty(item.name, 1)} disabled={isPlacingOrder}>+</button>
-                      </div>
+      <div className="item-price-total">
+        <span className="item-price">₹{item.price ?? 0}</span>
+        <span className="item-total">₹{(item.qty || 0) * (item.price || 0)}</span>
+      </div>
+    </div>
+  ))}
+</div>
 
-                      <div className="item-price-total">
-                        <span className="item-price">₹{item.price ?? 0}</span>
-                        <span className="item-total">₹{(item.qty || 0) * (item.price || 0)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+
               </div>
 
               <div className="instructions-section">
@@ -200,25 +217,17 @@ export default function CartPage() {
 
               <div className="bill-summary">
                 <h3 className="bill-title">BILL DETAILS</h3>
-                <div className="bill-line"><span>Item Total</span><span>₹{fmt(subtotal)}</span></div>
-                <div className="bill-line"><span>Discount</span><span>-₹{fmt(totalDiscount)}</span></div>
-                <div className="bill-line"><span>GST</span><span>₹{fmt(totalGst)}</span></div>
-                <div className="bill-line"><span>SGST</span><span>₹{fmt(sgst)}</span></div>
-                <div className="bill-line"><span>CGST</span><span>₹{fmt(cgst)}</span></div>
-                <div className="bill-line total"><span>Total</span><span>₹{fmt(finalTotal)}</span></div>
-                <div className="bill-line to-pay"><span>To Pay</span><span className="spicy-total">₹{fmt(finalTotal)}</span></div>
+                <div className="bill-line"><span>Item Total</span><span>₹{fmt(billPreview.subtotal)}</span></div>
+                <div className="bill-line"><span>Discount</span><span>-₹{fmt(billPreview.totalDiscount)}</span></div>
+                <div className="bill-line"><span>GST</span><span>₹{fmt(billPreview.totalGst)}</span></div>
+                <div className="bill-line"><span>SGST</span><span>₹{fmt(billPreview.sgst)}</span></div>
+                <div className="bill-line"><span>CGST</span><span>₹{fmt(billPreview.cgst)}</span></div>
+                <div className="bill-line total"><span>Total</span><span>₹{fmt(billPreview.total)}</span></div>
               </div>
 
-              <div className="desktop-order-btn">
-                <button onClick={placeOrder} className="place-order-btn spicy-btn" disabled={!cart || cart.length === 0 || isPlacingOrder || !table}>
-                  {isPlacingOrder ? (<><span className="spinner"></span> Placing Order...</>) : (<>Place Order • ₹{fmt(finalTotal)}</>)}
-                </button>
-              </div>
-              <div className="mobile-pay-btn">
-                <button onClick={placeOrder} className="pay-now-btn spicy-btn" disabled={!cart || cart.length === 0 || isPlacingOrder || !table}>
-                  {isPlacingOrder ? (<><span className="spinner"></span> Processing...</>) : (<>Place Order • ₹{fmt(finalTotal)}</>)}
-                </button>
-              </div>
+              <button className="place-order-btn" onClick={placeOrder} disabled={!cart.length || isPlacingOrder || !table}>
+                {isPlacingOrder ? "Placing Order..." : `Place Order • ₹${fmt(billPreview.total)}`}
+              </button>
             </>
           )}
         </div>
@@ -226,4 +235,3 @@ export default function CartPage() {
     </>
   );
 }
-
