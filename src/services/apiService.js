@@ -162,6 +162,45 @@ export const uploadBulkMenuItems = async (file) => {
   }
 };
 
+export const getConfigList = async (params) => {
+  try {
+    const res = await API.get("/config/getItemConfig",{
+      params: params,
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getOrders = async () => {
+  try {
+    const res = await API.get("/orders");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw error.response?.data || error.message;
+  }
+};
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const res = await API.put(`/orders/${orderId}`, { status });
+    return res.data;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    throw error.response?.data || error.message;
+  }
+};
+export const updateOrderItems = async (orderId, items) => {
+  try {
+    const response = await API.put(`/orders/edit/${orderId}`, { items });
+    return response.data;
+  } catch (error) {
+    console.error("Update order items failed:", error);
+    throw error;
+  }
+};
+
 export const forgotPassword = async (email) => {
   try {
     const response = await API.post("/auth/forgot-password", { email });
@@ -192,34 +231,6 @@ export const createOrder = async (orderData) => {
     throw error.response?.data || error.message;
   }
 };
-export const getOrders = async () => {
-  try {
-    const res = await API.get("/orders");
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    throw error.response?.data || error.message;
-  }
-};
-export const updateOrderStatus = async (orderId, status) => {
-  try {
-    const res = await API.put(`/orders/${orderId}`, { status });
-    return res.data;
-  } catch (error) {
-    console.error("Error updating order status:", error);
-    throw error.response?.data || error.message;
-  }
-};
-export const updateOrderItems = async (orderId, items) => {
-  try {
-    const response = await API.put(`/orders/edit/${orderId}`, { items });
-    return response.data;
-  } catch (error) {
-    console.error("Update order items failed:", error);
-    throw error;
-  }
-};
-
 
 // Add new tax slab
 export const addTaxSlab = async (slabData) => {
@@ -242,7 +253,8 @@ export const getTaxSlabs = async () => {
     throw error.response?.data || error.message;
   }
 };
-
+    
+   
 // Update a tax slab
 export const updateTaxSlab = async (slabId, slabData) => {
   try {
@@ -269,7 +281,46 @@ export const deleteOrder = async (orderId) => {
     const res = await API.delete(`/orders/${orderId}`);
     return res.data;
   } catch (error) {
-    console.error("Delete order failed:", error);
+    throw error.response?.data || error.message;
+  }
+};
+    
+export const addConfigItem = async (payload) => {
+  try {
+    const res = await API.post("/config/addItemConfig", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const configItemAction = async (payload) => {
+  try {
+    const res = await API.post("/config/itemConfigAction", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const editConfigItemName = async (payload) => {
+  try {
+    const res = await API.post("/config/updateItemName", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const flipCuisineStatus = async (payload) => {
+  try {
+    const res = await API.post("/restaurants/flipCuisineStatus", payload);
+
+    return res.data;
+  } catch (error) {
     throw error.response?.data || error.message;
   }
 };
