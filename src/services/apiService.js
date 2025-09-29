@@ -161,3 +161,55 @@ export const uploadBulkMenuItems = async (file) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const getConfigList = async (params) => {
+  try {
+    const res = await API.get("/config/getItemConfig",{
+      params: params,
+    });
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const addConfigItem = async (payload) => {
+  try {
+    const res = await API.post("/config/addItemConfig", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const configItemAction = async (payload) => {
+  try {
+    const res = await API.post("/config/itemConfigAction", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const editConfigItemName = async (payload) => {
+  try {
+    const res = await API.post("/config/updateItemName", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const flipCuisineStatus = async (payload) => {
+  try {
+    const res = await API.post("/restaurants/flipCuisineStatus", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};

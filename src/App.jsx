@@ -41,6 +41,7 @@ import { RestaurantProvider } from "./context/RestaurantContext";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { Toaster } from "react-hot-toast";
+import Config from "./pages/config/Config";
 export default function App() {
   const location = useLocation();
   const state = location.state || {};
@@ -112,6 +113,7 @@ export default function App() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/add-bulk-items" element={<BulkItemUpload />} />
+        <Route path="/config" element={<Config />} />
 
 
           {/* ✅ Admin Manage Tables */}
