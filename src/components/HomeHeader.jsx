@@ -61,8 +61,6 @@ useEffect(() => {
   };
 
   window.addEventListener("scroll", handleScroll, { passive: true });
-
-  // Run once on mount in case user reloads page scrolled
   handleScroll();
 
   return () => window.removeEventListener("scroll", handleScroll);
