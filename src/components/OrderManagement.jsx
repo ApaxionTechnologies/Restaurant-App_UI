@@ -137,9 +137,7 @@ export default function OrderManagement() {
 
   const handleEditOrder = (order) => {
     setEditingOrder(order);
-    // deep copy items so we can toggle status locally
     const cloned = (order.items || []).map(it => {
-      // initialize nameError (will be validated against menuList in validate effect)
       return ({ ...it, nameError: null });
     });
     setEditedItems(cloned);
@@ -263,57 +261,6 @@ useEffect(() => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [menuList]);
 
-  // Modified: when clicking trash, mark item as cancelled (if item existed in DB) and persist.
-  // const handleRemoveItem = async (index) => {
-  //   if (!editingOrder) return;
-  //   const updatedItems = [...editedItems];
-  //   const item = updatedItems[index];
-  //   if (!item) return;
-
-  //   // If item has _id (existing DB item) -> mark as cancelled and persist
-  //   if (item._id) {
-  //     updatedItems[index] = { ...item, status: "cancelled" };
-
-  //     try {
-  //       // Persist whole items array (including statuses)
-  //       await updateOrderItems(editingOrder.id, updatedItems);
-
-  //       // Update local editedItems and orders state
-  //       setEditedItems(updatedItems);
-
-  //       const updatedOrders = orders.map(o => {
-  //         if (o.id === editingOrder.id) {
-  //           const newItems = updatedItems.map(it => ({ ...it }));
-  //           const newTotal = computeTotalExcludingCancelled(newItems);
-  //           // if all items cancelled -> mark order cancelled
-  //           const activeCount = newItems.filter(it => it.status !== "cancelled").length;
-  //           const newStatus = activeCount === 0 ? "cancelled" : o.status;
-  //           return { ...o, items: newItems, total: newTotal, status: newStatus };
-  //         }
-  //         return o;
-  //       });
-
-  //       setOrders(updatedOrders);
-  //       calculateStats(updatedOrders);
-
-  //       // if all items cancelled, ensure backend order status is updated
-  //       const activeItemsLeft = updatedItems.filter(it => it.status !== "cancelled");
-  //       if (activeItemsLeft.length === 0) {
-  //         await updateOrderStatus(editingOrder.orderNo, "cancelled");
-  //       }
-
-  //       toast("Item cancelled (kept in DB).");
-  //     } catch (err) {
-  //       console.error("Failed to mark item cancelled:", err);
-  //       toast("Failed to cancel item. Try again.");
-  //     }
-
-  //   } else {
-  //     // item is newly added (no _id) - just remove locally
-  //     updatedItems.splice(index, 1);
-  //     setEditedItems(updatedItems);
-  //   }
-  // };
 
 const handleRemoveItem = async (index) => {
   if (!editingOrder) return;
@@ -360,142 +307,7 @@ const handleRemoveItem = async (index) => {
   setOrders(updatedOrders);
 };
 
-  // const handleSaveEdit = async () => {
-  //   try {
-  //     if (!editingOrder) return;
-  //     const activeItems = editedItems.filter(it => it.status !== "cancelled");
-  //     const activeValid = activeItems.filter(it => {
-  //       const name = (it.name || "").toString().trim();
-  //       const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
-  //       return exact && Number(it.quantity) > 0;
-  //     });
-
-  //     if (activeItems.length !== activeValid.length) {
-  //       toast("❌ Some items are invalid or do not exist in the menu. Please fix before saving.");
-      
-  //       const marked = editedItems.map(it => {
-  //         const name = (it.name || "").toString().trim();
-  //         if (it.status === "cancelled") return it;
-  //         const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
-  //         if (!exact) {
-  //           const hasSubstring = menuList.some(m => (m.name || "").toLowerCase().includes(name.toLowerCase()));
-  //           const nameError = (!name || (name.length >= 3 && !hasSubstring)) ? "Item not available" : "Select an item from menu";
-  //           return { ...it, nameError };
-  //         }
-  //         return { ...it, nameError: null };
-  //       });
-  //       setEditedItems(marked);
-  //       return;
-  //     }
-
-  //     // Calculate new total using only non-cancelled items
-  //     const newTotal = computeTotalExcludingCancelled(editedItems);
-
-  //     // Persist items (including status) to backend
-  //     await updateOrderItems(editingOrder.id, editedItems);
-
-  //     // If all items cancelled, update order status to cancelled
-  //     const activeCount = editedItems.filter(it => it.status !== "cancelled").length;
-  //     if (activeCount === 0) {
-  //       await updateOrderStatus(editingOrder.orderNo, "cancelled");
-  //     }
-
-  //     // Update local orders
-  //     const updatedOrders = orders.map(order =>
-  //       order.id === editingOrder.id
-  //         ? {
-  //             ...order,
-  //             items: editedItems.map(it => ({ ...it })),
-  //             total: newTotal,
-  //             status: activeCount === 0 ? "cancelled" : order.status
-  //           }
-  //         : order
-  //     );
-
-  //     setOrders(updatedOrders);
-  //     calculateStats(updatedOrders);
-
-  //     handleCancelEdit();
-
-  //     toast("✅ Order updated successfully!");
-  //   } catch (error) {
-  //     console.error("Failed to update order:", error);
-  //     toast("❌ Failed to update order. Please try again.");
-  //   }
-  // };
-
-// const handleSaveEdit = async () => {
-//   try {
-//     if (!editingOrder) return;
-
-//     const activeItems = editedItems.filter(it => it.status !== "cancelled");
-
-//     // ✅ Validate items
-//     const activeValid = activeItems.filter(it => {
-//       const name = (it.name || "").toString().trim();
-//       const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
-//       return exact && Number(it.quantity) > 0;
-//     });
-
-//     if (activeItems.length !== activeValid.length) {
-//       toast("❌ Some items are invalid or do not exist in the menu. Please fix before saving.");
-
-//       const marked = editedItems.map(it => {
-//         const name = (it.name || "").toString().trim();
-//         if (it.status === "cancelled") return it;
-
-//         const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
-//         if (!exact) {
-//           const hasSubstring = menuList.some(m => (m.name || "").toLowerCase().includes(name.toLowerCase()));
-//           const nameError = (!name || (name.length >= 3 && !hasSubstring))
-//             ? "Item not available"
-//             : "Select an item from menu";
-//           return { ...it, nameError };
-//         }
-//         return { ...it, nameError: null };
-//       });
-
-//       setEditedItems(marked);
-//       return;
-//     }
-
-//     // ✅ Calculate new total with GST/SGST/CGST
-//     const bill = calculateBill(activeItems);
-
-//     // ✅ Persist only items to backend (backend खुद total calculate करेगा या UI से भेज सकते हैं)
-//     await updateOrderItems(editingOrder.id, bill.items);
-
-//     const activeCount = activeItems.length;
-
-//     // ✅ Update local orders
-//     const updatedOrders = orders.map(order =>
-//       order.id === editingOrder.id
-//         ? {
-//             ...order,
-//             items: bill.items,
-//             subtotal: bill.subtotal,
-//             totalDiscount: bill.totalDiscount,
-//             totalGst: bill.totalGst,
-//             sgst: bill.sgst,
-//             cgst: bill.cgst,
-//             total: bill.totalAmount,
-//             status: activeCount === 0 ? "cancelled" : order.status,
-//             type: it.type || "veg" 
-//           }
-//         : order
-//     );
-
-//     setOrders(updatedOrders);
-//     calculateStats(updatedOrders);
-
-//     handleCancelEdit();
-
-//     toast("✅ Order updated successfully!");
-//   } catch (error) {
-//     console.error("Failed to update order:", error);
-//     toast("❌ Failed to update order. Please try again.");
-//   }
-// };
+  
 const handleSaveEdit = async () => {
   try {
     if (!editingOrder) return;
@@ -1002,17 +814,9 @@ const filterFns = {
     );
   }
 
-  // Determine if Save should be enabled:
-  // Must have at least one active item AND every active item must exactly match a menu item
+  
   const activeCountForSave = editedItems.filter(it => it.status !== "cancelled").length;
-  // const anyActiveInvalid = editedItems.some(it => {
-  //   if (it.status === "cancelled") return false;
-  //   const name = (it.name || "").toString().trim();
-  //   if (!name) return true; // empty name is invalid
-  //   const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
-  //   return !exact;
-  // });
-  // const canSave = activeCountForSave > 0 && !anyActiveInvalid;
+  
 const anyActiveInvalid = editedItems.some((it, idx) => {
   if (it.status === "cancelled") return false;
   const name = (it.name || "").toString().trim();

@@ -1,7 +1,5 @@
-
 import React from "react";  
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
 // ✅ Pages
 import HomePage from "./pages/HomePage";
 import RegisterRestaurant from "./pages/RegisterRestaurant";
@@ -29,7 +27,8 @@ import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
 import OrderManagement from "./components/OrderManagement";
-
+import { NotificationProvider } from './context/Notification'
+import { AuthProvider } from "./context/AuthContext";
 // ✅ Styles
 import "./styles/global.css";
 import "./styles/MenuCard.css";
@@ -40,13 +39,18 @@ import { RestaurantProvider } from "./context/RestaurantContext";
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function App() {
   const location = useLocation();
   const state = location.state || {};
 
  return (
   <ConfirmationModalProvider>
+     <AuthProvider>
     <RestaurantProvider>
+     
+      <NotificationProvider>
       <> <Toaster
         position="top-center" 
         reverseOrder={false}
@@ -58,7 +62,7 @@ export default function App() {
           },
         }}
       />
-      
+      <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           {/* ✅ Public Routes */}
           <Route
@@ -79,7 +83,6 @@ export default function App() {
 <Route path ="/edit-restaurant-profile" element={<EditRestaurantProfile/>}/>
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-
           {/* Protected Admin Dashboard */}
           <Route
             path="/admin-dashboard"
@@ -121,8 +124,10 @@ export default function App() {
         </Routes>
        
       </>
-
+      </NotificationProvider>
+     
     </RestaurantProvider>
+    </AuthProvider>
      </ConfirmationModalProvider>
   );
 }
