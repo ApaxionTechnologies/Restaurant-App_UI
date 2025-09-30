@@ -137,9 +137,16 @@ export default function AdminDashboard() {
             <span className="icon">🛒</span>
             <h5>Order Management</h5>
             <p>View placed orders by tables & dishes.</p>
+            </Link>
+
+             <Link to="/tax-management" className="dashboard-card orders">
+            <span className="icon">🛒</span>
+            <h5>Tax Slab Management</h5>
+            <p>View placed orders by tables & dishes.</p>
           </Link>
-        </div>
-      </main>
+  </div>
+
+</main>
 
       <Footer />
     </div>

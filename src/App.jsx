@@ -18,6 +18,8 @@ import ResetPasswordPage from "./pages/ResetPasswordForm";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
 
 // Components
+import TaxSlabManagement from "./components/TaxSlabManagement";
+// ✅ Components
 import AddMenuItem from "./components/AddMenuItem";
 import QRScanner from "./components/QRScanner";
 import TableManager from "./components/TableManager";
@@ -95,19 +97,20 @@ export default function App() {
             }
           />
 
-              {/* Menu & Admin Components */}
-              <Route path="/add-item" element={<AddMenuItem />} />
-              <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
-              <Route path="/menu/:restaurantId" element={<ViewMenu />} />
-              <Route path="/remove-item" element={<RemoveItem />} />
-              <Route path="/generate-qr" element={<GenerateQR />} />
-              <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
-              <Route path="/current-menu" element={<CurrentMenu />} />
-              <Route path="/order-management" element={<OrderManagement />} />
+        {/* ✅ Menu & Admin Components */}
+        <Route path="/add-item" element={<AddMenuItem />} /> 
+        <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
 
-              {/* Customer QR Options */}
-              <Route path="/qr-scanner" element={<QRScanner />} />
-              <Route path="/upload-qr" element={<QRFileUploader />} />
+        <Route path="/menu/:restaurantId" element={<ViewMenu />} />
+        <Route path="/remove-item" element={<RemoveItem />} />
+        <Route path="/generate-qr" element={<GenerateQR />} />
+        <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
+        <Route path="/current-menu" element={<CurrentMenu />} />
+        <Route path="/order-management" element={<OrderManagement />} />
+        <Route path="/tax-management" element={<TaxSlabManagement />} />
+          {/* ✅ Customer QR Options */}
+          <Route path="/qr-scanner" element={<QRScanner />} />
+          <Route path="/upload-qr" element={<QRFileUploader />} />
 
               {/* Customer Menu & Order */}
               <Route path="/menu" element={<MenuPage />} />
