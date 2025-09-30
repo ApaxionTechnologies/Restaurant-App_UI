@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Footer from "../components/Footer";
 import { FaUserCircle } from "react-icons/fa";
+import { FcDataConfiguration } from "react-icons/fc";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
@@ -22,7 +23,11 @@ export default function AdminDashboard() {
         const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
       } catch (err) {
-        console.error("Fetch /me failed -", err.response?.status, err.response?.data);
+        console.error(
+          "Fetch /me failed -",
+          err.response?.status,
+          err.response?.data
+        );
         navigate("/");
       }
     };
@@ -32,14 +37,16 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/");    
+      navigate("/");
       return;
     }
 
     try {
       const decoded = jwtDecode(token);
       setAdminEmail(decoded.email);
-      setRestaurantName(decoded.restaurantName || "My Restaurant"); 
+      
+      setRestaurantName(decoded.restaurantName || "My Restaurant");
+
     } catch (err) {
       console.error("Invalid token", err);
       navigate("/");
@@ -51,16 +58,20 @@ export default function AdminDashboard() {
     if (!favicon) return;
 
     if (restaurant?.logoUrl) {
-      favicon.href = `${restaurant.logoUrl}?${new Date().getTime()}`; 
+
+      favicon.href = `${restaurant.logoUrl}?${new Date().getTime()}`;
+
     } else {
       favicon.href = "%PUBLIC_URL%/favicon.ico";
     }
   }, [restaurant]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); 
-    setRestaurantName(""); 
-    document.title = "React App"; 
+
+    localStorage.removeItem("token");
+    setRestaurantName("");
+    document.title = "React App";
+
 
     const favicon = document.querySelector("link[rel='icon']");
     if (favicon) {
@@ -76,22 +87,27 @@ export default function AdminDashboard() {
         <title>{restaurantName ? `${restaurantName}` : "React-App"}</title>
       </Helmet>
 
+
       {/* Admin Header */}
+
       <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
-        restaurant={restaurant} 
+        restaurant={restaurant}
       />
-
       <main className="admin-dashboard-content container text-center mt-5">
         <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
-        <p className="lead text-muted">Manage your restaurant menu and settings below:</p>
+        <p className="lead text-muted">
+          Manage your restaurant menu and settings below:
+        </p>
 
         <div className="dashboard-grid mt-5">
-          {/* Dashboard cards */}
-          <Link to={`/menu/${restaurant?.restaurantName || "restaurant"}`} className="dashboard-card view">
+          <Link
+            to={`/menu/${restaurant?.restaurantName || "restaurant"}`}
+            className="dashboard-card view"
+          >
             <span className="icon">📋</span>
             <h5>View Menu</h5>
             <p>See your restaurant's full menu.</p>
@@ -125,13 +141,15 @@ export default function AdminDashboard() {
             <span className="icon">➕</span>
             <h5>Generate Menu QR</h5>
             <p>Create QR codes for Restaurant Menu.</p>
-          </Link> 
+          </Link>
+
 
           <Link to="/table-manager" className="dashboard-card tables">
             <span className="icon">🪑</span>
             <h5>Manage Tables</h5>
             <p>Organize seating and reservations.</p>
           </Link>
+          {/* ✅ New Order Management Card */}
 
           <Link to="/order-management" className="dashboard-card orders">
             <span className="icon">🛒</span>
@@ -144,9 +162,13 @@ export default function AdminDashboard() {
             <h5>Tax Slab Management</h5>
             <p>View placed orders by tables & dishes.</p>
           </Link>
-  </div>
-
-</main>
+          <Link to="/config" className="dashboard-card orders">
+            <span className="icon"><FcDataConfiguration /></span>
+            <h5>Configurations</h5>
+            <p>Configure categories and cuisines.</p>
+          </Link>
+        </div>
+      </main>
 
       <Footer />
     </div>
