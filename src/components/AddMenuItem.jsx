@@ -8,6 +8,7 @@ import { getMyRestaurant, addMenuItem, updateMenuItem } from "../services/apiSer
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
  
+
 const AddMenuItem = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,7 +45,7 @@ const AddMenuItem = () => {
   const priceRef = useRef(null);
   const categoryRef = useRef(null);
 
-  // 🔹 Category options
+ 
   const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
   const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
 
@@ -234,12 +235,25 @@ const AddMenuItem = () => {
       />
 
       <div className="add-menu-container">
-        <div className="add-menu-card">
-          <div className="card-header">
-            <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
-            <div className="sub">Restaurant ID: {restaurant?._id || "Loading..."}</div>
-          </div>
- 
+        <div className="card-header">
+  <button
+    type="button"
+    className="btn btn-secondary add-multiple-btn"
+    onClick={() => navigate("/add-bulk-items")}
+  >
+    ➕ Add Multiple Items
+  </button>
+
+  <div className="header-flex">
+    <div className="title">
+      <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
+    </div>
+    <div className="restaurant-id">
+      Restaurant ID: {restaurant?._id || "Loading..."}
+    </div>
+  </div>
+</div>
+    
           <div className="card-body">
             {formError && <div className="toast toast-error">{formError}</div>}
 
@@ -304,6 +318,56 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
+              {/* Type & TaxType together as form-grid */}
+              <div className="form-grid">
+                <div>
+                  <label>Type</label>
+                  <div className="radio-group">
+                    <label>
+                      <input
+                        type="radio"
+                        name="vegType"
+                        value="veg"
+                        checked={formData.vegType === "veg"}
+                        onChange={handleChange}
+                      /> Veg
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="vegType"
+                        value="non-veg"
+                        checked={formData.vegType === "non-veg"}
+                        onChange={handleChange}
+                      /> Non-Veg
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label>GST.Exclusive / Inclusive</label>
+                  <div className="radio-group">
+                    <label>
+                      <input
+                        type="radio"
+                        name="taxType"
+                        value="exclusive"
+                        checked={formData.taxType === "exclusive"}
+                        onChange={handleChange}
+                      /> Exclusive
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="taxType"
+                        value="inclusive"
+                        checked={formData.taxType === "inclusive"}
+                        onChange={handleChange}
+                      /> Inclusive
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               {/* Price & Discount */}
               <div className="form-grid">
                 <div className="field-wrappers">
@@ -331,60 +395,30 @@ const AddMenuItem = () => {
     </div>
   </div>
 
-              {/* TaxType only */}
-              <div className="form-grid">
-                <div>
-                  <label>Exclusive / Inclusive</label>
-                  <div className="radio-group">
-                    <label>
-                      <input
-                        type="radio"
-                        name="taxType"
-                        value="exclusive"
-                        checked={formData.taxType === "exclusive"}
-                        onChange={handleChange}
-                      /> Exclusive
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="taxType"
-                        value="inclusive"
-                        checked={formData.taxType === "inclusive"}
-                        onChange={handleChange}
-                      /> Inclusive
-                    </label>
-                  </div>
-                </div>
+       {/* Time to Prepare & Description */}
+        <div className="field-wrappers">
+        <label>Time to Prepare (mins)</label>
+          <input
+          type="number"
+           name="timeToPrepare"
+           className={`input ${errors.timeToPrepare ? "error" : ""}`}
+           value={formData.timeToPrepare}
+            onChange={handleChange}
+               />
+            {errors.timeToPrepare && <div className="error-message">{errors.timeToPrepare}</div>}
+             </div>
+
+              <div style={{ marginBottom: '5px' }}>
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  className="textarea"
+                  value={formData.description}
+                  onChange={handleChange}
+                />
               </div>
 
-              {/* Type & Status */}
-  <div className="form-grid">
-    <div>
-      <label>Type</label>
-      <div className="radio-group">
-        <label>
-          <input
-            type="radio"
-            name="vegType"
-            value="veg"
-            checked={formData.vegType === "veg"}
-            onChange={handleChange}
-          /> Veg
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="vegType"
-            value="non-veg"
-            checked={formData.vegType === "non-veg"}
-            onChange={handleChange}
-          /> Non-Veg
-        </label>
-      </div>
-    </div>
-
-    {/* Status */}
+              {/* Status */}
     <div>
       <label>Status</label>
       <div className="radio-group">
@@ -408,30 +442,6 @@ const AddMenuItem = () => {
         </label>
       </div>
     </div>
-  </div>
-
-              {/* Time to Prepare & Description */}
-              <div className="field-wrappers">
-                <label>Time to Prepare (mins)</label>
-                <input
-                  type="number"
-                  name="timeToPrepare"
-                  className={`input ${errors.timeToPrepare ? "error" : ""}`}
-                  value={formData.timeToPrepare}
-                  onChange={handleChange}
-                />
-                {errors.timeToPrepare && <div className="error-message">{errors.timeToPrepare}</div>}
-              </div>
-
-              <div style={{ marginBottom: '5px' }}>
-                <label>Description</label>
-                <textarea
-                  name="description"
-                  className="textarea"
-                  value={formData.description}
-                  onChange={handleChange}
-                />
-              </div>
 
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">
@@ -468,7 +478,6 @@ const AddMenuItem = () => {
             </aside>
           </div>
         </div>
-      </div>
 
       <Footer />
     </>
@@ -476,6 +485,5 @@ const AddMenuItem = () => {
 };
  
 export default AddMenuItem;
- 
- 
- 
+
+

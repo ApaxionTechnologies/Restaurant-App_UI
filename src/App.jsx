@@ -8,7 +8,6 @@ import MenuPage from "./pages/MenuPage";
 import OrderSuccess from "./pages/OrderSuccess";
 import AdminDashboard from "./pages/AdminDashboard";
 import GenerateQR from "./pages/GenerateQR";
-import RemoveItem from "./pages/RemoveItem";
 import CurrentMenu from "./pages/CurrentMenu";
 import FeedbackPage from "./pages/Feedbackpage";
 import ForgotPassword from "./pages/forgotPassword";
@@ -110,7 +109,6 @@ export default function App() {
         <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
 
         <Route path="/menu/:restaurantId" element={<ViewMenu />} />
-        <Route path="/remove-item" element={<RemoveItem />} />
         <Route path="/generate-qr" element={<GenerateQR />} />
         <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
         <Route path="/current-menu" element={<CurrentMenu />} />

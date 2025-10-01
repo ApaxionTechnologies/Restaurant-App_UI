@@ -439,6 +439,8 @@ line-clamp: 2;
   min-height:0 !important;
   overflow-y:auto !important;
 }#root, body, html {
+  padding-left: 75px;
+  padding-right: 75px;
   height: auto !important;
   min-height: 100%;
   overflow-x: hidden;
