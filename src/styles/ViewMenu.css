@@ -218,7 +218,7 @@
 .card-description {
   font-size: 0.9rem;
   color: #555;
-  flex-grow: 1;       /* ✅ extra space lega, aur sab cards equal dikhenge */
+  flex-grow: 1;      
 }
 .btn-edit {
   background: #28a745;
@@ -271,7 +271,7 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .menu-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
 

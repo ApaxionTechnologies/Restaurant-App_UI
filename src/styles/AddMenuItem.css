@@ -1,7 +1,30 @@
-.add-menu-container {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding:  35px;
+
+.add-multiple-btn {
+  margin-top: 2px;
+  padding: 4px 9px;
+  background: #3865ea;   /* nice orange tone */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 2px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.add-multiple-btn:hover {
+  background: #560cea;
+}
+.header-flex {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.restaurant-id {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .add-menu-card {
@@ -16,22 +39,28 @@
   overflow: hidden;
 }
 
-
 .card-header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 12px;
-  padding: 20px 24px;
+  display: flex;
+  flex-direction: column; /* stack vertically */
+  align-items: flex-start; /* align left */
+  gap: 10px;
+  /* padding: 20px 24px; */
   border-bottom: 1px solid rgba(14,22,35,0.04);
   background: linear-gradient(180deg, rgba(250,252,255,0.6), rgba(255,255,255,0.35));
 }
-.card-header .title { display:flex; flex-direction:column; gap:3px; }
+
+.card-header .title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .card-header h2 {
   margin:0;
   font-size: clamp(18px, 2vw, 20px);
   font-weight: 600;
   letter-spacing:-0.2px;
+  margin-bottom: 10px;
 }
 .card-header .sub { color:var(--muted); font-size:0.88rem; }
 
@@ -311,8 +340,15 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
 }
 
 @media (min-width: 1400px) {
-  .card-body { gap: 28px; padding: 0px; }
-  .card-header { padding: 24px 32px; }
+  
+  .card-body { 
+    gap: 28px; 
+    padding: 0px; 
+    
+  }
+  .card-header {
+     /* padding: 24px 32px; */
+     }
 }
 
 .field-wrappers,
@@ -393,15 +429,17 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
   overflow: hidden;   /* crop overflow */
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
 .preview-img {
   width: 100%;
   height: 100%;
   object-fit: cover;  /* keeps aspect ratio while filling */
   border-radius: 10px;
 }
-
 .no-preview-text {
   font-size: 14px;
   color: #999;
 }
+
+
+/* responsive other */
+

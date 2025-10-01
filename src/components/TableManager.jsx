@@ -248,7 +248,7 @@ const QRGenerator = ({ restaurant }) => {
           : { 
               background: "var(--card-bg)", 
               boxShadow: "var(--shadow-1)", 
-              minHeight: "330px",
+              minHeight: "230px",
               transform: 'translateZ(0)', 
               willChange: 'transform' 
             }
