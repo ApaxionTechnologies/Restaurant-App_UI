@@ -55,13 +55,13 @@
 
 
 import React, { createContext, useContext, useState } from "react";
-
+import axios from 'axios'
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [table, setTable] = useState(null);
-
+  const[discountPercentage,setDiscountPercentage]=useState('');
 
   const addToCart = (item) => {
     setCart((prev) => {
@@ -87,14 +87,30 @@ export const CartProvider = ({ children }) => {
       .filter((item) => item.qty > 0) 
   );
 };
+const savediscount=async()=>{
+  try{
+    const restaurantId = localStorage.getItem("restaurantId");
+    const {data}=await axios.post('/api/restaurants/restaurantdiscount',{discount:discountPercentage},{restaurantId: restaurantId})
+    if(data.success) {
+      console.log(data.discount)
+      setDiscountPercentage(data.discount)
+    }
+    else {
+      console.log(data.error)
+    }
 
-
+  }
+  catch(error) {
+    console.log(error)
+  }
+}
  
   const clearCart = () => setCart([]);
 
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, clearCart, updateQty, table, setTable }}
+      value={{ cart, addToCart, clearCart, updateQty, table, setTable,savediscount, discountPercentage, setDiscountPercentage }}
     >
       {children}
     </CartContext.Provider>
