@@ -1,19 +1,12 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaUserCircle } from "react-icons/fa";
 import { BsPersonLock } from "react-icons/bs";
 import AdminLogin from "../pages/AdminLogin";
 import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
 import { Home } from "lucide-react";
-<<<<<<< HEAD
-import { useNotification } from '../context/Notification';
-=======
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
+import { useNotification } from "../context/Notification";
 
 export default function HomeHeader({
   isAdminDashboard = false,
@@ -40,8 +33,15 @@ export default function HomeHeader({
   const bellRef = useRef(null);
   const bellDropdownRef = useRef(null);
 
-  const [anchor, setAnchor] = useState({ top: 80, left: window.innerWidth - 230 });
-  const [bellAnchor, setBellAnchor] = useState({ top: 80, left: 0, minWidth: 300 });
+  const [anchor, setAnchor] = useState({
+    top: 80,
+    left: window.innerWidth - 230,
+  });
+  const [bellAnchor, setBellAnchor] = useState({
+    top: 80,
+    left: 0,
+    minWidth: 300,
+  });
 
   const { notificationCount, clearNotifications } = useNotification();
 
@@ -52,7 +52,8 @@ export default function HomeHeader({
     const minWidth = 210;
     let left = rect.right + window.scrollX - minWidth;
     if (left < 8) left = 8;
-    if (left + minWidth > window.innerWidth - 8) left = window.innerWidth - minWidth - 8;
+    if (left + minWidth > window.innerWidth - 8)
+      left = window.innerWidth - minWidth - 8;
     return { top, left, minWidth };
   };
 
@@ -63,7 +64,8 @@ export default function HomeHeader({
     const minWidth = 300;
     let left = rect.right + window.scrollX - minWidth;
     if (left < 8) left = 8;
-    if (left + minWidth > window.innerWidth - 8) left = window.innerWidth - minWidth - 8;
+    if (left + minWidth > window.innerWidth - 8)
+      left = window.innerWidth - minWidth - 8;
     return { top, left, minWidth };
   };
 
@@ -75,10 +77,12 @@ export default function HomeHeader({
       const res = await fetch(`/api/orders?restaurantId=${restaurantId}`);
       const data = await res.json();
       if (data.success) {
-        const orders = (data.orders || []).slice(0, 5).map(order => ({
-          orderNo: order.orderId || `ORD-${order.orderNo}`,
-          table: `T${order.tableNumber || "N/A"}`
-        }));
+        const orders = (data.orders || [])
+          .slice(0, 5)
+          .map((order) => ({
+            orderNo: order.orderId || `ORD-${order.orderNo}`,
+            table: `T${order.tableNumber || "N/A"}`,
+          }));
         setRecentOrders(orders);
       } else {
         setRecentOrders([]);
@@ -102,7 +106,6 @@ export default function HomeHeader({
     });
   };
 
-<<<<<<< HEAD
   const handleBellClick = (e) => {
     e.stopPropagation();
     setShowBellDropdown((prev) => {
@@ -122,27 +125,22 @@ export default function HomeHeader({
     navigate("/order-management");
   };
 
-=======
-useEffect(() => {
-  const handleScroll = () => {
-    if (window.scrollY > 0) {
-      setScrolled(true);
-    } else {
-      setScrolled(false);
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
 
-  window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-  // Run once on mount in case user reloads page scrolled
-  handleScroll();
+    handleScroll();
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-
-  
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
   useEffect(() => {
     const handleDocClick = (e) => {
       if (
@@ -153,7 +151,6 @@ useEffect(() => {
       ) {
         setShowDropdownopen(false);
       }
-<<<<<<< HEAD
       if (
         bellRef.current &&
         !bellRef.current.contains(e.target) &&
@@ -162,45 +159,28 @@ useEffect(() => {
       ) {
         setShowBellDropdown(false);
       }
-    }
+    };
 
-    function handleKey(e) {
+    const handleKey = (e) => {
       if (e.key === "Escape") {
         setShowDropdownopen(false);
         setShowBellDropdown(false);
       }
-    }
-
-    document.addEventListener("click", handleDocClick);
-    document.addEventListener("keydown", handleKey);
-
-    function handleResizeScroll() {
-=======
-    };
-
-    const handleKey = (e) => {
-      if (e.key === "Escape") setShowDropdownopen(false);
     };
 
     const handleResizeScroll = () => {
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
       if (showDropdownopen) {
         const a = computeAnchor();
         if (a) setAnchor(a);
       }
-<<<<<<< HEAD
       if (showBellDropdown) {
         const a = computeBellAnchor();
         if (a) setBellAnchor(a);
       }
-    }
-
-=======
     };
 
     document.addEventListener("click", handleDocClick);
     document.addEventListener("keydown", handleKey);
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
     window.addEventListener("resize", handleResizeScroll);
     window.addEventListener("scroll", handleResizeScroll, { passive: true });
 
@@ -210,7 +190,6 @@ useEffect(() => {
       window.removeEventListener("resize", handleResizeScroll);
       window.removeEventListener("scroll", handleResizeScroll);
     };
-<<<<<<< HEAD
   }, [showDropdownopen, showBellDropdown]);
 
   return (
@@ -277,41 +256,24 @@ useEffect(() => {
         }
       `}</style>
 
-
-      <header className="Home-Header">
-=======
-  }, [showDropdownopen]);
-
-  return (
-    <>
       <header
-        className={`Home-Header ${scrolled ? "scrolled" : ""} ${isAdminDashboard ? "admin" : ""}`}
+        className={`Home-Header ${scrolled ? "scrolled" : ""} ${
+          isAdminDashboard ? "admin" : ""
+        }`}
         data-admin={isAdminDashboard ? "true" : "false"}
       >
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
         <div className="Header-left">
           {isAdminDashboard ? (
             <span className="restaurant-name-text">
               {typeof restaurant?.restaurantName === "string"
                 ? restaurant.restaurantName
                 : typeof restaurant?.restaurant === "object"
-<<<<<<< HEAD
-                  ? restaurant.restaurant.restaurantName
-                  : "My Restaurant"}
-=======
                 ? restaurant.restaurant.restaurantName
                 : "My Restaurant"}
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
             </span>
           ) : (
             <>
               {!isRegisterPage && (
-<<<<<<< HEAD
-                <button className="btn-global" style={{ height: "50px", fontSize: "16px" }} onClick={() => navigate("/registerrestaurant")}>
-                  Register as Restaurant
-                </button>
-              )}
-=======
                 <button
                   className="btn-global"
                   style={{ height: "50px", fontSize: "16px" }}
@@ -320,8 +282,6 @@ useEffect(() => {
                   Register as Restaurant
                 </button>
               )}
-
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
               {isRegisterPage && (
                 <Home
                   className="home-icon"
@@ -337,11 +297,14 @@ useEffect(() => {
 
         <div className="header-right">
           {isAdminDashboard ? (
-<<<<<<< HEAD
             <>
               <div
                 className="notification-bell"
-                style={{ position: "relative", marginRight: "20px", cursor: "pointer" }}
+                style={{
+                  position: "relative",
+                  marginRight: "20px",
+                  cursor: "pointer",
+                }}
                 onClick={handleBellClick}
                 ref={bellRef}
               >
@@ -378,7 +341,15 @@ useEffect(() => {
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="fb-dropdown-title fb-dropdown-item" style={{ fontWeight: "bold", cursor: "default", borderBottom: "1px solid #e9ebee", padding: "12px 20px" }}>
+                <div
+                  className="fb-dropdown-title fb-dropdown-item"
+                  style={{
+                    fontWeight: "bold",
+                    cursor: "default",
+                    borderBottom: "1px solid #e9ebee",
+                    padding: "12px 20px",
+                  }}
+                >
                   Recent Orders
                 </div>
                 {isLoadingOrders ? (
@@ -393,7 +364,9 @@ useEffect(() => {
                       onClick={handleOrderClick}
                       title={`Go to Table: ${order.table}, Order ID: ${order.orderNo}`}
                     >
-                      <strong>{order.table}-{order.orderNo}</strong>
+                      <strong>
+                        {order.table}-{order.orderNo}
+                      </strong>
                     </div>
                   ))
                 )}
@@ -421,50 +394,28 @@ useEffect(() => {
                   alt="Restaurant Logo"
                   className="profile-logo"
                   onClick={handleProfileClick}
-                  style={{ width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer" }}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                  }}
                 />
               </div>
             </>
           ) : (
-            <button className="btn-global" style={{ height: "50px", fontSize: "16px" }} onClick={() => setShowAdminModal(true)}>
-=======
-            <div className="profile-menu" ref={profileRef}>
-              <img
-                src={
-                  restaurant?.logoImage
-                    ? restaurant.logoImage.startsWith("http")
-                      ? restaurant.logoImage
-                      : `http://localhost:5001${restaurant.logoImage}`
-                    : "/burger.jpg"
-                }
-                alt="Restaurant Logo"
-                className="profile-logo"
-                onClick={handleProfileClick}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                }}
-              />
-            </div>
-          ) : (
             <button
-              className=" btn-global "
+              className="btn-global"
               style={{ height: "50px", fontSize: "16px" }}
               onClick={() => setShowAdminModal(true)}
             >
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
               <BsPersonLock style={{ color: "white", fontSize: "20px" }} /> Login
             </button>
           )}
         </div>
       </header>
 
-<<<<<<< HEAD
-=======
       {/* Dropdown */}
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
       <div
         ref={dropdownRef}
         className={`fb-dropdown ${showDropdownopen ? "" : "hidden"}`}
@@ -485,7 +436,6 @@ useEffect(() => {
           }}
           style={{ userSelect: "none" }}
         >
-<<<<<<< HEAD
           Dashboard
         </div>
 
@@ -497,32 +447,19 @@ useEffect(() => {
           }}
           style={{ userSelect: "none" }}
         >
-          Edit Profile
-=======
-          <FaHome className="dropdown-icon" /> Dashboard
->>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
+          <FaUserCircle className="dropdown-icon" /> Edit Profile
         </div>
 
         <div
           className="fb-dropdown-item"
           onClick={() => {
             setShowDropdownopen(false);
-            navigate("/edit-restaurant-profile");
-          }}
-          style={{ color: "#e55353", fontWeight: "600", userSelect: "none" }}
-        >
-          <FaUserCircle className="dropdown-icon" /> Edit Profile
-        </div>
-
-        <div
-          className="dropdown-item logout-item"
-          onClick={() => {
-            setShowDropdownopen(false);
             if (onLogout) {
               onLogout();
-              sessionStorage.removeItem("headerScrolled"); 
+              sessionStorage.removeItem("headerScrolled");
             }
           }}
+          style={{ color: "#e55353", fontWeight: "600", userSelect: "none" }}
         >
           <BsPersonLock className="dropdown-icon" /> Logout
         </div>

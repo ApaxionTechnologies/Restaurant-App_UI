@@ -33,8 +33,8 @@ import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { RestaurantProvider } from "./context/RestaurantContext";
 
 // Global Components
-import HomeHeader from "./components/HomeHeader";
-import Footer from "./components/Footer";
+// import HomeHeader from "./components/HomeHeader";
+// import Footer from "./components/Footer";
 
 // Styles
 import { NotificationProvider } from './context/Notification'
@@ -45,7 +45,7 @@ import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
 
 import './styles/ViewMenu.css';
-import "./styles/theme.css";
+// import "./styles/theme.css";
 import "./styles/ViewMenu.css";
 
 import { Toaster } from "react-hot-toast";
