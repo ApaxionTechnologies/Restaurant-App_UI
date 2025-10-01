@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getMyRestaurant, addMenuItem, updateMenuItem } from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
-
+import axios from "axios";
+ 
 const AddMenuItem = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,7 +67,7 @@ const AddMenuItem = () => {
     };
     fetchMe();
   }, []);
-
+ 
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedToken = localStorage.getItem("token");
@@ -76,7 +77,7 @@ const AddMenuItem = () => {
       setAdminEmail(storedEmail);
     }
   }, [navigate]);
-
+ 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
     localStorage.removeItem("token");
@@ -119,7 +120,7 @@ const AddMenuItem = () => {
     }));
     if (formError) setFormError("");
   };
-
+ 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -142,6 +143,7 @@ const AddMenuItem = () => {
     if (formData.price === "") newErrors.price = "Price required";
     if (formData.timeToPrepare === "") newErrors.timeToPrepare = "Preparation time required";
     if (!formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
+    if (!formData.gstRate) newErrors.gstRate = "GST rate required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -172,7 +174,7 @@ const AddMenuItem = () => {
     data.append("gstRate", gstRate); // 🔹 Auto GST from category
     data.append("taxType", formData.taxType);
     if (imageFile) data.append("image", imageFile);
-
+ 
     try {
       if (isEditMode) {
         const updatedItem = await updateMenuItem(itemId, data);
@@ -237,7 +239,7 @@ const AddMenuItem = () => {
             <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
             <div className="sub">Restaurant ID: {restaurant?._id || "Loading..."}</div>
           </div>
-
+ 
           <div className="card-body">
             {formError && <div className="toast toast-error">{formError}</div>}
 
@@ -257,16 +259,16 @@ const AddMenuItem = () => {
                   {errors.name && <div className="error-message">{errors.name}</div>}
                 </div>
 
-                <div>
-                  <label>Ingredients</label>
-                  <input
-                    name="ingredients"
-                    className="input"
-                    value={formData.ingredients}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+    <div>
+      <label>Ingredients</label>
+      <input
+        name="ingredients"
+        className="input"
+        value={formData.ingredients}
+        onChange={handleChange}
+      />
+    </div>
+  </div>
 
               {/* Category & Cuisine */}
               <div className="form-grid">
@@ -317,17 +319,17 @@ const AddMenuItem = () => {
                   {errors.price && <div className="error-message">{errors.price}</div>}
                 </div>
 
-                <div>
-                  <label>Discount (%)</label>
-                  <input
-                    type="number"
-                    name="discount"
-                    className="input"
-                    value={formData.discount}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+    <div>
+      <label>Discount (%)</label>
+      <input
+        type="number"
+        name="discount"
+        className="input"
+        value={formData.discount}
+        onChange={handleChange}
+      />
+    </div>
+  </div>
 
               {/* TaxType only */}
               <div className="form-grid">
@@ -357,55 +359,56 @@ const AddMenuItem = () => {
               </div>
 
               {/* Type & Status */}
-              <div className="form-grid">
-                <div>
-                  <label>Type</label>
-                  <div className="radio-group">
-                    <label>
-                      <input
-                        type="radio"
-                        name="vegType"
-                        value="veg"
-                        checked={formData.vegType === "veg"}
-                        onChange={handleChange}
-                      /> Veg
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="vegType"
-                        value="non-veg"
-                        checked={formData.vegType === "non-veg"}
-                        onChange={handleChange}
-                      /> Non-Veg
-                    </label>
-                  </div>
-                </div>
+  <div className="form-grid">
+    <div>
+      <label>Type</label>
+      <div className="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="vegType"
+            value="veg"
+            checked={formData.vegType === "veg"}
+            onChange={handleChange}
+          /> Veg
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="vegType"
+            value="non-veg"
+            checked={formData.vegType === "non-veg"}
+            onChange={handleChange}
+          /> Non-Veg
+        </label>
+      </div>
+    </div>
 
-                <div>
-                  <label>Status</label>
-                  <div className="radio-group">
-                    <label>
-                      <input
-                        type="radio"
-                        name="status"
-                        value="Published"
-                        checked={formData.status === "Published"}
-                        onChange={handleChange}
-                      /> Published
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="status"
-                        value="Draft"
-                        checked={formData.status === "Draft"}
-                        onChange={handleChange}
-                      /> Draft
-                    </label>
-                  </div>
-                </div>
-              </div>
+    {/* Status */}
+    <div>
+      <label>Status</label>
+      <div className="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="status"
+            value="Published"
+            checked={formData.status === "Published"}
+            onChange={handleChange}
+          /> Published
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="status"
+            value="Draft"
+            checked={formData.status === "Draft"}
+            onChange={handleChange}
+          /> Draft
+        </label>
+      </div>
+    </div>
+  </div>
 
               {/* Time to Prepare & Description */}
               <div className="field-wrappers">
@@ -471,5 +474,8 @@ const AddMenuItem = () => {
     </>
   );
 };
-
+ 
 export default AddMenuItem;
+ 
+ 
+ 

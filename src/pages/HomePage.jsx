@@ -164,10 +164,20 @@ import "../styles/Home.css";
 import "./HomePage.css";
 import { useState } from "react";
 import AdminLogin from "../pages/AdminLogin"; // ✅ Admin Login Modal
+import { useEffect } from "react";
 
 export default function HomePage() {
   
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  useEffect(() => {
+    document.body.classList.add("home-page");
+    document.documentElement.classList.add("home-page"); // ✅ add to <html>
+
+    return () => {
+      document.body.classList.remove("home-page");
+    };
+  }, []);
+
   return (
     <>
       {/* HEADER */}
@@ -209,4 +219,3 @@ export default function HomePage() {
     </>
   );
 }
-

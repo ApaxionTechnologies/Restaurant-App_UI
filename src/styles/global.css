@@ -29,6 +29,7 @@ background: linear-gradient(180deg, #fdeaea 0%, #fff 100%) !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 :root {
   --card-bg: #fff;
@@ -265,7 +266,7 @@ body {
 
 html, body {
   margin: 0;
-  padding: 0;
+  padding: 35px;
   min-height: 100%;
   overflow-x: hidden;
 }
