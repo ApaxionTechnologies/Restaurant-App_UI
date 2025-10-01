@@ -1,4 +1,6 @@
 import axios from "axios";
+import { toast } from "react-toastify"; 
+
 const API = axios.create({
   baseURL: "http://localhost:5001/api",
   withCredentials: true,
@@ -226,6 +228,7 @@ export const createOrder = async (orderData) => {
     const res = await API.post("/orders", orderData, {
       headers: { "Content-Type": "application/json" },
     });
+    toast.success("✅ Order placed successfully!");
     return res.data;
   } catch (error) {
     throw error.response?.data || error.message;
