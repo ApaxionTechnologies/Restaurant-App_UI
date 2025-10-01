@@ -46,7 +46,6 @@ import "./styles/QRFileUploader.css";
 
 import './styles/ViewMenu.css';
 // import "./styles/theme.css";
-import "./styles/ViewMenu.css";
 
 import { Toaster } from "react-hot-toast";
 import Config from "./pages/config/Config";
