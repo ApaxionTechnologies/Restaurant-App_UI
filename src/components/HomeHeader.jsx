@@ -120,6 +120,7 @@ export default function HomeHeader({
     });
   };
 
+
   const handleOrderClick = () => {
     setShowBellDropdown(false);
     navigate("/order-management");

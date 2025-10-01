@@ -1,5 +1,5 @@
-
-/* .homepage-container {
+/* 
+ .homepage-container {
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -26,7 +26,7 @@
 }
 
 .home-card {
-  background-color: white;
+  background-color: white !important;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -46,6 +46,16 @@
 } */
 
 
+
+
+
+/* Force override only when HomePage is active */
+body.home-page,
+html.home-page {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
 
 
 /* Header */
