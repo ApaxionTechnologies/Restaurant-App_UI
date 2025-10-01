@@ -1,28 +1,25 @@
-html, body {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
 
 .admin-dashboard-wrapper {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding-top: 0; /* header is now global, no extra padding needed */
 }
 
+/* Dashboard content */
 .dashboard-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
+/* Buttons section */
 .dashboard-buttons {
   margin-top: 2rem;
   display: flex;
@@ -31,47 +28,18 @@ html, body {
   margin-bottom: 3rem;
 }
 
-
-
-html, body, #root {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-
-
-/* Full page layout fix */
-.admin-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.admin-content {
-  flex: 1;
-  padding: 2rem 1rem;
-}
-body, html {
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-}
-
-
-
-
-
-
-
+/* Grid layout for cards */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
+  width: 100%;
 }
 
+/* Dashboard card styles */
 .dashboard-card {
-  background: white;
+  background: #ffffff;
   border-radius: 1rem;
   padding: 2rem 1.5rem;
   text-decoration: none;
@@ -88,7 +56,7 @@ body, html {
   box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* Icon style */
+/* Icon inside card */
 .dashboard-card .icon {
   font-size: 2rem;
   margin-bottom: 0.75rem;
@@ -105,9 +73,10 @@ body, html {
   margin: 0;
 }
 
-.dashboard-card.view { border-top: 4px solid #17a2b8; }
-.dashboard-card.add { border-top: 4px solid #28a745; }
-.dashboard-card.remove { border-top: 4px solid #dc3545; }
-.dashboard-card.qr { border-top: 4px solid #007bff; }
-.dashboard-card.tables { border-top: 4px solid #ffc107; }
-.dashboard-card.orders { border-top: 4px solid #6f42c1; }
+.dashboard-card.view    { border-top: 4px solid #17a2b8; }
+.dashboard-card.add     { border-top: 4px solid #28a745; }
+.dashboard-card.remove  { border-top: 4px solid #dc3545; }
+.dashboard-card.qr      { border-top: 4px solid #007bff; }
+.dashboard-card.tables  { border-top: 4px solid #ffc107; }
+.dashboard-card.orders  { border-top: 4px solid #6f42c1; }
+

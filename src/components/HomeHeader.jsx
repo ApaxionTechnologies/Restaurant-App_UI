@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
@@ -6,7 +10,10 @@ import AdminLogin from "../pages/AdminLogin";
 import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
 import { Home } from "lucide-react";
+<<<<<<< HEAD
 import { useNotification } from '../context/Notification';
+=======
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
 
 export default function HomeHeader({
   isAdminDashboard = false,
@@ -15,6 +22,10 @@ export default function HomeHeader({
 }) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [scrolled, setScrolled] = useState(() => {
+    return sessionStorage.getItem("headerScrolled") === "true";
+  });
 
   const isRegisterPage = location.pathname === "/registerrestaurant";
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -91,6 +102,7 @@ export default function HomeHeader({
     });
   };
 
+<<<<<<< HEAD
   const handleBellClick = (e) => {
     e.stopPropagation();
     setShowBellDropdown((prev) => {
@@ -110,8 +122,29 @@ export default function HomeHeader({
     navigate("/order-management");
   };
 
+=======
+useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 0) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+
+  // Run once on mount in case user reloads page scrolled
+  handleScroll();
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
+
+  
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
   useEffect(() => {
-    function handleDocClick(e) {
+    const handleDocClick = (e) => {
       if (
         profileRef.current &&
         !profileRef.current.contains(e.target) &&
@@ -120,6 +153,7 @@ export default function HomeHeader({
       ) {
         setShowDropdownopen(false);
       }
+<<<<<<< HEAD
       if (
         bellRef.current &&
         !bellRef.current.contains(e.target) &&
@@ -141,16 +175,32 @@ export default function HomeHeader({
     document.addEventListener("keydown", handleKey);
 
     function handleResizeScroll() {
+=======
+    };
+
+    const handleKey = (e) => {
+      if (e.key === "Escape") setShowDropdownopen(false);
+    };
+
+    const handleResizeScroll = () => {
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
       if (showDropdownopen) {
         const a = computeAnchor();
         if (a) setAnchor(a);
       }
+<<<<<<< HEAD
       if (showBellDropdown) {
         const a = computeBellAnchor();
         if (a) setBellAnchor(a);
       }
     }
 
+=======
+    };
+
+    document.addEventListener("click", handleDocClick);
+    document.addEventListener("keydown", handleKey);
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
     window.addEventListener("resize", handleResizeScroll);
     window.addEventListener("scroll", handleResizeScroll, { passive: true });
 
@@ -160,6 +210,7 @@ export default function HomeHeader({
       window.removeEventListener("resize", handleResizeScroll);
       window.removeEventListener("scroll", handleResizeScroll);
     };
+<<<<<<< HEAD
   }, [showDropdownopen, showBellDropdown]);
 
   return (
@@ -228,22 +279,49 @@ export default function HomeHeader({
 
 
       <header className="Home-Header">
+=======
+  }, [showDropdownopen]);
+
+  return (
+    <>
+      <header
+        className={`Home-Header ${scrolled ? "scrolled" : ""} ${isAdminDashboard ? "admin" : ""}`}
+        data-admin={isAdminDashboard ? "true" : "false"}
+      >
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
         <div className="Header-left">
           {isAdminDashboard ? (
             <span className="restaurant-name-text">
               {typeof restaurant?.restaurantName === "string"
                 ? restaurant.restaurantName
                 : typeof restaurant?.restaurant === "object"
+<<<<<<< HEAD
                   ? restaurant.restaurant.restaurantName
                   : "My Restaurant"}
+=======
+                ? restaurant.restaurant.restaurantName
+                : "My Restaurant"}
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
             </span>
           ) : (
             <>
               {!isRegisterPage && (
+<<<<<<< HEAD
                 <button className="btn-global" style={{ height: "50px", fontSize: "16px" }} onClick={() => navigate("/registerrestaurant")}>
                   Register as Restaurant
                 </button>
               )}
+=======
+                <button
+                  className="btn-global"
+                  style={{ height: "50px", fontSize: "16px" }}
+                  onClick={() => navigate("/registerrestaurant")}
+                >
+                  Register as Restaurant
+                </button>
+              )}
+
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
               {isRegisterPage && (
                 <Home
                   className="home-icon"
@@ -259,6 +337,7 @@ export default function HomeHeader({
 
         <div className="header-right">
           {isAdminDashboard ? (
+<<<<<<< HEAD
             <>
               <div
                 className="notification-bell"
@@ -348,17 +427,50 @@ export default function HomeHeader({
             </>
           ) : (
             <button className="btn-global" style={{ height: "50px", fontSize: "16px" }} onClick={() => setShowAdminModal(true)}>
+=======
+            <div className="profile-menu" ref={profileRef}>
+              <img
+                src={
+                  restaurant?.logoImage
+                    ? restaurant.logoImage.startsWith("http")
+                      ? restaurant.logoImage
+                      : `http://localhost:5001${restaurant.logoImage}`
+                    : "/burger.jpg"
+                }
+                alt="Restaurant Logo"
+                className="profile-logo"
+                onClick={handleProfileClick}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                }}
+              />
+            </div>
+          ) : (
+            <button
+              className=" btn-global "
+              style={{ height: "50px", fontSize: "16px" }}
+              onClick={() => setShowAdminModal(true)}
+            >
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
               <BsPersonLock style={{ color: "white", fontSize: "20px" }} /> Login
             </button>
           )}
         </div>
       </header>
 
+<<<<<<< HEAD
+=======
+      {/* Dropdown */}
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
       <div
         ref={dropdownRef}
         className={`fb-dropdown ${showDropdownopen ? "" : "hidden"}`}
         style={{
           position: "fixed",
+          borderRadius: "22px",
           top: anchor.top,
           left: anchor.left,
           minWidth: anchor.minWidth || 210,
@@ -373,6 +485,7 @@ export default function HomeHeader({
           }}
           style={{ userSelect: "none" }}
         >
+<<<<<<< HEAD
           Dashboard
         </div>
 
@@ -385,22 +498,41 @@ export default function HomeHeader({
           style={{ userSelect: "none" }}
         >
           Edit Profile
+=======
+          <FaHome className="dropdown-icon" /> Dashboard
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
         </div>
 
         <div
           className="fb-dropdown-item"
           onClick={() => {
             setShowDropdownopen(false);
-            if (onLogout) onLogout();
+            navigate("/edit-restaurant-profile");
           }}
           style={{ color: "#e55353", fontWeight: "600", userSelect: "none" }}
         >
-          Logout
+          <FaUserCircle className="dropdown-icon" /> Edit Profile
+        </div>
+
+        <div
+          className="dropdown-item logout-item"
+          onClick={() => {
+            setShowDropdownopen(false);
+            if (onLogout) {
+              onLogout();
+              sessionStorage.removeItem("headerScrolled"); 
+            }
+          }}
+        >
+          <BsPersonLock className="dropdown-icon" /> Logout
         </div>
       </div>
 
       {showAdminModal && (
-        <div className="modal-overlay" onClick={() => setShowAdminModal(false)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setShowAdminModal(false)}
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <AdminLogin onClose={() => setShowAdminModal(false)} />
           </div>

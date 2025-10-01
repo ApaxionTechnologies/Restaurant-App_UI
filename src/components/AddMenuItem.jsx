@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddMenuItem.css";
 import Footer from "./Footer";
@@ -13,18 +12,53 @@ const AddMenuItem = () => {
   const location = useLocation();
   const { itemId } = useParams();
   const editItem = location.state?.itemToEdit;
-    const isEditMode = Boolean(itemId);
+  const isEditMode = Boolean(itemId);
 
-  const [restaurantName, setRestaurantName] = useState(
-    localStorage.getItem("restaurant") || "My Restaurant"
-  );
+  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurant") || "My Restaurant");
   const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
+
+  const [formData, setFormData] = useState({
+    category: "Starter",
+    name: "",
+    price: "",
+    cuisine: "Indian",
+    timeToPrepare: "",
+    ingredients: "",
+    description: "",
+    status: "Published",
+    discount: "",
+    vegType: "veg",
+    taxType: "exclusive", // 🔹 Default
+  });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageError, setImageError] = useState("");
+  const [formError, setFormError] = useState("");
+  const [errors, setErrors] = useState({});
+  const toastTimerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const nameRef = useRef(null);
+  const priceRef = useRef(null);
+  const categoryRef = useRef(null);
+
+  // 🔹 Category options
+  const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
+  const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
+
+  // 🔹 Hardcoded GST Slabs per category
+  const categoryTaxMap = {
+    Starter: 5,
+    "Main Course": 12,
+    Dessert: 18,
+    Drinks: 28,
+  };
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
-       const res = await getMyRestaurant();
+        const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
       } catch (err) {
         console.error("Fetch /me failed -", err);
@@ -50,46 +84,6 @@ const AddMenuItem = () => {
     navigate("/");
   };
 
-  const [formData, setFormData] = useState({
-    category: "Starter",
-    name: "",
-    price: "",
-    cuisine: "Indian",
-    timeToPrepare: "",
-    ingredients: "",
-    description: "",
-    status: "Published",
-    discount: "",
-    vegType: "veg",
-    
-  });
-
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageError, setImageError] = useState("");
-  const [formError, setFormError] = useState("");
-  const [errors, setErrors] = useState({});
-  const showFormError = (msg) => {
-    setFormError(msg);
-    if (toastTimerRef.current) {
-      clearTimeout(toastTimerRef.current);
-    }
-    toastTimerRef.current = setTimeout(() => {
-      setFormError("");
-      toastTimerRef.current = null;
-    }, 4000);
-  };
-
-  const fileInputRef = useRef(null);
-  const toastTimerRef = useRef(null);
-
-  const nameRef = useRef(null);
-  const priceRef = useRef(null);
-  const categoryRef = useRef(null);
-
-  const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
-  const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
-
   useEffect(() => {
     if (isEditMode && editItem) {
       setFormData({
@@ -97,12 +91,13 @@ const AddMenuItem = () => {
         name: editItem.name || "",
         price: editItem.price || "",
         cuisine: editItem.cuisine || "Indian",
-        timeToPrepare: editItem.prepTime|| "",
+        timeToPrepare: editItem.prepTime || "",
         ingredients: editItem.ingredients || "",
         description: editItem.description || "",
         status: editItem.status || "Published",
         discount: editItem.discount || "",
         vegType: editItem.type || "veg",
+        taxType: editItem.taxType || "exclusive",
       });
       if (editItem.image) {
         setImagePreview(editItem.image);
@@ -110,14 +105,18 @@ const AddMenuItem = () => {
       }
     }
   }, [isEditMode, editItem]);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setErrors((s) => {
       const copy = { ...s };
       delete copy[name];
       return copy;
     });
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
     if (formError) setFormError("");
   };
 
@@ -137,13 +136,6 @@ const AddMenuItem = () => {
     setImageError("");
   };
 
-  useEffect(() => {
-    return () => {
-      if (imagePreview) URL.revokeObjectURL(imagePreview);
-      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    };
-  }, []);
-
   const validateRequiredFields = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Item name required";
@@ -153,84 +145,6 @@ const AddMenuItem = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  // const handleSubmit = async (e) => {
-  // e.preventDefault();
-  // if (!validateRequiredFields()) return;
-  // if (!imageFile && !imagePreview) {
-  //   setErrors((s) => ({ ...s, image: true }));
-  //   setFormError("Please upload an image.");
-  //   return;
-  // }
-
-  // const data = new FormData();
-  // data.append("category", formData.category);
-  // data.append("name", formData.name);
-  // data.append("price", formData.price);
-  // data.append("cuisine", formData.cuisine);
-  // data.append("timeToPrepare", formData.timeToPrepare);
-  // data.append("ingredients", formData.ingredients);
-  // data.append("description", formData.description);
-  // data.append("status", formData.status);
-  // data.append("type", formData.vegType.toLowerCase());
-
-  // if (formData.discount) data.append("discount", formData.discount);
-  // if (imageFile) data.append("image", imageFile);
-
-  // try {
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     showFormError("⚠️ No token found. Please log in again.");
-  //     navigate("/");
-  //     return;
-  //   }
-
-  //   const res = await addMenuItem(data, token); // ✅ await now valid
-  //   const createdItem = res.item || res;
-
-  //   const normalizedNew = {
-  //     ...createdItem,
-  //     statusNormalized:
-  //       (createdItem.status ?? "").toString().trim().toLowerCase() || "draft",
-  //     status:
-  //       (createdItem.status ?? "").toString().trim().toLowerCase() === "published"
-  //         ? "Published"
-  //         : "Draft",
-  //   };
-
-  //   toast.success("✅ Menu item added successfully!");
-  //   navigate("/admin-dashboard");
-
-  //     setFormData({
-  //       category: "Starter",
-  //       name: "",
-  //       price: "",
-  //       cuisine: "Indian",
-  //       timeToPrepare: "",
-  //       ingredients: "",
-  //       description: "",
-  //       status: "Published",
-  //       discount: "",
-  //       vegType: "veg",
-  //     });
-
-  //     if (imagePreview) {
-  //       try {
-  //         URL.revokeObjectURL(imagePreview);
-  //       } catch (err) {}
-  //     }
-  //     setImageFile(null);
-  //     setImagePreview(null);
-  //     setImageError("");
-  //     setFormError("");
-  //     setErrors({});
-
-  //     if (fileInputRef.current) fileInputRef.current.value = "";
-      
-  //   } catch (err) {
-  //     console.error("❌ Error adding item:", err.response?.data || err.message);
-  //     showFormError("❌ Failed to add item: " + (err.response?.data?.message || "Please try again."));
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -240,6 +154,9 @@ const AddMenuItem = () => {
       setFormError("Please upload an image.");
       return;
     }
+
+    // 🔹 Select GST rate based on category
+    const gstRate = categoryTaxMap[formData.category] || 5;
 
     const data = new FormData();
     data.append("category", formData.category);
@@ -251,59 +168,28 @@ const AddMenuItem = () => {
     data.append("description", formData.description);
     data.append("status", formData.status);
     data.append("type", formData.vegType.toLowerCase());
-
-    if (formData.discount) data.append("discount", formData.discount);
+    data.append("discount", formData.discount || "");
+    data.append("gstRate", gstRate); // 🔹 Auto GST from category
+    data.append("taxType", formData.taxType);
     if (imageFile) data.append("image", imageFile);
 
     try {
       if (isEditMode) {
-  const updatedItem = await updateMenuItem(itemId, data);
-  console.log("Updated item:", updatedItem);
-  toast.success("✅ Menu item updated successfully!");
-  
-  navigate("/admin-dashboard", { state: { updatedItem } });
-} else {
-  const newItem = await addMenuItem(data);
-  toast.success("✅ Menu item added successfully!");
-  navigate("/admin-dashboard", { state: { newItem } });
-}
-
-      setFormData({
-        category: "Starter",
-        name: "",
-        price: "",
-        cuisine: "Indian",
-        timeToPrepare: "",
-        ingredients: "",
-        description: "",
-        status: "Published",
-        discount: "",
-        vegType: "veg",
-      });
-
-      if (imagePreview) {
-        try {
-          URL.revokeObjectURL(imagePreview);
-        } catch (err) {}
+        const updatedItem = await updateMenuItem(itemId, data);
+        toast.success("✅ Menu item updated successfully!");
+        navigate("/admin-dashboard", { state: { updatedItem } });
+      } else {
+        const newItem = await addMenuItem(data);
+        toast.success("✅ Menu item added successfully!");
+        navigate("/admin-dashboard", { state: { newItem } });
       }
-      setImageFile(null);
-      setImagePreview(null);
-      setImageError("");
-      setFormError("");
-      setErrors({});
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      handleReset();
     } catch (err) {
-    console.error("❌ Error saving item:", err.response?.data || err.message);
-
-    if (isEditMode) {
-      toast.error("❌ Failed to update item. Please try again.");
-    } else {
-      toast.error("❌ Failed to add item. Please try again.");
+      console.error("❌ Error saving item:", err.response?.data || err.message);
+      showFormError("❌ " + (err.response?.data?.message || "Something went wrong."));
     }
+  };
 
-    showFormError("❌ " + (err.response?.data?.message || "Something went wrong."));
-  }
-};
   const handleReset = () => {
     setFormData({
       category: "Starter",
@@ -316,6 +202,7 @@ const AddMenuItem = () => {
       status: "Published",
       discount: "",
       vegType: "veg",
+      taxType: "exclusive",
     });
     setImageFile(null);
     setImagePreview(null);
@@ -323,6 +210,15 @@ const AddMenuItem = () => {
     setFormError("");
     setErrors({});
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const showFormError = (msg) => {
+    setFormError(msg);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => {
+      setFormError("");
+      toastTimerRef.current = null;
+    }, 4000);
   };
 
   return (
@@ -334,6 +230,7 @@ const AddMenuItem = () => {
         onLogout={handleLogout}
         restaurant={restaurant}
       />
+
       <div className="add-menu-container">
         <div className="add-menu-card">
           <div className="card-header">
@@ -345,10 +242,10 @@ const AddMenuItem = () => {
             {formError && <div className="toast toast-error">{formError}</div>}
 
             <form onSubmit={handleSubmit} className="add-menu-form" noValidate>
+              {/* Item Name & Ingredients */}
               <div className="form-grid">
-                <div className="field-wrappers" >
+                <div className="field-wrappers">
                   <label>Item Name</label>
-                
                   <input
                     ref={nameRef}
                     name="name"
@@ -371,6 +268,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
+              {/* Category & Cuisine */}
               <div className="form-grid">
                 <div>
                   <label>Category</label>
@@ -404,6 +302,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
+              {/* Price & Discount */}
               <div className="form-grid">
                 <div className="field-wrappers">
                   <label>Price (₹)</label>
@@ -430,6 +329,34 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
+              {/* TaxType only */}
+              <div className="form-grid">
+                <div>
+                  <label>Exclusive / Inclusive</label>
+                  <div className="radio-group">
+                    <label>
+                      <input
+                        type="radio"
+                        name="taxType"
+                        value="exclusive"
+                        checked={formData.taxType === "exclusive"}
+                        onChange={handleChange}
+                      /> Exclusive
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="taxType"
+                        value="inclusive"
+                        checked={formData.taxType === "inclusive"}
+                        onChange={handleChange}
+                      /> Inclusive
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Type & Status */}
               <div className="form-grid">
                 <div>
                   <label>Type</label>
@@ -480,6 +407,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
+              {/* Time to Prepare & Description */}
               <div className="field-wrappers">
                 <label>Time to Prepare (mins)</label>
                 <input
@@ -503,7 +431,7 @@ const AddMenuItem = () => {
               </div>
 
               <div className="form-actions">
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
+                <button type="submit" className="btn btn-primary">
                   {isEditMode ? "Save Changes" : "Save Item"}
                 </button>
                 <button type="button" className="btn btn-ghost" onClick={handleReset}>
@@ -513,33 +441,32 @@ const AddMenuItem = () => {
             </form>
 
             <aside className="right-panel">
-  <h4>Preview</h4>
+              <h4>Preview</h4>
+              <label className={`upload-btn ${imageError || errors.image ? "error" : ""}`}>
+                Upload Image *
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  hidden
+                />
+              </label>
 
-  <label className={`upload-btn ${imageError || errors.image ? "error" : ""}`}>
-    Upload Image *
-    <input
-      ref={fileInputRef}
-      type="file"
-      accept="image/*"
-      onChange={handleFileChange}
-      hidden
-    />
-  </label>
+              <div className="preview-container">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="preview" className="preview-img" />
+                ) : (
+                  <p className="no-preview-text">No image uploaded yet</p>
+                )}
+              </div>
 
-  <div className="preview-container">
-    {imagePreview ? (
-      <img src={imagePreview} alt="preview" className="preview-img" />
-    ) : (
-      <p className="no-preview-text">No image uploaded yet</p>
-    )}
-  </div>
-
-  {imageError && <p style={{ color: "red" }}>{imageError}</p>}
-</aside>
-
-         </div>
+              {imageError && <p style={{ color: "red" }}>{imageError}</p>}
+            </aside>
+          </div>
         </div>
       </div>
+
       <Footer />
     </>
   );

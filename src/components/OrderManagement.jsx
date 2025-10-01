@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
-import { getMyRestaurant, getOrders, updateOrderStatus, updateOrderItems, getMenuByRestaurant } from "../services/apiService";
+import { getMyRestaurant, getOrders, updateOrderStatus, updateOrderItems, getMenuByRestaurant,calculateBillPreview, deleteOrder } from "../services/apiService";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import {
@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-table";
 import "../styles/OrderManagement.css";
 import toast from "react-hot-toast";
-import { calculateBill } from "../utils/calcBill";
 
 export default function OrderManagement() {
   const navigate = useNavigate();
@@ -42,23 +41,10 @@ export default function OrderManagement() {
   const [showCompletedCancelled, setShowCompletedCancelled] = useState(false);
   const [menuList, setMenuList] = useState([]);
 
+const [orderTotal, setOrderTotal] = useState(0);
   const [restaurantId, setRestaurantId] = useState(null);
 
-  // helper to compute total excluding cancelled items
-  const computeTotalExcludingCancelled = (items = []) => {
-    return (items || []).reduce((sum, it) => {
-      if (!it) return sum;
-      if (it.status === "cancelled") return sum;
-      const qty = Number(it.quantity || 0);
-      const unit = typeof it.unitPrice !== "undefined" ? Number(it.unitPrice) : Number(it.price || 0);
-      // if unitPrice exists use it * qty, otherwise assume price is line total
-      if (typeof it.unitPrice !== "undefined" && it.unitPrice !== null) {
-        return sum + (qty * unit);
-      }
-      // assume price is already line total
-      return sum + (Number(it.price || 0));
-    }, 0);
-  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,8 +61,6 @@ export default function OrderManagement() {
 
         const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
-
-        // IMPORTANT: set restaurantId so menu fetch can run
         if (res.restaurant && res.restaurant._id) {
           setRestaurantId(res.restaurant._id);
         }
@@ -91,7 +75,7 @@ export default function OrderManagement() {
       _id: item._id,
       name: item.name,
       quantity: item.quantity,
-      price: item.price,   // use DB price directly
+      price: item.price,   
       status: item.status || "active"
     }));
 
@@ -101,7 +85,7 @@ export default function OrderManagement() {
       table: `T${order.tableNumber}`,
       items,
       status: order.status,
-      totalAmount: order.totalAmount,  // use backend total
+      totalAmount: order.totalAmount, 
       orderTime: new Date(order.createdAt).toISOString(),
       specialInstructions: order.instructions,
       serial: idx + 1,
@@ -120,6 +104,78 @@ export default function OrderManagement() {
 
     fetchData();
   }, [navigate]);
+const billPreviewTimer = useRef(null);
+const [billPreview, setBillPreview] = useState({
+  subtotal: 0,
+  totalDiscount: 0,
+  totalGst: 0,
+  cgst: 0,
+  sgst: 0,
+  total: 0
+});
+
+useEffect(() => {
+  // clear old timer
+  if (billPreviewTimer.current) clearTimeout(billPreviewTimer.current);
+
+  billPreviewTimer.current = setTimeout(async () => {
+    const activeItems = editedItems.filter(it => it.status !== "cancelled");
+
+    const normalized = activeItems
+      .map(it => ({
+        menuItemId: it.menuItemId || it._id?.toString(),
+        quantity: Number(it.qty ?? it.quantity ?? 1)
+      }))
+      .filter(it => it.menuItemId); // drop items without menuItemId
+
+    if (normalized.length === 0) {
+      setOrderTotal(0);
+      setBillPreview({
+        subtotal: 0,
+        totalDiscount: 0,
+        totalGst: 0,
+        cgst: 0,
+        sgst: 0,
+        total: 0
+      });
+      return;
+    }
+
+    try {
+      // backend call
+      const bill = await calculateBillPreview(normalized);
+      console.log("Backend bill result:", bill); // debug
+
+      setOrderTotal(Number(bill.total ?? bill.totalAmount ?? 0));
+
+      // Save full billPreview for breakdown
+      setBillPreview({
+        subtotal: bill.subtotal ?? 0,
+        totalDiscount: bill.totalDiscount ?? 0,
+        totalGst: bill.totalGst ?? 0,
+        cgst: bill.cgst ?? 0,
+        sgst: bill.sgst ?? 0,
+        total: bill.total ?? 0
+      });
+
+    } catch (error) {
+      console.error("Error fetching bill preview:", error);
+      setOrderTotal(0);
+      setBillPreview({
+        subtotal: 0,
+        totalDiscount: 0,
+        totalGst: 0,
+        cgst: 0,
+        sgst: 0,
+        total: 0
+      });
+    }
+  }, 300); // debounce 300ms
+
+  return () => {
+    if (billPreviewTimer.current) clearTimeout(billPreviewTimer.current);
+  };
+}, [editedItems]);
 
   useEffect(() => {
     if (!restaurantId) return;
@@ -134,15 +190,70 @@ export default function OrderManagement() {
     };
     fetchMenu();
   }, [restaurantId]);
+const handleEditOrder = async (order) => {
+  if (!order || !order.items) return;
 
+<<<<<<< HEAD
   const handleEditOrder = (order) => {
     setEditingOrder(order);
     const cloned = (order.items || []).map(it => {
       return ({ ...it, nameError: null });
+=======
+  // Map each order item to correct menuItemId using menuList
+  const cloned = order.items.map(item => {
+    const menuItem = menuList.find(m => 
+      (m.name || "").toLowerCase() === (item.name || "").toLowerCase()
+    );
+
+    return {
+      ...item,
+      menuItemId: menuItem?._id?.toString() || item.menuItemId || item._id?.toString(),
+      unitPrice: menuItem?.price || item.price,
+      nameError: null
+    };
+  });
+
+  setEditingOrder({ ...order });
+  setEditedItems(cloned);
+  setIsEditing(true);
+
+  // Only calculate if we found valid menuItemIds
+  const normalized = cloned
+    .filter(it => it.status !== "cancelled" && it.menuItemId)
+    .map(it => ({
+      menuItemId: it.menuItemId,
+      quantity: Number(it.quantity || 1)
+    }));
+
+  if (normalized.length > 0) {
+    try {
+      const bill = await calculateBillPreview(normalized);
+      setOrderTotal(Number(bill.total ?? bill.totalAmount ?? 0));
+      setBillPreview({
+        subtotal: bill.subtotal ?? 0,
+        totalDiscount: bill.totalDiscount ?? 0,
+        totalGst: bill.totalGst ?? 0,
+        cgst: bill.cgst ?? 0,
+        sgst: bill.sgst ?? 0,
+        total: bill.total ?? 0
+      });
+    } catch (error) {
+      console.error("Bill preview failed:", error);
+    }
+  } else {
+    setOrderTotal(0);
+    setBillPreview({
+      subtotal: 0,
+      totalDiscount: 0,
+      totalGst: 0,
+      cgst: 0,
+      sgst: 0,
+      total: 0
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
     });
-    setEditedItems(cloned);
-    setIsEditing(true);
-  };
+  }
+};
+
 
   const handleCancelEdit = () => {
     setEditingOrder(null);
@@ -150,8 +261,7 @@ export default function OrderManagement() {
     setIsEditing(false);
   };
 
-
-  const handleItemChange = (index, field, value) => {
+const handleItemChange = (index, field, value) => {
   const updatedItems = [...editedItems];
   if (!updatedItems[index]) return;
 
@@ -159,28 +269,31 @@ export default function OrderManagement() {
     const typedRaw = (value || "").toString();
     const typed = typedRaw.trim();
     const typedLower = typed.toLowerCase();
-    const duplicateIndex = updatedItems.findIndex((it, idx) =>
-      idx !== index && (it.name || "").toLowerCase() === typedLower
-    );
+
     updatedItems[index].name = typedRaw;
 
-    const exactMatch = menuList.find(m => (m.name || "").toLowerCase() === typedLower);
+    const duplicateIndex = updatedItems.findIndex(
+      (it, idx) => idx !== index && (it.name || "").toLowerCase() === typedLower
+    );
 
     if (duplicateIndex !== -1) {
       updatedItems[index].nameError = "Already added. Increase quantity instead.";
-    } else if (exactMatch) {
-      updatedItems[index].unitPrice = exactMatch.price;
-      updatedItems[index].type = exactMatch.type || "veg"; 
-      updatedItems[index].gstRate = exactMatch.type === "veg" ? 5 : 12; 
-      const qty = Number(updatedItems[index].quantity || 1);
-      updatedItems[index].price = exactMatch.price * qty;
-      updatedItems[index].nameError = null;
+      updatedItems[index].menuItemId = updatedItems[index].menuItemId || null;
     } else {
-      const hasSubstringMatch = menuList.some(m => (m.name || "").toLowerCase().includes(typedLower));
-      if (typed.length >= 3 && !hasSubstringMatch) {
-        updatedItems[index].nameError = "Item not available";
-      } else {
+      const exactMatch = menuList.find(m => (m.name || "").toLowerCase() === typedLower);
+      if (exactMatch) {
+        updatedItems[index].unitPrice = exactMatch.price;
+        updatedItems[index].menuItemId = exactMatch._id?.toString();
+        updatedItems[index].type = exactMatch.type || "veg";
+        const qty = Number(updatedItems[index].quantity || 1);
+        updatedItems[index].price = exactMatch.price * qty;
         updatedItems[index].nameError = null;
+      } else {
+        const hasSubstringMatch = menuList.some(m =>
+          (m.name || "").toLowerCase().includes(typedLower)
+        );
+        updatedItems[index].nameError =
+          typed.length >= 3 && !hasSubstringMatch ? "Item not available" : null;
       }
     }
   }
@@ -200,8 +313,8 @@ export default function OrderManagement() {
     }
 
     const nameLower = (updatedItems[index].name || "").toLowerCase();
-    const duplicateIndex = updatedItems.findIndex((it, idx) =>
-      idx !== index && (it.name || "").toLowerCase() === nameLower
+    const duplicateIndex = updatedItems.findIndex(
+      (it, idx) => idx !== index && (it.name || "").toLowerCase() === nameLower
     );
     if (duplicateIndex !== -1) {
       updatedItems[index].nameError = "Already added. Increase quantity instead.";
@@ -209,27 +322,7 @@ export default function OrderManagement() {
   }
 
   setEditedItems(updatedItems);
-
-  const bill = calculateBill(updatedItems);
-  const updatedOrders = orders.map(o => {
-    if (o.id === editingOrder.id) {
-      return {
-        ...o,
-        items: bill.items,
-        subtotal: bill.subtotal,
-        totalDiscount: bill.totalDiscount,
-        totalGst: bill.totalGst,
-        sgst: bill.sgst,
-        cgst: bill.cgst,
-        totalAmount: bill.total
-      };
-    }
-    return o;
-  });
-
-  setOrders(updatedOrders);
 };
-
 
 useEffect(() => {
   if (!isEditing || !menuList || menuList.length === 0) return;
@@ -258,63 +351,104 @@ useEffect(() => {
   });
 
   setEditedItems(validated);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [menuList]);
 
 
 const handleRemoveItem = async (index) => {
   if (!editingOrder) return;
+
+  // Clone current items & remove selected index
   const updatedItems = [...editedItems];
-  const item = updatedItems[index];
-  if (!item) return;
+  updatedItems.splice(index, 1);
 
-  if (item._id) {
-    updatedItems[index] = { ...item, status: "cancelled" };
+  // Active items = jo cancelled nahi hai aur menuItemId present hai
+  const activeItems = updatedItems.filter(it => it.menuItemId && it.status !== "cancelled");
+
+  // 🟢 Case 1: Last item tha => poora order delete
+  if (activeItems.length === 0) {
     try {
-      await updateOrderItems(editingOrder.id, updatedItems);
-      setEditedItems(updatedItems);
+      await deleteOrder(editingOrder.id);
+      setEditedItems([]); // Clear items
+      setEditingOrder(null); // Stop editing
+      setOrders(prev => prev.filter(o => o.id !== editingOrder.id)); // UI se hatao
+      toast("Order deleted successfully.");
+      handleCancelEdit(); // close edit dialog if open
     } catch (err) {
-      console.error(err);
-      toast("Failed to cancel item. Try again.");
-      return;
+      console.error("Failed to delete order:", err);
+      toast("Failed to delete order. Please try again.");
     }
-  } else {
-    updatedItems.splice(index, 1);
-    setEditedItems(updatedItems);
+    return;
   }
-  const bill = calculateBill(
-    updatedItems.filter(it => it.status !== "cancelled")
-  );
 
-  const updatedOrders = orders.map(o => {
-    if (o.id === editingOrder.id) {
-      const activeCount = updatedItems.filter(it => it.status !== "cancelled").length;
-      return {
-        ...o,
-        items: bill.items,
-        subtotal: bill.subtotal,
-        totalDiscount: bill.totalDiscount,
-        totalGst: bill.totalGst,
-        sgst: bill.sgst,
-        cgst: bill.cgst,
-        totalAmount: bill.totalAmount, 
-        status: activeCount === 0 ? "cancelled" : o.status
-      };
+  // 🟢 Case 2: Kuch items bache hai => Update order
+  try {
+    const sanitizedItems = activeItems.map(it => ({
+      menuItemId: it.menuItemId,
+      quantity: Number(it.quantity) || 1
+    }));
+
+    await updateOrderItems(editingOrder.id, sanitizedItems);
+    setEditedItems(updatedItems);
+
+    // Recalculate bill preview only if there are items
+    let bill = { items: [], subtotal: 0, total: 0, totalGst: 0, cgst: 0, sgst: 0, totalDiscount: 0 };
+    if (sanitizedItems.length > 0) {
+      bill = await calculateBillPreview(sanitizedItems);
     }
-    return o;
-  });
 
-  setOrders(updatedOrders);
+    // Update orders in state
+    const updatedOrders = orders.map(o => {
+      if (o.id === editingOrder.id) {
+        return {
+          ...o,
+          items: bill.items,
+          subtotal: bill.subtotal,
+          totalDiscount: bill.totalDiscount,
+          totalGst: bill.totalGst,
+          sgst: bill.sgst,
+          cgst: bill.cgst,
+          totalAmount: bill.total,
+          status: o.status // preserve existing status
+        };
+      }
+      return o;
+    });
+
+    setOrders(updatedOrders);
+  } catch (err) {
+    console.error("Failed to update items:", err);
+    toast("Failed to update order. Please try again.");
+  }
 };
+<<<<<<< HEAD
 
   
+=======
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
 const handleSaveEdit = async () => {
   try {
-    if (!editingOrder) return;
+    if (!editingOrder) {
+      toast("No order selected for editing.");
+      return;
+    }
 
     const activeItems = editedItems.filter(it => it.status !== "cancelled");
 
-    // ✅ Validate items
+    if (activeItems.length === 0) {
+      try {
+        await deleteOrder(editingOrder.id);
+        setEditedItems([]);
+        setEditingOrder(null);
+        setOrders(prev => prev.filter(o => o.id !== editingOrder.id));
+        toast("✅ Order deleted successfully!");
+        handleCancelEdit();
+      } catch (err) {
+        console.error("Failed to delete order:", err);
+        toast("❌ Failed to delete order. Please try again.");
+      }
+      return;
+    }
+
     const activeValid = activeItems.filter(it => {
       const name = (it.name || "").toString().trim();
       const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
@@ -323,11 +457,9 @@ const handleSaveEdit = async () => {
 
     if (activeItems.length !== activeValid.length) {
       toast("❌ Some items are invalid or do not exist in the menu. Please fix before saving.");
-
       const marked = editedItems.map(it => {
         const name = (it.name || "").toString().trim();
         if (it.status === "cancelled") return it;
-
         const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
         if (!exact) {
           const hasSubstring = menuList.some(m => (m.name || "").toLowerCase().includes(name.toLowerCase()));
@@ -338,31 +470,19 @@ const handleSaveEdit = async () => {
         }
         return { ...it, nameError: null };
       });
-
       setEditedItems(marked);
       return;
     }
 
-    // ✅ Merge menu info to ensure type & GST correct
-    const itemsWithType = activeItems.map(it => {
-      const menuItem = menuList.find(m => (m.name || "").toLowerCase() === (it.name || "").toLowerCase());
-      return {
-        ...it,
-        type: menuItem?.type || "veg",  // default veg if type missing
-        gstRate: menuItem?.type === "veg" ? 5 : 12,
-        price: menuItem?.price || Number(it.price) || 0
-      };
-    });
+    const itemsForBackend = activeValid.map(it => ({
+      menuItemId: it.menuItemId,
+      quantity: Number(it.quantity) || 1
+    }));
 
-    // ✅ Calculate totals
-    const bill = calculateBill(itemsWithType);
+    await updateOrderItems(editingOrder.id, itemsForBackend);
 
-    // ✅ Persist items to backend
-    await updateOrderItems(editingOrder.id, itemsWithType);
+    const bill = await calculateBillPreview(itemsForBackend);
 
-    const activeCount = itemsWithType.length;
-
-    // ✅ Update local orders
     const updatedOrders = orders.map(order =>
       order.id === editingOrder.id
         ? {
@@ -373,8 +493,7 @@ const handleSaveEdit = async () => {
             totalGst: bill.totalGst,
             sgst: bill.sgst,
             cgst: bill.cgst,
-            totalAmount: bill.total,
-            status: activeCount === 0 ? "cancelled" : order.status,
+            totalAmount: bill.total
           }
         : order
     );
@@ -390,8 +509,7 @@ const handleSaveEdit = async () => {
   }
 };
 
-
-  const getStatusDisplayText = (status) => {
+const getStatusDisplayText = (status) => {
     switch (status) {
       case "placed": return "Placed";
       case "preparing": return "Preparing";
@@ -513,9 +631,9 @@ const filterFns = {
         enableColumnFilter: true,
       },
 {
-  id: "items",  // accessorKey ke jagah id
+  id: "items", 
   header: "Items",
-  accessorFn: row => row.items,  // ensure array row.items ke रूप में मिले
+  accessorFn: row => row.items,  
   filterFn: (row, columnId, filterValue) => {
     if (!filterValue) return true;
     const search = filterValue.toLowerCase();
@@ -608,7 +726,6 @@ const filterFns = {
           const order = row.original;
           return (
             <div className="order-actions">
-              {/* Edit Button - Available for all active orders */}
               {["placed", "preparing"].includes(order.status) && (
                 <button
                   className="btn btn-action edit"
@@ -619,7 +736,6 @@ const filterFns = {
                 </button>
               )}
 
-              {/* Status Action Buttons */}
               {order.status === "placed" && (
                 <>
                   <button
@@ -680,26 +796,19 @@ const filterFns = {
         size: 130,
       }
     ],
-    // include showCompletedCancelled in deps because items cell uses it
     [orders, showCompletedCancelled]
   );
 
-  // FIXED: Simplified pre-filtering logic
   const preFilteredData = useMemo(() => {
     let filtered = orders || [];
-
-    // Apply status filter from dropdown
     if (selectedStatus !== "all") {
       filtered = filtered.filter(order => order.status === selectedStatus);
     }
-
-    // Apply completed/cancelled filter
     if (showCompletedCancelled) {
       filtered = filtered.filter(order =>
         order.status === "completed" || order.status === "cancelled"
       );
     } else {
-      // When checkbox is unchecked, only show active orders
       filtered = filtered.filter(order =>
         order.status === "placed" ||
         order.status === "preparing" ||
@@ -727,9 +836,8 @@ const filterFns = {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // Defensive global filter: handle undefined/empty fields and return true when filter is empty
     globalFilterFn: (row, _columnId, filterValue) => {
-      // If filter is empty, don't filter anything
+     
       if (!filterValue || (typeof filterValue === 'string' && filterValue.trim() === '')) return true;
 
       const searchValue = String(filterValue).toLowerCase();
@@ -761,7 +869,6 @@ const filterFns = {
         const formatted = (original.orderTime) ? formatDate(original.orderTime).toLowerCase() : "";
         if (formatted.includes(searchValue)) return true;
       } catch (e) {
-        // ignore formatting errors
       }
 
       const statusText = (getStatusDisplayText(original.status) || "").toLowerCase();
@@ -813,17 +920,21 @@ const filterFns = {
       </div>
     );
   }
+<<<<<<< HEAD
 
   
   const activeCountForSave = editedItems.filter(it => it.status !== "cancelled").length;
   
+=======
+  const activeCountForSave = editedItems.filter(it => it.status !== "cancelled").length;
+>>>>>>> 0a9279342a5e96de198930eb03d7a3adf638fea5
 const anyActiveInvalid = editedItems.some((it, idx) => {
   if (it.status === "cancelled") return false;
   const name = (it.name || "").toString().trim();
   if (!name) return true;
   const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
   if (!exact) return true;
-  // duplicate check
+ 
   const dup = editedItems.findIndex((x, j) => j !== idx && (x.name || "").toLowerCase() === name.toLowerCase());
   if (dup !== -1) return true;
   return false;
@@ -846,9 +957,7 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
 
             Order Management
           </h2>
-
-          {/* Stats Overview */}
-        <div className="stats-row"> {/* replaced "row" with our flex wrapper */}
+        <div className="stats-row"> 
   <div className="stat-item mb-3">
     <div className="stats-card">
       <div className="stats-icon total">
@@ -1207,7 +1316,6 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
   <div className="modals-overlay active">
     <div className="modals-content">
       
-      {/* Header */}
       <div className="modals-header">
         <div className="order-info">
           <h3>Edit Order</h3>
@@ -1222,8 +1330,21 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
         </button>
       </div>
 
-      {/* Body */}
       <div className="modals-body">
+      <div className="add-item-wrapper">
+       <button
+    type="button"
+    className="btn-add-item"
+    onClick={() => {
+      setEditedItems(prev => [
+        ...prev,
+        { name: "", quantity: 1, price: 0, unitPrice: 0, status: "active", nameError: null }
+      ]);
+    }}
+  >
+    <i className="fas fa-plus"></i> Add New Item
+  </button>
+  </div>
         <table className="edit-items-table">
           <thead>
             <tr>
@@ -1238,7 +1359,7 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
               if (item.status === "cancelled" && !showCompletedCancelled) return null;
               return (
                 <tr key={index} className={item.status === "cancelled" ? "cancelled" : ""}>
-                  {/* Item Name */}
+                 
                   <td>
                     <div className="field-wrapper">
                       <input
@@ -1271,7 +1392,6 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
                     </div>
                   </td>
 
-                  {/* Quantity */}
                   <td>
   <div className="qty-controls">
     <button
@@ -1297,12 +1417,10 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
 </td>
 
 
-                  {/* Price */}
                   <td>
                     <input type="number" value={item.price} readOnly className="item-price-inputs" />
                   </td>
 
-                  {/* Action */}
                   <td>
                     <button
                       type="button"
@@ -1318,64 +1436,43 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
           </tbody>
         </table>
 
-        {/* Bottom bar */}
- {/* Bottom bar */}
 <div className="bottom-bar">
   <div className="order-total-section">
     <span>Order Total: </span>
-   <span className="total-amount">
-  {(() => {
-    // only active items
-    const activeItems = editedItems.filter(it => it.status !== "cancelled");
-
-    // normalize quantity -> qty if calculateBill expects `qty`
-    const normalized = activeItems.map(it => ({
-      ...it,
-      qty: it.qty ?? it.quantity ?? 0,
-      price: it.price ?? it.unitPrice ?? 0
-    }));
-
-    // call calculateBill with normalized items
-    const bill = calculateBill(normalized) || {};
-
-    // check common total keys (try several names)
-    const maybeTotal =
-      bill.totalAmount ??
-      bill.total ??
-      bill.finalTotal ??
-      bill.grandTotal ??
-      // fallback: subtotal - discount + gst
-      (Number(bill.subtotal || 0) - Number(bill.totalDiscount || 0) + Number(bill.totalGst || 0));
-
-    const totalNum = Number.isFinite(Number(maybeTotal)) ? Number(maybeTotal) : 0;
-
-    // debug: uncomment or keep temporarily to inspect what calculateBill returns
-    console.log('calculateBill(normalized) ->', bill, 'resolvedTotal ->', totalNum);
-
-    return `₹${totalNum.toFixed(2)}`;
-  })()}
-</span>
-
+    <span className="total-amount">₹{billPreview.total?.toFixed(2) || "0.00"}</span>
+      <div className="bill-details">
+    <div className="bill-line">
+      <span>Item Total:</span>
+      <span>₹{billPreview.subtotal?.toFixed(2) || "0.00"}</span>
+    </div>
+    <div className="bill-line">
+      <span>Discount:</span>
+      <span>-₹{billPreview.totalDiscount?.toFixed(2) || "0.00"}</span>
+    </div>
+    <div className="bill-line">
+      <span>GST:</span>
+      <span>₹{billPreview.totalGst?.toFixed(2) || "0.00"}</span>
+    </div>
+    <div className="bill-line">
+      <span>SGST:</span>
+      <span>₹{billPreview.sgst?.toFixed(2) || "0.00"}</span>
+    </div>
+    <div className="bill-line">
+      <span>CGST:</span>
+      <span>₹{billPreview.cgst?.toFixed(2) || "0.00"}</span>
+    </div>
+  </div>
   </div>
 
-  <button
-    type="button"
-    className="btn-add-item"
-    onClick={() => {
-      setEditedItems(prev => [
-        ...prev,
-        { name: "", quantity: 1, price: 0, unitPrice: 0, status: "active", nameError: null }
-      ]);
-    }}
-  >
-    <i className="fas fa-plus"></i> Add New Item
-  </button>
+
+
+
+
+ 
 </div>
 
 
       </div>
-
-      {/* Footer */}
       <div className="modals-footer">
         <button className="btn btn-secondary" onClick={handleCancelEdit}>Cancel</button>
         <button className="btn btn-primary" onClick={handleSaveEdit}>
