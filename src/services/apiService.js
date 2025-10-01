@@ -305,9 +305,9 @@ export const configItemAction = async (payload) => {
   }
 };
 
-export const editConfigItemName = async (payload) => {
+export const editConfigItemDetails = async (payload) => {
   try {
-    const res = await API.post("/config/updateItemName", payload);
+    const res = await API.post("/config/updateItemDetails", payload);
 
     return res.data;
   } catch (error) {
@@ -318,6 +318,45 @@ export const editConfigItemName = async (payload) => {
 export const flipCuisineStatus = async (payload) => {
   try {
     const res = await API.post("/restaurants/flipCuisineStatus", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getTaxConfigList = async (params) => {
+  try {
+    const res = await API.get("/config/getTaxConfigList");
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const addTaxConfigList = async (payload) => {
+  try {
+    const res = await API.post("/config/addTaxConfig", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const taxConfigAction = async (payload) => {
+  try {
+    const res = await API.post("/config/taxConfigAction", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const updateTaxDefault = async (payload) => {
+  try {
+    const res = await API.post("/config/updateDefaultTaxConfig", payload);
 
     return res.data;
   } catch (error) {

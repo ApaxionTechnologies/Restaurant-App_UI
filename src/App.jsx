@@ -43,11 +43,7 @@ import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
 
 import './styles/ViewMenu.css';
-import { RestaurantProvider } from "./context/RestaurantContext";
-import { BulkItemUpload } from "./pages/BulkItemUpload";
-import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
-import "./styles/theme.css";
-import "./styles/ViewMenu.css";
+// import "./styles/theme.css";
 
 import { Toaster } from "react-hot-toast";
 import Config from "./pages/config/Config";
