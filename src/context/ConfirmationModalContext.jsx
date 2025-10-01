@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import ConfirmationModal from "../components/ConfirmationModal";
-
 const ConfirmationModalContext = createContext();
-
 export const useConfirmationModal = () => {
   const context = useContext(ConfirmationModalContext);
   if (!context) {
@@ -10,7 +8,6 @@ export const useConfirmationModal = () => {
   }
   return context;
 };
-
 export const ConfirmationModalProvider = ({ children }) => {
   const [modalState, setModalState] = useState({
     isOpen: false,
