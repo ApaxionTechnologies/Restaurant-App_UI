@@ -17,6 +17,7 @@ import {
 import HomeHeader from "../../components/HomeHeader";
 import Footer from "../../components/Footer";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
+import { useCart } from "../../context/CartContext"; 
 import { ConfigModal, TaxConfigModal } from "./ConfigModal";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import TeaLoader from "../../components/Common/CupLoader";
@@ -41,6 +42,10 @@ export default function App() {
   const [newName, setNewName] = useState("");
   const [updatedTaxValue, setUpdatedTaxValue] = useState("");
   const [isCuisineEnabled, setIsCuisineEnabled] = useState(false);
+  const [showTaxInput, setShowTaxInput] = useState(false);
+  const [showDiscountInput, setShowDiscountInput] = useState(false);  
+  const [isEditingDiscount, setIsEditingDiscount] = useState(true);
+  const { savediscount, discountPercentage, setDiscountPercentage } = useCart();
   const [formData, setFormData] = useState({
     name: "",
     type: "",
@@ -78,7 +83,7 @@ export default function App() {
     };
     fetchMe();
   }, []);
-
+ ;
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedToken = localStorage.getItem("token");
@@ -90,12 +95,11 @@ export default function App() {
     }
   }, [navigate]);
 
-  // Pagination calculations
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = itemData.slice(startIndex, endIndex);
 
-  // Reset to first page when filters change
+
   useMemo(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, activeTab]);
@@ -145,7 +149,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    // const delayDebounce = setTimeout(() => {
     if (activeTab === "category") {
       fetchItemList();
       fetchTaxConfigList();
@@ -156,7 +159,7 @@ export default function App() {
     }
     // }, 400);
 
-    // return () => clearTimeout(delayDebounce);
+
   }, [activeTab, searchTerm, statusFilter, currentPage, itemsPerPage]);
 
   const handleToggleStatus = (id) => {
@@ -168,7 +171,6 @@ export default function App() {
   };
   const handleEdit = (id) => {
     setEditItemId("");
-    // handleAction("delete",id)
   };
 
   const handleModalClose = () => {
@@ -350,6 +352,26 @@ export default function App() {
 
   const closeSidebar = () => {
     setSidebarOpen(false);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+  const handleToggleCuisine = () => {
+    setIsCuisineEnabled((prev) => !prev);
   };
 
   const handleModalReset = () => {
@@ -646,6 +668,12 @@ export default function App() {
               Cuisines
             </button>
             <button
+              className={`navTab ${activeTab === "discount" ? "active" : ""}`}
+              onClick={async() => {handleTabChange("discount");setShowDiscountInput(true);await savediscount();}}
+            > 
+              Discount
+            </button>
+            <button
               className={`navTab ${activeTab === "tax" ? "active" : ""}`}
               onClick={() => handleTabChange("tax")}
             >
@@ -678,15 +706,54 @@ export default function App() {
                   </label>
                 )}
               </div>
-              <div className="">
-                <button className="btn6r" onClick={() => setOpenModal(true)}>
-                  + Add
-                </button>
-              </div>
+              {activeTab !== "discount" && (
+                <div className="">
+                  <button className="btn6r" onClick={() => setOpenModal(true)}>
+                    + Add
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Controls */}
-            {loading ? (
+            {/* Discount Input Panel */}
+            {activeTab === "discount" && showDiscountInput ? (
+              <div className="discount-panel">
+                {isEditingDiscount ? (
+                  <>
+                <label htmlFor="discountInput">Enter Discount %:</label>
+                <input
+                  type="number"
+                  id="discountInput"
+                  placeholder="e.g. 10"
+                  className="discount-input"
+                  value={discountPercentage}
+                  onChange={(e) => setDiscountPercentage(Number(e.target.value))}
+                />
+                <br></br>
+                <br></br>
+                <button className="btn6r"  onClick={async() => {
+        console.log("Saved Discount:", discountPercentage);
+        await savediscount();
+        setIsEditingDiscount(false);
+      }}>Save</button>
+      </>
+                ):
+                (
+                  <>
+                   <p>
+          <strong>Saved Discount:</strong> {discountPercentage}%
+        </p>
+        <button
+          className="btn6r"
+          onClick={() => {setIsEditingDiscount(true);
+          }}
+        >
+          Edit
+        </button>
+                  </>
+                )}
+              </div>
+            ) : loading ? (
               <TeaLoader />
             ) : activeTab === "category" || activeTab === "cuisines" ? (
               <TableComp data={itemData} columns={columns} />

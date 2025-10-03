@@ -18,6 +18,7 @@ export default function CartPage() {
   const [billPreview, setBillPreview] = useState({
     subtotal: 0,
     totalDiscount: 0,
+    restaurantDiscountAmount: 0,
     totalGst: 0,
     cgst: 0,
     sgst: 0,
@@ -51,6 +52,7 @@ export default function CartPage() {
       setBillPreview({
         subtotal: 0,
         totalDiscount: 0,
+        restaurantDiscountAmount: 0,
         totalGst: 0,
         cgst: 0,
         sgst: 0,
@@ -66,7 +68,7 @@ export default function CartPage() {
     }));
 
     try {
-      const preview = await calculateBillPreview(items);
+      const preview = await calculateBillPreview(items, restaurantId); // backend should return restaurantDiscountAmount
       setBillPreview(preview);
     } catch (err) {
       console.error("Error calculating bill:", err);
@@ -103,6 +105,7 @@ export default function CartPage() {
         })),
         subtotal: billPreview.subtotal,
         totalDiscount: billPreview.totalDiscount,
+        restaurantDiscountAmount: billPreview.restaurantDiscountAmount,
         totalGst: billPreview.totalGst,
         cgst: billPreview.cgst,
         sgst: billPreview.sgst,
@@ -178,30 +181,27 @@ export default function CartPage() {
                   <span className="header-qty">Qty</span>
                   <span className="header-price">Price</span>
                 </div>
-<div className="cart-items-list">
-  {cart.map((item, idx) => (
-    <div className="cart-item-row" key={`${item.name}-${idx}`}>
-      <div className="item-info" style={{ display: "flex", alignItems: "center" }}>
-        <span className={`veg-badge ${item.type === "veg" ? "veg" : "non-veg"}`}></span>
-        <span className="item-name">{item.name}</span>
-      </div>
+                <div className="cart-items-list">
+                  {cart.map((item, idx) => (
+                    <div className="cart-item-row" key={`${item.name}-${idx}`}>
+                      <div className="item-info" style={{ display: "flex", alignItems: "center" }}>
+                        <span className={`veg-badge ${item.type === "veg" ? "veg" : "non-veg"}`}></span>
+                        <span className="item-name">{item.name}</span>
+                      </div>
 
-      <div className="quantity-controls">
-      
- <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, -1)} disabled={isPlacingOrder}>−</button>
-        <span className="quantity">{item.qty || 0}</span>
-        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, 1)} disabled={isPlacingOrder}>+</button>
-      </div>
+                      <div className="quantity-controls">
+                        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, -1)} disabled={isPlacingOrder}>−</button>
+                        <span className="quantity">{item.qty || 0}</span>
+                        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, 1)} disabled={isPlacingOrder}>+</button>
+                      </div>
 
-      <div className="item-price-total">
-        <span className="item-price">₹{item.price ?? 0}</span>
-        <span className="item-total">₹{(item.qty || 0) * (item.price || 0)}</span>
-      </div>
-    </div>
-  ))}
-</div>
-
-
+                      <div className="item-price-total">
+                        <span className="item-price">₹{item.price ?? 0}</span>
+                        <span className="item-total">₹{(item.qty || 0) * (item.price || 0)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="instructions-section">
@@ -217,11 +217,12 @@ export default function CartPage() {
 
               <div className="bill-summary">
                 <h3 className="bill-title">BILL DETAILS</h3>
-                <div className="bill-line"><span>Item Total</span><span>₹{fmt(billPreview.subtotal)}</span></div>
                 <div className="bill-line"><span>Discount</span><span>-₹{fmt(billPreview.totalDiscount)}</span></div>
-                <div className="bill-line"><span>GST</span><span>₹{fmt(billPreview.totalGst)}</span></div>
+                <div className="bill-line"><span>Restaurant Discount</span><span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span></div>
+                <div className="bill-line"><span>Item Total</span><span>₹{fmt(billPreview.subtotal)}</span></div>
                 <div className="bill-line"><span>SGST</span><span>₹{fmt(billPreview.sgst)}</span></div>
                 <div className="bill-line"><span>CGST</span><span>₹{fmt(billPreview.cgst)}</span></div>
+                <div className="bill-line"><span>GST</span><span>+₹{fmt(billPreview.totalGst)}</span></div>
                 <div className="bill-line total"><span>Total</span><span>₹{fmt(billPreview.total)}</span></div>
               </div>
 
