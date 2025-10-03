@@ -233,17 +233,16 @@ const AddMenuItem = () => {
         onLogout={handleLogout}
         restaurant={restaurant}
       />
-
-      <div className="add-menu-container">
-        <div className="card-header">
-  <button
-    type="button"
+      <div className="top-buttons1"> 
+      <button type="button"
     className="btn btn-secondary add-multiple-btn"
     onClick={() => navigate("/add-bulk-items")}
   >
     ➕ Add Multiple Items
   </button>
-
+      </div>
+      <div className="add-menu-container">
+        <div className="card-header">
   <div className="header-flex">
     <div className="title">
       <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
