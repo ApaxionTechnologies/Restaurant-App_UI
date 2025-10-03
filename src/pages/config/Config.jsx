@@ -44,6 +44,7 @@ export default function App() {
   const [isCuisineEnabled, setIsCuisineEnabled] = useState(false);
   const [showTaxInput, setShowTaxInput] = useState(false);
   const [showDiscountInput, setShowDiscountInput] = useState(false);  
+  const [isEditingDiscount, setIsEditingDiscount] = useState(true);
   const { savediscount, discountPercentage, setDiscountPercentage } = useCart();
   const [formData, setFormData] = useState({
     name: "",
@@ -82,7 +83,7 @@ export default function App() {
     };
     fetchMe();
   }, []);
-
+ ;
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedToken = localStorage.getItem("token");
@@ -94,12 +95,11 @@ export default function App() {
     }
   }, [navigate]);
 
-  // Pagination calculations
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = itemData.slice(startIndex, endIndex);
 
-  // Reset to first page when filters change
+
   useMemo(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter, activeTab]);
@@ -149,7 +149,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    // const delayDebounce = setTimeout(() => {
     if (activeTab === "category") {
       fetchItemList();
       fetchTaxConfigList();
@@ -160,7 +159,7 @@ export default function App() {
     }
     // }, 400);
 
-    // return () => clearTimeout(delayDebounce);
+
   }, [activeTab, searchTerm, statusFilter, currentPage, itemsPerPage]);
 
   const handleToggleStatus = (id) => {
@@ -719,6 +718,8 @@ export default function App() {
             {/* Discount Input Panel */}
             {activeTab === "discount" && showDiscountInput ? (
               <div className="discount-panel">
+                {isEditingDiscount ? (
+                  <>
                 <label htmlFor="discountInput">Enter Discount %:</label>
                 <input
                   type="number"
@@ -730,9 +731,27 @@ export default function App() {
                 />
                 <br></br>
                 <br></br>
-                <button className="btn6r"  onClick={() => {
+                <button className="btn6r"  onClick={async() => {
         console.log("Saved Discount:", discountPercentage);
+        await savediscount();
+        setIsEditingDiscount(false);
       }}>Save</button>
+      </>
+                ):
+                (
+                  <>
+                   <p>
+          <strong>Saved Discount:</strong> {discountPercentage}%
+        </p>
+        <button
+          className="btn6r"
+          onClick={() => {setIsEditingDiscount(true);
+          }}
+        >
+          Edit
+        </button>
+                  </>
+                )}
               </div>
             ) : loading ? (
               <TeaLoader />
