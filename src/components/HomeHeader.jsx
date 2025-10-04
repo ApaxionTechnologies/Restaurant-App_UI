@@ -7,7 +7,8 @@ import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
 import { Home } from "lucide-react";
 import { useNotification } from "../context/Notification";
-
+import axios from "axios";
+import { getOrders } from '../services/apiService.js'
 export default function HomeHeader({
   isAdminDashboard = false,
   restaurant = null,
@@ -74,8 +75,8 @@ export default function HomeHeader({
     if (!restaurantId) return;
     setIsLoadingOrders(true);
     try {
-      const res = await fetch(`/api/orders?restaurantId=${restaurantId}`);
-      const data = await res.json();
+const data = await getOrders(); 
+
       if (data.success) {
         const orders = (data.orders || [])
           .slice(0, 5)
