@@ -223,17 +223,6 @@ export const resetPassword = async (token, newPassword) => {
   }
 };
 
-export const createOrder = async (orderData) => {
-  try {
-    const res = await API.post("/orders", orderData, {
-      headers: { "Content-Type": "application/json" },
-    });
-    toast.success("✅ Order placed successfully!");
-    return res.data;
-  } catch (error) {
-    throw error.response?.data || error.message;
-  }
-};
 
 // Add new tax slab
 export const addTaxSlab = async (slabData) => {
@@ -269,14 +258,23 @@ export const updateTaxSlab = async (slabId, slabData) => {
     throw error.response?.data || error.message;
   }
 };
-
-export const calculateBillPreview = async (items) => {
+export const calculateBillPreview = async (items, restaurantId) => {
   try {
-    const res = await axios.post("/api/orders/calculate", { items });
+    const res = await API.post("/orders/calculate", { items, restaurantId });
     return res.data;
-  } catch (error) {
-    console.error("Error fetching bill preview:", error);
-    throw error;
+  } catch (err) {
+    console.error("Error fetching bill preview:", err);
+    throw err;
+  }
+};
+
+export const createOrder = async (orderData) => {
+  try {
+    const res = await API.post("/orders", orderData);
+    return res.data;
+  } catch (err) {
+    console.error("Error creating order:", err);
+    throw err;
   }
 };
 export const deleteOrder = async (orderId) => {
