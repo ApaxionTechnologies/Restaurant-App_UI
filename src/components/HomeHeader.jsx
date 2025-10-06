@@ -184,7 +184,14 @@ const data = await getOrders();
     document.addEventListener("click", handleDocClick);
     document.addEventListener("keydown", handleKey);
     window.addEventListener("resize", handleResizeScroll);
-    window.addEventListener("scroll", handleResizeScroll, { passive: true });
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (showDropdownopen) setShowDropdownopen(false);
+        if (showBellDropdown) setShowBellDropdown(false);
+      },
+      { passive: true }
+    );
 
     return () => {
       document.removeEventListener("click", handleDocClick);
