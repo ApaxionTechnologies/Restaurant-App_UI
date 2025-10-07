@@ -30,6 +30,7 @@ export default function HomeHeader({
 
   const profileRef = useRef(null);
   const dropdownRef = useRef(null);
+  const notificationSoundRef = useRef(null);
 
   const bellRef = useRef(null);
   const bellDropdownRef = useRef(null);
@@ -45,11 +46,10 @@ export default function HomeHeader({
   });
 
   const { notificationCount, clearNotifications } = useNotification();
-
   const computeAnchor = () => {
     if (!profileRef.current) return;
     const rect = profileRef.current.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY + 8;
+    const top = rect.bottom +  8;
     const minWidth = 210;
     let left = rect.right + window.scrollX - minWidth;
     if (left < 8) left = 8;
@@ -61,7 +61,7 @@ export default function HomeHeader({
   const computeBellAnchor = () => {
     if (!bellRef.current) return;
     const rect = bellRef.current.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY + 8;
+    const top = rect.bottom +  8;
     const minWidth = 300;
     let left = rect.right + window.scrollX - minWidth;
     if (left < 8) left = 8;
@@ -125,8 +125,16 @@ const data = await getOrders();
   const handleOrderClick = () => {
     setShowBellDropdown(false);
     navigate("/order-management");
-  };
-
+  };  
+  const prevCountRef = useRef(notificationCount);
+  useEffect(() => {
+    if (notificationCount > prevCountRef.current) {
+      if (notificationSoundRef.current) {
+        notificationSoundRef.current.play().catch(err => console.log(err));
+      }
+    }
+    prevCountRef.current = notificationCount;
+  }, [notificationCount]);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
@@ -203,6 +211,7 @@ const data = await getOrders();
 
   return (
     <>
+     <audio ref={notificationSoundRef} src="/notification.mp3" preload="auto" />
       <style>{`
         .fb-dropdown {
           background: white;
@@ -338,7 +347,7 @@ const data = await getOrders();
                 )}
               </div>
 
-              {/* Facebook-style notification dropdown */}
+             
               <div
                 ref={bellDropdownRef}
                 className={`fb-dropdown ${showBellDropdown ? "" : "hidden"}`}
