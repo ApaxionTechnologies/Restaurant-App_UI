@@ -17,7 +17,7 @@ import {
 import HomeHeader from "../../components/HomeHeader";
 import Footer from "../../components/Footer";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
-import { useCart } from "../../context/CartContext"; 
+import { useCart } from "../../context/CartContext";
 import { ConfigModal, TaxConfigModal } from "./ConfigModal";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import TeaLoader from "../../components/Common/CupLoader";
@@ -43,7 +43,7 @@ export default function App() {
   const [updatedTaxValue, setUpdatedTaxValue] = useState("");
   const [isCuisineEnabled, setIsCuisineEnabled] = useState(false);
   const [showTaxInput, setShowTaxInput] = useState(false);
-  const [showDiscountInput, setShowDiscountInput] = useState(false);  
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [isEditingDiscount, setIsEditingDiscount] = useState(true);
   const { savediscount, discountPercentage, setDiscountPercentage } = useCart();
   const [formData, setFormData] = useState({
@@ -83,7 +83,6 @@ export default function App() {
     };
     fetchMe();
   }, []);
- ;
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedToken = localStorage.getItem("token");
@@ -98,7 +97,6 @@ export default function App() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = itemData.slice(startIndex, endIndex);
-
 
   useMemo(() => {
     setCurrentPage(1);
@@ -158,8 +156,6 @@ export default function App() {
       fetchTaxConfigList();
     }
     // }, 400);
-
-
   }, [activeTab, searchTerm, statusFilter, currentPage, itemsPerPage]);
 
   const handleToggleStatus = (id) => {
@@ -190,13 +186,13 @@ export default function App() {
 
       const res = await addConfigItem(payload);
 
-      toast.success(res?.message || "Item added successfully")
+      toast.success(res?.message || "Item added successfully");
 
       setOpenModal(false);
     } catch (err) {
       console.error(err);
       setItemData([]);
-      toast.error(err?.message || "Error occured while adding item")
+      toast.error(err?.message || "Error occured while adding item");
     } finally {
       setLoading(false);
       setOpenModal(false);
@@ -213,12 +209,12 @@ export default function App() {
       };
 
       const res = await addTaxConfigList(payload);
-      toast.success(res?.message || "Tax config created successfully")
+      toast.success(res?.message || "Tax config created successfully");
 
       setOpenModal(false);
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while adding tax config")
+      toast.error(err?.message || "Error occured while adding tax config");
       setTaxData([]);
     } finally {
       setLoading(false);
@@ -238,10 +234,10 @@ export default function App() {
       };
 
       const res = await flipCuisineStatus(payload);
-      toast.success(res?.message || "Status updated successfully")
+      toast.success(res?.message || "Status updated successfully");
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while updating status")
+      toast.error(err?.message || "Error occured while updating status");
       setItemData([]);
     } finally {
       setLoading(false);
@@ -256,14 +252,14 @@ export default function App() {
       const payload = {
         classId: id,
         newName: newName,
-        newTaxValue: newTaxValue
+        newTaxValue: newTaxValue,
       };
 
       const res = await editConfigItemDetails(payload);
-      toast.success(res?.message || "Update successfull")
+      toast.success(res?.message || "Update successfull");
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while updating")
+      toast.error(err?.message || "Error occured while updating");
       setItemData([]);
     } finally {
       setLoading(false);
@@ -280,12 +276,12 @@ export default function App() {
       };
 
       const res = await updateTaxDefault(payload);
-      toast.success(res?.message || "Default tax value updated successfully")
-      
+      toast.success(res?.message || "Default tax value updated successfully");
+
       setOpenModal(false);
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while updating default")
+      toast.error(err?.message || "Error occured while updating default");
       setTaxData([]);
     } finally {
       setLoading(false);
@@ -302,12 +298,12 @@ export default function App() {
       };
 
       const res = await configItemAction(payload);
-      toast.success(res?.message || "Updated successfull")
-      
+      toast.success(res?.message || "Updated successfull");
+
       setOpenModal(false);
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while updating")
+      toast.error(err?.message || "Error occured while updating");
       setItemData([]);
     } finally {
       setLoading(false);
@@ -326,12 +322,12 @@ export default function App() {
       };
 
       const res = await taxConfigAction(payload);
-      toast.success(res?.message || "Action successfull")
-      
+      toast.success(res?.message || "Action successfull");
+
       setOpenModal(false);
     } catch (err) {
       console.error(err);
-      toast.error(err?.message || "Error occured while performing action")
+      toast.error(err?.message || "Error occured while performing action");
       setTaxData([]);
     } finally {
       setLoading(false);
@@ -447,7 +443,8 @@ export default function App() {
           return (
             <div>
               {isEditing ? (
-                (row.original.name !== newName || row.original.taxValue != updatedTaxValue) ? (
+                row.original.name !== newName ||
+                row.original.taxValue != updatedTaxValue ? (
                   <button
                     className="btnEdit"
                     onClick={() => handleSave(row.original._id)}
@@ -501,11 +498,10 @@ export default function App() {
               className="select-input"
             >
               <option value="">Select Tax</option>
-              {
-                taxData.length > 0 && taxData.map((item)=>(
+              {taxData.length > 0 &&
+                taxData.map((item) => (
                   <option value={item.value}>{item.value}</option>
-                ))
-              }
+                ))}
             </select>
           ) : (
             <span className="table-number">{row.original.taxValue}%</span>
@@ -633,13 +629,13 @@ export default function App() {
 
   return (
     <>
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
       <div className="app">
         {/* Mobile menu toggle */}
         <button className="menuToggle" onClick={toggleSidebar}>
@@ -669,8 +665,12 @@ export default function App() {
             </button>
             <button
               className={`navTab ${activeTab === "discount" ? "active" : ""}`}
-              onClick={async() => {handleTabChange("discount");setShowDiscountInput(true);await savediscount();}}
-            > 
+              onClick={async () => {
+                handleTabChange("discount");
+                setShowDiscountInput(true);
+                await savediscount();
+              }}
+            >
               Discount
             </button>
             <button
@@ -720,36 +720,43 @@ export default function App() {
               <div className="discount-panel">
                 {isEditingDiscount ? (
                   <>
-                <label htmlFor="discountInput">Enter Discount %:</label>
-                <input
-                  type="number"
-                  id="discountInput"
-                  placeholder="e.g. 10"
-                  className="discount-input"
-                  value={discountPercentage}
-                  onChange={(e) => setDiscountPercentage(Number(e.target.value))}
-                />
-                <br></br>
-                <br></br>
-                <button className="btn6r"  onClick={async() => {
-        console.log("Saved Discount:", discountPercentage);
-        await savediscount();
-        setIsEditingDiscount(false);
-      }}>Save</button>
-      </>
-                ):
-                (
+                    <label htmlFor="discountInput">Enter Discount %:</label>
+                    <input
+                      type="number"
+                      id="discountInput"
+                      placeholder="e.g. 10"
+                      className="discount-input"
+                      value={discountPercentage}
+                      onChange={(e) =>
+                        setDiscountPercentage(Number(e.target.value))
+                      }
+                    />
+                    <br></br>
+                    <br></br>
+                    <button
+                      className="btn6r"
+                      onClick={async () => {
+                        console.log("Saved Discount:", discountPercentage);
+                        await savediscount();
+                        setIsEditingDiscount(false);
+                      }}
+                    >
+                      Save
+                    </button>
+                  </>
+                ) : (
                   <>
-                   <p>
-          <strong>Saved Discount:</strong> {discountPercentage}%
-        </p>
-        <button
-          className="btn6r"
-          onClick={() => {setIsEditingDiscount(true);
-          }}
-        >
-          Edit
-        </button>
+                    <p>
+                      <strong>Saved Discount:</strong> {discountPercentage}%
+                    </p>
+                    <button
+                      className="btn6r"
+                      onClick={() => {
+                        setIsEditingDiscount(true);
+                      }}
+                    >
+                      Edit
+                    </button>
                   </>
                 )}
               </div>
@@ -763,7 +770,7 @@ export default function App() {
           </div>
         </main>
       </div>
-      <Footer />
+      {/* <Footer /> */}
       {(activeTab === "category" || activeTab === "cuisines") && (
         <ConfigModal
           isOpen={openModal}

@@ -892,13 +892,6 @@ const filterFns = {
   if (loading) {
     return (
       <div className="order-management-wrapper">
-        <HomeHeader
-          isAdminDashboard={true}
-          restaurantName={restaurantName}
-          adminEmail={adminEmail}
-          restaurant={restaurant}
-          onLogout={handleLogout}
-        />
         <div className="loading-container">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -924,13 +917,6 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
 
   return (
     <div className="order-management-wrapper">
-      <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        restaurant={restaurant}
-        onLogout={handleLogout}
-      />
 
       <main className="container-fluid mt-3">
         <div className="dashboard-container">
@@ -1466,7 +1452,7 @@ const canSave = activeCountForSave > 0 && !anyActiveInvalid;
 
 
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

@@ -302,7 +302,7 @@ const QRGenerator = ({ restaurant }) => {
       </div>
 
       {qrList.length > 0 && (
-        <div className="qr-nav-arrows d-flex justify-content-between mb-1">
+        <div className="qr-nav-arrows d-flex justify-content-between align-item-center mb-5 flex-column flex-md-row gap-2">
           <button
             className="btn btn-outline-secondary"
             disabled={currentIndex === 0}
@@ -378,13 +378,13 @@ export default function GenerateQR() {
 
   return (
     <>
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurant?.restaurantName}
         adminEmail={localStorage.getItem("adminEmail")}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
       <div className="generate-qr-wrapper">
         <TableManager 
           restaurant={restaurant} 
