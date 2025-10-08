@@ -4,8 +4,6 @@ import { jwtDecode } from "jwt-decode";
 import Footer from "../components/Footer";
 import { FaUserCircle } from "react-icons/fa";
 import { FcDataConfiguration } from "react-icons/fc";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
 import HomeHeader from "../components/HomeHeader"; 
 import { Helmet } from "react-helmet";
@@ -90,13 +88,13 @@ export default function AdminDashboard() {
 
       {/* Admin Header */}
 
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
       <main className="admin-dashboard-content container text-center mt-5">
         <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
         <p className="lead text-muted">
@@ -159,7 +157,7 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

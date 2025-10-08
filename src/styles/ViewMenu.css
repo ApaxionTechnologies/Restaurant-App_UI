@@ -295,18 +295,24 @@
   }
   
   .card-img-wrapper {
-    height: 160px;
+    height: 125px;
   }
+  .card-content {
+  gap: 0.1rem;
+}
   
 
   .btn-global {
     width: 100%;
+  padding: 6px 14px;
   }
 }
 
 @media (max-width: 480px) {
   .view-menu-page {
     padding: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
   
   .filter-row {

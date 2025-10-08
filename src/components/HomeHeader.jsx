@@ -5,10 +5,11 @@ import { BsPersonLock } from "react-icons/bs";
 import AdminLogin from "../pages/AdminLogin";
 import "../components/AdminLoginModal.css";
 import "./HomeHeader.css";
+import "../styles/DropDown.css";
 import { Home } from "lucide-react";
 import { useNotification } from "../context/Notification";
 import axios from "axios";
-import { getOrders } from '../services/apiService.js'
+import { getOrders } from "../services/apiService.js";
 export default function HomeHeader({
   isAdminDashboard = false,
   restaurant = null,
@@ -75,15 +76,13 @@ export default function HomeHeader({
     if (!restaurantId) return;
     setIsLoadingOrders(true);
     try {
-const data = await getOrders(); 
+      const data = await getOrders();
 
       if (data.success) {
-        const orders = (data.orders || [])
-          .slice(0, 5)
-          .map((order) => ({
-            orderNo: order.orderId || `ORD-${order.orderNo}`,
-            table: `T${order.tableNumber || "N/A"}`,
-          }));
+        const orders = (data.orders || []).slice(0, 5).map((order) => ({
+          orderNo: order.orderId || `ORD-${order.orderNo}`,
+          table: `T${order.tableNumber || "N/A"}`,
+        }));
         setRecentOrders(orders);
       } else {
         setRecentOrders([]);
@@ -97,6 +96,7 @@ const data = await getOrders();
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
+    setShowBellDropdown(false);
     setShowDropdownopen((prev) => {
       const willOpen = !prev;
       if (willOpen) {
@@ -109,6 +109,7 @@ const data = await getOrders();
 
   const handleBellClick = (e) => {
     e.stopPropagation();
+    setShowDropdownopen(false);
     setShowBellDropdown((prev) => {
       const willOpen = !prev;
       if (willOpen) {
@@ -120,7 +121,6 @@ const data = await getOrders();
       return willOpen;
     });
   };
-
 
   const handleOrderClick = () => {
     setShowBellDropdown(false);
@@ -212,68 +212,6 @@ const data = await getOrders();
   return (
     <>
      <audio ref={notificationSoundRef} src="/notification.mp3" preload="auto" />
-      <style>{`
-        .fb-dropdown {
-          background: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
-          padding: 10px 0;
-          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-          font-size: 14px;
-          color: #1c1e21;
-          border-left: 4px solid #1877f2;
-          max-height: 350px;
-          overflow-y: auto;
-          user-select: none;
-          transition: opacity 0.3s ease, transform 0.3s ease;
-          opacity: 1;
-          transform: translateY(0);
-          z-index: 99999;
-        }
-        .fb-dropdown.hidden {
-          opacity: 0;
-          transform: translateY(-15px);
-          pointer-events: none;
-        }
-        .fb-dropdown-item {
-          padding: 12px 20px;
-          cursor: pointer;
-          border-bottom: 1px solid #e9ebee;
-          display: flex;
-          flex-direction: column;
-          transition: background-color 0.15s ease;
-        }
-        .fb-dropdown-item:hover {
-          background-color: #f2f5f9;
-        }
-        .fb-dropdown-item strong {
-          font-weight: 600;
-          margin-bottom: 4px;
-          color: #050505;
-        }
-        .fb-dropdown-loading,
-        .fb-dropdown-empty {
-          padding: 14px 20px;
-          color: #65676b;
-          font-style: italic;
-          text-align: center;
-          user-select: none;
-        }
-        .fb-view-all {
-          text-align: center;
-          padding: 12px 20px;
-          cursor: pointer;
-          font-weight: 700;
-          color: #1877f2;
-          border-top: 1px solid #e9ebee;
-          user-select: none;
-          transition: background-color 0.2s ease;
-        }
-        .fb-view-all:hover {
-          background-color: #e7f3ff;
-        }
-      `}</style>
-
       <header
         className={`Home-Header ${scrolled ? "scrolled" : ""} ${
           isAdminDashboard ? "admin" : ""
@@ -427,7 +365,8 @@ const data = await getOrders();
               style={{ height: "50px", fontSize: "16px" }}
               onClick={() => setShowAdminModal(true)}
             >
-              <BsPersonLock style={{ color: "white", fontSize: "20px" }} /> Login
+              <BsPersonLock style={{ color: "white", fontSize: "20px" }} />{" "}
+              Login
             </button>
           )}
         </div>
@@ -437,13 +376,15 @@ const data = await getOrders();
       <div
         ref={dropdownRef}
         className={`fb-dropdown ${showDropdownopen ? "" : "hidden"}`}
-        style={{
-          position: "fixed",
-          borderRadius: "22px",
-          top: anchor.top,
-          left: anchor.left,
-          minWidth: anchor.minWidth || 210,
-        }}
+        style={
+          {
+            // position: "fixed",
+            // borderRadius: "22px",
+            // top: anchor.top,
+            // left: anchor.left,
+            // minWidth: anchor.minWidth || 210,
+          }
+        }
         onClick={(e) => e.stopPropagation()}
       >
         <div
@@ -484,10 +425,7 @@ const data = await getOrders();
       </div>
 
       {showAdminModal && (
-        <div
-          className="modal-overlay"
-          onClick={() => setShowAdminModal(false)}
-        >
+        <div className="modal-overlay" onClick={() => setShowAdminModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <AdminLogin onClose={() => setShowAdminModal(false)} />
           </div>
