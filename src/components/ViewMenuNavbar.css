@@ -1,9 +1,9 @@
-/* Base navbar */
+
 .vm-navbar {
   background: #ffffff;
-height: 80px; /* fixed height */
-  min-height: 80px; /* ensure not smaller */
-  max-height: 80px; /* ensure not larger */
+height: 80px; 
+  min-height: 80px; 
+  max-height: 80px; 
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -20,7 +20,7 @@ height: 80px; /* fixed height */
   height: 100%;
 }
 
-/* left area: hamburger */
+
 .vm-left {
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@ height: 80px; /* fixed height */
   justify-content: center;
 }
 
-/* brand/title in center for small header look */
+
 .vm-brand {
   flex: 1;
   text-transform: uppercase;
@@ -51,7 +51,7 @@ height: 80px; /* fixed height */
   align-items: center;
 }
 
-/* nav list on right */
+
 .vm-nav {
   display: flex;
   gap: 16px;
@@ -63,10 +63,10 @@ height: 80px; /* fixed height */
   flex: 0 0 auto;
 }
 
-/* hide desktop nav items on small screens (we use vm-nav-desktop-only) */
+
 .vm-nav-desktop-only { display: inline-flex; }
 
-/* nav-link */
+
 .vm-nav-link {
   background: transparent;
   border: none;
@@ -80,7 +80,7 @@ height: 80px; /* fixed height */
   font-weight: 500;
 }
 
-/* active underline inside navbar */
+
 .vm-nav-link.active {
   color: #0b76ff;
   font-weight: 600;
@@ -90,14 +90,14 @@ height: 80px; /* fixed height */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 6px; /* positive so inside navbar */
+  bottom: 6px; 
   width: 60%;
   height: 3px;
   background: #0b76ff;
   border-radius: 2px;
 }
 
-/* divider */
+
 .vm-divider {
   width: 1px;
   height: 28px;
@@ -109,28 +109,28 @@ height: 80px; /* fixed height */
   border-radius: 1px;
 }
 
-/* cart icon styling */
+
 .icon-btn { padding: 8px; }
 
-/* cart icon size */
+
 .cart-icon { font-size: 18px; color: #222; }
 
 
-/* MOBILE: hide desktop nav items and keep hamburger visible */
+
 @media (max-width: 720px) {
   .vm-nav-desktop-only { display: none; }
-  .vm-divider { display: none; } /* hide divider on small screens */
+  .vm-divider { display: none; } 
   .vm-brand { order: 2; font-size: 13px; }
   .vm-left { order: 1; }
   .vm-nav { order: 3; gap: 10px; }
 }
 
-/* MOBILE PANEL (slide-down) */
+
 .vm-mobile-panel {
   position: absolute;
   left: 0;
   right: 0;
-  top: 70px; /* just below navbar */
+  top: 70px; 
   background: #ffffff;
   border-bottom: 1px solid rgba(0,0,0,0.06);
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
@@ -142,13 +142,13 @@ height: 80px; /* fixed height */
   max-height: 0;
 }
 
-/* when open */
+
 .vm-mobile-panel.open {
   transform: scaleY(1);
   max-height: 240px;
 }
 
-/* list inside mobile panel */
+
 .vm-mobile-list {
   list-style: none;
   margin: 0;
@@ -158,12 +158,12 @@ height: 80px; /* fixed height */
   gap: 6px;
 }
 
-/* mobile item */
+
 .vm-mobile-item {
   display: flex;
 }
 
-/* mobile link button */
+
 .vm-mobile-link {
   width: 100%;
   text-align: left;
@@ -178,7 +178,7 @@ height: 80px; /* fixed height */
   color: #222;
 }
 
-/* active mobile underline (inside the mobile panel, below text) */
+
 .vm-mobile-link.active {
   color: #0b76ff;
   font-weight: 600;
@@ -194,12 +194,12 @@ height: 80px; /* fixed height */
   border-radius: 3px;
 }
 
-/* small screen adjustments */
+
 @media (max-width: 420px) {
   .vm-mobile-link { padding: 10px 8px; font-size: 14px; }
   .vm-hamburger { font-size: 18px; padding: 6px; }
 }
-/* Hide hamburger and brand on larger screens (>=721px) */
+
 @media (min-width: 721px) {
   .vm-hamburger,
   .vm-brand {
@@ -210,7 +210,7 @@ height: 80px; /* fixed height */
   }
 }
 
-/* Ensure visible on small screens (optional) */
+
 @media (max-width: 720px) {
   .vm-hamburger,
   .vm-brand {
@@ -219,11 +219,11 @@ height: 80px; /* fixed height */
 }
 .vm-nav-link,
 .vm-mobile-link {
-  text-decoration: none;       /* removes underline */
-  color: inherit;              /* keep text color from parent */
+  text-decoration: none;       
+  color: inherit;              
 }
 
 .vm-nav-link:hover,
 .vm-mobile-link:hover {
-  text-decoration: none;       /* hover pe bhi underline hide */
+  text-decoration: none;       
 }

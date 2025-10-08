@@ -15,9 +15,9 @@ export const NotificationProvider = ({ children }) => {
   const { restaurantId } = useContext(AuthContext);
   const [notificationCount, setNotificationCount] = useState(0);
 
-  // Fetch unseen order count from backend
+
   const fetchNotificationCount = useCallback(async () => {
-    if (!restaurantId) return;  // Skip if no restaurantId available
+    if (!restaurantId) return;  
 
     try {
       const res = await fetch(`http://localhost:5001/api/orders/unseen-count?restaurantId=${restaurantId}`);
@@ -34,7 +34,7 @@ export const NotificationProvider = ({ children }) => {
     }
   }, [restaurantId]);
 
-  // Mark all as seen
+ 
   const clearNotifications = useCallback(async () => {
     try {
       await fetch("http://localhost:5001/api/orders/mark-seen", { method: "PATCH" });
@@ -44,17 +44,16 @@ export const NotificationProvider = ({ children }) => {
     }
   }, []);
 
-  // Fetch once on load + auto-poll every 30 seconds
+  
   useEffect(() => {
-    if (!restaurantId) return;  // Only fetch if restaurantId exists
-
-    fetchNotificationCount();  // Initial fetch
+    if (!restaurantId) return;  
+    fetchNotificationCount();  
 
     const interval = setInterval(() => {
       fetchNotificationCount();
-    }, 30000);  // Poll every 30 sec
+    }, 30000);  
 
-    return () => clearInterval(interval);  // Cleanup on unmount
+    return () => clearInterval(interval);  
   }, [fetchNotificationCount, restaurantId]);
 
   const value = {

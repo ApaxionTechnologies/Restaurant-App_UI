@@ -115,7 +115,7 @@ const [billPreview, setBillPreview] = useState({
 });
 
 useEffect(() => {
-  // clear old timer
+ 
   if (billPreviewTimer.current) clearTimeout(billPreviewTimer.current);
 
   billPreviewTimer.current = setTimeout(async () => {
@@ -126,7 +126,7 @@ useEffect(() => {
         menuItemId: it.menuItemId || it._id?.toString(),
         quantity: Number(it.qty ?? it.quantity ?? 1)
       }))
-      .filter(it => it.menuItemId); // drop items without menuItemId
+      .filter(it => it.menuItemId); 
 
     if (normalized.length === 0) {
       setOrderTotal(0);
@@ -142,13 +142,13 @@ useEffect(() => {
     }
 
     try {
-      // backend call
+     
       const bill = await calculateBillPreview(normalized);
-      console.log("Backend bill result:", bill); // debug
+      console.log("Backend bill result:", bill); 
 
       setOrderTotal(Number(bill.total ?? bill.totalAmount ?? 0));
 
-      // Save full billPreview for breakdown
+      
       setBillPreview({
         subtotal: bill.subtotal ?? 0,
         totalDiscount: bill.totalDiscount ?? 0,
@@ -170,7 +170,7 @@ useEffect(() => {
         total: 0
       });
     }
-  }, 300); // debounce 300ms
+  }, 300); 
 
   return () => {
     if (billPreviewTimer.current) clearTimeout(billPreviewTimer.current);
@@ -193,7 +193,7 @@ useEffect(() => {
 const handleEditOrder = async (order) => {
   if (!order || !order.items) return;
 
-  // Map each order item to correct menuItemId using menuList
+  
   const cloned = order.items.map(item => {
     const menuItem = menuList.find(m => 
       (m.name || "").toLowerCase() === (item.name || "").toLowerCase()
@@ -211,7 +211,7 @@ const handleEditOrder = async (order) => {
   setEditedItems(cloned);
   setIsEditing(true);
 
-  // Only calculate if we found valid menuItemIds
+  
   const normalized = cloned
     .filter(it => it.status !== "cancelled" && it.menuItemId)
     .map(it => ({
@@ -325,7 +325,7 @@ useEffect(() => {
 
     const exact = menuList.find(m => (m.name || "").toLowerCase() === name.toLowerCase());
 
-    // duplicate detection across editedItems
+    
     const duplicateIndex = editedItems.findIndex((x, j) => j !== idx && (x.name || "").toLowerCase() === name.toLowerCase());
     if (duplicateIndex !== -1) {
       return { ...it, nameError: "This item is already added in the order. Increase its quantity instead." };
@@ -350,22 +350,22 @@ useEffect(() => {
 const handleRemoveItem = async (index) => {
   if (!editingOrder) return;
 
-  // Clone current items & remove selected index
+  
   const updatedItems = [...editedItems];
   updatedItems.splice(index, 1);
 
-  // Active items = jo cancelled nahi hai aur menuItemId present hai
+  
   const activeItems = updatedItems.filter(it => it.menuItemId && it.status !== "cancelled");
 
-  // 🟢 Case 1: Last item tha => poora order delete
+  
   if (activeItems.length === 0) {
     try {
       await deleteOrder(editingOrder.id);
-      setEditedItems([]); // Clear items
-      setEditingOrder(null); // Stop editing
-      setOrders(prev => prev.filter(o => o.id !== editingOrder.id)); // UI se hatao
+      setEditedItems([]); 
+      setEditingOrder(null); 
+      setOrders(prev => prev.filter(o => o.id !== editingOrder.id)); 
       toast("Order deleted successfully.");
-      handleCancelEdit(); // close edit dialog if open
+      handleCancelEdit(); 
     } catch (err) {
       console.error("Failed to delete order:", err);
       toast("Failed to delete order. Please try again.");
@@ -373,7 +373,7 @@ const handleRemoveItem = async (index) => {
     return;
   }
 
-  // 🟢 Case 2: Kuch items bache hai => Update order
+
   try {
     const sanitizedItems = activeItems.map(it => ({
       menuItemId: it.menuItemId,
@@ -383,13 +383,13 @@ const handleRemoveItem = async (index) => {
     await updateOrderItems(editingOrder.id, sanitizedItems);
     setEditedItems(updatedItems);
 
-    // Recalculate bill preview only if there are items
+   
     let bill = { items: [], subtotal: 0, total: 0, totalGst: 0, cgst: 0, sgst: 0, totalDiscount: 0 };
     if (sanitizedItems.length > 0) {
       bill = await calculateBillPreview(sanitizedItems);
     }
 
-    // Update orders in state
+  
     const updatedOrders = orders.map(o => {
       if (o.id === editingOrder.id) {
         return {
@@ -401,7 +401,7 @@ const handleRemoveItem = async (index) => {
           sgst: bill.sgst,
           cgst: bill.cgst,
           totalAmount: bill.total,
-          status: o.status // preserve existing status
+          status: o.status 
         };
       }
       return o;

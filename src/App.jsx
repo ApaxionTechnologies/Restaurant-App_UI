@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-// ✅ Pages
+
 import HomePage from "./pages/HomePage";
 import RegisterRestaurant from "./pages/RegisterRestaurant";
 import AdminLogin from "./pages/AdminLogin";
@@ -15,9 +15,9 @@ import EditRestaurantProfile from "./pages/EditRestaurantProfile";
 import ResetPasswordPage from "./pages/ResetPasswordForm";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
 
-// Components
+
 import TaxSlabManagement from "./components/TaxSlabManagement";
-// ✅ Components
+
 import AddMenuItem from "./components/AddMenuItem";
 import QRScanner from "./components/QRScanner";
 import TableManager from "./components/TableManager";
@@ -31,20 +31,16 @@ import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { RestaurantProvider } from "./context/RestaurantContext";
 
-// Global Components
-// import HomeHeader from "./components/HomeHeader";
-// import Footer from "./components/Footer";
 
-// Styles
 import { NotificationProvider } from './context/Notification'
 import { AuthProvider } from "./context/AuthContext";
-// ✅ Styles
+
 import "./styles/global.css";
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
 
 import './styles/ViewMenu.css';
-// import "./styles/theme.css";
+
 
 import { Toaster } from "react-hot-toast";
 import Config from "./pages/config/Config";
@@ -88,13 +84,13 @@ export default function App() {
          
           <Route path="/scanner" element={<ScannerPage />} />
 
-          {/* ✅ Restaurant & Admin Routes */}
+         
           <Route path="/registerrestaurant" element={<RegisterRestaurant />} />
           <Route path="/admin-login" element={<AdminLogin />} />             
 <Route path ="/edit-restaurant-profile" element={<EditRestaurantProfile/>}/>
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-          {/* Protected Admin Dashboard */}
+          
           <Route
             path="/admin-dashboard"
             element={
@@ -104,7 +100,7 @@ export default function App() {
             }
           />
 
-        {/* ✅ Menu & Admin Components */}
+        
         <Route path="/add-item" element={<AddMenuItem />} /> 
         <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
 
@@ -114,11 +110,11 @@ export default function App() {
         <Route path="/current-menu" element={<CurrentMenu />} />
         <Route path="/order-management" element={<OrderManagement />} />
         <Route path="/tax-management" element={<TaxSlabManagement />} />
-          {/* ✅ Customer QR Options */}
+          
           <Route path="/qr-scanner" element={<QRScanner />} />
           <Route path="/upload-qr" element={<QRFileUploader />} />
 
-        {/* ✅ Customer Menu & Order */}
+        
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/order-success" element={<OrderSuccess />} />
@@ -126,10 +122,10 @@ export default function App() {
         <Route path="/add-bulk-items" element={<BulkItemUpload />} />
         <Route path="/config" element={<Config />} />
 
-              {/* Admin Manage Tables */}
+              
               <Route path="/table-manager" element={<TableManager />} />
 
-          {/* ✅ Redirect unknown routes */}
+          
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
        

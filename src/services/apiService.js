@@ -80,16 +80,7 @@ export const addMenuItem = async (data) => {
   }
 };
 
-// export const fetchMe = async (token) => {
-//   try {
-//     const res = await API.get("/auth/me", {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     return res.data;
-//   } catch (error) {
-//     throw error.response?.data || error.message;
-//   }
-// };
+
 
 export const logoutRestaurant = async () => {
   try {
@@ -224,7 +215,7 @@ export const resetPassword = async (token, newPassword) => {
 };
 
 
-// Add new tax slab
+
 export const addTaxSlab = async (slabData) => {
   try {
     const res = await API.post("/tax-slabs", slabData, {
@@ -236,7 +227,7 @@ export const addTaxSlab = async (slabData) => {
   }
 };
 
-// Get all tax slabs
+
 export const getTaxSlabs = async () => {
   try {
     const res = await API.get("/tax-slabs");
@@ -247,7 +238,7 @@ export const getTaxSlabs = async () => {
 };
     
    
-// Update a tax slab
+
 export const updateTaxSlab = async (slabId, slabData) => {
   try {
     const res = await API.put(`/tax-slabs/${slabId}`, slabData, {

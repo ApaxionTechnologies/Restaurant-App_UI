@@ -31,7 +31,7 @@ const AddMenuItem = () => {
     status: "Published",
     discount: "",
     vegType: "veg",
-    taxType: "exclusive", // 🔹 Default
+    taxType: "exclusive", 
   });
 
   const [imageFile, setImageFile] = useState(null);
