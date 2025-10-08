@@ -19,10 +19,8 @@ import GenerateMenuQR from "./pages/GenerateMenuQR";
 import TaxSlabManagement from "./components/TaxSlabManagement";
 
 import AddMenuItem from "./components/AddMenuItem";
-import QRScanner from "./components/QRScanner";
 import TableManager from "./components/TableManager";
 import ViewMenu from "./components/ViewMenu";
-import QRFileUploader from "./QRFileUploader";
 import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
@@ -110,9 +108,6 @@ export default function App() {
         <Route path="/current-menu" element={<CurrentMenu />} />
         <Route path="/order-management" element={<OrderManagement />} />
         <Route path="/tax-management" element={<TaxSlabManagement />} />
-          
-          <Route path="/qr-scanner" element={<QRScanner />} />
-          <Route path="/upload-qr" element={<QRFileUploader />} />
 
         
         <Route path="/menu" element={<MenuPage />} />
