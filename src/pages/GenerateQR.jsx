@@ -333,85 +333,8 @@ export default function GenerateQR() {
         ))}
       </div>
 
-      {/* <Footer /> */}
+     
     </>
   );
 }
 
-// import React, { useState, useRef } from "react";
-// import { QRCodeCanvas } from "qrcode.react";
-// import html2canvas from "html2canvas";
-// import "../styles/GenerateQR.css";
-
-// export default function GenerateTableQRPage() {
-//   const [tableNumber, setTableNumber] = useState("");
-//   const [tables, setTables] = useState([]);
-//   const [restaurantName] = useState("My Restaurant");
-//   const qrRefs = useRef({});
-
-//   const handleAddTable = () => {
-//     if (!tableNumber.trim()) return;
-//     setTables((prev) => [...prev, tableNumber.trim()]);
-//     setTableNumber("");
-//   };
-
-//   const handleDownload = async (table) => {
-//     const canvas = await html2canvas(qrRefs.current[table], {
-//       backgroundColor: null,
-//       useCORS: true,
-//       scale: 3,
-//     });
-//     const link = document.createElement("a");
-//     link.href = canvas.toDataURL("image/png");
-//     link.download = `Table-${table}-QR.png`;
-//     link.click();
-//   };
-
-//   return (
-//     <div className="qr-page">
-//       <h1>Generate Table QR Codes</h1>
-
-//       <div className="qr-input-section">
-//         <input
-//           type="text"
-//           value={tableNumber}
-//           onChange={(e) => setTableNumber(e.target.value)}
-//           placeholder="Enter Table Number"
-//         />
-//         <button onClick={handleAddTable}>Add Table</button>
-//       </div>
-
-//       <div className="qr-grid">
-//         {tables.map((table) => (
-//           <div key={table} className="qr-card-wrapper">
-//             <div
-//               className="qr-card"
-//               ref={(el) => (qrRefs.current[table] = el)}
-//             >
-//               <div className="qr-header">
-//                 <img src="/food1.png" alt="Food 1" className="food-img" />
-//                 <h2 className="restaurant-name">{restaurantName}</h2>
-//                 <img src="/food2.png" alt="Food 2" className="food-img" />
-//               </div>
-//               <QRCodeCanvas
-//                 value={`https://your-domain.com/order?table=${table}`}
-//                 size={180}
-//                 bgColor="white"
-//                 fgColor="#000"
-//                 level="H"
-//                 includeMargin={true}
-//               />
-//               <h3 className="table-label">Table {table}</h3>
-//             </div>
-//             <button
-//               className="download-btn"
-//               onClick={() => handleDownload(table)}
-//             >
-//               Download QR
-//             </button>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }

@@ -148,7 +148,7 @@
 
 .stats-content h3 {
   margin: 0;
-  font-size: 20px;                 /* reduced font-size */
+  font-size: 20px;                
   font-weight: 700;
   background: linear-gradient(135deg, #1e293b, #475569);
   -webkit-background-clip: text;
@@ -965,7 +965,7 @@
 
 .table-responsive { overflow-x: auto; }
 
-/* Small accessibility / focus state */
+
 .orders-table thead tr:nth-child(2) th input:focus,
 .orders-table thead tr:nth-child(2) th select:focus {
   outline: none;

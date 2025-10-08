@@ -14,7 +14,7 @@
   border-bottom: none; 
   box-shadow: none !important;
   border-bottom: none !important;                
-  /* transition: background 0.3s ease, box-shadow 0.3s ease, border-bottom 0.3s ease; */
+  
 }
 
 @media (max-width: 480px) {
@@ -24,7 +24,7 @@
 
 }
 
-/* Scrolled state */
+
 .Home-Header.scrolled {
   background: #ffffff;                   
   box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
