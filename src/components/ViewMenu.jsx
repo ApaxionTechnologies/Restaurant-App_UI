@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import Footer from "../components/Footer.jsx";
@@ -189,17 +190,17 @@ const ViewMenu = () => {
 
  return (
     <>
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
 
       <div className="view-menu-page">
         <div className="view-menu-header">
-          <div className="filter-row">
+          <div className="d-flex gap-2">
             {["All", "Published", "Draft"].map(option => (
               <button
                 key={option}
@@ -252,7 +253,7 @@ const ViewMenu = () => {
                   <img
                     src={item.image}
                     alt={item.name}
-                    onError={(e) => (e.target.src = "/placeholder-food.jpg")}
+                    // onError={(e) => (e.target.src = "/placeholder-food.jpg")}
                   />
                   <button
                     className="btn-delete-circular"
@@ -309,7 +310,7 @@ const ViewMenu = () => {
         </div>
       </div>
 
-      <footer className="footer"><Footer /></footer>
+      {/* <footer className="footer"><Footer /></footer> */}
     </>
   );
 };

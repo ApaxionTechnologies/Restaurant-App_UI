@@ -12,9 +12,10 @@ export default function HomePage() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   useEffect(() => {
     document.body.classList.add("home-page");
-    document.documentElement.classList.add("home-page"); 
-
+    document.documentElement.classList.add("home-page"); // ✅ add to <html>
+    
     return () => {
+      document.documentElement.classList.remove("home-page");
       document.body.classList.remove("home-page");
     };
   }, []);

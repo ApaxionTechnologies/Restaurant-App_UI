@@ -386,13 +386,13 @@ export const BulkItemUpload = () => {
 
   return (
     <>
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
       <div
         style={{
           padding: "24px",
@@ -615,7 +615,7 @@ export const BulkItemUpload = () => {
           </div>
         )}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

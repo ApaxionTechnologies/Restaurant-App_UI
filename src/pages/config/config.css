@@ -2,7 +2,7 @@
 
 .app {
   display: flex;
-  height: 95vh;
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -55,7 +55,7 @@
 .menuToggle {
   display: none;
   position: fixed;
-  top: 20px;
+  top: 70px;
   left: 20px;
   z-index: 1000;
   background: #3b82f6;

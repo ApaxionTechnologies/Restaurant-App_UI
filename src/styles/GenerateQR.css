@@ -295,6 +295,10 @@ label {
     order: 2;
     margin-top: 10px;
   }
+
+  .qr-nav-arrows button {
+  font-size: 0.7rem;
+}
 }
 
 @media (max-width: 480px) {

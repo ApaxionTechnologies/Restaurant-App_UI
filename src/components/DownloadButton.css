@@ -58,6 +58,7 @@
 .l1 {
   color: #007bff;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .l1:hover {
