@@ -19,7 +19,7 @@ export const DownloadButton = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-    // Generate XLSX file
+    
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
       type: "array",
@@ -28,7 +28,7 @@ export const DownloadButton = () => {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
-    // Trigger download without file-saver
+    
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

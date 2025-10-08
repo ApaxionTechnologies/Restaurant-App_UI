@@ -49,7 +49,7 @@ const AddMenuItem = () => {
   const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
   const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
 
-  // 🔹 Hardcoded GST Slabs per category
+  
   const categoryTaxMap = {
     Starter: 5,
     "Main Course": 12,
@@ -158,7 +158,7 @@ const AddMenuItem = () => {
       return;
     }
 
-    // 🔹 Select GST rate based on category
+    
     const gstRate = categoryTaxMap[formData.category] || 5;
 
     const data = new FormData();
@@ -172,7 +172,7 @@ const AddMenuItem = () => {
     data.append("status", formData.status);
     data.append("type", formData.vegType.toLowerCase());
     data.append("discount", formData.discount || "");
-    data.append("gstRate", gstRate); // 🔹 Auto GST from category
+    data.append("gstRate", gstRate); 
     data.append("taxType", formData.taxType);
     if (imageFile) data.append("image", imageFile);
  
@@ -257,7 +257,7 @@ const AddMenuItem = () => {
             {formError && <div className="toast toast-error">{formError}</div>}
 
             <form onSubmit={handleSubmit} className="add-menu-form" noValidate>
-              {/* Item Name & Ingredients */}
+              
               <div className="form-grid">
                 <div className="field-wrappers">
                   <label>Item Name</label>
@@ -283,7 +283,7 @@ const AddMenuItem = () => {
     </div>
   </div>
 
-              {/* Category & Cuisine */}
+              
               <div className="form-grid">
                 <div>
                   <label>Category</label>
@@ -317,7 +317,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
-              {/* Type & TaxType together as form-grid */}
+             
               <div className="form-grid">
                 <div>
                   <label>Type</label>
@@ -367,7 +367,7 @@ const AddMenuItem = () => {
                 </div>
               </div>
 
-              {/* Price & Discount */}
+             
               <div className="form-grid">
                 <div className="field-wrappers">
                   <label>Price (₹)</label>
@@ -394,7 +394,7 @@ const AddMenuItem = () => {
     </div>
   </div>
 
-       {/* Time to Prepare & Description */}
+       
         <div className="field-wrappers">
         <label>Time to Prepare (mins)</label>
           <input

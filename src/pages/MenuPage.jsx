@@ -246,18 +246,17 @@ export default function MenuPage() {
     };
   }, [isMobile]);
 
-  // Add to cart handler using Redux
   const handleAddToCart = (item) => {
    dispatch(addToCart({
   name: item.name,
-  menuItemId: item._id, // ✅ important
+  menuItemId: item._id, 
   price: item.price,
   qty: 1
 }));
 
   };
 
-  // Update quantity handler using Redux
+  
   const handleUpdateQty = (name, change) => {
     dispatch(updateQty({ name, change }));
   };

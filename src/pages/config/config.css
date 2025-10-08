@@ -1,12 +1,12 @@
 
-/* Dashboard Layout */
+
 .app {
   display: flex;
   height: 95vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Sidebar Navigation */
+
 .sideNav {
   width: 240px;
   background: #ffffff;
@@ -15,25 +15,7 @@
   padding: 20px 0;
   transition: transform 0.3s ease;
 }
-/* .discount-panel {
-  position: fixed;
-  top: 70px;
-  right: 0;
-  width: 300px;
-  height: 50%;
-  background: #fff;
-  border-left: 2px solid #ddd;
-  padding: 20px;
-  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
-}
 
-.discount-input {
-  width: 100%;
-  padding: 8px;
-  margin: 12px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-} */
 
 
 .sideNav.hidden {
@@ -69,7 +51,7 @@
   color: white;
 }
 
-/* Mobile Menu Toggle */
+
 .menuToggle {
   display: none;
   position: fixed;
@@ -100,7 +82,7 @@
   display: block;
 }
 
-/* Main Content */
+
 .mainContent {
   flex: 1;
   padding: 20px;
@@ -125,7 +107,7 @@
   font-weight: 600;
 }
 
-/* Controls */
+
 .controls {
   display: flex;
   gap: 16px;
@@ -173,18 +155,18 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Table */
+
 .tableContainer {
   height: 90vh;
   min-height: 450px;
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: auto; /* better than scroll */
+  overflow: auto; 
   border: 1px solid #e5e7eb;
 
-  /* added */
-  padding: 16px; /* equal padding */
+  
+  padding: 16px; 
   box-sizing: border-box;
 }
 
@@ -231,7 +213,7 @@
   border-right: none;
 }
 
-/* Status Toggle */
+
 .statusToggle {
   position: relative;
   display: inline-block;
@@ -278,7 +260,7 @@ input:checked + .slider:before {
   transform: translateX(24px);
 }
 
-/* Delete Button */
+
 .btnDel {
   background: #ef4444;
   color: white;
@@ -310,7 +292,7 @@ input:checked + .slider:before {
   background: #2629dc;
 }
 
-/* Status Badges */
+
 .statusBadge {
   display: inline-block;
   padding: 4px 8px;
@@ -329,7 +311,7 @@ input:checked + .slider:before {
   color: #991b1b;
 }
 
-/* Common input & select styling */
+
 .select-input {
   padding: 14px 10px;
   font-size: 14px;
@@ -343,13 +325,13 @@ input:checked + .slider:before {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Focus effect */
+
 .select-input:focus {
-  border-color: #3b82f6; /* Tailwind blue-500 */
+  border-color: #3b82f6; 
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
 }
 
-/* Make select consistent */
+
 .select-input select {
   appearance: none;
   -webkit-appearance: none;
@@ -357,12 +339,11 @@ input:checked + .slider:before {
   background: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 10px center;
   background-color: #fff;
   background-size: 14px;
-  padding-right: 32px; /* space for dropdown arrow */
+  padding-right: 32px; 
 }
 
 
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .app {
     position: relative;
@@ -456,7 +437,7 @@ input:checked + .slider:before {
   }
 }
 
-/* Pagination */
+
 .pagination {
   display: flex;
   justify-content: space-between;
@@ -565,7 +546,7 @@ input:checked + .slider:before {
     align-self: flex-end;
 }
 
-/* Desktop responsive styles */
+
 @media (min-width: 768px) {
     .flex7y {
         flex-direction: row;
@@ -584,7 +565,7 @@ input:checked + .slider:before {
     }
 }
 
-/* Mobile Responsive */
+
 @media (max-width: 768px) {
   .pagination {
     flex-direction: column;
@@ -631,7 +612,7 @@ input:checked + .slider:before {
   }
 }
 
-/* Tablet */
+
 @media (min-width: 769px) and (max-width: 1024px) {
   .sideNav {
     width: 200px;
