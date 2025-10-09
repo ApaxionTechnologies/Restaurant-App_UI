@@ -1,8 +1,5 @@
-
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import Footer from "../components/Footer.jsx";
-import HomeHeader from "../components/HomeHeader.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import * as bootstrap from "bootstrap";
@@ -10,7 +7,12 @@ import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
 import { Trash2, X, Search } from "lucide-react";
-import { getMyRestaurant, getMenuByRestaurant, updateMenuStatus, deleteMenuItem } from "../services/apiService.js";
+import {
+  getMyRestaurant,
+  getMenuByRestaurant,
+  updateMenuStatus,
+  deleteMenuItem,
+} from "../services/apiService.js";
 
 import { useConfirmationModal } from "../context/ConfirmationModalContext";
 const ViewMenu = () => {
@@ -29,13 +31,36 @@ const ViewMenu = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { showModal } = useConfirmationModal();
-  
+  const [scrolled, setScrolled] = useState(() => {
+    return sessionStorage.getItem("headerScrolled") === "true";
+  });
+
   useEffect(() => {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltips = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
-    return () => tooltips.forEach(tt => tt.dispose());
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+    const tooltips = [...tooltipTriggerList].map(
+      (el) => new bootstrap.Tooltip(el)
+    );
+    return () => tooltips.forEach((tt) => tt.dispose());
   }, [menuItems]);
-  
+
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     if (!storedEmail) navigate("/");
@@ -52,17 +77,17 @@ const ViewMenu = () => {
     const { updatedItem, newItem } = location.state;
 
     if (updatedItem) {
-      setMenuItems(prevItems =>
-        prevItems.map(item =>
+      setMenuItems((prevItems) =>
+        prevItems.map((item) =>
           item._id === updatedItem._id ? updatedItem : item
         )
       );
     }
 
     if (newItem) {
-      setMenuItems(prevItems => [...prevItems, newItem]);
+      setMenuItems((prevItems) => [...prevItems, newItem]);
     }
-    
+
     if (updatedItem || newItem) {
       navigate(location.pathname, { replace: true, state: {} });
     }
@@ -81,18 +106,19 @@ const ViewMenu = () => {
 
       const [restaurantRes, menuRes] = await Promise.all([
         getMyRestaurant(),
-        getMenuByRestaurant(idToUse)
+        getMenuByRestaurant(idToUse),
       ]);
 
       setRestaurant(restaurantRes.restaurant);
-      if (restaurantRes.restaurant?._id) localStorage.setItem("restaurantId", restaurantRes.restaurant._id);
+      if (restaurantRes.restaurant?._id)
+        localStorage.setItem("restaurantId", restaurantRes.restaurant._id);
 
       const fetchedMenu = (menuRes.menu || [])
-        .filter(item => item._id)
-        .map(item => ({
+        .filter((item) => item._id)
+        .map((item) => ({
           ...item,
           statusNormalized: (item.status || "draft").toLowerCase(),
-          status: item.status === "Published" ? "Published" : "Draft"
+          status: item.status === "Published" ? "Published" : "Draft",
         }));
 
       setMenuItems(fetchedMenu);
@@ -112,14 +138,14 @@ const ViewMenu = () => {
       confirmText: "Delete",
       cancelText: "Cancel",
       type: "danger",
-      onConfirm: () => handleDeleteConfirm(menuItemId)
+      onConfirm: () => handleDeleteConfirm(menuItemId),
     });
   };
 
   const handleDeleteConfirm = async (menuItemId) => {
     try {
       await deleteMenuItem(menuItemId);
-      setMenuItems(prev => prev.filter(m => m._id !== menuItemId));
+      setMenuItems((prev) => prev.filter((m) => m._id !== menuItemId));
       toast.success("Item deleted successfully!");
     } catch (err) {
       toast.error(`Delete failed: ${err.message}`);
@@ -128,16 +154,22 @@ const ViewMenu = () => {
 
   const handleStatusChange = async (menuItemId, newStatus) => {
     if (!menuItemId) {
-      toast.error("This menu item doesn't have a valid ID. Please refresh and try again.");
+      toast.error(
+        "This menu item doesn't have a valid ID. Please refresh and try again."
+      );
       return;
     }
     try {
       await updateMenuStatus(menuItemId, newStatus);
 
-      setMenuItems(prev =>
-        prev.map(item =>
+      setMenuItems((prev) =>
+        prev.map((item) =>
           item._id === menuItemId
-            ? { ...item, status: newStatus, statusNormalized: newStatus.toLowerCase() }
+            ? {
+                ...item,
+                status: newStatus,
+                statusNormalized: newStatus.toLowerCase(),
+              }
             : item
         )
       );
@@ -145,7 +177,11 @@ const ViewMenu = () => {
       toast.success(`Item moved to ${newStatus} successfully!`);
     } catch (err) {
       console.error("Failed to change status:", err);
-      toast.error(`Failed to update item status. ${err.response?.data?.message || err.message}`);
+      toast.error(
+        `Failed to update item status. ${
+          err.response?.data?.message || err.message
+        }`
+      );
     }
   };
 
@@ -153,7 +189,7 @@ const ViewMenu = () => {
     localStorage.removeItem("adminEmail");
     localStorage.removeItem("restaurantName");
     localStorage.removeItem("token");
-    localStorage.removeItem("restaurantId")
+    localStorage.removeItem("restaurantId");
     navigate("/");
   };
 
@@ -168,9 +204,9 @@ const ViewMenu = () => {
   // Search function to filter items based on query
   const searchItems = useMemo(() => {
     if (!searchQuery) return menuItems;
-    
+
     const query = searchQuery.toLowerCase();
-    return menuItems.filter(item => {
+    return menuItems.filter((item) => {
       return (
         item.name?.toLowerCase().includes(query) ||
         item.description?.toLowerCase().includes(query) ||
@@ -183,30 +219,32 @@ const ViewMenu = () => {
     });
   }, [menuItems, searchQuery]);
 
-  const filteredItems = searchItems.filter(item => filter === "All" || item.status === filter);
+  const filteredItems = searchItems.filter(
+    (item) => filter === "All" || item.status === filter
+  );
 
   if (loading) return <div className="loading">Loading menu...</div>;
   if (error) return <div className="error">{error}</div>;
 
- return (
+  return (
     <>
-      {}
-
       <div className="view-menu-page">
-        <div className="view-menu-header">
+        <div className={`view-menu-header ${scrolled ? "scrolled" : ""}`}>
           <div className="d-flex gap-2">
-            {["All", "Published", "Draft"].map(option => (
+            {["All", "Published", "Draft"].map((option) => (
               <button
                 key={option}
                 onClick={() => setFilter(option)}
-                className={`btn-global filter-btn ${filter === option ? "active" : ""}`}
+                className={`btn-global filter-btn ${
+                  filter === option ? "active" : ""
+                } ${scrolled ? "btn-scrolled" : ""}`}
               >
                 {option}
               </button>
             ))}
           </div>
-          
-        
+
+          {/* Search Bar */}
           <div className="search-container">
             <Search size={18} className="search-icon" />
             <input
@@ -232,13 +270,14 @@ const ViewMenu = () => {
           {filteredItems.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-icon">🍽️</div>
-             
+
               <p>
-                {searchQuery 
-                  ? `No items match your search for "${searchQuery}"` 
-                  : `No ${filter === "All" ? "" : filter.toLowerCase() + " "}items available`}
+                {searchQuery
+                  ? `No items match your search for "${searchQuery}"`
+                  : `No ${
+                      filter === "All" ? "" : filter.toLowerCase() + " "
+                    }items available`}
               </p>
-             
             </div>
           ) : (
             filteredItems.map((item) => (
@@ -261,7 +300,9 @@ const ViewMenu = () => {
                   <div className="menu-title-price">
                     <span
                       className={`veg-indicator ${
-                        item.type?.toLowerCase() === "non-veg" ? "non-veg" : "veg"
+                        item.type?.toLowerCase() === "non-veg"
+                          ? "non-veg"
+                          : "veg"
                       }`}
                     ></span>
                     <h3 className="card-title">{item.name}</h3>
@@ -272,16 +313,24 @@ const ViewMenu = () => {
                     {item.description?.length > 80 ? (
                       <>
                         {item.description.slice(0, 80)}...
-                        <span className="read-more" data-bs-toggle="tooltip" title={item.description}>
+                        <span
+                          className="read-more"
+                          data-bs-toggle="tooltip"
+                          title={item.description}
+                        >
                           Read More
                         </span>
                       </>
-                    ) : item.description}
+                    ) : (
+                      item.description
+                    )}
                   </p>
 
                   <div className="cuisine-time">
-                    <span>{item.cuisine || "Generic"}</span> • 
-                    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"} mins</span>
+                    <span>{item.cuisine || "Generic"}</span> •
+                    <span>
+                      ⏱️ {item.prepTime || item.timeToPrepare || "—"} mins
+                    </span>
                   </div>
 
                   <div className="button-row">
@@ -291,11 +340,24 @@ const ViewMenu = () => {
                     >
                       Edit
                     </button>
-                    
-                    {item.status === "Published"
-                      ? <button className="btn-global btn-status" onClick={() => handleStatusChange(item._id, "Draft")}>Draft</button>
-                      : <button className="btn-global btn-status" onClick={() => handleStatusChange(item._id, "Published")}>Publish</button>
-                    }
+
+                    {item.status === "Published" ? (
+                      <button
+                        className="btn-global btn-status"
+                        onClick={() => handleStatusChange(item._id, "Draft")}
+                      >
+                        Draft
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-global btn-status"
+                        onClick={() =>
+                          handleStatusChange(item._id, "Published")
+                        }
+                      >
+                        Publish
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -303,8 +365,6 @@ const ViewMenu = () => {
           )}
         </div>
       </div>
-
-    
     </>
   );
 };

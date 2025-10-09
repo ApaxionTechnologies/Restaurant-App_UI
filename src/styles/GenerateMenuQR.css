@@ -4,7 +4,7 @@
   max-width: var(--container-max);
   margin: 1rem auto;
   min-height: calc(100vh - 180px);
-  padding: 0 20px;
+  /* padding: 0 20px; */
   display: flex;
   justify-content: center;
 }
@@ -238,7 +238,7 @@
 
 @media (max-width: 480px) {
   .generate-qr-wrapper {
-    padding: 0 12px;
+    /* padding: 0 12px; */
   }
   
   .qr-card {

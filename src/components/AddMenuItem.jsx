@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddMenuItem.css";
-import Footer from "./Footer";
-import HomeHeader from "./HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getMyRestaurant, addMenuItem, updateMenuItem } from "../services/apiService.js";
+import {
+  getMyRestaurant,
+  addMenuItem,
+  updateMenuItem,
+} from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
- 
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
@@ -16,8 +17,6 @@ const AddMenuItem = () => {
   const editItem = location.state?.itemToEdit;
   const isEditMode = Boolean(itemId);
 
-  const [restaurantName, setRestaurantName] = useState(localStorage.getItem("restaurant") || "My Restaurant");
-  const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -31,7 +30,7 @@ const AddMenuItem = () => {
     status: "Published",
     discount: "",
     vegType: "veg",
-    taxType: "exclusive", 
+    taxType: "exclusive", // 🔹 Default
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -45,11 +44,16 @@ const AddMenuItem = () => {
   const priceRef = useRef(null);
   const categoryRef = useRef(null);
 
- 
   const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
-  const cuisineOptions = ["Indian", "Japanese", "Chinese", "Italian", "Mexican"];
+  const cuisineOptions = [
+    "Indian",
+    "Japanese",
+    "Chinese",
+    "Italian",
+    "Mexican",
+  ];
 
-  
+  // 🔹 Hardcoded GST Slabs per category
   const categoryTaxMap = {
     Starter: 5,
     "Main Course": 12,
@@ -68,23 +72,6 @@ const AddMenuItem = () => {
     };
     fetchMe();
   }, []);
- 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("adminEmail");
-    const storedToken = localStorage.getItem("token");
-    if (!storedEmail || !storedToken) {
-      navigate("/");
-    } else {
-      setAdminEmail(storedEmail);
-    }
-  }, [navigate]);
- 
-  const handleLogout = () => {
-    localStorage.removeItem("adminEmail");
-    localStorage.removeItem("token");
-    localStorage.removeItem("restaurant");
-    navigate("/");
-  };
 
   useEffect(() => {
     if (isEditMode && editItem) {
@@ -121,7 +108,7 @@ const AddMenuItem = () => {
     }));
     if (formError) setFormError("");
   };
- 
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -142,7 +129,8 @@ const AddMenuItem = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Item name required";
     if (formData.price === "") newErrors.price = "Price required";
-    if (formData.timeToPrepare === "") newErrors.timeToPrepare = "Preparation time required";
+    if (formData.timeToPrepare === "")
+      newErrors.timeToPrepare = "Preparation time required";
     if (!formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
     if (!formData.gstRate) newErrors.gstRate = "GST rate required";
     setErrors(newErrors);
@@ -158,7 +146,7 @@ const AddMenuItem = () => {
       return;
     }
 
-    
+    // 🔹 Select GST rate based on category
     const gstRate = categoryTaxMap[formData.category] || 5;
 
     const data = new FormData();
@@ -172,10 +160,10 @@ const AddMenuItem = () => {
     data.append("status", formData.status);
     data.append("type", formData.vegType.toLowerCase());
     data.append("discount", formData.discount || "");
-    data.append("gstRate", gstRate); 
+    data.append("gstRate", gstRate); // 🔹 Auto GST from category
     data.append("taxType", formData.taxType);
     if (imageFile) data.append("image", imageFile);
- 
+
     try {
       if (isEditMode) {
         const updatedItem = await updateMenuItem(itemId, data);
@@ -189,7 +177,9 @@ const AddMenuItem = () => {
       handleReset();
     } catch (err) {
       console.error("❌ Error saving item:", err.response?.data || err.message);
-      showFormError("❌ " + (err.response?.data?.message || "Something went wrong."));
+      showFormError(
+        "❌ " + (err.response?.data?.message || "Something went wrong.")
+      );
     }
   };
 
@@ -226,38 +216,39 @@ const AddMenuItem = () => {
 
   return (
     <>
-      <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      />
-      <div className="top-buttons1"> 
-      <button type="button"
-    className="btn btn-secondary add-multiple-btn"
-    onClick={() => navigate("/add-bulk-items")}
-  >
-    ➕ Add Multiple Items
-  </button>
-      </div>
-      <div className="add-menu-container">
-        <div className="card-header">
-  <div className="header-flex">
-    <div className="title">
-      <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
-    </div>
-    <div className="restaurant-id">
-      Restaurant ID: {restaurant?._id || "Loading..."}
-    </div>
-  </div>
-</div>
-    
+      <div className="add-menu-wrapper">
+        <div className="top-buttons1">
+          {/* <button
+            type="button"
+            className="btn btn-secondary add-multiple-btn"
+            onClick={() => navigate("/add-bulk-items")}
+          >
+            ➕ Add Multiple Items
+          </button> */}
+          <a
+            onClick={() => navigate("/add-bulk-items")}
+            className="l1"
+          >
+            Add Multiple Items
+          </a>
+        </div>
+        <div className="add-menu-container">
+          <div className="card-header">
+            <div className="header-flex">
+              <div className="title">
+                <h2>{isEditMode ? "Edit Item" : "Add Item"}</h2>
+              </div>
+              <div className="restaurant-id">
+                Restaurant ID: {restaurant?._id || "Loading..."}
+              </div>
+            </div>
+          </div>
+
           <div className="card-body">
             {formError && <div className="toast toast-error">{formError}</div>}
 
             <form onSubmit={handleSubmit} className="add-menu-form" noValidate>
-              
+              {/* Item Name & Ingredients */}
               <div className="form-grid">
                 <div className="field-wrappers">
                   <label>Item Name</label>
@@ -269,21 +260,23 @@ const AddMenuItem = () => {
                     onChange={handleChange}
                     required
                   />
-                  {errors.name && <div className="error-message">{errors.name}</div>}
+                  {errors.name && (
+                    <div className="error-message">{errors.name}</div>
+                  )}
                 </div>
 
-    <div>
-      <label>Ingredients</label>
-      <input
-        name="ingredients"
-        className="input"
-        value={formData.ingredients}
-        onChange={handleChange}
-      />
-    </div>
-  </div>
+                <div>
+                  <label>Ingredients</label>
+                  <input
+                    name="ingredients"
+                    className="input"
+                    value={formData.ingredients}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
-              
+              {/* Category & Cuisine */}
               <div className="form-grid">
                 <div>
                   <label>Category</label>
@@ -295,10 +288,14 @@ const AddMenuItem = () => {
                     onChange={handleChange}
                   >
                     {categoryOptions.map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
                     ))}
                   </select>
-                  {errors.category && <span className="error-message">{errors.category}</span>}
+                  {errors.category && (
+                    <span className="error-message">{errors.category}</span>
+                  )}
                 </div>
 
                 <div>
@@ -310,14 +307,18 @@ const AddMenuItem = () => {
                     onChange={handleChange}
                   >
                     {cuisineOptions.map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
                     ))}
                   </select>
-                  {errors.cuisine && <span className="error-message">{errors.cuisine}</span>}
+                  {errors.cuisine && (
+                    <span className="error-message">{errors.cuisine}</span>
+                  )}
                 </div>
               </div>
 
-             
+              {/* Type & TaxType together as form-grid */}
               <div className="form-grid">
                 <div>
                   <label>Type</label>
@@ -329,7 +330,8 @@ const AddMenuItem = () => {
                         value="veg"
                         checked={formData.vegType === "veg"}
                         onChange={handleChange}
-                      /> Veg
+                      />{" "}
+                      Veg
                     </label>
                     <label>
                       <input
@@ -338,7 +340,8 @@ const AddMenuItem = () => {
                         value="non-veg"
                         checked={formData.vegType === "non-veg"}
                         onChange={handleChange}
-                      /> Non-Veg
+                      />{" "}
+                      Non-Veg
                     </label>
                   </div>
                 </div>
@@ -352,7 +355,8 @@ const AddMenuItem = () => {
                         value="exclusive"
                         checked={formData.taxType === "exclusive"}
                         onChange={handleChange}
-                      /> Exclusive
+                      />{" "}
+                      Exclusive
                     </label>
                     <label>
                       <input
@@ -361,13 +365,14 @@ const AddMenuItem = () => {
                         value="inclusive"
                         checked={formData.taxType === "inclusive"}
                         onChange={handleChange}
-                      /> Inclusive
+                      />{" "}
+                      Inclusive
                     </label>
                   </div>
                 </div>
               </div>
 
-             
+              {/* Price & Discount */}
               <div className="form-grid">
                 <div className="field-wrappers">
                   <label>Price (₹)</label>
@@ -379,35 +384,39 @@ const AddMenuItem = () => {
                     value={formData.price}
                     onChange={handleChange}
                   />
-                  {errors.price && <div className="error-message">{errors.price}</div>}
+                  {errors.price && (
+                    <div className="error-message">{errors.price}</div>
+                  )}
                 </div>
 
-    <div>
-      <label>Discount (%)</label>
-      <input
-        type="number"
-        name="discount"
-        className="input"
-        value={formData.discount}
-        onChange={handleChange}
-      />
-    </div>
-  </div>
+                <div>
+                  <label>Discount (%)</label>
+                  <input
+                    type="number"
+                    name="discount"
+                    className="input"
+                    value={formData.discount}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
-       
-        <div className="field-wrappers">
-        <label>Time to Prepare (mins)</label>
-          <input
-          type="number"
-           name="timeToPrepare"
-           className={`input ${errors.timeToPrepare ? "error" : ""}`}
-           value={formData.timeToPrepare}
-            onChange={handleChange}
-               />
-            {errors.timeToPrepare && <div className="error-message">{errors.timeToPrepare}</div>}
-             </div>
+              {/* Time to Prepare & Description */}
+              <div className="field-wrappers">
+                <label>Time to Prepare (mins)</label>
+                <input
+                  type="number"
+                  name="timeToPrepare"
+                  className={`input ${errors.timeToPrepare ? "error" : ""}`}
+                  value={formData.timeToPrepare}
+                  onChange={handleChange}
+                />
+                {errors.timeToPrepare && (
+                  <div className="error-message">{errors.timeToPrepare}</div>
+                )}
+              </div>
 
-              <div style={{ marginBottom: '5px' }}>
+              <div style={{ marginBottom: "5px" }}>
                 <label>Description</label>
                 <textarea
                   name="description"
@@ -418,35 +427,41 @@ const AddMenuItem = () => {
               </div>
 
               {/* Status */}
-    <div>
-      <label>Status</label>
-      <div className="radio-group">
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="Published"
-            checked={formData.status === "Published"}
-            onChange={handleChange}
-          /> Published
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="Draft"
-            checked={formData.status === "Draft"}
-            onChange={handleChange}
-          /> Draft
-        </label>
-      </div>
-    </div>
+              <div>
+                <label>Status</label>
+                <div className="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Published"
+                      checked={formData.status === "Published"}
+                      onChange={handleChange}
+                    />{" "}
+                    Published
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="status"
+                      value="Draft"
+                      checked={formData.status === "Draft"}
+                      onChange={handleChange}
+                    />{" "}
+                    Draft
+                  </label>
+                </div>
+              </div>
 
               <div className="form-actions">
                 <button type="submit" className="btn btn-primary">
                   {isEditMode ? "Save Changes" : "Save Item"}
                 </button>
-                <button type="button" className="btn btn-ghost" onClick={handleReset}>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={handleReset}
+                >
                   Reset
                 </button>
               </div>
@@ -454,7 +469,11 @@ const AddMenuItem = () => {
 
             <aside className="right-panel">
               <h4>Preview</h4>
-              <label className={`upload-btn ${imageError || errors.image ? "error" : ""}`}>
+              <label
+                className={`upload-btn ${
+                  imageError || errors.image ? "error" : ""
+                }`}
+              >
                 Upload Image *
                 <input
                   ref={fileInputRef}
@@ -467,7 +486,11 @@ const AddMenuItem = () => {
 
               <div className="preview-container">
                 {imagePreview ? (
-                  <img src={imagePreview} alt="preview" className="preview-img" />
+                  <img
+                    src={imagePreview}
+                    alt="preview"
+                    className="preview-img"
+                  />
                 ) : (
                   <p className="no-preview-text">No image uploaded yet</p>
                 )}
@@ -477,12 +500,11 @@ const AddMenuItem = () => {
             </aside>
           </div>
         </div>
+      </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
- 
+
 export default AddMenuItem;
-
-

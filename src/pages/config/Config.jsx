@@ -14,8 +14,6 @@ import {
   taxConfigAction,
   updateTaxDefault,
 } from "../../services/apiService";
-import HomeHeader from "../../components/HomeHeader";
-import Footer from "../../components/Footer";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
 import { useCart } from "../../context/CartContext";
 import { ConfigModal, TaxConfigModal } from "./ConfigModal";
@@ -63,13 +61,6 @@ export default function App() {
   );
   const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
-
-  const handleLogout = () => {
-    localStorage.removeItem("adminEmail");
-    localStorage.removeItem("token");
-    localStorage.removeItem("restaurant");
-    navigate("/");
-  };
 
   useEffect(() => {
     const fetchMe = async () => {
