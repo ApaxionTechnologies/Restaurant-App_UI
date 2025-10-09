@@ -264,7 +264,7 @@ const QRGenerator = ({ restaurant }) => {
                   includeMargin={true}
                   bgColor="#ffffff"
                   fgColor="#000000"
-                  imageSettings={{ // Optional: Add logo in center if needed
+                  imageSettings={{ 
                     src: "",
                     height: 40,
                     width: 40,
@@ -378,13 +378,7 @@ export default function GenerateQR() {
 
   return (
     <>
-      {/* <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurant?.restaurantName}
-        adminEmail={localStorage.getItem("adminEmail")}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      /> */}
+      {}
       <div className="generate-qr-wrapper">
         <TableManager 
           restaurant={restaurant} 

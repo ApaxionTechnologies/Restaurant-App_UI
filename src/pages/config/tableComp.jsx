@@ -50,7 +50,7 @@ export default function TableComp({ data, columns }) {
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <React.Fragment key={headerGroup.id}>
-                {/* Row for headers */}
+                
                 <tr>
                   {headerGroup.headers.map((header) => (
                     <th
@@ -123,7 +123,7 @@ export default function TableComp({ data, columns }) {
         </table>
       </div>
 
-      {/* Pagination Controls */}
+      
       <div className="pagination-controls">
         <button
           className="btn btn-pagination"

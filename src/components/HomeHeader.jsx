@@ -372,17 +372,13 @@ export default function HomeHeader({
         </div>
       </header>
 
-      {/* Dropdown */}
+      
       <div
         ref={dropdownRef}
         className={`fb-dropdown ${showDropdownopen ? "" : "hidden"}`}
         style={
           {
-            // position: "fixed",
-            // borderRadius: "22px",
-            // top: anchor.top,
-            // left: anchor.left,
-            // minWidth: anchor.minWidth || 210,
+           
           }
         }
         onClick={(e) => e.stopPropagation()}

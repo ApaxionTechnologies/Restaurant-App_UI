@@ -190,13 +190,7 @@ const ViewMenu = () => {
 
  return (
     <>
-      {/* <HomeHeader
-        isAdminDashboard
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      /> */}
+      {}
 
       <div className="view-menu-page">
         <div className="view-menu-header">
@@ -212,7 +206,7 @@ const ViewMenu = () => {
             ))}
           </div>
           
-          {/* Search Bar */}
+        
           <div className="search-container">
             <Search size={18} className="search-icon" />
             <input
@@ -253,7 +247,7 @@ const ViewMenu = () => {
                   <img
                     src={item.image}
                     alt={item.name}
-                    // onError={(e) => (e.target.src = "/placeholder-food.jpg")}
+                    
                   />
                   <button
                     className="btn-delete-circular"
@@ -310,7 +304,7 @@ const ViewMenu = () => {
         </div>
       </div>
 
-      {/* <footer className="footer"><Footer /></footer> */}
+    
     </>
   );
 };

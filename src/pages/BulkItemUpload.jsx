@@ -150,7 +150,7 @@ export const BulkItemUpload = () => {
   
     const resData = await uploadBulkMenuItems(file);
       if (resData.status === "Success") {
-        // alert("Items added successfully!");
+   
         setRejectedItems(resData?.data?.rejctedList);
         setValidItemCount(resData?.data?.totalValidItems);
         setRejectedItemCount(resData?.data?.totalRejectedItems);
@@ -200,7 +200,7 @@ export const BulkItemUpload = () => {
         <div
           style={{
             display: "flex",
-            justifyContent: "flex-end", // pushes button to the right
+            justifyContent: "flex-end", 
             width: "100%",
             marginTop: "16px",
             marginBottom: "16px",
@@ -339,7 +339,7 @@ export const BulkItemUpload = () => {
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead style={{ backgroundColor: "#F9FAFB" }}>
                 <tr>
-                  {/* {headers.map((header, index) => ( */}
+                  
                   <th style={thStyles}>Name</th>
                   <th style={thStyles}>Category</th>
                   <th style={thStyles}>Description</th>
@@ -349,7 +349,7 @@ export const BulkItemUpload = () => {
                   <th style={thStyles}>Discount</th>
                   <th style={thStyles}>Created At</th>
                   <th style={thStyles}>Reason</th>
-                  {/* ))} */}
+                  
                 </tr>
               </thead>
               <tbody>
@@ -386,13 +386,7 @@ export const BulkItemUpload = () => {
 
   return (
     <>
-      {/* <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      /> */}
+      {}
       <div
         style={{
           padding: "24px",
@@ -615,7 +609,7 @@ export const BulkItemUpload = () => {
           </div>
         )}
       </div>
-      {/* <Footer /> */}
+    
     </>
   );
 };

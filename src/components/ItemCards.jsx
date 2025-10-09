@@ -20,7 +20,7 @@ export const ItemCards = ({
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
       }}
     >
-      {/* Number */}
+      
       <div
         style={{
           fontSize: "32px",
@@ -34,7 +34,7 @@ export const ItemCards = ({
         {typeof number === 'number' ? number.toLocaleString() : number}
       </div>
       
-      {/* Label */}
+     
       <div
         style={{
           fontSize: "14px",

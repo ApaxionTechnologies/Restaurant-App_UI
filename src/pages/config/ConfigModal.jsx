@@ -45,7 +45,7 @@ export const ConfigModal = ({
 
               <div>
                 <div className="content3w">
-                  {/* Name Field */}
+                  
                   <div className="field6r">
                     <label className="label8t" htmlFor="name">
                       Name
@@ -80,7 +80,7 @@ export const ConfigModal = ({
                   </div>
                 </div>
 
-                {/* Footer */}
+                
                 <div className="footer4b">
                   <button
                     type="button"
@@ -124,7 +124,7 @@ export const TaxConfigModal = ({
       if (isNaN(num)) {
         newValue = "";
       } else {
-        newValue = Math.min(100, Math.max(0, num)); // Clamp between 0–100
+        newValue = Math.min(100, Math.max(0, num)); 
       }
     }
 
@@ -164,10 +164,9 @@ export const TaxConfigModal = ({
                       step="0.01"
                     />
                   </div>
-                  {/* )} */}
+                  
                 </div>
 
-                {/* Footer */}
                 <div className="footer4b">
                   <button
                     type="button"

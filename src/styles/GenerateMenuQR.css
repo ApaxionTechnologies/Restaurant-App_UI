@@ -1,4 +1,4 @@
-/* Add these styles to your existing GenerateMenuQR.css */
+
 
 .generate-qr-wrapper {
   max-width: var(--container-max);
@@ -11,16 +11,16 @@
 
 .centered-container {
   width: 100%;
-  max-width: 600px; /* Adjust this value as needed */
+  max-width: 600px; 
   margin: 0 auto;
 }
 
-/* Remove the grid styles from the original CSS */
+
 .generate-qr-wrapper {
   grid-template-columns: 1fr !important;
 }
 
-/* Keep all your original CSS below */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 :root {

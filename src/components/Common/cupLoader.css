@@ -17,7 +17,7 @@
   margin-bottom: 30px;
 }
 
-/* Teapot Styles */
+
 .loaderTeapot {
   position: absolute;
   top: 20px;
@@ -104,7 +104,7 @@
   animation: teaStreamFlow 3s ease-in-out infinite;
 }
 
-/* Cup Styles */
+
 .loaderCup {
   position: absolute;
   bottom: 10px;
@@ -166,7 +166,7 @@
   animation: fadeInOut 3s ease-in-out infinite;
 }
 
-/* Animations */
+
 @keyframes tiltTeapot {
   0%, 20% { transform: rotate(0deg); }
   30%, 70% { transform: rotate(25deg); }
@@ -202,7 +202,7 @@
   50% { opacity: 1; }
 }
 
-        /* Responsive Design */
+        
 @media (max-width: 768px) {
   .loaderWrapper {
     width: 160px;
