@@ -184,37 +184,79 @@ const [restaurantName, setRestaurantName] = useState("");
       reader.onerror = (error) => reject(error);
     });
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, image: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewImage(base64);
+  //     dispatch(setFormField({ field: "image", value: file }));
+  //     dispatch(setFormField({ field: "previewImage", value: base64 }));
+  //   }
+  // };
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
-    }
-  };
+  // const handleLogoChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, logoImage: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewLogo(base64);
+  //     dispatch(setFormField({ field: "logoImage", value: file }));
+  //     dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  //   }
+  // };
+
+
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (file && !isValidImageType(file)) {
+    setErrors((prev) => ({
+      ...prev,
+      image: "PDF or Excel files are not allowed.",
+    }));
+    e.target.value = null;
+    return;
+  }
+
+  setErrors((prev) => ({ ...prev, image: "" }));
+  if (file) {
+    const base64 = await toBase64(file);
+    setPreviewImage(base64);
+    dispatch(setFormField({ field: "image", value: file }));
+    dispatch(setFormField({ field: "previewImage", value: base64 }));
+  }
+};
+
+const handleLogoChange = async (e) => {
+  const file = e.target.files[0];
+  if (file && !isValidImageType(file)) {
+    setErrors((prev) => ({
+      ...prev,
+      logoImage: "PDF or Excel files are not allowed.",
+    }));
+    e.target.value = null;
+    return;
+  }
+
+  setErrors((prev) => ({ ...prev, logoImage: "" }));
+  if (file) {
+    const base64 = await toBase64(file);
+    setPreviewLogo(base64);
+    dispatch(setFormField({ field: "logoImage", value: file }));
+    dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  }
+};
+
 
   useEffect(() => {
     if (formData.previewImage) setPreviewImage(formData.previewImage);
@@ -666,6 +708,7 @@ const [restaurantName, setRestaurantName] = useState("");
                           )}
                         </div>
                       </label>
+                      {errors.image && <div className="error-message">{errors.image}</div>}
                     </div>
 
                     <div className="image-upload-box">
@@ -684,6 +727,7 @@ const [restaurantName, setRestaurantName] = useState("");
                           )}
                         </div>
                       </label>
+                       {errors.logoImage && <div className="error-message">{errors.logoImage}</div>}
                     </div>
                   </div>
                 </div>

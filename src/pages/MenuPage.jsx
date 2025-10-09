@@ -148,10 +148,10 @@ export default function MenuPage() {
     setFavorites((prev) => ({ ...prev, [name]: !prev[name] }));
   };
 
-  const getQty = (name) => {
-    const found = cart.find((item) => item.name === name);
-    return found ? found.qty : 0;
-  };
+const getQty = (menuItemId) => {
+  const found = cart.find((item) => item.menuItemId === menuItemId);
+  return found ? found.qty : 0;
+};
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -257,10 +257,9 @@ export default function MenuPage() {
 
   };
 
-  // Update quantity handler using Redux
-  const handleUpdateQty = (name, change) => {
-    dispatch(updateQty({ name, change }));
-  };
+ const handleUpdateQty = (item, change) => {
+  dispatch(updateQty({ menuItemId: item._id, change }));
+};
 
   return (
     <>
@@ -433,10 +432,11 @@ export default function MenuPage() {
 
               return (
                 <div key={category} style={{ marginBottom: "2rem" }}>
-                  <h3 style={{ marginBottom: "1rem" }}>🍽️ {category}</h3>
+                  <h3 style={{ marginBottom: "1rem" }}>🍽 {category}</h3>
                   <div className={`menu-grid ${layout}`}>
                     {filteredDishes.map((item, index) => {
-                      const qty = getQty(item.name);
+                     const qty = getQty(item._id);
+
                       const imgSrc = item.image
                         ? (item.image.startsWith("http")
                             ? item.image
@@ -486,40 +486,40 @@ export default function MenuPage() {
                                   <div style={{ display: "flex", gap: "0.5rem" }}>
                                     <span>{item.cuisine || "🍴"}</span>
                                     <span>•</span>
-                                    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+                                    <span>⏱ {item.prepTime || item.timeToPrepare || "—"}</span>
                                   </div>
 
                                   <div className="qty-controls">
-                                    <button
-                                      className="qty-btn"
-                                      onClick={() => qty > 0 && handleUpdateQty(item.name, -1)}
-                                      disabled={qty === 0}
-                                      style={{ opacity: qty === 0 ? 0.5 : 1, cursor: qty === 0 ? "not-allowed" : "pointer" }}
-                                    >
-                                      <FaMinus />
-                                    </button>
+                                 <button
+  className="qty-btn"
+  onClick={() => qty > 0 && handleUpdateQty(item, -1)}
+  disabled={qty === 0}
+>
+  <FaMinus />
+</button>
 
-                                    <div className="qty-display">{qty}</div>
+<div className="qty-display">{qty}</div>
 
-                                    <button
-                                      className="qty-btn"
-                                      onClick={() => {
-                                        if (qty === 0) {
-                                          handleAddToCart(item);   
-                                        } else {
-                                          handleUpdateQty(item.name, 1); 
-                                        }
-                                      }}
-                                    >
-                                      <FaPlus />
-                                    </button>
+<button
+  className="qty-btn"
+  onClick={() => {
+    if (qty === 0) {
+      handleAddToCart(item);
+    } else {
+      handleUpdateQty(item, 1);
+    }
+  }}
+>
+  <FaPlus />
+</button>
+
                                   </div>
                                 </div>
                               ) : (
                                 <div className="cuisine-time" style={{ display: "flex", justifyContent: "flex-end", width: "100%", gap: "0.5rem" }}>
                                   <span>{item.cuisine || "🍴"}</span>
                                   <span>•</span>
-                                  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+                                  <span>⏱ {item.prepTime || item.timeToPrepare || "—"}</span>
                                 </div>
                               )}
                             </div>
