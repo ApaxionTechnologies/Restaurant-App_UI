@@ -318,7 +318,7 @@ export default function MenuPage() {
       </div>
 
       <div className="page-center fade-in">
-        <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
+        <div style={{ maxWidth: "1000px", width: "100%", padding: "2.5rem 1rem", margin: "0 auto" }}>
 
           <div style={{
             display: "flex",
@@ -469,8 +469,8 @@ export default function MenuPage() {
                       const imgSrc = item.image ? imageUrl(item.image) : "";
 
                       return (
-                        <div className="menu-card" key={item._id || item.id || index} data-aos="fade-up">
-                          {imgSrc && <img src={imgSrc} alt={item.name} />}
+                        <div className="menu-card" key={item._id || index} data-aos="fade-up">
+                          <img src={imgSrc} alt={item.name} />
                           <div className="menu-card-content">
                             <div className="menu-title-price">
                               <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
