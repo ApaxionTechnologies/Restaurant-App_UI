@@ -76,7 +76,7 @@
             margin-bottom: 12px;
         }
         
-        /* Fixed close button styling */
+       
         .close-button {
             position: absolute;
             top: 16px;
@@ -94,7 +94,7 @@
             transition: all 0.2s;
             width: 32px;
             height: 32px;
-            z-index: 1001; /* Added higher z-index */
+            z-index: 1001; 
         }
         .close-button:hover {
             background-color: #eff6ff;
