@@ -907,7 +907,7 @@ input[type="password"]::-webkit-password-toggle-button {
   flex-shrink: 0;
 }
 
-/* Valid/Invalid states */
+
 .requirements-list li.valid {
   color: #059669;
 }

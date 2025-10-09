@@ -1,55 +1,4 @@
-/* 
- .homepage-container {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: white;
-}
 
-.homepage-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.homepage-content {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  padding-top: 60px; 
-  padding-bottom: 60px;
-}
-
-.home-card {
-  background-color: white !important;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  max-width: 360px;
-  width: 90%;
-  
-}
-
-
-.header-bar {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  padding: 1rem;
-  position: relative;
-  z-index: 2;
-} */
-
-
-
-
-
-/* Force override only when HomePage is active */
 body.home-page,
 html.home-page {
   margin: 0 !important;
@@ -57,7 +6,7 @@ html.home-page {
 }
 
 
-/* Header */
+
 .home-header {
   display: flex;
   justify-content: space-between;
@@ -109,7 +58,7 @@ html.home-page {
   font-size: 36px;
   font-weight: bold;
 }
-/* Food Court Section */
+
 .food-section {
   display: flex;
   justify-content: center;

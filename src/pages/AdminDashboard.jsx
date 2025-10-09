@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       </Helmet>
 
 
-      {/* Admin Header */}
+     
 
       {/* <HomeHeader
         isAdminDashboard={true}
@@ -117,11 +117,7 @@ export default function AdminDashboard() {
             <p>Add new dishes and beverages.</p>
           </Link>
 
-          {/* <Link to="/add-bulk-items" className="dashboard-card add">
-            <span className="icon">📁</span>
-            <h5>Add Bulk Item</h5>
-            <p>Add all items with a single file</p>
-          </Link> */}
+        
 
 
           <Link to="/generate-menu-qr" className="dashboard-card add">
@@ -136,7 +132,7 @@ export default function AdminDashboard() {
             <h5>Manage Tables</h5>
             <p>Organize seating and reservations.</p>
           </Link>
-          {/* ✅ New Order Management Card */}
+          
 
           <Link to="/order-management" className="dashboard-card orders">
             <span className="icon">🛒</span>
@@ -144,11 +140,7 @@ export default function AdminDashboard() {
             <p>View placed orders by tables & dishes.</p>
             </Link>
 
-             {/* <Link to="/tax-management" className="dashboard-card orders">
-            <span className="icon">🛒</span>
-            <h5>Tax Slab Management</h5>
-            <p>View placed orders by tables & dishes.</p>
-          </Link> */}
+            
           <Link to="/config" className="dashboard-card orders">
             <span className="icon"><FcDataConfiguration /></span>
             <h5>Configurations</h5>
@@ -157,7 +149,7 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      {/* <Footer /> */}
+      
     </div>
   );
 }

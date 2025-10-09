@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddMenuItem.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -8,6 +8,7 @@ import {
   updateMenuItem,
 } from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
+import axios from "axios";
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
@@ -217,7 +218,17 @@ const AddMenuItem = () => {
     <>
       <div className="add-menu-wrapper">
         <div className="top-buttons1">
-          <a onClick={() => navigate("/add-bulk-items")} className="l1">
+          {/* <button
+            type="button"
+            className="btn btn-secondary add-multiple-btn"
+            onClick={() => navigate("/add-bulk-items")}
+          >
+            ➕ Add Multiple Items
+          </button> */}
+          <a
+            onClick={() => navigate("/add-bulk-items")}
+            className="l1"
+          >
             Add Multiple Items
           </a>
         </div>
@@ -490,6 +501,8 @@ const AddMenuItem = () => {
           </div>
         </div>
       </div>
+
+      {/* <Footer /> */}
     </>
   );
 };

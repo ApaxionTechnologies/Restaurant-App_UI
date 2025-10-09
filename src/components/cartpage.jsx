@@ -68,7 +68,7 @@ export default function CartPage() {
     }));
 
     try {
-      const preview = await calculateBillPreview(items, restaurantId); // backend should return restaurantDiscountAmount
+      const preview = await calculateBillPreview(items, restaurantId); 
       setBillPreview(preview);
     } catch (err) {
       console.error("Error calculating bill:", err);

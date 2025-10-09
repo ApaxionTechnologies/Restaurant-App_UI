@@ -110,7 +110,7 @@
   font-style: italic;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .generate-qr-wrapper {
     flex-direction: column;
