@@ -355,3 +355,13 @@ export const updateTaxDefault = async (payload) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const updateTaxStatus = async (payload) => {
+  try {
+    const res = await API.post("/config/changeTaxStatus", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
