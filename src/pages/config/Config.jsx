@@ -13,6 +13,7 @@ import {
   getTaxConfigList,
   taxConfigAction,
   updateTaxDefault,
+  updateTaxStatus,
 } from "../../services/apiService";
 import { MdDeleteOutline, MdModeEdit } from "react-icons/md";
 import { useCart } from "../../context/CartContext";
@@ -40,6 +41,7 @@ export default function App() {
   const [newName, setNewName] = useState("");
   const [updatedTaxValue, setUpdatedTaxValue] = useState("");
   const [isCuisineEnabled, setIsCuisineEnabled] = useState(false);
+  const [isTaxEnabled, setIsTaxEnabled] = useState(false);
   const [showTaxInput, setShowTaxInput] = useState(false);
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [isEditingDiscount, setIsEditingDiscount] = useState(true);
@@ -68,6 +70,7 @@ export default function App() {
         const res = await getMyRestaurant();
         setRestaurant(res.restaurant);
         setIsCuisineEnabled(res?.restaurant?.hasCuisines);
+        setIsTaxEnabled(res?.restaurant?.isTaxInclusive);
       } catch (err) {
         console.error("Fetch /me failed -", err);
       }
@@ -233,6 +236,28 @@ export default function App() {
     } finally {
       setLoading(false);
       fetchItemList();
+      handleModalReset();
+    }
+  };
+
+  const handleTaxStatusChange = async () => {
+    const newValue = !isTaxEnabled;
+    setIsTaxEnabled(newValue);
+    setLoading(true);
+    try {
+      const payload = {
+        isTaxInclusive: newValue,
+      };
+
+      const res = await updateTaxStatus(payload);
+      toast.success(res?.message || "Status updated successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.message || "Error occured while updating status");
+      setTaxData([]);
+    } finally {
+      setLoading(false);
+      fetchTaxConfigList();
       handleModalReset();
     }
   };
@@ -692,6 +717,16 @@ export default function App() {
                       type="checkbox"
                       checked={isCuisineEnabled}
                       onChange={handleCuisineFlip}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                )}
+                {activeTab === "tax" && (
+                  <label className="statusToggle">
+                    <input
+                      type="checkbox"
+                      checked={isTaxEnabled}
+                      onChange={handleTaxStatusChange}
                     />
                     <span className="slider"></span>
                   </label>

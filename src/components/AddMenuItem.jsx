@@ -132,7 +132,8 @@ const AddMenuItem = () => {
     if (formData.timeToPrepare === "")
       newErrors.timeToPrepare = "Preparation time required";
     if (!formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
-    if (!formData.gstRate) newErrors.gstRate = "GST rate required";
+    // if (!formData.gstRate) newErrors.gstRate = "GST rate required";
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
