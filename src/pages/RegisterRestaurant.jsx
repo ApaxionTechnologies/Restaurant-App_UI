@@ -222,7 +222,7 @@ const handleImageChange = async (e) => {
   if (file && !isValidImageType(file)) {
     setErrors((prev) => ({
       ...prev,
-      image: "PDF or Excel files are not allowed.",
+      image: "Only JPG and PNG are allowed.",
     }));
     e.target.value = null;
     return;
@@ -242,7 +242,7 @@ const handleLogoChange = async (e) => {
   if (file && !isValidImageType(file)) {
     setErrors((prev) => ({
       ...prev,
-      logoImage: "PDF or Excel files are not allowed.",
+      logoImage: "Only JPG and PNG are allowed.",
     }));
     e.target.value = null;
     return;
