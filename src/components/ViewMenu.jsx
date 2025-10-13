@@ -6,7 +6,7 @@ import * as bootstrap from "bootstrap";
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
-import { Trash2, X, Search } from "lucide-react";
+import {  X, Search } from "lucide-react";
 import {
   getMyRestaurant,
   getMenuByRestaurant,
@@ -19,6 +19,8 @@ const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
   const location = useLocation();
+  
+  const [vegFilter, setVegFilter] = useState("All");
 
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -201,7 +203,6 @@ const ViewMenu = () => {
     navigate("/add-menu");
   };
 
-  // Search function to filter items based on query
   const searchItems = useMemo(() => {
     if (!searchQuery) return menuItems;
 
@@ -219,9 +220,17 @@ const ViewMenu = () => {
     });
   }, [menuItems, searchQuery]);
 
-  const filteredItems = searchItems.filter(
-    (item) => filter === "All" || item.status === filter
-  );
+const filteredItems = searchItems
+  .filter((item) => {
+    if (filter === "Published") return item.status === "Published";
+    if (filter === "Draft") return item.status === "Draft";
+    return true;
+  })
+  .filter((item) => {
+    if (vegFilter === "Veg") return item.type?.toLowerCase() === "veg";
+    if (vegFilter === "Non-Veg") return item.type?.toLowerCase() === "non-veg";
+    return true;
+  });
 
   if (loading) return <div className="loading">Loading menu...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -244,26 +253,50 @@ const ViewMenu = () => {
             ))}
           </div>
 
-          {/* Search Bar */}
-          <div className="search-container">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search by name, price, cuisine, type..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            {searchQuery && (
-              <button
-                className="btn-clear-search"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
+          <div className="search-filter-wrapper">
+  <div className="search-container">
+    <Search size={18} className="search-icon" />
+    <input
+      type="text"
+      placeholder="Search by name, price, cuisine, Veg, Non, Non-Veg type..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="search-input"
+    />
+    {searchQuery && (
+      <button
+        className="btn-clear-search"
+        onClick={() => setSearchQuery("")}
+        aria-label="Clear search"
+      >
+        <X size={16} />
+      </button>
+    )}
+  </div>
+
+ <div className="veg-toggle">
+    {[ "Veg"].map((type) => (
+      <button
+        key={type}
+        className={`veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
+        onClick={() => setVegFilter(type)}
+      >
+        {type}
+      </button>
+    ))}
+
+    {[ "Non-Veg"].map((type) => (
+      <button
+        key={type}
+        className={`non-veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
+        onClick={() => setVegFilter(type)}
+      >
+        {type}
+      </button>
+    ))}
+  </div>
+</div>
+
         </div>
 
         <div className="menu-grid">
@@ -305,6 +338,7 @@ const ViewMenu = () => {
                           : "veg"
                       }`}
                     ></span>
+
                     <h3 className="card-title">{item.name}</h3>
                     <span className="card-price">₹{item.price}</span>
                   </div>
