@@ -619,3 +619,55 @@
     font-size: 0.75rem;
   }
 }
+
+
+
+/* --- FIXED WIDTH FOR FILTER BUTTONS (All / Published / Draft) --- */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  flex: 1 1 0;
+  min-width: 100px;         /* ensures all buttons have room for 'Published' */
+  max-width: 120px;         /* keeps them aligned even if text differs */
+  text-align: center;
+  padding: 7px 14px;
+  border-radius: 99px;
+  font-weight: 200px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: #f3f4f6;
+  color: #374151;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;      /* prevents text from wrapping */
+  overflow: visible;        /* ensures full label shows */
+  box-sizing: border-box;
+}
+
+.filter-btn.active {
+  background: #0056b3;
+  color: white;
+}
+
+.filter-btn:hover {
+  background: #e5e7eb;
+}
+
+/* make sure buttons look equal even when page is scrolled */
+.btn-scrolled {
+  border: 1px solid slategray;
+}
+
+@media (max-width: 480px) {
+  .filter-btn {
+    min-width: 90px;   /* still equal buttons but smaller */
+    max-width: 100px;
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
