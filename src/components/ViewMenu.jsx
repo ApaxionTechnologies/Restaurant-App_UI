@@ -274,7 +274,7 @@ const filteredItems = searchItems
     )}
   </div>
 
- <div className="veg-toggle">
+ {/* <div className={`veg-toggle ${vegFilter === "Non-Veg" ? "non-veg" : ""}`}>
     {[ "Veg"].map((type) => (
       <button
         key={type}
@@ -294,9 +294,22 @@ const filteredItems = searchItems
         {type}
       </button>
     ))}
-  </div>
-</div>
+  </div> */}
 
+  <div className="veg-toggle-container">
+  <label className="veg-switch">
+    <input
+      type="checkbox"
+      checked={vegFilter === "Veg"}
+      onChange={() => setVegFilter(vegFilter === "Veg" ? "Non-Veg" : "Veg")}
+    />
+    <span className="slider"></span>
+  </label>
+  <span className={`veg-status ${vegFilter === "Veg" ? "veg" : "non-veg"}`}>
+    {vegFilter === "Veg" ? "Veg" : "Non-Veg"}
+  </span>
+</div>
+</div>
         </div>
 
         <div className="menu-grid">
