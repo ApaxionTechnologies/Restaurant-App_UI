@@ -38,17 +38,11 @@ const { token } = useParams(); // URL se token mil jayega
     if (onClose) {
       onClose();
     } else {
-      navigate(-1); // Go back to previous page
+      navigate(-1); 
     }
   };
 
-  // Commented out for UI testing
-  // useEffect(() => {
-  //   const tokenFromUrl = searchParams.get("token");
-  //   if (!tokenFromUrl) {
-  //     setTokenValid(false);
-  //   }
-  // }, [searchParams]);
+
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
@@ -93,12 +87,7 @@ const handleResetSubmit = async (e) => {
 
   setIsLoading(true);
   try {
-    // const tokenFromUrl = searchParams.get("token"); // 👈 URL se token lelo
-    // if (!tokenFromUrl) {
-    //   setError("Invalid or expired reset link.");
-    //   setIsLoading(false);
-    //   return;
-    // }
+    
 
     const res = await resetPassword(token, password); 
     console.log(res); 

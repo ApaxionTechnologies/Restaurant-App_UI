@@ -4,8 +4,6 @@ import { jwtDecode } from "jwt-decode";
 import Footer from "../components/Footer";
 import { FaUserCircle } from "react-icons/fa";
 import { FcDataConfiguration } from "react-icons/fc";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../components/AdminDashboard.css";
 import HomeHeader from "../components/HomeHeader"; 
 import { Helmet } from "react-helmet";
@@ -88,15 +86,15 @@ export default function AdminDashboard() {
       </Helmet>
 
 
-      {/* Admin Header */}
+     
 
-      <HomeHeader
+      {/* <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      />
+      /> */}
       <main className="admin-dashboard-content container text-center mt-5">
         <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
         <p className="lead text-muted">
@@ -119,11 +117,7 @@ export default function AdminDashboard() {
             <p>Add new dishes and beverages.</p>
           </Link>
 
-          {/* <Link to="/add-bulk-items" className="dashboard-card add">
-            <span className="icon">📁</span>
-            <h5>Add Bulk Item</h5>
-            <p>Add all items with a single file</p>
-          </Link> */}
+        
 
 
           <Link to="/generate-menu-qr" className="dashboard-card add">
@@ -138,7 +132,7 @@ export default function AdminDashboard() {
             <h5>Manage Tables</h5>
             <p>Organize seating and reservations.</p>
           </Link>
-          {/* ✅ New Order Management Card */}
+          
 
           <Link to="/order-management" className="dashboard-card orders">
             <span className="icon">🛒</span>
@@ -146,11 +140,7 @@ export default function AdminDashboard() {
             <p>View placed orders by tables & dishes.</p>
             </Link>
 
-             {/* <Link to="/tax-management" className="dashboard-card orders">
-            <span className="icon">🛒</span>
-            <h5>Tax Slab Management</h5>
-            <p>View placed orders by tables & dishes.</p>
-          </Link> */}
+            
           <Link to="/config" className="dashboard-card orders">
             <span className="icon"><FcDataConfiguration /></span>
             <h5>Configurations</h5>
@@ -159,7 +149,7 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }

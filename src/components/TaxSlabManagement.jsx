@@ -7,29 +7,7 @@ export default function TaxSlabManagement() {
   const [showModal, setShowModal] = useState(false);
   const [editingSlab, setEditingSlab] = useState(null);
 
-//   useEffect(() => {
-//     const dummySlabs = [
-//       {
-//         _id: "1",
-//         name: "Restaurant Food (No ITC)",
-//         rate: 5,
-//         type: "without_itc",
-//         hsn_code: "9963",
-//         effective_from: new Date(),
-//         effective_to: null,
-//       },
-//       {
-//         _id: "2",
-//         name: "Luxury Goods",
-//         rate: 18,
-//         type: "with_itc",
-//         hsn_code: "9987",
-//         effective_from: new Date(),
-//         effective_to: null,
-//       },
-//     ];
-//     setSlabs(dummySlabs);
-//   }, []);
+
 useEffect(() => {
   const fetchSlabs = async () => {
     try {
@@ -52,26 +30,17 @@ useEffect(() => {
     setShowModal(true);
   };
 
-//   const handleSaveSlab = (newSlab) => {
-//     setSlabs((prev) => {
-//       const exists = prev.find((s) => s._id === newSlab._id);
-//       if (exists) {
-//         return prev.map((s) => (s._id === newSlab._id ? newSlab : s));
-//       }
-//       return [...prev, newSlab];
-//     });
-//     setShowModal(false);
-//   };
+
 const handleSaveSlab = async (newSlab) => {
   try {
     if (newSlab._id && slabs.find((s) => s._id === newSlab._id)) {
-      // Update slab
+     
       const updated = await updateTaxSlab(newSlab._id, newSlab);
       setSlabs((prev) =>
         prev.map((s) => (s._id === updated._id ? updated : s))
       );
     } else {
-      // Add slab
+      
       const created = await addTaxSlab(newSlab);
       setSlabs((prev) => [...prev, created]);
     }

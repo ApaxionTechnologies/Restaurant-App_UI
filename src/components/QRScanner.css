@@ -6,7 +6,7 @@ body {
   background: linear-gradient(120deg, #f9f9f9, #ffe2e2);
 }
 
-/* Center the scanner on full page */
+
 .scanner-wrapper {
   height: 100vh;
   display: flex;
@@ -15,7 +15,7 @@ body {
   padding: 1rem;
 }
 
-/* Stylish card container */
+
 .scanner-box {
   background: #fff;
   padding: 2.5rem;
@@ -38,7 +38,7 @@ body {
   }
 }
 
-/* Title and subtext */
+
 .scanner-title {
   font-size: 1.8rem;
   color: #333;
@@ -51,7 +51,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Button styling */
+
 .btn {
   display: inline-block;
   margin: 0.5rem 0.3rem;
@@ -81,7 +81,7 @@ body {
   background-color: #dc3545;
 }
 
-/* QR scan box */
+
 .qr-area-wrapper {
   position: relative;
   width: 250px;
@@ -97,7 +97,7 @@ body {
   z-index: 1;
 }
 
-/* Glowing scan line inside scanner */
+
 .scan-line {
   position: absolute;
   top: 10%;
@@ -120,7 +120,7 @@ body {
   }
 }
 
-/* Status feedback */
+
 .loading {
   margin-top: 1rem;
   color: #007bff;

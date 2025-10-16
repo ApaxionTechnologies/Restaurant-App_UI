@@ -1,9 +1,9 @@
-// src/pages/AdminLayout.jsx
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import { FaUserCircle, FaStore } from "react-icons/fa"; // ✅ Icons
-import "../components/AdminLayout.css"; // ✅ Add your custom styles
+import { FaUserCircle, FaStore } from "react-icons/fa"; 
+import "../components/AdminLayout.css"; 
 
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <>
-      {/* ✅ Custom Admin Header */}
+     
       <header className="admin-header">
         <div className="admin-header-left">
           <FaStore className="admin-logo-icon" />
@@ -66,7 +66,7 @@ export default function AdminLayout({ children }) {
         </div>
       </header>
 
-      {/* ✅ Page Content */}
+     
       <div className="admin-dashboard-wrapper">
         <main className="admin-dashboard-content container mt-5 text-center">
           {children}

@@ -1,4 +1,4 @@
-/* Home.css */
+
 
 .home-container {
   min-height: 100vh;
@@ -16,7 +16,7 @@
   flex-direction: column;
 }
 
-/* Header Bar - visible only on HomePage */
+
 .header-bar {
   position: absolute;
   top: 0;
@@ -34,12 +34,12 @@
   backdrop-filter: blur(10px);
 }
 
-/* Optional Logo (hidden as per your request) */
+
 .logo {
   display: none;
 }
 
-/* Header Buttons */
+
 .header-btn {
   padding: 10px 16px;
   background-color: #007bff;
@@ -104,5 +104,5 @@ button.btn {
 .scan-btn:hover {
   background-color: #218838;
 }
-/* Inside src/styles/Home.css */
+
 

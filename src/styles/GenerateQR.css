@@ -295,6 +295,10 @@ label {
     order: 2;
     margin-top: 10px;
   }
+
+  .qr-nav-arrows button {
+  font-size: 0.7rem;
+}
 }
 
 @media (max-width: 480px) {
@@ -347,7 +351,7 @@ label {
 
 
 
-/* GenerateQR.css */
+
 .generate-qr-wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -455,7 +459,7 @@ label {
   font-style: italic;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .generate-qr-wrapper {
     flex-direction: column;
@@ -473,7 +477,7 @@ label {
 }
 
 .brand {
-  font-size: 0.7rem !important; /* Smaller font */
-  padding: 3px 6px !important; /* Reduced padding */
+  font-size: 0.7rem !important; 
+  padding: 3px 6px !important; 
   margin-top: 5px;
 }

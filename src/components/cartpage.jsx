@@ -23,10 +23,10 @@ export default function CartPage() {
     cgst: 0,
     sgst: 0,
     total: 0,
-    items: []
+    items: [],
   });
 
-  const fmt = (n) => (Number(n || 0)).toFixed(2);
+  const fmt = (n) => Number(n || 0).toFixed(2);
 
   useEffect(() => {
     const tableParam = searchParams.get("table");
@@ -45,7 +45,8 @@ export default function CartPage() {
     }
   }, [searchParams]);
 
-  const restaurantId = searchParams.get("restaurantId") || localStorage.getItem("restaurantId");
+  const restaurantId =
+    searchParams.get("restaurantId") || localStorage.getItem("restaurantId");
 
   const fetchBillPreview = async () => {
     if (!cart || cart.length === 0) {
@@ -57,18 +58,18 @@ export default function CartPage() {
         cgst: 0,
         sgst: 0,
         total: 0,
-        items: []
+        items: [],
       });
       return;
     }
 
-    const items = cart.map(i => ({
+    const items = cart.map((i) => ({
       menuItemId: i.menuItemId,
-      quantity: i.qty
+      quantity: i.qty,
     }));
 
     try {
-      const preview = await calculateBillPreview(items, restaurantId); // backend should return restaurantDiscountAmount
+      const preview = await calculateBillPreview(items, restaurantId);
       setBillPreview(preview);
     } catch (err) {
       console.error("Error calculating bill:", err);
@@ -99,9 +100,9 @@ export default function CartPage() {
     try {
       const orderData = {
         tableNumber: parseInt(table),
-        items: cart.map(item => ({
+        items: cart.map((item) => ({
           menuItemId: item.menuItemId,
-          quantity: item.qty
+          quantity: item.qty,
         })),
         subtotal: billPreview.subtotal,
         totalDiscount: billPreview.totalDiscount,
@@ -112,7 +113,7 @@ export default function CartPage() {
         totalAmount: billPreview.total,
         taxAmount: billPreview.totalGst,
         instructions: instructions,
-        restaurantId: restaurantId
+        restaurantId: restaurantId,
       };
 
       const result = await createOrder(orderData);
@@ -122,7 +123,7 @@ export default function CartPage() {
       const orderTime = now.toLocaleTimeString("en-IN", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: true
+        hour12: true,
       });
 
       handleClearCart();
@@ -135,8 +136,8 @@ export default function CartPage() {
           orderNo: result.order.orderNo,
           orderDate,
           orderTime,
-          instructions
-        }
+          instructions,
+        },
       });
     } catch (error) {
       console.error("Error placing order:", error);
@@ -164,12 +165,15 @@ export default function CartPage() {
             )}
           </div>
 
-          {(!cart || cart.length === 0) ? (
+          {!billPreview?.items || billPreview?.items?.length === 0 ? (
             <div className="cart-empty-state">
               <div className="empty-cart-icon">🛒</div>
               <h3>Your cart is empty</h3>
               <p>Add some delicious items from our menu</p>
-              <button className="browse-menu-btn" onClick={() => navigate(`/menu?table=${table || ''}`)}>
+              <button
+                className="browse-menu-btn"
+                onClick={() => navigate(`/menu?restaurantId=${restaurantId}&table=${table || ""}`)}
+              >
                 Browse Menu
               </button>
             </div>
@@ -182,22 +186,54 @@ export default function CartPage() {
                   <span className="header-price">Price</span>
                 </div>
                 <div className="cart-items-list">
-                  {cart.map((item, idx) => (
+                  {billPreview?.items.map((item, idx) => (
                     <div className="cart-item-row" key={`${item.name}-${idx}`}>
-                      <div className="item-info" style={{ display: "flex", alignItems: "center" }}>
-                        <span className={`veg-badge ${item.type === "veg" ? "veg" : "non-veg"}`}></span>
+                      <div
+                        className="item-info"
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <span
+                          className={`veg-badge ${
+                            item.type === "veg" ? "veg" : "non-veg"
+                          }`}
+                        ></span>
                         <span className="item-name">{item.name}</span>
                       </div>
 
                       <div className="quantity-controls">
-                        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, -1)} disabled={isPlacingOrder}>−</button>
-                        <span className="quantity">{item.qty || 0}</span>
-                        <button className="qty-btn" onClick={() => handleUpdateQty(item.menuItemId, 1)} disabled={isPlacingOrder}>+</button>
+                        <button
+                          className="qty-btn"
+                          onClick={() => handleUpdateQty(item.menuItemId, -1)}
+                          disabled={isPlacingOrder}
+                        >
+                          −
+                        </button>
+                        <span className="quantity">{item.quantity || 0}</span>
+                        <button
+                          className="qty-btn"
+                          onClick={() => handleUpdateQty(item.menuItemId, 1)}
+                          disabled={isPlacingOrder}
+                        >
+                          +
+                        </button>
                       </div>
 
                       <div className="item-price-total">
                         <span className="item-price">₹{item.price ?? 0}</span>
-                        <span className="item-total">₹{(item.qty || 0) * (item.price || 0)}</span>
+                        {item.discount > 0 ? (
+                          <div className="">
+                            <span className="item-discount">
+                              ₹{(item.quantity || 0) * (item.price || 0)}
+                            </span>
+                            <span className="item-total">
+                              ₹{item.finalPrice || 0}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="item-total">
+                            ₹{(item.quantity || 0) * (item.price || 0)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -217,17 +253,44 @@ export default function CartPage() {
 
               <div className="bill-summary">
                 <h3 className="bill-title">BILL DETAILS</h3>
-                <div className="bill-line"><span>Discount</span><span>-₹{fmt(billPreview.totalDiscount)}</span></div>
-                <div className="bill-line"><span>Restaurant Discount</span><span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span></div>
-                <div className="bill-line"><span>Item Total</span><span>₹{fmt(billPreview.subtotal)}</span></div>
-                <div className="bill-line"><span>SGST</span><span>₹{fmt(billPreview.sgst)}</span></div>
-                <div className="bill-line"><span>CGST</span><span>₹{fmt(billPreview.cgst)}</span></div>
-                <div className="bill-line"><span>GST</span><span>+₹{fmt(billPreview.totalGst)}</span></div>
-                <div className="bill-line total"><span>Total</span><span>₹{fmt(billPreview.total)}</span></div>
+                <div className="bill-line">
+                  <span>Discount</span>
+                  <span>-₹{fmt(billPreview.totalDiscount)}</span>
+                </div>
+                <div className="bill-line">
+                  <span>Restaurant Discount</span>
+                  <span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span>
+                </div>
+                <div className="bill-line">
+                  <span>Item Total</span>
+                  <span>₹{fmt(billPreview.subtotal)}</span>
+                </div>
+                <div className="bill-line">
+                  <span>SGST</span>
+                  <span>₹{fmt(billPreview.sgst)}</span>
+                </div>
+                <div className="bill-line">
+                  <span>CGST</span>
+                  <span>₹{fmt(billPreview.cgst)}</span>
+                </div>
+                <div className="bill-line">
+                  <span>GST</span>
+                  <span>+₹{fmt(billPreview.totalGst)}</span>
+                </div>
+                <div className="bill-line total">
+                  <span>Total</span>
+                  <span>₹{fmt(billPreview.total)}</span>
+                </div>
               </div>
 
-              <button className="place-order-btn" onClick={placeOrder} disabled={!cart.length || isPlacingOrder || !table}>
-                {isPlacingOrder ? "Placing Order..." : `Place Order • ₹${fmt(billPreview.total)}`}
+              <button
+                className="place-order-btn"
+                onClick={placeOrder}
+                disabled={!cart.length || isPlacingOrder || !table}
+              >
+                {isPlacingOrder
+                  ? "Placing Order..."
+                  : `Place Order • ₹${fmt(billPreview.total)}`}
               </button>
             </>
           )}

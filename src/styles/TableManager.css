@@ -15,7 +15,7 @@ html {
   overflow-y: hidden;
 }
 
-/* Card styling */
+
 .table-manager-card {
   background-color: #ffffff;
   padding: 2rem 2.5rem;
@@ -38,7 +38,7 @@ html {
   color: #6c757d;
 }
 
-/* Table count styling */
+
 .table-count {
   font-size: 2rem;
   font-weight: 700;
@@ -46,7 +46,7 @@ html {
   margin: 0 1.5rem;
 }
 
-/* Button group */
+
 .button-group {
   display: flex;
   justify-content: center;
@@ -72,7 +72,7 @@ html {
   color: white;
 }
 
-/* Save button */
+
 .save-button {
   width: 100%;
   padding: 12px;
@@ -89,7 +89,7 @@ html {
   background-color: #218838;
 }
 
-/* Alert Message */
+
 .alert-danger {
   margin-top: 1rem;
   padding: 1rem;
@@ -100,7 +100,7 @@ html {
   font-size: 0.95rem;
 }
 
-/* Fade-in animation */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -112,7 +112,7 @@ html {
   }
 }
 
-/* Responsive support */
+
 @media (max-width: 480px) {
   .table-manager-card {
     padding: 1.5rem;
@@ -137,7 +137,7 @@ html {
 
 
 
-/* Make wrapper full height */
+
 html, body, #root {
   height: 100%;
   margin: 0;

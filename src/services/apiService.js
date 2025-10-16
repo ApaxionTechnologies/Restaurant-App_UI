@@ -80,16 +80,7 @@ export const addMenuItem = async (data) => {
   }
 };
 
-// export const fetchMe = async (token) => {
-//   try {
-//     const res = await API.get("/auth/me", {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-//     return res.data;
-//   } catch (error) {
-//     throw error.response?.data || error.message;
-//   }
-// };
+
 
 export const logoutRestaurant = async () => {
   try {
@@ -193,6 +184,28 @@ export const updateOrderStatus = async (orderId, status) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const generateBill = async (payload) => {
+  try {
+    const res = await API.post("/bill/generate-bill", payload);
+    return res.data;
+  } catch (error) {
+    console.error("Error generating bill:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getBill = async (params) => {
+  try {
+    const res = await API.get("/bill/fetchBill",{
+      params: params,
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const updateOrderItems = async (orderId, items) => {
   try {
     const response = await API.put(`/orders/edit/${orderId}`, { items });
@@ -224,7 +237,7 @@ export const resetPassword = async (token, newPassword) => {
 };
 
 
-// Add new tax slab
+
 export const addTaxSlab = async (slabData) => {
   try {
     const res = await API.post("/tax-slabs", slabData, {
@@ -236,7 +249,7 @@ export const addTaxSlab = async (slabData) => {
   }
 };
 
-// Get all tax slabs
+
 export const getTaxSlabs = async () => {
   try {
     const res = await API.get("/tax-slabs");
@@ -247,7 +260,7 @@ export const getTaxSlabs = async () => {
 };
     
    
-// Update a tax slab
+
 export const updateTaxSlab = async (slabId, slabData) => {
   try {
     const res = await API.put(`/tax-slabs/${slabId}`, slabData, {
@@ -358,6 +371,16 @@ export const taxConfigAction = async (payload) => {
 export const updateTaxDefault = async (payload) => {
   try {
     const res = await API.post("/config/updateDefaultTaxConfig", payload);
+
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+export const updateTaxStatus = async (payload) => {
+  try {
+    const res = await API.post("/config/changeTaxStatus", payload);
 
     return res.data;
   } catch (error) {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart, updateQty } from "../store/CartSlice"; 
+import { addToCart, updateQty } from "../store/CartSlice";
 import { useRestaurant } from "../context/RestaurantContext";
 import ViewMenuNavbar from "../components/ViewMenuNavbar";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import * as bootstrap from 'bootstrap'; 
+import * as bootstrap from 'bootstrap';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { getMenuByRestaurant } from "../services/apiService";
@@ -21,14 +21,16 @@ import {
 } from "react-icons/fa";
 import "../styles/global.css";
 import "../styles/MenuCard.css";
- import CartDrawer from "../components/CartDrawer";
+import CartDrawer from "../components/CartDrawer";
+
 export default function MenuPage() {
   const navigate = useNavigate();
-  const cart = useSelector((state) => state.cart.items); // Redux selector
-  const dispatch = useDispatch(); // Redux dispatch
+  const cart = useSelector((state) => state.cart.items || []); 
+  const dispatch = useDispatch();
   const { restaurant, setRestaurant, setTable } = useRestaurant();
   const [searchParams] = useSearchParams();
   const { restaurantId: restaurantIdFromParams } = useParams();
+
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   const [expanded, setExpanded] = useState({});
   const tooltipRefs = useRef(new Map());
@@ -42,10 +44,12 @@ export default function MenuPage() {
     null;
 
   const restaurantId = restaurantIdFromParams || restaurantIdFromQuery;
+
   const table =
     searchParams.get("table") ||
     searchParams.get("tableNumber") ||
     null;
+
   const [search, setSearch] = useState("");
   const [menuMap, setMenuMap] = useState({});
   const [favorites, setFavorites] = useState({});
@@ -60,6 +64,7 @@ export default function MenuPage() {
     Desserts: [],
     Beverages: [],
   };
+
 
   useEffect(() => {
     let finalRestaurantId = restaurantId;
@@ -84,13 +89,14 @@ export default function MenuPage() {
         ? finalRestaurantId._id || finalRestaurantId.id || ""
         : finalRestaurantId;
 
-    setRestaurant(ridForContext);
-    setTable(finalTable);
+    if (setRestaurant) setRestaurant(ridForContext);
+    if (setTable) setTable(finalTable);
 
     if (ridForContext) localStorage.setItem("restaurantId", ridForContext);
-    if (finalTable) localStorage.setItem("tableNumber", finalTable); 
+    if (finalTable) localStorage.setItem("tableNumber", finalTable);
   }, [restaurantId, table, navigate, setRestaurant, setTable]);
 
+  // Fetch menu
   useEffect(() => {
     if (!restaurantId) return;
 
@@ -98,25 +104,29 @@ export default function MenuPage() {
       setLoading(true);
       try {
         const res = await getMenuByRestaurant(restaurantId);
+      
         console.log("API response:", res);
-        setRestaurant(res.restaurant);
-        const rid = res.restaurant?._id || res.restaurant?.id || restaurantId;
-        if (rid) localStorage.setItem("restaurantId", rid);
-        const items = Array.isArray(res.menu) 
+        if (res.restaurant && setRestaurant) {
+          setRestaurant(res.restaurant);
+          const rid = res.restaurant._id || res.restaurant.id || restaurantId;
+          if (rid) localStorage.setItem("restaurantId", rid);
+        }
+
+        const items = Array.isArray(res.menu)
           ? res.menu
-              .filter(item => {
+              .filter((item) => {
                 const status = (item.status || "").toString().trim().toLowerCase();
-                return status === "published";  
+               
+                return status === "published";
               })
-              .map(item => ({
+              .map((item) => ({
                 ...item,
-                type: (item.type || "veg").toLowerCase()  
+                type: (item.type || "veg").toLowerCase(),
               }))
           : [];
 
         setDishes(items);
         setMenuMap(buildMenuMap(items));
-
       } catch (err) {
         console.error(err);
         setMenuMap(defaultMenu);
@@ -126,13 +136,15 @@ export default function MenuPage() {
     };
 
     fetchMenu();
-  }, [restaurantId]);   
+   
+  }, [restaurantId]);
 
   const buildMenuMap = (items) => {
     const map = {};
     if (!Array.isArray(items)) return map;
     items.forEach((it) => {
-      let cat = (it.category || "Uncategorized").trim();
+      let cat = (it.category || "Uncategorized").toString().trim();
+      if (cat.length === 0) cat = "Uncategorized";
       cat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
       if (!map[cat]) map[cat] = [];
       map[cat].push(it);
@@ -140,20 +152,21 @@ export default function MenuPage() {
     return map;
   };
 
+  
   useEffect(() => {
-    AOS.init({ duration: 600, once: true }); 
+    AOS.init({ duration: 600, once: true });
   }, []);
 
   const toggleFavorite = (name) => {
     setFavorites((prev) => ({ ...prev, [name]: !prev[name] }));
   };
 
-  const getQty = (name) => {
-    const found = cart.find((item) => item.name === name);
+  const getQty = (menuItemId) => {
+    const found = (cart || []).find((item) => item.menuItemId === menuItemId);
     return found ? found.qty : 0;
   };
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" ? window.innerWidth < 768 : false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -167,69 +180,81 @@ export default function MenuPage() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isCategoryDrawerOpen]);
 
   const categories = ["All", ...Object.keys(menuMap)];
 
+ 
   useEffect(() => {
     const initializeTooltips = () => {
-      tooltipRefs.current.forEach((tooltip, element) => {
-        if (tooltip) {
+ 
+      tooltipRefs.current.forEach((tooltip) => {
+        try {
           tooltip.dispose();
+        } catch (e) {
+          
         }
       });
       tooltipRefs.current.clear();
+
       const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-      tooltipElements.forEach(element => {
+      tooltipElements.forEach((element) => {
+     
         const tooltip = new bootstrap.Tooltip(element, {
           trigger: 'hover',
           placement: 'top',
           customClass: 'custom-tooltip',
-          boundary: 'window'
+          boundary: 'window',
         });
         tooltipRefs.current.set(element, tooltip);
       });
     };
 
     initializeTooltips();
-    
+
     return () => {
-      tooltipRefs.current.forEach((tooltip, element) => {
-        if (tooltip) {
+      tooltipRefs.current.forEach((tooltip) => {
+        try {
           tooltip.dispose();
+        } catch (e) {
+      
         }
       });
       tooltipRefs.current.clear();
     };
   }, [selectedCategory, layout, dishes]);
-  
+
+
   useEffect(() => {
     const handleTouchStart = (e) => {
       const target = e.target;
-      if (target.classList.contains('read-more') || 
-          target.closest('.read-more')) {
+      const readMoreElement = target.classList.contains('read-more')
+        ? target
+        : target.closest('.read-more');
+
+      if (readMoreElement) {
         e.preventDefault();
         e.stopPropagation();
-        
-        const readMoreElement = target.classList.contains('read-more') 
-          ? target 
-          : target.closest('.read-more');
-        
-        if (readMoreElement) {
-          const tooltip = bootstrap.Tooltip.getInstance(readMoreElement);
-          
-          if (tooltip) {
-            if (touchTimerRef.current) {
-              clearTimeout(touchTimerRef.current);
-            }
-            
-            tooltip.show();
-            
-            touchTimerRef.current = setTimeout(() => {
-              tooltip.hide();
-            }, 3000);
+
+        const tooltip = bootstrap.Tooltip.getInstance(readMoreElement);
+
+        if (tooltip) {
+          if (touchTimerRef.current) {
+            clearTimeout(touchTimerRef.current);
           }
+
+          tooltip.show();
+
+          touchTimerRef.current = setTimeout(() => {
+            try {
+              tooltip.hide();
+            } catch (err) {
+              
+            }
+          }, 3000);
         }
       }
     };
@@ -237,7 +262,7 @@ export default function MenuPage() {
     if (isMobile) {
       document.addEventListener('touchstart', handleTouchStart, { passive: false });
     }
-    
+
     return () => {
       if (touchTimerRef.current) {
         clearTimeout(touchTimerRef.current);
@@ -246,20 +271,27 @@ export default function MenuPage() {
     };
   }, [isMobile]);
 
-  // Add to cart handler using Redux
-  const handleAddToCart = (item) => {
-   dispatch(addToCart({
-  name: item.name,
-  menuItemId: item._id, // ✅ important
-  price: item.price,
-  qty: 1
-}));
 
+  const handleAddToCart = (item) => {
+    dispatch(addToCart({
+      name: item.name,
+      menuItemId: item._id,
+      price: item.price,
+      qty: 1
+    }));
   };
 
-  // Update quantity handler using Redux
-  const handleUpdateQty = (name, change) => {
-    dispatch(updateQty({ name, change }));
+  const handleUpdateQty = (item, change) => {
+    dispatch(updateQty({ menuItemId: item._id, change }));
+  };
+
+  
+  const imageUrl = (img) => {
+    if (!img) return "";
+    if (typeof img !== "string") return "";
+    if (img.startsWith("http")) return img;
+    
+    return `http://localhost:5001/uploads/${img.replace(/^\/+/, "")}`;
   };
 
   return (
@@ -269,11 +301,7 @@ export default function MenuPage() {
         {restaurant?.image ? (
           <>
             <img
-              src={
-                restaurant.image.startsWith("http")
-                  ? restaurant.image
-                  : `http://localhost:5001/uploads/${restaurant.image.replace(/^\/+/, "")}`
-              }
+              src={restaurant.image && restaurant.image.startsWith("http") ? restaurant.image : imageUrl(restaurant.image)}
               alt={restaurant?.name || "Restaurant"}
             />
             <div className="restaurant-overlay">
@@ -290,8 +318,8 @@ export default function MenuPage() {
       </div>
 
       <div className="page-center fade-in">
-        <div style={{ maxWidth: "1000px", width: "100%", padding: "0.5rem 1rem", margin: "0 auto" }}>
-         
+        <div style={{ maxWidth: "1000px", width: "100%", padding: "2.5rem 1rem", margin: "0 auto" }}>
+
           <div style={{
             display: "flex",
             justifyContent: "space-between",
@@ -342,10 +370,10 @@ export default function MenuPage() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                   {selectedCategory || "All"} ☰ 
+                  {selectedCategory || "All"} ☰
                 </button>
               )}
-              
+
               <div className="layout-toggle" role="toolbar" aria-label="Layout toggle">
                 <button
                   onClick={() => setLayout("list")}
@@ -371,9 +399,10 @@ export default function MenuPage() {
               </div>
             </div>
           </div>
+
           {!isMobile && (
-            <div style={{ 
-              textAlign: "left", 
+            <div style={{
+              textAlign: "left",
               marginBottom: "1rem",
               display: "flex",
               flexWrap: "wrap",
@@ -433,24 +462,21 @@ export default function MenuPage() {
 
               return (
                 <div key={category} style={{ marginBottom: "2rem" }}>
-                  <h3 style={{ marginBottom: "1rem" }}>🍽️ {category}</h3>
+                  <h3 style={{ marginBottom: "1rem" }}>🍽 {category}</h3>
                   <div className={`menu-grid ${layout}`}>
                     {filteredDishes.map((item, index) => {
-                      const qty = getQty(item.name);
-                      const imgSrc = item.image
-                        ? (item.image.startsWith("http")
-                            ? item.image
-                            : `http://localhost:5001/uploads/${item.image}`)
-                        : "";
+                      const qty = getQty(item._id || item.id);
+                      const imgSrc = item.image ? imageUrl(item.image) : "";
+
                       return (
                         <div className="menu-card" key={item._id || index} data-aos="fade-up">
-                          {imgSrc && <img src={imgSrc} alt={item.name} />}
+                          <img src={imgSrc} alt={item.name} />
                           <div className="menu-card-content">
                             <div className="menu-title-price">
                               <span className={`veg-indicator ${item.type?.toLowerCase() || "veg"}`}></span>
 
                               <h3>{item.name}</h3>
-                              <p className="price">₹{item.price}</p>
+                              <p className="price">₹{item.price ?? "—"}</p>
 
                               <span
                                 onClick={() => toggleFavorite(item.name)}
@@ -469,14 +495,14 @@ export default function MenuPage() {
                                     <span
                                       className="read-more"
                                       data-bs-toggle="tooltip"
-                                      data-bs-title={item.description}
+                                      title={item.description}
                                       data-bs-custom-class="custom-tooltip"
                                     >
                                       Read More
                                     </span>
                                   </>
                                 )
-                                : item.description
+                                : (item.description || "")
                               }
                             </p>
 
@@ -486,15 +512,14 @@ export default function MenuPage() {
                                   <div style={{ display: "flex", gap: "0.5rem" }}>
                                     <span>{item.cuisine || "🍴"}</span>
                                     <span>•</span>
-                                    <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+                                    <span>⏱ {item.prepTime || item.timeToPrepare || "—"}</span>
                                   </div>
 
-                                  <div className="qty-controls">
+                                  <div className="qty-controls" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                     <button
                                       className="qty-btn"
-                                      onClick={() => qty > 0 && handleUpdateQty(item.name, -1)}
+                                      onClick={() => qty > 0 && handleUpdateQty(item, -1)}
                                       disabled={qty === 0}
-                                      style={{ opacity: qty === 0 ? 0.5 : 1, cursor: qty === 0 ? "not-allowed" : "pointer" }}
                                     >
                                       <FaMinus />
                                     </button>
@@ -505,9 +530,9 @@ export default function MenuPage() {
                                       className="qty-btn"
                                       onClick={() => {
                                         if (qty === 0) {
-                                          handleAddToCart(item);   
+                                          handleAddToCart(item);
                                         } else {
-                                          handleUpdateQty(item.name, 1); 
+                                          handleUpdateQty(item, 1);
                                         }
                                       }}
                                     >
@@ -519,7 +544,7 @@ export default function MenuPage() {
                                 <div className="cuisine-time" style={{ display: "flex", justifyContent: "flex-end", width: "100%", gap: "0.5rem" }}>
                                   <span>{item.cuisine || "🍴"}</span>
                                   <span>•</span>
-                                  <span>⏱️ {item.prepTime || item.timeToPrepare || "—"}</span>
+                                  <span>⏱ {item.prepTime || item.timeToPrepare || "—"}</span>
                                 </div>
                               )}
                             </div>
@@ -541,7 +566,7 @@ export default function MenuPage() {
               position: "fixed",
               top: 0,
               right: 0,
-              width: "65%", 
+              width: "65%",
               maxWidth: "220px",
               height: "auto",
               maxHeight: "80%",
@@ -557,11 +582,11 @@ export default function MenuPage() {
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
               <h3 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "600" }}>Categories</h3>
-              <button 
+              <button
                 onClick={() => setIsCategoryDrawerOpen(false)}
-                style={{ 
-                  background: "transparent", 
-                  border: "none", 
+                style={{
+                  background: "transparent",
+                  border: "none",
                   fontSize: "1.2rem",
                   cursor: "pointer",
                   color: "#666"
@@ -598,8 +623,8 @@ export default function MenuPage() {
                     }}
                   >
                     <span>{category}</span>
-                    <span style={{ 
-                      fontSize: "0.8rem", 
+                    <span style={{
+                      fontSize: "0.8rem",
                       background: selectedCategory === category ? "#3e2723" : "#f0f0f0",
                       color: selectedCategory === category ? "#fff" : "#666",
                       padding: "0.2rem 0.6rem",
@@ -613,7 +638,7 @@ export default function MenuPage() {
               })}
             </div>
           </div>
-          <div 
+          <div
             style={{
               position: "fixed",
               top: 0,
