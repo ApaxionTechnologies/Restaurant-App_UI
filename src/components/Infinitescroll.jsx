@@ -14,8 +14,6 @@ const InfiniteScroll = ({ items, batchSize = 3, renderItem }) => {
       },
       {
         root: null, 
-        // rootMargin: "200px", // load early before reaching bottom
-        // threshold: 0.1,
         rootMargin: "0px",  
         threshold: 1.0, 
       }
