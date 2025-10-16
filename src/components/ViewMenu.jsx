@@ -310,13 +310,12 @@ const filteredItems = searchItems
   </span>
 </div>
 </div>
-        </div>
+  </div>
 
         <div className="menu-grid">
           {filteredItems.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-icon">🍽️</div>
-
               <p>
                 {searchQuery
                   ? `No items match your search for "${searchQuery}"`

@@ -103,8 +103,6 @@ const [restaurantName, setRestaurantName] = useState("");
     };
   }, []);
 
- 
-
   const isValidImageType = (file) => {
     if (!file) return false;
     const validTypes = ["image/jpeg", "image/jpg", "image/png"];
