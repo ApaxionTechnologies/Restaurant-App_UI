@@ -645,13 +645,6 @@ export default function App() {
 
   return (
     <>
-      {/* <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      /> */}
       <div className="app">
         {/* Mobile menu toggle */}
         <button className="menuToggle" onClick={toggleSidebar}>
@@ -708,32 +701,72 @@ export default function App() {
                     ? "Categories"
                     : activeTab === "cuisines"
                     ? "Cuisines"
+                    : activeTab === "discount"
+                    ? "Discount"
                     : "Tax"}{" "}
                   Management
                 </h1>
-                {activeTab === "cuisines" && (
-                  <label className="statusToggle">
-                    <input
-                      type="checkbox"
-                      checked={isCuisineEnabled}
-                      onChange={handleCuisineFlip}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                )}
-                {activeTab === "tax" && (
-                  <label className="statusToggle">
-                    <input
-                      type="checkbox"
-                      checked={isTaxEnabled}
-                      onChange={handleTaxStatusChange}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                )}
               </div>
               {activeTab !== "discount" && (
-                <div className="">
+                <div className="d-md-flex ">
+                  {activeTab === "cuisines" && (
+                    <div className="responsive-flex-container">
+                      <div
+                        className={`alert d-flex align-items-center justify-content-between shadow-sm ${
+                          isCuisineEnabled
+                            ? "alert-success border-success-subtle bg-success-subtle"
+                            : "alert-secondary border-secondary-subtle bg-secondary-subtle"
+                        } w-100 mb-0 py-2 px-3 rounded-3`}
+                        role="alert"
+                      >
+                        {/* Left Section (Message) */}
+                        <div className="fw-semibold small me-3 mb-0 text-wrap">
+                          {isCuisineEnabled
+                            ? "Cuisine configuration is enabled"
+                            : "Cuisine configuration is disabled"}
+                        </div>
+
+                        {/* Right Section (Switch Toggle) */}
+                        <label className="statusToggle">
+                          <input
+                            type="checkbox"
+                            checked={isCuisineEnabled}
+                            onChange={handleCuisineFlip}
+                          />
+                          <span className="slider"></span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                  {activeTab === "tax" && (
+                    <div className="responsive-flex-container">
+                      <div
+                        className={`alert d-flex align-items-center justify-content-between shadow-sm ${
+                          isCuisineEnabled
+                            ? "alert-success border-success-subtle bg-success-subtle"
+                            : "alert-secondary border-secondary-subtle bg-secondary-subtle"
+                        } w-100 mb-0 py-2 px-3 rounded-3`}
+                        role="alert"
+                      >
+                        {/* Left Section (Message) */}
+                        <div className="fw-semibold small me-3 mb-0 text-wrap">
+                          {isTaxEnabled
+                            ? "Tax is included in menu prices"
+                            : "Tax will be added separately at checkout"}
+                        </div>
+
+                        {/* Status Icon */}
+                        <label className="statusToggle">
+                          <input
+                            type="checkbox"
+                            checked={isTaxEnabled}
+                            onChange={handleTaxStatusChange}
+                          />
+                          <span className="slider"></span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                   <button className="btn6r" onClick={() => setOpenModal(true)}>
                     + Add
                   </button>

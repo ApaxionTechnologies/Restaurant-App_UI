@@ -184,6 +184,28 @@ export const updateOrderStatus = async (orderId, status) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const generateBill = async (payload) => {
+  try {
+    const res = await API.post("/bill/generate-bill", payload);
+    return res.data;
+  } catch (error) {
+    console.error("Error generating bill:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getBill = async (params) => {
+  try {
+    const res = await API.get("/bill/fetchBill",{
+      params: params,
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const updateOrderItems = async (orderId, items) => {
   try {
     const response = await API.put(`/orders/edit/${orderId}`, { items });

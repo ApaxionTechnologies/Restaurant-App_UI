@@ -312,14 +312,6 @@
   border-top: 1px solid #e5e7eb;
 }
 
-.scrolled {
-  background-color: #fff;
-}
-
-.btn-scrolled {
-  border: 1px solid slategray;
-}
-
 .search-filter-wrapper {
   display: flex;
   align-items: center;
@@ -503,8 +495,17 @@
   }
 
   .card:hover {
-    transform: translateY(-3px);
-  }
+  transform: translateY(-3px);
+}
+
+
+.scrolled {
+  background-color: #fff;
+}
+
+.btn-scrolled {
+  border: 1px solid slategray;
+}
 }
 
 @media (max-width: 480px) {
