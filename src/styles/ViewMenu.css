@@ -267,14 +267,6 @@
   border-top: 1px solid #e5e7eb;
 }
 
-.scrolled {
-  background-color: #fff;
-}
-
-.btn-scrolled {
-  border: 1px solid slategray;
-}
-
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .menu-grid {
@@ -347,6 +339,15 @@
 
   .card:hover {
   transform: translateY(-3px);
+}
+
+
+.scrolled {
+  background-color: #fff;
+}
+
+.btn-scrolled {
+  border: 1px solid slategray;
 }
 }
 
