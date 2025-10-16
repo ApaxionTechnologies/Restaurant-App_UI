@@ -144,13 +144,15 @@
 .stats-icon.served { background: linear-gradient(135deg, #10b981, #059669); }
 .stats-icon.paid { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 .stats-icon.completed { background: linear-gradient(135deg, #10b981, #047857); }
+.stats-icon.bill { background: linear-gradient(135deg, #086043, #047857); }
 .stats-icon.cancelled { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
 .stats-content h3 {
   margin: 0;
-  font-size: 20px;                 /* reduced font-size */
+  font-size: 20px;                
   font-weight: 700;
   background: linear-gradient(135deg, #1e293b, #475569);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -483,6 +485,8 @@
 .btn-action.paid:hover { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
 .btn-action.complete { background: linear-gradient(135deg, #10b981, #047857); }
 .btn-action.complete:hover { background: linear-gradient(135deg, #047857, #065f46); }
+.btn-action.bill { background: linear-gradient(135deg, #09563c, #047857); }
+.btn-action.bill:hover { background: linear-gradient(135deg, #063427, #065f46); }
 .btn-action.cancel { background: linear-gradient(135deg, #ef4444, #dc2626); }
 .btn-action.cancel:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); }
 .btn-action.edit {
@@ -965,7 +969,7 @@
 
 .table-responsive { overflow-x: auto; }
 
-/* Small accessibility / focus state */
+
 .orders-table thead tr:nth-child(2) th input:focus,
 .orders-table thead tr:nth-child(2) th select:focus {
   outline: none;

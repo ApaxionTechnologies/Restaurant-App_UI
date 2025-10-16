@@ -11,6 +11,10 @@
   transition: background 0.2s ease;
 }
 
+.add-menu-wrapper {
+  padding: 0px 35px 35px 35px;
+}
+
 .add-multiple-btn:hover {
   background: #560cea;
 }
@@ -41,10 +45,10 @@
 
 .card-header {
   display: flex;
-  flex-direction: column; /* stack vertically */
-  align-items: flex-start; /* align left */
+  flex-direction: column; 
+  align-items: flex-start; 
   gap: 10px;
-  /* padding: 20px 24px; */
+  
   border-bottom: 1px solid rgba(14,22,35,0.04);
   background: linear-gradient(180deg, rgba(250,252,255,0.6), rgba(255,255,255,0.35));
 }
@@ -406,6 +410,10 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
   }
   .field-wrappers .error-message { right: 8px; top: -8px; font-size: 0.66rem; padding: 3px 6px; }
   .field-wrappers { min-height: 56px; }
+
+  .add-menu-wrapper {
+    padding: 0px;
+  }
 }
 
 .upload-btn.error {
@@ -441,9 +449,12 @@ input[type="number"]::-webkit-inner-spin-button { margin: 0; }
 }
 
 
-/* extra */
+
 .top-buttons1{
-  margin-left: 80%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding: 10px;
 }
 
-/* responsive */
+

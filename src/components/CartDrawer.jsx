@@ -43,7 +43,7 @@ export default function CartDrawer() {
     setShowFlyout(false);
   };
 
-  // Determine button text based on cart contents
+  
   const getButtonText = () => {
     if (cartCount > 0) {
       return `${cartCount} Item${cartCount !== 1 ? 's' : ''} | ₹${total.toFixed(2)}`;
@@ -52,7 +52,7 @@ export default function CartDrawer() {
     }
   };
 
-  // Don't render the cart drawer if we're on a page where it shouldn't show
+  
   if (!shouldShowCart) {
     return null;
   }
@@ -69,7 +69,7 @@ export default function CartDrawer() {
         {!isMobile && cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
       </button>
 
-      {/* Desktop Flyout Cart */}
+      
       {!isMobile && (
         <div 
           className="cart-flyout"

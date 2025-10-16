@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { QrReader } from "react-qr-reader";
+
 import jsQR from "jsqr";
 import Footer from "../components/Footer";
 import "../styles/Home.css";
@@ -182,14 +182,7 @@ const redirectToMenu = (qrText) => {
             </button>
           ) : (
             <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
-              {/* <QrReader
-                onResult={(result, error) => {
-                  if (!!result) handleScan(result);
-                  if (!!error) handleError(error);
-                }}
-                constraints={{ facingMode: "environment" }}
-                style={{ width: "100%" }}
-              /> */}
+              
               <button
                 className="header-btn"
                 style={{ marginTop: "10px" }}

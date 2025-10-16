@@ -1,26 +1,26 @@
-/* Add these styles to your existing GenerateMenuQR.css */
+
 
 .generate-qr-wrapper {
   max-width: var(--container-max);
   margin: 1rem auto;
   min-height: calc(100vh - 180px);
-  padding: 0 20px;
+  /* padding: 0 20px; */
   display: flex;
   justify-content: center;
 }
 
 .centered-container {
   width: 100%;
-  max-width: 600px; /* Adjust this value as needed */
+  max-width: 600px; 
   margin: 0 auto;
 }
 
-/* Remove the grid styles from the original CSS */
+
 .generate-qr-wrapper {
   grid-template-columns: 1fr !important;
 }
 
-/* Keep all your original CSS below */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 :root {
@@ -238,7 +238,7 @@
 
 @media (max-width: 480px) {
   .generate-qr-wrapper {
-    padding: 0 12px;
+    /* padding: 0 12px; */
   }
   
   .qr-card {
