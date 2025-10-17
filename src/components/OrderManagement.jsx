@@ -617,7 +617,7 @@ export default function OrderManagement() {
 
       if (result.bill) {
         toast.success("Bill generated");
-        handleUpdateStatus(orderNumber, "paid");
+        handleUpdateStatus(orderNumber, "billed");
       } else {
         toast.error("Bill generation failed");
       }
@@ -636,10 +636,10 @@ export default function OrderManagement() {
 
       if (result) {
         toast.success(result?.message || "Bill fetched successfully");
-        setBillData(result.data)
-        setOpenBillModal(true)
+        setBillData(result.data);
+        setOpenBillModal(true);
       } else {
-        setBillData([])
+        setBillData([]);
         toast.error("Bill generation failed");
       }
     } catch (error) {
@@ -884,31 +884,32 @@ export default function OrderManagement() {
               {order.status === "served" && (
                 <button
                   className="btn btn-action paid"
-                  onClick={() => handleUpdateStatus(order.orderNo, "billed")}
+                  onClick={() => generateBillData(order.id, order.orderNo)}
+                  // onClick={() => handleUpdateStatus(order.orderNo, "billed")}
                   title="Generate Bill"
                 >
                   <i className="fas fa-money-bill-wave"></i>
                 </button>
               )}
               {order.status === "billed" && (
-                <button
-                  className="btn btn-action bill"
-                  onClick={() => generateBillData(order.id, order.orderNo)}
-                  title="Mark as Paid"
-                >
-                  <i className="fas fa-money-bill"></i>
-                </button>
+                <>
+                  <button
+                    className="btn btn-action complete"
+                    onClick={() => fetchBillData(order.id)}
+                    title="View Bill"
+                  >
+                    <i className="fas fa-eye"></i>
+                  </button>
+                  <button
+                    className="btn btn-action bill"
+                    onClick={() => handleUpdateStatus(order.orderNo, "paid")}
+                    title="Mark as Paid"
+                  >
+                    <i className="fas fa-money-bill"></i>
+                  </button>
+                </>
               )}
               {order.status === "paid" && (
-                <button
-                  className="btn btn-action complete"
-                  onClick={() => handleUpdateStatus(order.orderNo, "completed")}
-                  title="Mark as Completed"
-                >
-                  <i className="fas fa-check"></i>
-                </button>
-              )}
-              {order.status === "completed" && (
                 <>
                   <button
                     className="btn btn-action complete"
@@ -919,12 +920,23 @@ export default function OrderManagement() {
                   </button>
                   <button
                     className="btn btn-action complete"
-                    // onClick={() => handleDownloadBill(order.orderNo)}
-                    title="Download Bill"
+                    onClick={() =>
+                      handleUpdateStatus(order.orderNo, "completed")
+                    }
+                    title="Mark as Completed"
                   >
-                    <i className="fas fa-download"></i>
+                    <i className="fas fa-check"></i>
                   </button>
                 </>
+              )}
+              {order.status === "completed" && (
+                <button
+                  className="btn btn-action complete"
+                  onClick={() => fetchBillData(order.id)}
+                  title="View Bill"
+                >
+                  <i className="fas fa-eye"></i>
+                </button>
               )}
             </div>
           );
@@ -1705,7 +1717,11 @@ export default function OrderManagement() {
           </div>
         </div>
       )}
-      <ViewBillModal isOpen={openBillModal} billPreview={billData} onClose={()=>setOpenBillModal(false)} />
+      <ViewBillModal
+        isOpen={openBillModal}
+        billPreview={billData}
+        onClose={() => setOpenBillModal(false)}
+      />
     </div>
   );
 }

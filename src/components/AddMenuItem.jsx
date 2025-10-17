@@ -346,7 +346,7 @@ const AddMenuItem = () => {
                     </label>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <label>GST.Exclusive / Inclusive</label>
                   <div className="radio-group">
                     <label>
@@ -370,7 +370,7 @@ const AddMenuItem = () => {
                       Inclusive
                     </label>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Price & Discount */}
