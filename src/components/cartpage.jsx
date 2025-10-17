@@ -172,7 +172,11 @@ export default function CartPage() {
               <p>Add some delicious items from our menu</p>
               <button
                 className="browse-menu-btn"
-                onClick={() => navigate(`/menu?restaurantId=${restaurantId}&table=${table || ""}`)}
+                onClick={() =>
+                  navigate(
+                    `/menu?restaurantId=${restaurantId}&table=${table || ""}`
+                  )
+                }
               >
                 Browse Menu
               </button>
@@ -237,6 +241,31 @@ export default function CartPage() {
                       </div>
                     </div>
                   ))}
+                  <div className="cart-item-row">
+                    <div
+                      className="item-info"
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <span className="item-name font-b">
+                        {" "}
+                        <b>Item Total</b>{" "}
+                      </span>
+                    </div>
+
+                    <div className="quantity-controls" />
+
+                    <div className="item-price-total">
+                      <span>
+                        {" "}
+                        <b>₹{fmt(billPreview.subtotal)}</b>{" "}
+                      </span>
+                    </div>
+                  </div>
+                  {billPreview.isTaxIncluded && (
+                    <div className="cart-item-row">
+                      <i>Prices are inclusive of all taxes.</i>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -251,37 +280,72 @@ export default function CartPage() {
                 />
               </div>
 
-              <div className="bill-summary">
-                <h3 className="bill-title">BILL DETAILS</h3>
-                <div className="bill-line">
-                  <span>Discount</span>
-                  <span>-₹{fmt(billPreview.totalDiscount)}</span>
+              {billPreview.isTaxIncluded ? (
+                <>
+                  {/* Tax Details */}
+                  <div className="bill-summary">
+                    <h3 className="bill-title">TAX DETAILS</h3>
+                    <div className="bill-line">
+                      <span>Taxable Amount</span>
+                      <span>
+                        ₹{fmt(billPreview.subtotal - billPreview.totalGst)}
+                      </span>
+                    </div>
+                    <div className="bill-line">
+                      <span>SGST</span>
+                      <span>₹{fmt(billPreview.sgst)}</span>
+                    </div>
+                    <div className="bill-line">
+                      <span>CGST</span>
+                      <span>₹{fmt(billPreview.cgst)}</span>
+                    </div>
+                    <div className="bill-line">
+                      <span>GST</span>
+                      <span>+₹{fmt(billPreview.totalGst)}</span>
+                    </div>
+                  </div>
+
+                  <div className="bill-summary">
+                    {/* <h3 className="bill-title">BILL DETAILS</h3> */}
+                    <div className="bill-line">
+                      <span>Restaurant Discount</span>
+                      <span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span>
+                    </div>
+                    <div className="bill-line total">
+                      <span>Total</span>
+                      <span>₹{fmt(billPreview.total)}</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="bill-summary">
+                  <h3 className="bill-title">BILL DETAILS</h3>
+                  {/* <div className="bill-line">
+                    <span>Discount</span>
+                    <span>-₹{fmt(billPreview.totalDiscount)}</span>
+                  </div> */}
+                  <div className="bill-line">
+                    <span>Restaurant Discount</span>
+                    <span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span>
+                  </div>
+                  <div className="bill-line">
+                    <span>SGST</span>
+                    <span>₹{fmt(billPreview.sgst)}</span>
+                  </div>
+                  <div className="bill-line">
+                    <span>CGST</span>
+                    <span>₹{fmt(billPreview.cgst)}</span>
+                  </div>
+                  <div className="bill-line">
+                    <span>GST</span>
+                    <span>+₹{fmt(billPreview.totalGst)}</span>
+                  </div>
+                  <div className="bill-line total">
+                    <span>Total</span>
+                    <span>₹{fmt(billPreview.total)}</span>
+                  </div>
                 </div>
-                <div className="bill-line">
-                  <span>Restaurant Discount</span>
-                  <span>-₹{fmt(billPreview.restaurantDiscountAmount)}</span>
-                </div>
-                <div className="bill-line">
-                  <span>Item Total</span>
-                  <span>₹{fmt(billPreview.subtotal)}</span>
-                </div>
-                <div className="bill-line">
-                  <span>SGST</span>
-                  <span>₹{fmt(billPreview.sgst)}</span>
-                </div>
-                <div className="bill-line">
-                  <span>CGST</span>
-                  <span>₹{fmt(billPreview.cgst)}</span>
-                </div>
-                <div className="bill-line">
-                  <span>GST</span>
-                  <span>+₹{fmt(billPreview.totalGst)}</span>
-                </div>
-                <div className="bill-line total">
-                  <span>Total</span>
-                  <span>₹{fmt(billPreview.total)}</span>
-                </div>
-              </div>
+              )}
 
               <button
                 className="place-order-btn"
