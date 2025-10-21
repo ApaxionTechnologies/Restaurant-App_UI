@@ -55,33 +55,68 @@ const handleClose = () => {
       navigate(-1);
     }
   };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setErrorMessage("");
+
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     const data = await adminLogin({ email: adminEmail, password: adminPassword });
+  //       localStorage.setItem("token", data.token);
+  //       localStorage.setItem("adminEmail", adminEmail);
+  //       navigate("/admin-dashboard");
+  //      if (onClose) onClose();
+  //   else { 
+  //     setErrorMessage(data.error || "Invalid email or password"); // This runs on SUCCESS
+  //   }
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     setErrorMessage("Network error. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
+  e.preventDefault();
+  setErrorMessage("");
 
-    if (!validateForm()) {
-      return;
+  if (!validateForm()) {
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const data = await adminLogin({ email: adminEmail, password: adminPassword });
+    
+    // 1. Check if the response contains a token, which signifies success
+    if (data.token) { 
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("adminEmail", adminEmail);
+      
+      navigate("/admin-dashboard");
+      if (onClose) onClose();
+      
+    } else {
+      // If no token, but no throw, this is likely an API logic error or unexpected successful response structure
+      setErrorMessage(data.message || "Login failed. Check server response.");
     }
+    
+  } catch (error) {
+    console.error("Login error:", error);
+    
+    const apiError = error.response?.data?.error || "Invalid email or password. Please check your credentials.";
+    setErrorMessage(apiError);
 
-    setIsSubmitting(true);
-
-    try {
-      const data = await adminLogin({ email: adminEmail, password: adminPassword });
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("adminEmail", adminEmail);
-        navigate("/admin-dashboard");
-        if (onClose) onClose();
-       else {
-        setErrorMessage(data.error || "Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("Network error. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   const handleInputChange = (field, value) => {
     if (field === "email") {
       setAdminEmail(value);
