@@ -524,7 +524,7 @@ export default function MenuPage() {
                                       <FaMinus />
                                     </button>
 
-                                    <div className="qty-display">{qty}</div>
+<div className="qty-display">{qty}</div>
 
                                     <button
                                       className="qty-btn"

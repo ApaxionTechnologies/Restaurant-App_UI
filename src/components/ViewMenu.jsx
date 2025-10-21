@@ -9,7 +9,7 @@ import * as bootstrap from "bootstrap";
 import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
-import { X, Search } from "lucide-react";
+import {  X, Search } from "lucide-react";
 import {
   getMyRestaurant,
   getMenuByRestaurant,
@@ -22,6 +22,8 @@ const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
   const location = useLocation();
+  
+  const [vegFilter, setVegFilter] = useState("All");
 
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -173,7 +175,6 @@ const ViewMenu = () => {
     navigate(`/edit-menu/${item._id}`, { state: { itemToEdit: item } });
   const handleAddMenuItem = () => navigate("/add-menu");
 
-  // Search + filter
   const searchItems = useMemo(() => {
     if (!searchQuery) return menuItems;
     const query = searchQuery.toLowerCase();
@@ -190,9 +191,17 @@ const ViewMenu = () => {
     });
   }, [menuItems, searchQuery]);
 
-  const filteredItems = searchItems.filter(
-    (item) => filter === "All" || item.status === filter
-  );
+const filteredItems = searchItems
+  .filter((item) => {
+    if (filter === "Published") return item.status === "Published";
+    if (filter === "Draft") return item.status === "Draft";
+    return true;
+  })
+  .filter((item) => {
+    if (vegFilter === "Veg") return item.type?.toLowerCase() === "veg";
+    if (vegFilter === "Non-Veg") return item.type?.toLowerCase() === "non-veg";
+    return true;
+  });
 
   if (loading) return <div className="loading">Loading menu...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -223,27 +232,64 @@ const ViewMenu = () => {
             ))}
           </div>
 
-          {/* Search Bar */}
-          <div className="search-container">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search by name, price, cuisine, type..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            {searchQuery && (
-              <button
-                className="btn-clear-search"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-              >
-                <X size={16} />
-              </button>
-            )}
-          </div>
-        </div>
+          <div className="search-filter-wrapper">
+  <div className="search-container">
+    <Search size={18} className="search-icon" />
+    <input
+      type="text"
+      placeholder="Search by name, price, cuisine, Veg, Non, Non-Veg type..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="search-input"
+    />
+    {searchQuery && (
+      <button
+        className="btn-clear-search"
+        onClick={() => setSearchQuery("")}
+        aria-label="Clear search"
+      >
+        <X size={16} />
+      </button>
+    )}
+  </div>
+
+ {/* <div className={`veg-toggle ${vegFilter === "Non-Veg" ? "non-veg" : ""}`}>
+    {[ "Veg"].map((type) => (
+      <button
+        key={type}
+        className={`veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
+        onClick={() => setVegFilter(type)}
+      >
+        {type}
+      </button>
+    ))}
+
+    {[ "Non-Veg"].map((type) => (
+      <button
+        key={type}
+        className={`non-veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
+        onClick={() => setVegFilter(type)}
+      >
+        {type}
+      </button>
+    ))}
+  </div> */}
+
+  <div className="veg-toggle-container">
+  <label className="veg-switch">
+    <input
+      type="checkbox"
+      checked={vegFilter === "Veg"}
+      onChange={() => setVegFilter(vegFilter === "Veg" ? "Non-Veg" : "Veg")}
+    />
+    <span className="slider"></span>
+  </label>
+  <span className={`veg-status ${vegFilter === "Veg" ? "veg" : "non-veg"}`}>
+    {vegFilter === "Veg" ? "Veg" : "Non-Veg"}
+  </span>
+</div>
+</div>
+  </div>
 
         {/* Menu Cards */}
         <div className="menu-grid">
@@ -288,7 +334,8 @@ const ViewMenu = () => {
                             : "veg"
                         }`}
                       ></span>
-                      <h3 className="card-title">{item.name}</h3>
+  
+                    <h3 className="card-title">{item.name}</h3>
                       <span className="card-price">₹{item.price}</span>
                     </div>
 

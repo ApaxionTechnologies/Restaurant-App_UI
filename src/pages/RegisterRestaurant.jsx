@@ -103,8 +103,6 @@ const [restaurantName, setRestaurantName] = useState("");
     };
   }, []);
 
- 
-
   const isValidImageType = (file) => {
     if (!file) return false;
     const validTypes = ["image/jpeg", "image/jpg", "image/png"];
@@ -127,7 +125,7 @@ const [restaurantName, setRestaurantName] = useState("");
         setCityList([]);
         setHasCities(false);
       }
-      
+    
       updatedAddress.state = "";
       updatedAddress.city = "";
     }
@@ -184,37 +182,46 @@ const [restaurantName, setRestaurantName] = useState("");
       reader.onerror = (error) => reject(error);
     });
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (file && !isValidImageType(file)) {
+    setErrors((prev) => ({
+      ...prev,
+      image: "Only JPG and PNG are allowed.",
+    }));
+    e.target.value = null;
+    return;
+  }
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
-    }
-  };
+  setErrors((prev) => ({ ...prev, image: "" }));
+  if (file) {
+    const base64 = await toBase64(file);
+    setPreviewImage(base64);
+    dispatch(setFormField({ field: "image", value: file }));
+    dispatch(setFormField({ field: "previewImage", value: base64 }));
+  }
+};
+
+const handleLogoChange = async (e) => {
+  const file = e.target.files[0];
+  if (file && !isValidImageType(file)) {
+    setErrors((prev) => ({
+      ...prev,
+      logoImage: "Only JPG and PNG are allowed.",
+    }));
+    e.target.value = null;
+    return;
+  }
+
+  setErrors((prev) => ({ ...prev, logoImage: "" }));
+  if (file) {
+    const base64 = await toBase64(file);
+    setPreviewLogo(base64);
+    dispatch(setFormField({ field: "logoImage", value: file }));
+    dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  }
+};
+
 
   useEffect(() => {
     if (formData.previewImage) setPreviewImage(formData.previewImage);
@@ -263,6 +270,10 @@ const [restaurantName, setRestaurantName] = useState("");
     if (!data.ownerName) newErrors.ownerName = "Owner name is required.";
     else if (!nameRegex.test(data.ownerName))
       newErrors.ownerName = "Owner name must contain letters only.";
+    
+    if (!data.gstNumber) newErrors.gstNumber = "GST number is required.";
+  else if (!/^[0-9A-Z]{15}$/.test(data.gstNumber))
+  newErrors.gstNumber = "Enter a valid 15-character GSTIN.";
 
     if (!data.contact || data.contact.length < 10)
       newErrors.contact = "Valid phone number required.";
@@ -290,6 +301,7 @@ const [restaurantName, setRestaurantName] = useState("");
     setTouched({
       restaurantName: true,
       ownerName: true,
+      gstNumber: true,
       contact: true,
       line1: true,
       country: true,
@@ -307,11 +319,13 @@ const [restaurantName, setRestaurantName] = useState("");
         formDataToSend.append("restaurantName", formData.restaurantName);
         formDataToSend.append("ownerName", formData.ownerName);
         formDataToSend.append("contact", formData.contact);
+        formDataToSend.append("gstNumber", formData.gstNumber);
         formDataToSend.append("tagline", formData.tagline);
         formDataToSend.append("address", JSON.stringify(formData.address));
         formDataToSend.append("email", formData.email.toLowerCase());
         formDataToSend.append("password", formData.password);
 
+        console.log(formData.gstNumber);
         if (formData.image) formDataToSend.append("image", formData.image);
         if (formData.logoImage)
           formDataToSend.append("logoImage", formData.logoImage);
@@ -339,6 +353,7 @@ const [restaurantName, setRestaurantName] = useState("");
     setTouched({
       restaurantName: true,
       ownerName: true,
+      gstNumber:true,
       contact: true,
       line1: true,
       country: true,
@@ -494,38 +509,63 @@ const [restaurantName, setRestaurantName] = useState("");
                       {errors.ownerName && touched.ownerName && (<div className="error-message">{errors.ownerName}</div>)}
                     </div>
                   </div>
-                  <div className="form-group">
-                    <label><i className="fas fa-quote-left me-2 blue-icon" />Tagline</label>
-                    <input
-                      type="text"
-                      name="tagline"
-                      value={formData.tagline}
-                      onChange={handleChange}
-                      placeholder="e.g. Fresh Taste, Better Life"
-                    />
-                  </div>
+                  
 
-                  <div className="form-group">
-                    <label><i className="fas fa-phone me-2 blue-icon" />Contact Number</label>
-                    <div className="field-wrapper">
-                      <div className={`phone-input-wrapper ${errors.contact && touched.contact ? "error" : ""}`}>
-                        <PhoneInput
-                          country={"in"}
-                          value={formData.contact}
-                          onChange={handlePhoneChange}
-                          onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
-                          inputClass="custom-phone-input"
-                          buttonClass="phone-flag-button"
-                          dropdownClass="phone-dropdown"
-                          enableSearch
-                          placeholder="Enter phone number"
-                        />
-                      </div>
-                      {errors.contact && touched.contact && (
-                        <div className="error-message">{errors.contact}</div>
-                      )}
-                    </div>
-                  </div>
+{/* GST Number Field */}
+<div className="form-group">
+  <label><i className="fas fa-receipt me-2 blue-icon" />GST Number</label>
+  <div className="field-wrapper">
+    <input
+      type="text"
+      name="gstNumber"
+      value={formData.gstNumber || ""}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      placeholder="Enter GST No."
+      maxLength="15"
+      className={errors.gstNumber && touched.gstNumber ? "error" : ""}
+    />
+    {errors.gstNumber && touched.gstNumber && (
+      <div className="error-message">{errors.gstNumber}</div>
+    )}
+  </div>
+</div>
+
+
+<div className="form-group">
+  <label><i className="fas fa-phone me-2 blue-icon" />Contact Number</label>
+  <div className="field-wrapper">
+    <div className={`phone-input-wrapper ${errors.contact && touched.contact ? "error" : ""}`}>
+      <PhoneInput
+        country={"in"}
+        value={formData.contact}
+        onChange={handlePhoneChange}
+        onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
+        inputClass="custom-phone-input"
+        buttonClass="phone-flag-button"
+        dropdownClass="phone-dropdown"
+        enableSearch
+        placeholder="Enter phone number"
+      />
+    </div>
+    {errors.contact && touched.contact && (
+      <div className="error-message">{errors.contact}</div>
+    )}
+  </div>
+</div>
+
+{/* Full width tagline below GST & Contact */}
+<div className="form-group full-width">
+  <label><i className="fas fa-quote-left me-2 blue-icon" />Tagline</label>
+  <input
+    type="text"
+    name="tagline"
+    value={formData.tagline}
+    onChange={handleChange}
+    placeholder="e.g. Fresh Taste, Better Life"
+  />
+</div>
+
 
                   <div className="form-group">
                     <label><i className="fas fa-map-marker-alt me-2 blue-icon" />Address Line 1</label>
@@ -666,6 +706,7 @@ const [restaurantName, setRestaurantName] = useState("");
                           )}
                         </div>
                       </label>
+                      {errors.image && <div className="error-message">{errors.image}</div>}
                     </div>
 
                     <div className="image-upload-box">
@@ -684,6 +725,7 @@ const [restaurantName, setRestaurantName] = useState("");
                           )}
                         </div>
                       </label>
+                       {errors.logoImage && <div className="error-message">{errors.logoImage}</div>}
                     </div>
                   </div>
                 </div>
