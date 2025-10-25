@@ -88,13 +88,7 @@ export default function AdminDashboard() {
 
      
 
-      {/* <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      /> */}
+  
       <main className="admin-dashboard-content container text-center mt-5">
         <h2 className="fw-bold">Welcome, Admin 👨‍💻</h2>
         <p className="lead text-muted">
@@ -138,7 +132,14 @@ export default function AdminDashboard() {
             <span className="icon">🛒</span>
             <h5>Order Management</h5>
             <p>View placed orders by tables & dishes.</p>
-            </Link>
+          </Link>
+
+          {/* ✅ New Reports & Analytics Card - ADDED THIS */}
+          <Link to="/reports" className="dashboard-card reports">
+            <span className="icon">📊</span>
+            <h5>Reports & Analytics</h5>
+            <p>View sales reports and analytics.</p>
+          </Link>
 
             
           <Link to="/config" className="dashboard-card orders">

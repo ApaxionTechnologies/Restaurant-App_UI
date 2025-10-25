@@ -27,6 +27,7 @@ import CartPage from "./components/cartpage";
 import ScannerPage from "./components/ScannerPage";
 import ProtectedRoute from "./components/ProtectRoute";
 import OrderManagement from "./components/OrderManagement";
+import Reports from "./components/Reports"; // ✅ Added Reports component
 import { BulkItemUpload } from "./pages/BulkItemUpload";
 import { ConfirmationModalProvider } from "./context/ConfirmationModalContext";
 import { RestaurantProvider } from "./context/RestaurantContext";
@@ -37,6 +38,7 @@ import { AuthProvider } from "./context/AuthContext";
 
 import "./styles/MenuCard.css";
 import "./styles/QRFileUploader.css";
+import "./styles/Reports.css"; // ✅ Added Reports CSS
 
 import "./styles/ViewMenu.css";
 
@@ -131,19 +133,25 @@ export default function App() {
                   <Route path="/add-item" element={<AddMenuItem />} />
                   <Route path="/edit-menu/:itemId" element={<AddMenuItem />} />
 
-                  <Route path="/menu/:restaurantId" element={<ViewMenu />} />
-                  <Route path="/generate-qr" element={<GenerateQR />} />
-                  <Route
-                    path="/generate-menu-qr"
-                    element={<GenerateMenuQR />}
-                  />
-                  <Route path="/current-menu" element={<CurrentMenu />} />
-                  <Route
-                    path="/order-management"
-                    element={<OrderManagement />}
-                  />
-                  <Route path="/add-bulk-items" element={<BulkItemUpload />} />
-                  <Route path="/config" element={<Config />} />
+                <Route path="/menu/:restaurantId" element={<ViewMenu />} />
+                <Route path="/generate-qr" element={<GenerateQR />} />
+                <Route path="/generate-menu-qr" element={<GenerateMenuQR />} />
+                <Route path="/current-menu" element={<CurrentMenu />} />
+                <Route path="/order-management" element={<OrderManagement />} />
+                <Route path="/tax-management" element={<TaxSlabManagement />} />
+                <Route path="/reports" element={<Reports />} /> {/* ✅ Added Reports route */}
+                
+                {/* ✅ Customer QR Options */}
+                <Route path="/qr-scanner" element={<QRScanner />} />
+                <Route path="/upload-qr" element={<QRFileUploader />} />
+
+                {/* ✅ Customer Menu & Order */}
+                <Route path="/menu" element={<MenuPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+                <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/add-bulk-items" element={<BulkItemUpload />} />
+                <Route path="/config" element={<Config />} />
 
                   
                   <Route path="/table-manager" element={<TableManager />} />
