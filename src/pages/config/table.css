@@ -299,7 +299,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Enhanced Table */
+
 .orders-table-container {
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 16px;
@@ -412,7 +412,7 @@
   font-size: 13px;
 }
 
-/* Force thead to stay horizontal inside .table-responsive */
+
 .table-responsive table {
   border-collapse: collapse;
   width: 100%;
@@ -575,7 +575,7 @@
   transform: scale(1.1);
 }
 
-/* Enhanced Column Filter Dropdown */
+
 .industrial-dropdown {
   position: relative;
   width: 100%;
@@ -733,7 +733,7 @@
 
 .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
 
-/* Enhanced Pagination */
+
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -907,7 +907,7 @@
 .items-list::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
 .items-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; margin: 2px 0; }
 
-/* Firefox scrollbar styling */
+
 .items-list { scrollbar-width: thin; scrollbar-color: #c1c1c1 #f1f1f1; }
 
 
@@ -985,7 +985,7 @@
 
 .table-responsive { overflow-x: auto; }
 
-/* Small accessibility / focus state */
+
 .orders-table thead tr:nth-child(2) th input:focus,
 .orders-table thead tr:nth-child(2) th select:focus {
   outline: none;
@@ -1094,7 +1094,7 @@
 .edit-item-header,
 .edit-item-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* consistent columns */
+  grid-template-columns: 2fr 1fr 1fr 0.5fr; 
   gap: 12px;
   align-items: center;
   text-align: center;
@@ -1120,7 +1120,7 @@
   background: #ffe5e5;
 }
 
-/* Cells */
+
 .item-name-cell,
 .item-qty-cell,
 .item-price-cell,
@@ -1132,7 +1132,7 @@
 
 .item-name-cell { justify-content: flex-start; } 
 
-/* Inputs */
+
 .item-name-input,
 .item-price-input {
   width: 100%;
@@ -1191,7 +1191,7 @@
   color: #2d3748;
 }
 
-/* Remove button */
+
 .btn-remove-item {
   color: red;
   border: none;
@@ -1210,9 +1210,7 @@
   transform: scale(1.08);
 }
 
-/* ===========================
-   Bottom Bar
-=========================== */
+
 .bottom-bar {
   display: flex;
   justify-content: space-between;
@@ -1316,7 +1314,7 @@
   opacity: 0.6;
 }
 
-/* Responsive table: scroll on small screen */
+
 @media (max-width: 600px) {
   .edit-items-table {
     display: block;

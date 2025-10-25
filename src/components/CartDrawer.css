@@ -58,7 +58,7 @@
   font-weight: bold;
 }
 
-/* Animation for cart badge */
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
@@ -69,7 +69,7 @@
   animation: pulse 0.5s ease-in-out;
 }
 
-/* Responsive adjustments */
+
 @media (min-width: 768px) {
   .navbar-cart {
     display: none;
@@ -96,7 +96,7 @@
   font-weight: bold;
 }
 
-/* For mobile view */
+
 .vm-mobile-item .cart-icon-container {
   display: flex;
   align-items: center;
@@ -175,7 +175,7 @@
   font-weight: bold;
 }
 
-/* Animation for cart badge */
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
@@ -186,7 +186,7 @@
   animation: pulse 0.5s ease-in-out;
 }
 
-/* Responsive adjustments */
+
 @media (min-width: 768px) {
   .navbar-cart {
     display: none;

@@ -14,17 +14,24 @@
   border-bottom: none; 
   box-shadow: none !important;
   border-bottom: none !important;                
-  /* transition: background 0.3s ease, box-shadow 0.3s ease, border-bottom 0.3s ease; */
+  
 }
 
-/* Scrolled state */
+@media (max-width: 480px) {
+    .Home-Header {
+    padding: 12px 10px;
+  }
+
+}
+
+
 .Home-Header.scrolled {
   background: #ffffff;                   
   box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
   border-bottom: 1px solid #e0e0e0;     
 }
 
-/* Admin variant */
+
 .Home-Header[data-admin="true"] {
   background: linear-gradient(180deg, #fde2e4 0%, #fff0f2 100%);
 }
@@ -53,7 +60,7 @@
   letter-spacing: 1px;
 }
 
-/* Right side menu */
+
 .header-right {
   display: flex;
   align-items: center;
@@ -111,7 +118,7 @@
   color: #333;
 }
 
-/* Sticky fallback */
+
 body, #root {
   margin: 0;
   padding: 0;
@@ -120,7 +127,7 @@ body, #root {
 .dropdown-icon
  { font-size: 1.1rem; color: #666; transition: color 0.25s ease; } 
  .dropdown-item:hover 
- .dropdown-icon { color: #2563eb; } /* Divider line between dropdown items */ 
+ .dropdown-icon { color: #2563eb; } 
  .dropdown-divider { height: 1px; 
   margin: 8px 0; 
   background: rgba(0, 0, 0, 0.08); } 

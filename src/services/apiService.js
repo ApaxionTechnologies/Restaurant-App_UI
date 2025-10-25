@@ -1010,6 +1010,8 @@ export const addMenuItem = async (data) => {
   }
 };
 
+
+
 export const logoutRestaurant = async () => {
   try {
     const res = await API.post("/auth/logout");
@@ -1129,6 +1131,28 @@ export const updateOrderStatus = async (orderId, status) => {
   }
 };
 
+export const generateBill = async (payload) => {
+  try {
+    const res = await API.post("/bill/generate-bill", payload);
+    return res.data;
+  } catch (error) {
+    console.error("Error generating bill:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+export const getBill = async (params) => {
+  try {
+    const res = await API.get("/bill/fetchBill",{
+      params: params,
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
+
 export const updateOrderItems = async (orderId, items) => {
   try {
     const response = await API.put(`/orders/edit/${orderId}`, { items });
@@ -1159,6 +1183,8 @@ export const resetPassword = async (token, newPassword) => {
   }
 };
 
+
+
 // Tax slab APIs
 export const addTaxSlab = async (slabData) => {
   try {
@@ -1171,6 +1197,7 @@ export const addTaxSlab = async (slabData) => {
   }
 };
 
+
 export const getTaxSlabs = async () => {
   try {
     const res = await API.get("/tax-slabs");
@@ -1179,6 +1206,9 @@ export const getTaxSlabs = async () => {
     throw error.response?.data || error.message;
   }
 };
+    
+   
+
 
 export const updateTaxSlab = async (slabId, slabData) => {
   try {

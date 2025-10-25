@@ -34,8 +34,8 @@
   border: none;
   cursor: pointer;
   color: #201f1f;
-  z-index: 10000;       /* ensure above all */
-  touch-action: manipulation; /* mobile tap fix */
+  z-index: 10000;       
+  touch-action: manipulation; 
 }
 
 .admin-login-title {
