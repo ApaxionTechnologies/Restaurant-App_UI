@@ -510,8 +510,6 @@ const handleLogoChange = async (e) => {
                     </div>
                   </div>
                   
-
-{/* GST Number Field */}
 <div className="form-group">
   <label><i className="fas fa-receipt me-2 blue-icon" />GST Number</label>
   <div className="field-wrapper">
@@ -554,7 +552,6 @@ const handleLogoChange = async (e) => {
   </div>
 </div>
 
-{/* Full width tagline below GST & Contact */}
 <div className="form-group full-width">
   <label><i className="fas fa-quote-left me-2 blue-icon" />Tagline</label>
   <input

@@ -55,32 +55,6 @@ const handleClose = () => {
       navigate(-1);
     }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setErrorMessage("");
-
-  //   if (!validateForm()) {
-  //     return;
-  //   }
-
-  //   setIsSubmitting(true);
-
-  //   try {
-  //     const data = await adminLogin({ email: adminEmail, password: adminPassword });
-  //       localStorage.setItem("token", data.token);
-  //       localStorage.setItem("adminEmail", adminEmail);
-  //       navigate("/admin-dashboard");
-  //      if (onClose) onClose();
-  //   else { 
-  //     setErrorMessage(data.error || "Invalid email or password"); // This runs on SUCCESS
-  //   }
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     setErrorMessage("Network error. Please try again.");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
   const handleSubmit = async (e) => {
   e.preventDefault();
   setErrorMessage("");
@@ -103,15 +77,19 @@ const handleClose = () => {
       if (onClose) onClose();
       
     } else {
-      // If no token, but no throw, this is likely an API logic error or unexpected successful response structure
       setErrorMessage(data.message || "Login failed. Check server response.");
     }
     
-  } catch (error) {
-    console.error("Login error:", error);
+  // } catch (error) {
+  //   console.error("Login error:", error);
     
-    const apiError = error.response?.data?.error || "Invalid email or password. Please check your credentials.";
-    setErrorMessage(apiError);
+  //   const apiError = error.response?.data?.error || "Invalid email or password. Please check your credentials.";
+  //   setErrorMessage(apiError);
+
+    } catch (error) {
+    console.error("Login error:", error);
+    setErrorMessage(error.message || "Invalid email or password. Please check your credentials.");
+
 
   } finally {
     setIsSubmitting(false);
@@ -228,13 +206,22 @@ const handleClose = () => {
               
               </div>
 
-              {errorMessage && (
+              {/* {errorMessage && (
                 <div className="error-message general-error">
                   <span className="error-icon">!</span>
                   {errorMessage}
                 </div>
               )}
+               */}
               
+              {/* {errorMessage && (
+  <div className="general-error">
+    <span className="error-icon">!</span>
+    {errorMessage}
+  </div>
+)}
+
+
               <button
                 type="submit"
                 style={{ height: "50px", fontSize: "20px" }}
@@ -249,7 +236,33 @@ const handleClose = () => {
                 ) : (
                   "Continue to Dashboard"
                 )}
-              </button>
+              </button> */}
+  <div className="error-placeholder">            
+               {errorMessage && (
+  <div className="general-error">
+    <span className="error-icon">!</span>
+    {errorMessage}
+  </div>
+)}
+</div>
+<button
+  type="submit"
+  style={{ height: "50px", fontSize: "20px" }}
+  className={` btn-global  ${isSubmitting ? "submitting" : ""}`}
+  disabled={isSubmitting}
+>
+  {isSubmitting ? (
+    <>
+      <span className="spinner"></span>
+      Signing in...
+    </>
+  ) : (
+    "Continue to Dashboard"
+  )}
+</button>
+
+
+              
             </form>
 
             <div className="login-footer">

@@ -435,3 +435,56 @@
                 z-index: 1001;
             }
         }
+
+        
+        .admin-login-card {
+  min-height: 580px; /* keep popup size same */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.general-error {
+  background-color: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  margin-top: 4px;
+  margin-bottom: 10px; /* space before the submit button */
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.3s ease;
+}
+.error-icon {
+  background-color: #dc2626;
+  color: white;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error-placeholder {
+  height: 10px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

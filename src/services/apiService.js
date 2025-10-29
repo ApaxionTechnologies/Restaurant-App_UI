@@ -36,7 +36,16 @@ export const adminLogin = async (credentials) => {
     });
     return response.data;
   } catch (error) {
-    throw error.response?.data || error;
+    let message = "Invalid email or password. Please check your credentials.";
+
+    if (error.response) {
+      if (error.response.status === 403) {
+        message = "Your subscription has ended. Please renew to continue.";
+      } else if (error.response.data?.message) {
+        message = error.response.data.message;
+      }
+    }
+    throw new Error(message);
   }
 };
 
@@ -387,3 +396,4 @@ export const updateTaxStatus = async (payload) => {
     throw error.response?.data || error.message;
   }
 };
+
