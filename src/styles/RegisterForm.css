@@ -211,6 +211,11 @@ input.error, textarea.error, .custom-phone-input.error {
   background: #fef2f2;
 }
 
+input.error {
+  border: 1px solid red !important;
+}
+
+
 .form-group small {
   color: #ef4444;
   font-size: 0.85rem;
@@ -942,4 +947,24 @@ input[type="password"]::-webkit-password-toggle-button {
 }.password-requirements {
   background: none !important;
   border: none !important;
+}
+
+
+/* Make tagline field full width */
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Optional: slightly adjust spacing for neat layout */
+.form-group input[name="gstNumber"] {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  transition: border 0.2s ease;
+}
+
+.form-group input[name="gstNumber"]:focus {
+  border: 2px solid #4f46e5;
+  outline: none;
 }
