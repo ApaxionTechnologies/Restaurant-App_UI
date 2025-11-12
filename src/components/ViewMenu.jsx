@@ -80,7 +80,7 @@ const ViewMenu = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const idToUse = localStorage.getItem("restaurantId") || restaurantId;
+      const idToUse = restaurantId || localStorage.getItem("restaurantId");
 
       if (!idToUse) {
         setError("Restaurant ID not found");
@@ -252,28 +252,6 @@ const filteredItems = searchItems
       </button>
     )}
   </div>
-
- {/* <div className={`veg-toggle ${vegFilter === "Non-Veg" ? "non-veg" : ""}`}>
-    {[ "Veg"].map((type) => (
-      <button
-        key={type}
-        className={`veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
-        onClick={() => setVegFilter(type)}
-      >
-        {type}
-      </button>
-    ))}
-
-    {[ "Non-Veg"].map((type) => (
-      <button
-        key={type}
-        className={`non-veg-toggle-btn ${vegFilter === type ? "active" : ""}`}
-        onClick={() => setVegFilter(type)}
-      >
-        {type}
-      </button>
-    ))}
-  </div> */}
 
   <div className="veg-toggle-container">
   <label className="veg-switch">

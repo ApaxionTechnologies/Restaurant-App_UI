@@ -85,13 +85,13 @@ export default function GenerateMenuQR() {
 
   return (
     <>
-      {/* <HomeHeader
+      { <HomeHeader
         isAdminDashboard={true}
         restaurantName={restaurantName}
         adminEmail={adminEmail}
         onLogout={handleLogout}
         restaurant={restaurant}
-      /> */}
+      /> }
 
       <div className="generate-qr-wrapper">
         <div className="centered-container">

@@ -491,6 +491,61 @@ export const exportReportToCSV = async (reportType, timeRange, startDate, endDat
 };
 
 
+export const saveFeedbackQuestions = async (restaurantId, questions) => {
+  try {
+    const res = await API.post("/feedback/questions", {
+      restaurantId,
+      questions
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error saving feedback questions:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Get feedback questions for a restaurant
+export const getFeedbackQuestions = async (restaurantId) => {
+  try {
+    const res = await API.get(`/feedback/questions/${restaurantId}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching feedback questions:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Submit feedback response (Customer)
+export const submitFeedback = async (restaurantId, answers) => {
+  try {
+    const res = await API.post("/feedback/submit", {
+      restaurantId,
+      answers
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+// Get feedback responses and analytics (Admin)
+export const getFeedbackResponses = async (restaurantId, startDate, endDate) => {
+  try {
+    const res = await API.get(`/feedback/responses/${restaurantId}`, {
+      params: {
+        startDate,
+        endDate
+      }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching feedback responses:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+
 // // In your frontend API call, add authorization headers
 // const response = await fetch('http://localhost:5001/api/analytics/order-stats?timeRange=monthly', {
 //   method: 'GET',

@@ -9,6 +9,7 @@ import {
 } from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import Footer from "./Footer.jsx";
 
 const AddMenuItem = () => {
   const navigate = useNavigate();
@@ -75,13 +76,14 @@ const AddMenuItem = () => {
 
   useEffect(() => {
     if (isEditMode && editItem) {
+      console.log("Editing item:", editItem); 
       setFormData({
         category: editItem.category || "Starter",
         name: editItem.name || "",
         price: editItem.price || "",
         cuisine: editItem.cuisine || "Indian",
         timeToPrepare: editItem.prepTime || "",
-        ingredients: editItem.ingredients || "",
+        ingredients: JSON.stringify(editItem.ingredients) || "",
         description: editItem.description || "",
         status: editItem.status || "Published",
         discount: editItem.discount || "",
@@ -133,7 +135,7 @@ const AddMenuItem = () => {
       newErrors.timeToPrepare = "Preparation time required";
     if (!formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
     // if (!formData.gstRate) newErrors.gstRate = "GST rate required";
-    
+    if (!formData.ingredients.trim()) newErrors.ingredients = "Ingredients required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -150,13 +152,18 @@ const AddMenuItem = () => {
     // 🔹 Select GST rate based on category
     const gstRate = categoryTaxMap[formData.category] || 5;
 
+   const ingredientsArray = formData.ingredients
+  .split(",")
+  .map((item) => item.trim())
+  .filter((item) => item);
+
     const data = new FormData();
     data.append("category", formData.category);
     data.append("name", formData.name);
     data.append("price", formData.price);
     data.append("cuisine", formData.cuisine);
     data.append("prepTime", formData.timeToPrepare);
-    data.append("ingredients", formData.ingredients);
+    data.append("ingredients", JSON.stringify(ingredientsArray));
     data.append("description", formData.description);
     data.append("status", formData.status);
     data.append("type", formData.vegType.toLowerCase());
@@ -503,7 +510,7 @@ const AddMenuItem = () => {
         </div>
       </div>
 
-      {/* <Footer /> */}
+      {<Footer />}
     </>
   );
 };
