@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddMenuItem.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import {
-  getMyRestaurant,
-  addMenuItem,
-  updateMenuItem,
-} from "../services/apiService.js";
+// import {
+//   getMyRestaurant,
+//   addMenuItem,
+//   updateMenuItem,
+// } from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-
+import { getMyRestaurant } from "../services/restaurantService.js";
+import { addMenuItem, updateMenuItem } from "../services/menuService.js";
 const AddMenuItem = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,7 +66,10 @@ const AddMenuItem = () => {
     const fetchMe = async () => {
       try {
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant);
+        console.log("Fetched /me -", res);
+        setRestaurant(res.data);
+        console.log("Restaurant ID:", res.data._id);
+          localStorage.setItem("restaurantId", res.data._id);
       } catch (err) {
         console.error("Fetch /me failed -", err);
       }

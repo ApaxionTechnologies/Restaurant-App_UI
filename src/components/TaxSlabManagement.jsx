@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/TaxSlabManagement.css";
-import { getTaxSlabs, addTaxSlab, updateTaxSlab } from "../services/apiService";
-
+// import { getTaxSlabs, addTaxSlab, updateTaxSlab } from "../services/apiService";
+import { getTaxSlabs,addTaxSlab,updateTaxSlab } from "../services/configService";
 export default function TaxSlabManagement() {
   const [slabs, setSlabs] = useState([]);
   const [showModal, setShowModal] = useState(false);

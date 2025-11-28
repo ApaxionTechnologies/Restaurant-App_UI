@@ -11,11 +11,14 @@ import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormField } from "../store/formSlice";
-import { getMyRestaurant, updateRestaurantProfile , logoutRestaurant} from "../services/apiService"; 
+// import { getMyRestaurant, updateRestaurantProfile , logoutRestaurant} from "../services/apiService"; 
 import HomeHeader from "../components/HomeHeader";
 import { jwtDecode } from "jwt-decode"; 
 import Footer from "../components/Footer";
 import { resetForm } from "../store/formSlice"; 
+import { getMyRestaurant, updateRestaurantProfile} from "../services/restaurantService";
+import { logoutRestaurant } from "../services/authService";
+
 export default function EditRestaurantProfile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -56,7 +59,7 @@ export default function EditRestaurantProfile() {
       try {
        
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant || res);
+        setRestaurant(res.data || res);
 
         const decoded = jwtDecode(localStorage.getItem("token"));
         setAdminEmail(decoded.email);
@@ -164,9 +167,9 @@ const handleLogout = async () => {
     const fetchRestaurantData = async () => {
       try {
         const data = await getMyRestaurant();
-        console.log("🍔 Restaurant data from API:", data);
+        console.log(" Restaurant data from API:", data);
 
-        const restaurant = data.restaurant || data;
+        const restaurant = data.data || data;
         dispatch(setFormField({ field: "restaurantName", value: restaurant.restaurantName || "" }));
         dispatch(setFormField({ field: "ownerName", value: restaurant.ownerName || "" }));
         dispatch(setFormField({ field: "contact", value: restaurant.contact || "" }));
@@ -380,16 +383,19 @@ const handleLogout = async () => {
         formDataToSend.append("logoImage", formData.logoImage);
       }
       const response = await updateRestaurantProfile(formDataToSend);
-     if (response.success) {
+      console.log("Update API Response:", response);
+   if (response?.status === true || response?.status === "true") {
+
   toast.success("Profile updated successfully!");
   navigate("/admin-dashboard")
   dispatch(setFormField({ field: "password", value: "" }));
   dispatch(setFormField({ field: "confirmPassword", value: "" }));
   setCurrentPassword("");
-  const { restaurant } = await getMyRestaurant();
-  setRestaurant(restaurant);
-  if (restaurant.image) setPreviewImage(restaurant.image);
-  if (restaurant.logoImage) setPreviewLogo(restaurant.logoImage);
+const restaurantData = await getMyRestaurant();
+setRestaurant(restaurantData);
+if (restaurantData.image) setPreviewImage(restaurantData.image);
+if (restaurantData.logoImage) setPreviewLogo(restaurantData.logoImage);
+
 } else {
   toast.error(response.message || "Failed to update profile");
 }

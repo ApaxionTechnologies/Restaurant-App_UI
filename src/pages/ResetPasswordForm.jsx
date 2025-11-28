@@ -14,7 +14,8 @@ import "../styles/Login.css";
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 
 import { useParams } from "react-router-dom";
- import { resetPassword } from "../services/apiService"; // import upar
+//  import { resetPassword } from "../services/apiService"; // import upar
+ import {resetPassword} from "../services/authService"
 import toast from "react-hot-toast";
 export default function ResetPasswordPage({ onClose }) {
   const [password, setPassword] = useState("");

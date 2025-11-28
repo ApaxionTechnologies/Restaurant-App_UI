@@ -1,17 +1,20 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
-import {
-  getMyRestaurant,
-  getOrders,
-  updateOrderStatus,
-  updateOrderItems,
-  getMenuByRestaurant,
-  calculateBillPreview,
-  deleteOrder,
-  generateBill,
-  getBill,
-} from "../services/apiService";
+// import {
+//   getMyRestaurant,
+//   getOrders,
+//   updateOrderStatus,
+//   updateOrderItems,
+//   getMenuByRestaurant,
+//   calculateBillPreview,
+//   deleteOrder,
+//   generateBill,
+//   getBill,
+// } from "../services/apiService";
+import{ getMenuByRestaurant} from "../services/menuService";
+import { getMyRestaurant } from "../services/restaurantService";
+import{ getOrders,updateOrderStatus,updateOrderItems,calculateBillPreview,deleteOrder,generateBill,getBill} from "../services/orderService";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import {

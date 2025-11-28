@@ -8,7 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import * as bootstrap from 'bootstrap';
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { getMenuByRestaurant } from "../services/apiService";
+// import { getMenuByRestaurant } from "../services/apiService";
+import{ getMenuByRestaurant } from "../services/menuService";
 import {
   FaHeart,
   FaRegHeart,
@@ -273,6 +274,7 @@ export default function MenuPage() {
 
 
   const handleAddToCart = (item) => {
+    
     dispatch(addToCart({
       name: item.name,
       menuItemId: item._id,

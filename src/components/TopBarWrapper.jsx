@@ -2,7 +2,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import HomeHeader from "./HomeHeader";
 import Footer from "./Footer";
 import { useEffect, useState } from "react";
-import { getMyRestaurant } from "../services/apiService";
+// import { getMyRestaurant } from "../services/apiService";
+import { getMyRestaurant } from "../services/restaurantService.js";
 
 export default function TopBarWrapper() {
   const [restaurantName, setRestaurantName] = useState(

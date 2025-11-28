@@ -52,6 +52,7 @@ const [restaurantName, setRestaurantName] = useState("");
       country: "",
       state: "",
       city: "",
+      pincode: "",
     },
   };
 

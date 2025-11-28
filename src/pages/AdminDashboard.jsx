@@ -7,7 +7,8 @@ import { FcDataConfiguration } from "react-icons/fc";
 import "../components/AdminDashboard.css";
 import HomeHeader from "../components/HomeHeader"; 
 import { Helmet } from "react-helmet";
-import { getMyRestaurant } from "../services/apiService";
+//import { getMyRestaurant } from "../services/apiService";
+import { getMyRestaurant } from "../services/restaurantService";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function AdminDashboard() {
     const fetchMe = async () => {
       try {
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant);
+        setRestaurant(res.data);
       } catch (err) {
         console.error(
           "Fetch /me failed -",

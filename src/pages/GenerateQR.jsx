@@ -11,7 +11,8 @@ import HomeHeader from "../components/HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import toast from "react-hot-toast";
-import { getMyRestaurant, fetchMe } from "../services/apiService.js";
+// import { getMyRestaurant, fetchMe } from "../services/apiService.js";
+import{ getMyRestaurant } from "../services/restaurantService.js";
 export default function GenerateQR() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("My Restaurant");
