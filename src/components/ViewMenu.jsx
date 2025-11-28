@@ -10,14 +10,16 @@ import "../styles/global.css";
 import "../styles/ViewMenu.css";
 import toast from "react-hot-toast";
 import { X, Search } from "lucide-react";
-import {
-  getMyRestaurant,
-  getMenuByRestaurant,
-  updateMenuStatus,
-  deleteMenuItem,
-} from "../services/apiService.js";
+// import {
+//   getMyRestaurant,
+//   getMenuByRestaurant,
+//   updateMenuStatus,
+//   deleteMenuItem,
+// } from "../services/apiService.js";
 import { useConfirmationModal } from "../context/ConfirmationModalContext";
 
+import { getMyRestaurant } from "../services/restaurantService.js";
+import { getMenuByRestaurant, updateMenuStatus, deleteMenuItem } from "../services/menuService.js";
 const ViewMenu = () => {
   const navigate = useNavigate();
   const { restaurantId } = useParams();
@@ -74,44 +76,79 @@ const ViewMenu = () => {
     }
   }, [location.state, navigate, location.pathname]);
 
-  // Fetch data function
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const idToUse = localStorage.getItem("restaurantId") || restaurantId;
+  // // Fetch data function
+  // const fetchData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const idToUse = localStorage.getItem("restaurantId") || restaurantId;
 
-      if (!idToUse) {
-        setError("Restaurant ID not found");
-        setLoading(false);
-        return;
-      }
+  //     if (!idToUse) {
+  //       setError("Restaurant ID not found");
+  //       setLoading(false);
+  //       return;
+  //     }
 
-      const [restaurantRes, menuRes] = await Promise.all([
-        getMyRestaurant(),
-        getMenuByRestaurant(idToUse),
-      ]);
+  //     const [restaurantRes, menuRes] = await Promise.all([
+  //       getMyRestaurant(),
+  //       getMenuByRestaurant(idToUse),
+  //     ]);
 
-      setRestaurant(restaurantRes.restaurant);
-      if (restaurantRes.restaurant?._id)
-        localStorage.setItem("restaurantId", restaurantRes.restaurant._id);
+  //     setRestaurant(restaurantRes.restaurant);
+  //     if (restaurantRes.restaurant?._id)
+  //       localStorage.setItem("restaurantId", restaurantRes.restaurant._id);
 
-      const fetchedMenu = (menuRes.menu || [])
-        .filter((item) => item._id)
-        .map((item) => ({
-          ...item,
-          statusNormalized: (item.status || "draft").toLowerCase(),
-          status: item.status === "Published" ? "Published" : "Draft",
-        }));
+  //     const fetchedMenu = (menuRes.menu || [])
+  //       .filter((item) => item._id)
+  //       .map((item) => ({
+  //         ...item,
+  //         statusNormalized: (item.status || "draft").toLowerCase(),
+  //         status: item.status === "Published" ? "Published" : "Draft",
+  //       }));
 
-      setMenuItems(fetchedMenu);
-      setError("");
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError("Failed to load data. Please try again later.");
-    } finally {
+  //     setMenuItems(fetchedMenu);
+  //     setError("");
+  //   } catch (err) {
+  //     console.error("Error fetching data:", err);
+  //     setError("Failed to load data. Please try again later.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+const fetchData = async () => {
+  try {
+    setLoading(true);
+
+    const restaurantRes = await getMyRestaurant();
+    const restaurantInfo = restaurantRes.data; // ✅ correct path
+    console.log("Fetched restaurant info:", restaurantInfo);
+    setRestaurant(restaurantInfo);
+
+    if (!restaurantInfo?._id) {
+      setError("Restaurant ID not found");
       setLoading(false);
+      return;
     }
-  };
+
+    localStorage.setItem("restaurantId", restaurantInfo._id);
+
+    const menuRes = await getMenuByRestaurant(restaurantInfo._id);
+    const fetchedMenu = (menuRes.menu || [])
+      .filter((item) => item._id)
+      .map((item) => ({
+        ...item,
+        statusNormalized: (item.status || "draft").toLowerCase(),
+        status: item.status === "Published" ? "Published" : "Draft",
+      }));
+
+    setMenuItems(fetchedMenu);
+    setError("");
+  } catch (err) {
+    console.error("Error fetching data:", err);
+    setError("Failed to load data. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Delete item
   const handleDeleteClick = (menuItemId, menuItemName) => {
@@ -268,7 +305,7 @@ const ViewMenu = () => {
                     <img
                       src={item.image}
                       alt={item.name}
-                      onError={(e) => (e.target.src = "/placeholder-food.jpg")}
+                      
                     />
                     <button
                       className="btn-delete-circular"

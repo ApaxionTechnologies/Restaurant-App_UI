@@ -626,18 +626,18 @@
 import React, { useState, useEffect } from "react";
 import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
-import { 
-  getSalesAnalytics, 
-  getTopSellingItems, 
-  getRevenueReport, 
-  getOrderStatistics,
-  exportReportToCSV 
-} from "../services/apiService";
+// import { 
+//   getSalesAnalytics, 
+//   getTopSellingItems, 
+//   getRevenueReport, 
+//   getOrderStatistics,
+//   exportReportToCSV 
+// } from "../services/apiService";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import "../styles/Reports.css";
 import toast from "react-hot-toast";
-
+import { getTopSellingItems,getRevenueReport,exportReportToCSV,getSalesAnalytics,getOrderStatistics } from "../services/analyticsService";
 export default function Reports() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("");

@@ -9,7 +9,8 @@ import {
 import "../styles/ForgotPassword.css";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import { forgotPassword } from "../services/apiService"; 
+// import { forgotPassword } from "../services/apiService"; 
+import { forgotPassword } from "../services/authService";
 export default function ForgotPassword({ onClose, onBackToLogin }) {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);

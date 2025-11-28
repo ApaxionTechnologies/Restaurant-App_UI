@@ -7,6 +7,8 @@ const cartSlice = createSlice({
   },
   reducers: {
     addToCart: (state, action) => {
+      
+  console.log("Adding to cart:", action.payload);
       const { menuItemId, name, price, type } = action.payload;
       const existingItem = state.items.find((item) => item.menuItemId === menuItemId);
 
@@ -20,6 +22,8 @@ const cartSlice = createSlice({
           type,
           qty: 1,
         });
+        
+  console.log("Updated cart items:", state.items);
       }
     },
     updateQty: (state, action) => {

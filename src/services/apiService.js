@@ -946,9 +946,18 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+API.interceptors.response.use(
+  (response) => {
+    return response.data; // <-- MAGIC
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Existing APIs...
 export const registerRestaurant = async (formDataToSend) => {
-  try {
+  try { 
     const response = await API.post("/auth/register", formDataToSend, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -958,12 +967,82 @@ export const registerRestaurant = async (formDataToSend) => {
   }
 };
 
+// export const adminLogin = async (credentials) => {
+//   try {
+//     const response = await API.post("/auth/login", credentials, {
+//       headers: { "Content-Type": "application/json" },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     throw error.response?.data || error;
+//   }
+// };
+// export const adminLogin = async (credentials) => {
+//   try {
+//     const response = await API.post("/auth/login", credentials);
+// console.log("LOGIN RESPONSE DATA:", response.data);
+
+//     const token = response.data?.data?.token;
+//     if (token) {
+//       localStorage.setItem("token", token);
+//     }
+
+//     return response.data;
+//   } catch (error) {
+//     throw error.response?.data || error;
+//   }
+// };
+// export const adminLogin = async (credentials) => {
+//   try {
+//     const res = await API.post("/auth/login", credentials);
+
+//     console.log("LOGIN FULL RESPONSE:", res.data);
+
+//     const token =
+//       res?.data?.data?.token || 
+//       res?.data?.token ||
+//       res?.data?.data?.restaurant?.token;
+
+//     console.log("EXTRACTED TOKEN:", token);
+
+//     if (!token) {
+//       throw new Error("Token not found in response");
+//     }
+
+//     localStorage.setItem("token", token);
+//     return res.data;
+//   } catch (error) {
+//     console.error("LOGIN ERROR:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+// export const adminLogin = async (credentials) => {
+//   try {
+//     const res = await API.post("/auth/login", credentials);
+
+//     console.log("🔥 LOGIN RESPONSE:", res.data);
+//     const token =res.data.token;
+
+//     if (!token) throw new Error("Token not found");
+
+//     localStorage.setItem("token", token);
+
+//     return res.data.data;
+//   } catch (error) {
+//     throw error.response?.data || error;
+//   }
+// };
+
 export const adminLogin = async (credentials) => {
   try {
-    const response = await API.post("/auth/login", credentials, {
-      headers: { "Content-Type": "application/json" },
-    });
-    return response.data;
+    const res = await API.post("/auth/login", credentials);
+
+    const token = res.data?.token; // token is top-level now
+    if (!token) throw new Error("Token not found");
+
+    localStorage.setItem("token", token);
+
+    return res.data; // return full object { token, restaurant }
   } catch (error) {
     throw error.response?.data || error;
   }
@@ -972,6 +1051,8 @@ export const adminLogin = async (credentials) => {
 export const getMyRestaurant = async () => {
   try {
     const res = await API.get("/restaurants/me");
+    
+    console.log("🔍 SERVICE RETURN:", res);
     return res.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -1021,17 +1102,26 @@ export const logoutRestaurant = async () => {
   }
 };
 
+// export const updateRestaurantProfile = async (formData) => {
+//   try {
+//     const response = await API.put("/restaurants/profile", formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+    
+//     return response.data;
+//   } catch (error) {
+//     console.error('Update profile error:', error);
+//     throw error.response?.data || error;
+//   }
+// };
 export const updateRestaurantProfile = async (formData) => {
   try {
-    const response = await API.put("/restaurants/profile", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    
-    return response.data;
+    const response = await API.put("/restaurants/profile", formData);
+    return response;
   } catch (error) {
-    console.error('Update profile error:', error);
+    console.error("Update profile error:", error);
     throw error.response?.data || error;
   }
 };
@@ -1058,17 +1148,17 @@ export const deleteMenuItem = async (menuItemId) => {
   }
 };
 
-export const updateRestaurantTables = async ( tableCount) => {
-  try {
-    const response = await API.put(
-      "/restaurants/tables",  
-      { tables: tableCount },
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.error || "Failed to update tables");
-  }
-};
+// export const updateRestaurantTables = async ( tableCount) => {
+//   try {
+//     const response = await API.post(
+//       "/tables",  
+//       { tables: tableCount },
+//     );
+//     return response.data;
+//   } catch (error) {
+//     throw new Error(error.response?.data?.error || "Failed to update tables");
+//   }
+// };
 
 export const uploadBulkMenuItems = async (file) => {
   try {

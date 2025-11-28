@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaTimes, FaStore } from "react-icons/fa";
 import "../styles/Login.css";
 import { Link } from "react-router-dom"; 
-import { adminLogin } from "../services/apiService";
+//import { adminLogin } from "../services/apiService";
 import ForgotPassword from "./forgotPassword"; 
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
-
+import { adminLogin } from "../services/authService";
 export default function AdminLogin({ onClose }) {
   const navigate = useNavigate();
   const [adminEmail, setAdminEmail] = useState("");
@@ -55,32 +55,57 @@ const handleClose = () => {
       navigate(-1);
     }
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setErrorMessage("");
 
-    if (!validateForm()) {
-      return;
-    }
+  //   if (!validateForm()) {
+  //     return;
+  //   }
 
-    setIsSubmitting(true);
+  //   setIsSubmitting(true);
 
-    try {
-      const data = await adminLogin({ email: adminEmail, password: adminPassword });
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("adminEmail", adminEmail);
-        navigate("/admin-dashboard");
-        if (onClose) onClose();
-       else {
-        setErrorMessage(data.error || "Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("Network error. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //   try {
+  //     const data = await adminLogin({ email: adminEmail, password: adminPassword });
+  //       localStorage.setItem("token", data.token);
+  //       localStorage.setItem("adminEmail", adminEmail);
+  //       navigate("/admin-dashboard");
+  //       if (onClose) onClose();
+  //      else {
+  //       setErrorMessage(data.error || "Invalid email or password");
+  //     }
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+  //     setErrorMessage("Network error. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage("");
+
+  if (!validateForm()) return;
+
+  setIsSubmitting(true);
+
+  try {
+    const data = await adminLogin({ email: adminEmail, password: adminPassword });
+
+    // Now token exists
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("adminEmail", adminEmail);
+
+    navigate("/admin-dashboard");
+
+    if (onClose) onClose();
+  } catch (error) {
+    console.error("Login error:", error);
+    setErrorMessage(error.message || "Invalid email or password");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleInputChange = (field, value) => {
     if (field === "email") {

@@ -8,8 +8,8 @@ import "./HomeHeader.css";
 import "../styles/DropDown.css";
 import { Home } from "lucide-react";
 import { useNotification } from "../context/Notification";
-import axios from "axios";
-import { getOrders } from "../services/apiService.js";
+//import { getOrders } from "../services/apiService.js";
+import { getOrders } from "../services/orderService.js";
 export default function HomeHeader({
   isAdminDashboard = false,
   restaurant = null,

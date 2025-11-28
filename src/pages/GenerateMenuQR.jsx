@@ -8,8 +8,8 @@ import Footer from "../components/Footer.jsx";
 import HomeHeader from "../components/HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getMyRestaurant, fetchMe } from "../services/apiService.js";
-
+// import { getMyRestaurant, fetchMe } from "../services/apiService.js";
+import{ getMyRestaurant } from "../services/restaurantService.js";
 export default function GenerateMenuQR() {
   const navigate = useNavigate();
   const [restaurantName, setRestaurantName] = useState("My Restaurant");
@@ -23,7 +23,8 @@ export default function GenerateMenuQR() {
     const fetchMe = async () => {
       try {
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant);
+        setRestaurant(res.data);
+        console.log("Restaurant data:", res.data);
       } catch (err) {
         console.error("Fetch /me failed -", err);
       }
@@ -41,7 +42,7 @@ export default function GenerateMenuQR() {
     const fetchRestaurantData = async () => {
       try {
         const data = await getMyRestaurant();
-        const restaurantInfo = data.restaurant;
+        const restaurantInfo = data.data;
         setRestaurantName(restaurantInfo.restaurantName);
         setAdminEmail(restaurantInfo.email);
         setRestaurantData(restaurantInfo);
