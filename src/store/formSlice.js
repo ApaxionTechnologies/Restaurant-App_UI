@@ -1,9 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
   restaurantName: "",
   ownerName: "",
   contact: "",
-  tagline: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+
   address: {
     line1: "",
     line2: "",
@@ -12,23 +16,42 @@ const initialState = {
     city: "",
     pincode: "",
   },
-  email: "",
-  password: "",
-  confirmPassword: "",
-  image: null,       
-  logoImage: null,  
-  previewImage: null,  
-  previewLogo: null,   
+
+  branding: {
+    logoImage: null,
+    image: null,
+    headerImage: null,
+    footerImage: null,
+    tagline: "",
+      previewImage: null,
+    previewLogo: null,
+  },
+
+  settings: {
+    hasCuisines: false,
+    isTaxInclusive: true,
+    isActive: true,
+    tables: 0,
+  },
+
+  taxConfiguration: [],
+
+  subscription: {
+    type: "Trial",
+  },
+
+  errors: {},
+  touched: {},
 };
+
 const formSlice = createSlice({
   name: "form",
   initialState,
   reducers: {
     setFormField: (state, action) => {
       const { field, value } = action.payload;
-
-      if (field === "address") {
-        state.address = { ...state.address, ...value };
+      if (typeof value === "object" && !Array.isArray(value)) {
+        state[field] = { ...state[field], ...value };
       } else {
         state[field] = value;
       }
@@ -37,16 +60,30 @@ const formSlice = createSlice({
       const { field, value } = action.payload;
       state.address[field] = value;
     },
+
+    updateBranding: (state, action) => {
+      const { field, value } = action.payload;
+      state.branding[field] = value;
+    },
     setErrors: (state, action) => {
       state.errors = action.payload;
     },
+
     setTouched: (state, action) => {
       state.touched = { ...state.touched, ...action.payload };
     },
+
     resetForm: () => initialState,
   },
 });
 
-export const { setFormField, updateAddress, setErrors, setTouched, resetForm } =
-  formSlice.actions;
+export const {
+  setFormField,
+  updateAddress,
+  updateBranding,
+  setErrors,
+  setTouched,
+  resetForm,
+} = formSlice.actions;
+
 export default formSlice.reducer;

@@ -76,50 +76,13 @@ const ViewMenu = () => {
     }
   }, [location.state, navigate, location.pathname]);
 
-  // // Fetch data function
-  // const fetchData = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const idToUse = localStorage.getItem("restaurantId") || restaurantId;
-
-  //     if (!idToUse) {
-  //       setError("Restaurant ID not found");
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     const [restaurantRes, menuRes] = await Promise.all([
-  //       getMyRestaurant(),
-  //       getMenuByRestaurant(idToUse),
-  //     ]);
-
-  //     setRestaurant(restaurantRes.restaurant);
-  //     if (restaurantRes.restaurant?._id)
-  //       localStorage.setItem("restaurantId", restaurantRes.restaurant._id);
-
-  //     const fetchedMenu = (menuRes.menu || [])
-  //       .filter((item) => item._id)
-  //       .map((item) => ({
-  //         ...item,
-  //         statusNormalized: (item.status || "draft").toLowerCase(),
-  //         status: item.status === "Published" ? "Published" : "Draft",
-  //       }));
-
-  //     setMenuItems(fetchedMenu);
-  //     setError("");
-  //   } catch (err) {
-  //     console.error("Error fetching data:", err);
-  //     setError("Failed to load data. Please try again later.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+ 
 const fetchData = async () => {
   try {
     setLoading(true);
 
     const restaurantRes = await getMyRestaurant();
-    const restaurantInfo = restaurantRes.data; // ✅ correct path
+    const restaurantInfo = restaurantRes.data; 
     console.log("Fetched restaurant info:", restaurantInfo);
     setRestaurant(restaurantInfo);
 

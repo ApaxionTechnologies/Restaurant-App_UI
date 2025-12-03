@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormField } from "../store/formSlice";
-// import { getMyRestaurant, updateRestaurantProfile , logoutRestaurant} from "../services/apiService"; 
 import HomeHeader from "../components/HomeHeader";
 import { jwtDecode } from "jwt-decode"; 
 import Footer from "../components/Footer";
@@ -65,7 +64,7 @@ export default function EditRestaurantProfile() {
         setAdminEmail(decoded.email);
         setRestaurantName(decoded.restaurantName || "My Restaurant");
       } catch (err) {
-        console.error("❌ Failed to fetch admin/restaurant:", err);
+        console.error("Failed to fetch admin/restaurant:", err);
       }
     };
     fetchMe();
@@ -252,43 +251,89 @@ const handleLogout = async () => {
       reader.onerror = (error) => reject(error);
     });
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Only JPG, JPEG, PNG files are allowed.",
-      }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       image: "Only JPG, JPEG, PNG files are allowed.",
+  //     }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, image: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewImage(base64);
+  //     dispatch(setFormField({ field: "image", value: file }));
+  //     dispatch(setFormField({ field: "previewImage", value: base64 }));
+  //   }
+  // };
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({
-        ...prev,
-        logoImage: "Only JPG, JPEG, PNG files are allowed.",
-      }));
-      e.target.value = null;
-      return;
+  // const handleLogoChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       logoImage: "Only JPG, JPEG, PNG files are allowed.",
+  //     }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, logoImage: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewLogo(base64);
+  //     dispatch(setFormField({ field: "logoImage", value: file }));
+  //     dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  //   }
+  // };
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  const base64 = await toBase64(file);
+  setPreviewImage(base64);
+
+  // Save inside branding object in Redux
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      image: file,       
+      previewImage: base64 
     }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  }));
+};
+
+const handleLogoChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  const base64 = await toBase64(file);
+  setPreviewLogo(base64);
+
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      logoImage: file,        // File for backend
+      previewLogo: base64     // Base64 for preview
     }
-  };
+  }));
+};
 
   const validate = (data) => {
     const newErrors = {};
@@ -370,17 +415,20 @@ const handleLogout = async () => {
       formDataToSend.append("address[state]", formData.address.state || "");
       formDataToSend.append("address[city]", formData.address.city || "");
       formDataToSend.append("address[pincode]", formData.address.pincode);
+       if (formData.branding?.image instanceof File)
+      formDataToSend.append("image", formData.branding.image);
+    if (formData.branding?.logoImage instanceof File)
+      formDataToSend.append("logoImage", formData.branding.logoImage);
+    if (formData.branding?.headerImage instanceof File)
+      formDataToSend.append("headerImage", formData.branding.headerImage);
+    if (formData.branding?.footerImage instanceof File)
+      formDataToSend.append("footerImage", formData.branding.footerImage);
+
       if (currentPassword) {
         formDataToSend.append("currentPassword", currentPassword);
       }
       if (formData.password) {
         formDataToSend.append("password", formData.password);
-      }
-      if (formData.image instanceof File) {
-        formDataToSend.append("image", formData.image);
-      }
-      if (formData.logoImage instanceof File) {
-        formDataToSend.append("logoImage", formData.logoImage);
       }
       const response = await updateRestaurantProfile(formDataToSend);
       console.log("Update API Response:", response);

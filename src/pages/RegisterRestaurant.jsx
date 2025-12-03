@@ -20,7 +20,7 @@ import { registerRestaurant ,logoutRestaurant } from "../services/apiService";
 
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 
-const BASE_URL = "http://localhost:5001/api";
+const BASE_URL = "http://localhost:5001/api/v1";
 
 export default function RegisterRestaurant() {
   const navigate = useNavigate();
@@ -48,7 +48,6 @@ const [restaurantName, setRestaurantName] = useState("");
     address: formData?.address || {
       line1: "",
       line2: "",
-      pincode: "",
       country: "",
       state: "",
       city: "",
@@ -140,6 +139,11 @@ const [restaurantName, setRestaurantName] = useState("");
       updatedAddress.city = "";
     }
 
+     if (field === "pincode") {
+    updatedAddress.pincode = value;
+  }
+    
+
     dispatch(setFormField({ field: "address", value: updatedAddress }));
     validate({ ...formData, address: updatedAddress });
   };
@@ -151,14 +155,15 @@ const [restaurantName, setRestaurantName] = useState("");
     if (name === "email") {
       updatedValue = value.toLowerCase();
     }
-    if (name === "pincode") {
-      dispatch(
-        setFormField({
-          field: "address",
-          value: { ...formData.address, [name]: value },
-        })
-      );
-    } else {
+     if (name === "tagline") {
+    return dispatch(
+      setFormField({
+        field: "branding",
+        value: { ...formData.branding, tagline: value },
+      })
+    );
+  }
+    else {
       dispatch(setFormField({ field: name, value: updatedValue }));
     }
 
@@ -185,41 +190,62 @@ const [restaurantName, setRestaurantName] = useState("");
       reader.onerror = (error) => reject(error);
     });
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  setErrors((prev) => ({ ...prev, image: "" }));
+
+  const base64 = await toBase64(file);
+  setPreviewImage(base64);
+
+  // Keep inside branding object: both file and preview
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      image: file,                // File object for backend
+      previewImage: base64         // Base64 for preview
     }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  }));
+};
+
+const handleLogoChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  setErrors((prev) => ({ ...prev, logoImage: "" }));
+
+  const base64 = await toBase64(file);
+  setPreviewLogo(base64);
+
+  // Keep inside branding object
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      logoImage: file,           
+      previewLogo: base64         
     }
-  };
+  }));
+};
+
 
   useEffect(() => {
-    if (formData.previewImage) setPreviewImage(formData.previewImage);
-    if (formData.previewLogo) setPreviewLogo(formData.previewLogo);
+    if (formData.branding.previewImage) setPreviewImage(formData.branding.previewImage);
+    if (formData.branding.previewLogo) setPreviewLogo(formData.branding.previewLogo);
   }, []);
 
   const validate = (data) => {
@@ -308,16 +334,19 @@ const [restaurantName, setRestaurantName] = useState("");
         formDataToSend.append("restaurantName", formData.restaurantName);
         formDataToSend.append("ownerName", formData.ownerName);
         formDataToSend.append("contact", formData.contact);
-        formDataToSend.append("tagline", formData.tagline);
         formDataToSend.append("address", JSON.stringify(formData.address));
         formDataToSend.append("email", formData.email.toLowerCase());
         formDataToSend.append("password", formData.password);
 
-        if (formData.image) formDataToSend.append("image", formData.image);
-        if (formData.logoImage)
-          formDataToSend.append("logoImage", formData.logoImage);
+if (formData.branding.image)
+  formDataToSend.append("image", formData.branding.image);
 
-        const response = await registerRestaurant(formDataToSend);
+if (formData.branding.logoImage)
+  formDataToSend.append("logoImage", formData.branding.logoImage);
+
+if (formData.branding.tagline)
+  formDataToSend.append("tagline", formData.branding.tagline);
+ const response = await registerRestaurant(formDataToSend);
         toast.success(
           response.message || "Registered successfully! Please log in."
         );
@@ -500,7 +529,7 @@ const [restaurantName, setRestaurantName] = useState("");
                     <input
                       type="text"
                       name="tagline"
-                      value={formData.tagline}
+                      value={formData.branding.tagline}
                       onChange={handleChange}
                       placeholder="e.g. Fresh Taste, Better Life"
                     />
@@ -578,7 +607,7 @@ const [restaurantName, setRestaurantName] = useState("");
                         type="text"
                         name="pincode"
                         value={safeFormData.address.pincode}
-                        onChange={handleChange}
+                        onChange={(e) => handleAddressChange("pincode", e.target.value)}
                         onBlur={handleBlur}
                         className={errors.pincode && touched.pincode ? "error" : ""}
                         placeholder="Enter pincode"
