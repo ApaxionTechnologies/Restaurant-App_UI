@@ -168,6 +168,7 @@ export const BulkItemUpload = () => {
     }
   };
 
+
   const thStyles = {
     padding: "0.75rem 1rem",
     textAlign: "left",

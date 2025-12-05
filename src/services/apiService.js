@@ -930,7 +930,7 @@ import axios from "axios";
 import { toast } from "react-toastify"; 
 
 const API = axios.create({
-  baseURL: "http://localhost:5001/api",
+  baseURL: "http://localhost:5001/api/v1",
   withCredentials: true,
   timeout: 1000 * 50,
 });
