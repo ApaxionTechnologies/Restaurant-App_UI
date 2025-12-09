@@ -14,6 +14,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./store"; 
+import "./index.css";
 
 const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 
