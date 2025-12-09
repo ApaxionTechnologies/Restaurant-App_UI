@@ -1,60 +1,74 @@
-import React from "react";
-import Footer from "../components/Footer";
-import HomeHeader from "../components/HomeHeader"; 
-import "../styles/Home.css";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "./HomePage.css";
-import { useState } from "react";
-import AdminLogin from "../pages/AdminLogin"; 
-import { useEffect } from "react";
+import AdminLogin from "../pages/AdminLogin";
 
 export default function HomePage() {
-  
+  const navigate = useNavigate();
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+
   useEffect(() => {
     document.body.classList.add("home-page");
-    document.documentElement.classList.add("home-page"); // ✅ add to <html>
-    
+    document.documentElement.classList.add("home-page");
+
     return () => {
       document.documentElement.classList.remove("home-page");
       document.body.classList.remove("home-page");
     };
   }, []);
 
+  const handleLoginClick = () => {
+    setShowAdminLogin(true);
+  };
+
   return (
     <>
-      
-      <HomeHeader />
-
-      
       <section
-        className="hero-banner"
-        style={{
-          backgroundImage: "url('/food-collage.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+        className="hero-page"
+        style={{ backgroundImage: "url('/bgimage.jpg')" }}
       >
-        <div className="hero-overlay">
-          <h1 className="hero-title">Great Food Great Offers</h1>
+        <div className="hero-dark-overlay" />
+        <div className="hero-content-wrapper">
+          <div className="hero-logo-row">
+            <img
+              src="/restaurant_logo.png"
+              alt="Restaurant Logo"
+              className="hero-logo-image"
+            />
+            <h1>QRBites</h1>
+          </div>
+
+          <div className="hero-main">
+            <div className="hero-left">
+             
+              <h1 className="hero-heading">
+              The Future of Restaurant Ordering is Here — Serve Faster. Manage Better
+              </h1>
+              <p className="hero-description">
+              No queues. No confusion. No messy paper menus.
+Just a simple QR scan that gives your customers the seamless experience they expect — and your staff the speed and efficiency they need.
+              </p>
+
+              <div className="hero-buttons">
+                <button
+                  className="hero-btn hero-btn-light"
+                  onClick={handleLoginClick}
+                >
+                  Login
+                </button>
+
+                <Link
+                  className="hero-btn hero-btn-orange"
+                  to="/registerrestaurant"
+                >
+                  Register
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* FOOD COURT SECTION */}
-      <section className="food-section">
-        <div className="food-card">
-          <div className="food-text">
-            <h2>FOOD COURT</h2>
-            <p>TAKE AWAY | DINE IN</p>
-          </div>
-          <div className="food-image">
-            <img src="/food-court.png" alt="Food Court" />
-          </div>
-        </div>
-      </section>
-
-      
-      <Footer />
-        
       {showAdminLogin && (
         <AdminLogin onClose={() => setShowAdminLogin(false)} />
       )}
