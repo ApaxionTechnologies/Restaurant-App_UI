@@ -1,0 +1,92 @@
+{
+  "logoText": "QRBites",
+  "formTitle": "अपना रेस्टोरेंट रजिस्टर करें",
+  "formSubtitle": "हमारे प्लेटफ़ॉर्म से अधिक ग्राहकों तक पहुँचें और अपने व्यवसाय को बढ़ाएँ",
+  "artworkAlt": "फूड आर्टवर्क",
+
+  "progress": {
+    "step1": "कदम 1",
+    "step2": "कदम 2",
+    "step3": "कदम 3",
+    "step4": "कदम 4"
+  },
+
+  "restaurantName": "रेस्टोरेंट का नाम",
+  "enterRestaurantName": "रेस्टोरेंट का नाम दर्ज करें",
+
+  "ownerName": "मालिक का नाम",
+  "enterOwnerName": "मालिक का नाम दर्ज करें",
+
+  "gstNumber": "GST नंबर (वैकल्पिक)",
+
+  "contactNumber": "संपर्क नंबर",
+  "enterContact": "संपर्क नंबर दर्ज करें",
+
+  "restaurantAddress1": "रेस्टोरेंट पता (लाइन 1)",
+  "enterAddress1": "पता की पहली लाइन दर्ज करें",
+
+  "restaurantAddress2": "रेस्टोरेंट पता (लाइन 2)",
+  "enterAddress2Optional": "पता की दूसरी लाइन दर्ज करें (वैकल्पिक)",
+
+  "country": "देश चुनें",
+  "selectCountry": "देश चुनें",
+  "state": "राज्य चुनें",
+  "city": "शहर चुनें",
+  "cityRegion": "शहर/क्षेत्र",
+  "enterCityName": "शहर का नाम दर्ज करें",
+
+  "pincode": "पिन कोड",
+  "enterPincode": "पिन कोड दर्ज करें",
+
+  "tagLine": "टैगलाइन",
+  "taglineLabel": "आपके रेस्टोरेंट की टैगलाइन",
+  "taglinePlaceholder": "अपने रेस्टोरेंट के लिए एक आकर्षक टैगलाइन लिखें",
+
+  "upload": {
+    "coverLabel": "कवर इमेज अपलोड करें",
+    "logoLabel": "लोगो अपलोड करें",
+    "uploadIconAlt": "अपलोड",
+    "previewAlt": "पूर्वावलोकन",
+    "logoPreviewAlt": "लोगो पूर्वावलोकन",
+    "fileTypeError": "केवल JPG, JPEG, PNG फ़ाइलें अनुमत हैं।"
+  },
+
+  "email": "ईमेल पता",
+  "enterEmail": "example@gmail.com",
+
+  "password": "पासवर्ड बनाएं",
+  "enterPassword": "पासवर्ड दर्ज करें",
+
+  "confirmPassword": "पासवर्ड की पुष्टि करें",
+  "enterConfirmPassword": "पासवर्ड की पुष्टि करें",
+
+  "back": "पीछे",
+  "next": "आगे",
+  "previous": "वापस",
+  "submit": "सबमिट करें",
+  "completeRegistration": "रजिस्ट्रेशन पूरा करें",
+  "processing": "प्रोसेस किया जा रहा है...",
+
+  "toasts": {
+    "registerSuccess": "सफलतापूर्वक रजिस्टर्ड! कृपया लॉगिन करें।",
+    "registerFailed": "रजिस्ट्रेशन विफल। कृपया फिर से प्रयास करें।",
+    "fillRequired": "कृपया सभी आवश्यक फ़ील्ड सही तरीके से भरें।",
+    "imageTypeError": "केवल JPG, JPEG, PNG फ़ाइलें अनुमत हैं।"
+  },
+
+  "errors": {
+    "restaurantName": "रेस्टोरेंट नाम आवश्यक है।",
+    "ownerName": "मालिक का नाम आवश्यक है।",
+    "validOwnerName": "मालिक का नाम केवल अक्षरों में होना चाहिए।",
+    "contact": "मान्य फोन नंबर आवश्यक है।",
+    "address1": "पता की पहली लाइन आवश्यक है।",
+    "country": "देश आवश्यक है।",
+    "state": "राज्य आवश्यक है।",
+    "city": "शहर आवश्यक है।",
+    "pincode": "कृपया मान्य 5-6 अंकों का पिनकोड दर्ज करें।",
+    "email": "कृपया मान्य ईमेल दर्ज करें।",
+    "requiredField":"आवश्यक है।",
+    "password": "पासवर्ड आवश्यकताओं को पूरा नहीं करता।",
+    "confirmPassword": "पासवर्ड मेल नहीं खा रहे।"
+  }
+}

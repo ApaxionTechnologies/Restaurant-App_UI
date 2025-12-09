@@ -1,0 +1,90 @@
+  {
+    "pageTitle": "मेन्यू आइटम जोड़ें",
+    "pageTitleEdit": "मेन्यू आइटम संपादित करें",
+    "restaurantId": "रेस्टोरेंट आईडी",
+
+    "buttons": {
+      "addMultiple": "एक से अधिक आइटम जोड़ें",
+      "saveItem": "आइटम सहेजें",
+      "saveChanges": "बदलाव सहेजें",
+      "reset": "रीसेट"
+    },
+
+    "fields": {
+      "name": {
+        "label": "आइटम नाम",
+        "placeholder": "आइटम का नाम दर्ज करें",
+        "required": "आइटम नाम आवश्यक है"
+      },
+
+      "ingredients": {
+        "label": "सामग्री",
+        "placeholder": "सामग्री दर्ज करें"
+      },
+
+      "category": {
+        "label": "श्रेणी",
+        "placeholder": "श्रेणी चुनें",
+        "required": "श्रेणी आवश्यक है"
+      },
+
+      "cuisine": {
+        "label": "पकवान",
+        "placeholder": "पकवान चुनें",
+        "required": "पकवान आवश्यक है"
+      },
+
+      "type": {
+        "label": "प्रकार",
+        "veg": "शाकाहारी",
+        "nonVeg": "मांसाहारी"
+      },
+
+      "price": {
+        "label": "कीमत (₹)",
+        "placeholder": "कीमत दर्ज करें",
+        "required": "कीमत आवश्यक है"
+      },
+
+      "discount": {
+        "label": "छूट (%)",
+        "placeholder": "छूट दर्ज करें"
+      },
+
+      "prepTime": {
+        "label": "तैयारी का समय (मिनट)",
+        "placeholder": "समय दर्ज करें",
+        "required": "तैयारी का समय आवश्यक है"
+      },
+
+      "description": {
+        "label": "विवरण",
+        "placeholder": "विवरण दर्ज करें"
+      },
+
+      "status": {
+        "label": "स्थिति",
+        "published": "प्रकाशित",
+        "draft": "ड्राफ्ट"
+      },
+
+      "image": {
+        "uploadLabel": "छवि अपलोड करें *",
+        "noPreview": "अभी तक कोई छवि अपलोड नहीं की गई है",
+        "errorRequired": "कृपया एक छवि अपलोड करें।"
+      }
+    },
+
+    "errors": {
+      "fileLarge": "फ़ाइल बहुत बड़ी है! अधिकतम 2MB।",
+      "fileType": "केवल JPG या PNG की अनुमति है।",
+      "general": "कुछ गलत हो गया।"
+    },
+
+    "messages": {
+      "added": "मेन्यू आइटम सफलतापूर्वक जोड़ा गया!",
+      "updated": "मेन्यू आइटम सफलतापूर्वक अपडेट किया गया!"
+    },
+
+    "preview": "पूर्वावलोकन"
+  }

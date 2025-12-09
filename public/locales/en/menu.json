@@ -1,0 +1,90 @@
+{
+    "pageTitle": "Add Menu Item",
+    "pageTitleEdit": "Edit Menu Item",
+    "restaurantId": "Restaurant ID",
+
+    "buttons": {
+      "addMultiple": "Add Multiple Items",
+      "saveItem": "Save Item",
+      "saveChanges": "Save Changes",
+      "reset": "Reset"
+    },
+
+    "fields": {
+      "name": {
+        "label": "Item Name",
+        "placeholder": "Enter item name",
+        "required": "Item name is required"
+      },
+
+      "ingredients": {
+        "label": "Ingredients",
+        "placeholder": "Enter ingredients"
+      },
+
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category",
+        "required": "Category is required"
+      },
+
+      "cuisine": {
+        "label": "Cuisine",
+        "placeholder": "Select cuisine",
+        "required": "Cuisine is required"
+      },
+
+      "type": {
+        "label": "Type",
+        "veg": "Veg",
+        "nonVeg": "Non-Veg"
+      },
+
+      "price": {
+        "label": "Price (₹)",
+        "placeholder": "Enter price",
+        "required": "Price is required"
+      },
+
+      "discount": {
+        "label": "Discount (%)",
+        "placeholder": "Enter discount"
+      },
+
+      "prepTime": {
+        "label": "Time to Prepare (mins)",
+        "placeholder": "Enter preparation time",
+        "required": "Prep time is required"
+      },
+
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter description"
+      },
+
+      "status": {
+        "label": "Status",
+        "published": "Published",
+        "draft": "Draft"
+      },
+
+      "image": {
+        "uploadLabel": "Upload Image *",
+        "noPreview": "No image uploaded yet",
+        "errorRequired": "Please upload an image."
+      }
+    },
+
+    "errors": {
+      "fileLarge": "File too large! Max 2MB.",
+      "fileType": "Only JPG or PNG allowed.",
+      "general": "Something went wrong."
+    },
+
+    "messages": {
+      "added": "Menu item added successfully!",
+      "updated": "Menu item updated successfully!"
+    },
+
+    "preview": "Preview"
+  }

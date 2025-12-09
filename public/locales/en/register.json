@@ -1,0 +1,92 @@
+{
+  "logoText": "QRBites",
+  "formTitle": "Register your Restaurant",
+  "formSubtitle": "Join our platform to reach more customers and grow your business",
+  "artworkAlt": "Food artwork",
+
+  "progress": {
+    "step1": "Step 1",
+    "step2": "Step 2",
+    "step3": "Step 3",
+    "step4": "Step 4"
+  },
+
+  "restaurantName": "Restaurant Name",
+  "enterRestaurantName": "Enter restaurant name",
+
+  "ownerName": "Owner's Name",
+  "enterOwnerName": "Enter owner's name",
+
+  "gstNumber": "GST Number (optional)",
+
+  "contactNumber": "Contact Number",
+  "enterContact": "Enter contact number",
+
+  "restaurantAddress1": "Restaurant Address (line 1)",
+  "enterAddress1": "Enter address line 1",
+
+  "restaurantAddress2": "Restaurant Address (line 2)",
+  "enterAddress2Optional": "Enter address line 2 (optional)",
+
+  "country": "Select Country",
+  "selectCountry": "Select Country",
+  "state": "Select State",
+  "city": "Select City",
+  "cityRegion": "City/Region",
+  "enterCityName": "Enter city name",
+
+  "pincode": "Pin Code",
+  "enterPincode": "Enter pincode",
+
+  "tagLine": "Tag-line",
+  "taglineLabel": "Tag-line of your Restaurant",
+  "taglinePlaceholder": "Enter a catchy tagline for your restaurant",
+
+  "upload": {
+    "coverLabel": "Upload Cover Image",
+    "logoLabel": "Upload Logo",
+    "uploadIconAlt": "Upload",
+    "previewAlt": "Preview",
+    "logoPreviewAlt": "Logo Preview",
+    "fileTypeError": "Only JPG, JPEG, PNG files are allowed."
+  },
+
+  "email": "E-mail Address",
+  "enterEmail": "example@gmail.com",
+
+  "password": "Create your password",
+  "enterPassword": "Enter password",
+
+  "confirmPassword": "Confirm your password",
+  "enterConfirmPassword": "Confirm password",
+
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "submit": "Submit",
+  "completeRegistration": "Complete Registration",
+  "processing": "Processing...",
+
+  "toasts": {
+    "registerSuccess": "Registered successfully! Please log in.",
+    "registerFailed": "Registration failed. Please try again.",
+    "fillRequired": "Please fill all required fields correctly.",
+    "imageTypeError": "Only JPG, JPEG, PNG files are allowed."
+  },
+
+  "errors": {
+    "restaurantName": "Restaurant name is required.",
+    "ownerName": "Owner name is required.",
+    "validOwnerName": "Owner name must contain letters only.",
+    "contact": "Valid phone number required.",
+    "address1": "Address line 1 is required.",
+    "country": "Country is required.",
+    "state": "State is required.",
+    "city": "City is required.",
+    "pincode": "Enter a valid 5-6 digit pincode.",
+    "email": "Enter a valid email address.",
+    "requiredField":"required Field",
+    "password": "Password does not meet requirements.",
+    "confirmPassword": "Passwords do not match."
+  }
+}

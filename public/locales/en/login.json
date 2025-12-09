@@ -1,0 +1,34 @@
+{
+    "title": "Restaurant Admin Portal",
+    "subtitle": "Sign in to manage your restaurant",
+
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email",
+      "required": "Email is required",
+      "invalid": "Please enter a valid email address"
+    },
+
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "required": "Password is required",
+      "invalid": "Password does not meet requirements",
+      "forgot": "Forgot password?"
+    },
+
+    "button": {
+      "login": "Continue to Dashboard",
+      "loggingIn": "Signing in..."
+    },
+
+    "footer": {
+      "noAccount": "Don't have an account?",
+      "register": "Register Your Restaurant"
+    },
+
+    "errors": {
+      "general": "Invalid email or password",
+      "network": "Network error. Please try again."
+    }
+}
