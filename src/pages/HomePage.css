@@ -1,104 +1,110 @@
+.home-page {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+ 
+  font-family: var(--font-family-base, system-ui, sans-serif);
+}
 
-body.home-page,
-html.home-page {
-  margin: 0 !important;
-  overflow-x: hidden !important;
+.hero-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 40px 7vw 60px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at right, rgba(0, 0, 0, 0.2), transparent),
+    linear-gradient(to right, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.4));
+}
+
+.hero-content-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.hero-logo-image {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+.hero-logo-row h1 {
+  position: relative;
+  top: 6px;
+  margin: 0;
+  font-size: 2rem; 
 }
 
 
-
-.home-header {
+.hero-main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 3rem;
 }
 
-.home-header .logo img {
-  height: 10px;
-  cursor: pointer;
+.hero-left {
+  max-width: 500px;
 }
 
-.header-actions {
+.hero-heading {
+  font-size: 3rem; 
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hero-description {
+  font-size: var(--fs-body, 16px);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
   display: flex;
   gap: 15px;
 }
-.header-link {
-  background: none;
-  border: none;
-  font-size: 20px;
+
+.hero-btn {
+  padding: 12px 26px;
+  border-radius: 6px;
+  font-size: var(--fs-body, 16px);
+  font-weight: 600;
   cursor: pointer;
-  color: #0e0e0f;
-}
-
-.header-link:hover {
-  text-decoration: underline;
-}
-
-/* Hero Banner */
-.hero-banner {
-  height: 350px;
-  background: url('/food-collage.jpg') center/cover no-repeat;
-  position: relative;
-}
-
-.hero-overlay {
-  background: rgba(0, 0, 0, 0.4);
-  height: 100%;
-  display: flex;
-  justify-content: center;
+  border: none;
+  text-decoration: none;
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  display: inline-flex;
   align-items: center;
-}
-
-.hero-title {
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
-}
-
-.food-section {
-  display: flex;
   justify-content: center;
-  padding: 50px 0;
-  
 }
 
-footer {
-  margin-top: 0;
+.hero-btn-light {
+  background: #fff;
+  color: #000;
 }
 
-
-.food-card {
-  background: orange;
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  padding: 40px 50px;
-  gap: 90px;
-  width: 90%;
-  Height: 200px;
+.hero-btn-orange {
+  background: #ff7a00;
+  color: #fff;
 }
 
-.food-text h2 {
-  color: white;
-  font-weight: bold;
-  margin: 0;
-}
-
-.food-text p {
-  color: white;
-  margin: 0;
-}
-
-.food-image img {
-  height: 100px;
-  width: 140px;
-}
-.food-image img {
-  height: 100px;
-  width: auto;
-  border-radius: 10px;
+.hero-btn-orange:hover {
+  background: #e56a00;
 }
