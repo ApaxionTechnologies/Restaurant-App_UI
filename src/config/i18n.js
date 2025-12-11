@@ -10,17 +10,22 @@ i18n
   .init({
     fallbackLng: "en",
     supportedLngs: ["en", "hi"],
-    ns: ["common", "register"], // multiple namespaces
-    defaultNS: "common",
+
+    ns: ["translation"],
+    defaultNS: "translation",
+
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json",
+      loadPath: "/locales/{{lng}}.json",
     },
+
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
     },
+
     interpolation: { escapeValue: false },
   });
-  window.i18next = i18n;
+
+window.i18next = i18n;
 
 export default i18n;

@@ -17,6 +17,7 @@ import store, { persistor } from "./store";
 import "./config/i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./config/i18n";
+import "./index.css";
 
 const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 

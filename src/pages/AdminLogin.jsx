@@ -1,32 +1,31 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaUser, FaLock, FaEye, FaEyeSlash, FaTimes, FaStore } from "react-icons/fa";
-import "../styles/Login.css";
-import { Link } from "react-router-dom"; 
-//import { adminLogin } from "../services/apiService";
-import ForgotPassword from "./forgotPassword"; 
-import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
-import { adminLogin } from "../services/authService";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  FaGoogle,
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTimes,
+} from "react-icons/fa";
+import "../styles/AdminLogin.css";
+import { adminLogin, loginWithGoogle } from "../services/authService";
+import { validatePassword } from "../utils/passwordValidation";
+import ForgotPassword from "./forgotPassword";
+
 export default function AdminLogin({ onClose }) {
   const navigate = useNavigate();
+
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({
-    email: "",
-    password: ""
-  });
-  const [showForgotPassword, setShowForgotPassword] = useState(false); 
-  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false); 
 
   const validateForm = () => {
-    const errors = {
-      email: "",
-      password: ""
-    };
-
+    const errors = { email: "", password: "" };
     let isValid = true;
 
     if (!adminEmail.trim()) {
@@ -48,80 +47,55 @@ export default function AdminLogin({ onClose }) {
     setFieldErrors(errors);
     return isValid;
   };
-const handleClose = () => {
-    if (onClose) {
-      onClose();
-    } else {
-      navigate(-1);
+
+  const handleClose = () => {
+    if (onClose) onClose();
+    else navigate(-1);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const data = await adminLogin({
+        email: adminEmail,
+        password: adminPassword,
+      });
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("adminEmail", adminEmail);
+
+      if (rememberMe) {
+        localStorage.setItem("rememberAdmin", "true");
+      } else {
+        localStorage.removeItem("rememberAdmin");
+      }
+
+      navigate("/admin-dashboard");
+      if (onClose) onClose();
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrorMessage(err.message || "Invalid email or password");
+    } finally {
+      setIsSubmitting(false);
     }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setErrorMessage("");
 
-  //   if (!validateForm()) {
-  //     return;
-  //   }
+  const handleEmailChange = (value) => {
+    setAdminEmail(value);
+    setFieldErrors((prev) => ({ ...prev, email: "" }));
+    if (errorMessage) setErrorMessage("");
+  };
 
-  //   setIsSubmitting(true);
-
-  //   try {
-  //     const data = await adminLogin({ email: adminEmail, password: adminPassword });
-  //       localStorage.setItem("token", data.token);
-  //       localStorage.setItem("adminEmail", adminEmail);
-  //       navigate("/admin-dashboard");
-  //       if (onClose) onClose();
-  //      else {
-  //       setErrorMessage(data.error || "Invalid email or password");
-  //     }
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     setErrorMessage("Network error. Please try again.");
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrorMessage("");
-
-  if (!validateForm()) return;
-
-  setIsSubmitting(true);
-
-  try {
-    const data = await adminLogin({ email: adminEmail, password: adminPassword });
-
-    // Now token exists
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("adminEmail", adminEmail);
-
-    navigate("/admin-dashboard");
-
-    if (onClose) onClose();
-  } catch (error) {
-    console.error("Login error:", error);
-    setErrorMessage(error.message || "Invalid email or password");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-  const handleInputChange = (field, value) => {
-    if (field === "email") {
-      setAdminEmail(value);
-      if (fieldErrors.email) {
-        setFieldErrors({ ...fieldErrors, email: "" });
-      }
-    } else if (field === "password") {
-      setAdminPassword(value);
-      if (fieldErrors.password) {
-        setFieldErrors({ ...fieldErrors, password: "" });
-      }
-    }
-    if (errorMessage) {
-      setErrorMessage("");
-    }
+  const handlePasswordChange = (value) => {
+    setAdminPassword(value);
+    setFieldErrors((prev) => ({ ...prev, password: "" }));
+    if (errorMessage) setErrorMessage("");
   };
 
   const handleForgotPasswordClick = (e) => {
@@ -132,127 +106,178 @@ const handleSubmit = async (e) => {
   const handleBackToLogin = () => {
     setShowForgotPassword(false);
   };
+  const handleGoogleLogin = async () => {
+    setErrorMessage("");
+    setIsGoogleSubmitting(true);
+
+    try {
+      const data = await loginWithGoogle();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("adminEmail", data.email);
+
+      if (rememberMe) {
+        localStorage.setItem("rememberAdmin", "true");
+      } else {
+        localStorage.removeItem("rememberAdmin");
+      }
+
+      navigate("/admin-dashboard");
+      if (onClose) onClose();
+    } catch (err) {
+      console.error("Google login error:", err);
+      setErrorMessage(err.message || "Google sign-in failed. Please try again.");
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
+  };
+
+  if (showForgotPassword) {
+    return (
+      <ForgotPassword
+        onClose={handleClose}
+        onBackToLogin={handleBackToLogin}
+      />
+    );
+  }
 
   return (
-    <div className="admin-login-modal">
-      {showForgotPassword ? (
-        <ForgotPassword onClose={onClose} onBackToLogin={handleBackToLogin} />
-      ) : (
-        <div className="admin-login-container">
-          <div className="admin-login-card">
-           <button className="close-button" onClick={handleClose}>
-              <FaTimes />
-            </button>
-            
-            <div className="login-header">
-            
-              <div className="header-icon">
-                <FaStore />
-              </div>
-              <div className="header-top">
-                <h2>Restaurant Admin Portal</h2>
-                
-              </div>
-              <p className="login-subtitle">Sign in to manage your restaurant</p>
-            </div>
+    <div className="admin-login-backdrop">
+      <div
+        className="admin-login-card"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          className="admin-login-close btn btn-ghost btn-icon btn-square"
+          onClick={handleClose}
+          type="button"
+          aria-label="Close"
+        >
+          <FaTimes />
+        </button>
 
-            <form onSubmit={handleSubmit} className="login-form" noValidate>
-              <div className={`form-group ${fieldErrors.email ? "has-error" : ""}`}>
-                <label htmlFor="email">Email Address</label>
-                <div className="field-wrapper">
-                  <div className="input-container">
-                    <span className="input-icon">
-                      <FaUser />
-                    </span>
-                    <input
-                      id="email"
-                      type="email"
-                      value={adminEmail}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
-                      placeholder="Enter your email"
-                      className={fieldErrors.email ? "error" : ""}
-                    />
-                  </div>
-                  {(fieldErrors.email === "Email is required" ||
-                    fieldErrors.email === "Please enter a valid email address") && (
-                    <div className="error-message">{fieldErrors.email}</div>
-                  )}
-                </div>
-              </div>
+        <h2 className="admin-login-title heading-main text-center">
+          Admin Portal
+        </h2>
+        <p className="admin-login-subtitle text-subtitle text-center">
+          Sign in to manage your restaurant
+        </p>
 
-              <div className={`form-group ${fieldErrors.password ? "has-error" : ""}`}>
-                <div className="password-label-container">
-                  <label htmlFor="password">Password</label>
-                  <a href="#forgot" className="forgot-link" onClick={handleForgotPasswordClick}>
-                    Forgot password?
-                  </a>
-                </div>
-
-                <div className="field-wrapper">
-                  <div className="input-container">
-                    <span className="input-icon">
-                      <FaLock />
-                    </span>
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={adminPassword}
-                      onChange={(e) => handleInputChange("password", e.target.value)}
-                    
-                      placeholder="Enter your password"
-                      className={fieldErrors.password ? "error" : ""}
-                    />
-                    <button
-                      type="button"
-                      className="toggle-password"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                  {fieldErrors.password && (
-                    <div className="error-message">{fieldErrors.password}</div>
-                  )}
-                </div>
-                
-              
-              </div>
-
-              {errorMessage && (
-                <div className="error-message general-error">
-                  <span className="error-icon">!</span>
-                  {errorMessage}
-                </div>
-              )}
-              
-              <button
-                type="submit"
-                style={{ height: "50px", fontSize: "20px" }}
-                className={` btn-global  ${isSubmitting ? "submitting" : ""}`}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="spinner"></span>
-                    Signing in...
-                  </>
-                ) : (
-                  "Continue to Dashboard"
-                )}
-              </button>
-            </form>
-
-            <div className="login-footer">
-              <p>
-                Don't have an account?{" "}
-                <Link to="/registerrestaurant" className="support-link">
-                  Register Your Restaurant
-                </Link>
-              </p>
-            </div>
+        <form
+          className="admin-login-form"
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className="admin-field">
+            <label className="admin-label" htmlFor="admin-email">
+              Email
+            </label>
+            <input
+              id="admin-email"
+              type="email"
+              className={`admin-input ${
+                fieldErrors.email ? "admin-input-error" : ""
+              }`}
+              placeholder="Enter your email"
+              value={adminEmail}
+              onChange={(e) => handleEmailChange(e.target.value)}
+            />
+            {fieldErrors.email && (
+              <div className="admin-error-text">{fieldErrors.email}</div>
+            )}
           </div>
-        </div>
-      )}
+
+          <div className="admin-field">
+            <label className="admin-label" htmlFor="admin-password">
+              Password
+            </label>
+            <input
+              id="admin-password"
+              type="password"
+              className={`admin-input ${
+                fieldErrors.password ? "admin-input-error" : ""
+              }`}
+              placeholder="Enter your password"
+              value={adminPassword}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+            />
+            {fieldErrors.password && (
+              <div className="admin-error-text">{fieldErrors.password}</div>
+            )}
+          </div>
+
+          <div className="admin-remember-row">
+            <label className="admin-remember">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span>Remember me?</span>
+            </label>
+
+            <button
+              type="button"
+              className="admin-forgot-link btn-text"
+              onClick={handleForgotPasswordClick}
+            >
+              Forgot Password
+            </button>
+          </div>
+
+          {errorMessage && (
+            <div className="admin-error-banner">{errorMessage}</div>
+          )}
+
+          <button
+            type="submit"
+            className="admin-submit-btn btn btn-primary btn-pill"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Signing in..." : "Sign in"}
+          </button>
+
+          <div className="admin-or text-caption text-center">
+            or sign in with other accounts?
+          </div>
+
+          <div className="admin-social-row">
+            <button
+              type="button"
+              className="admin-social-btn btn btn-soft btn-square btn-icon btn-google"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleSubmitting}
+            >
+             
+              <FaGoogle />
+            </button>
+            <button
+              type="button"
+              className="admin-social-btn btn btn-soft btn-square btn-icon btn-facebook"
+            >
+              <FaFacebookF />
+            </button>
+            <button
+              type="button"
+              className="admin-social-btn btn btn-soft btn-square btn-icon btn-instagram"
+            >
+              <FaInstagram />
+            </button>
+            <button
+              type="button"
+              className="admin-social-btn btn btn-soft btn-square btn-icon btn-linkedin"
+            >
+              <FaLinkedinIn />
+            </button>
+          </div>
+
+          <p className="admin-footer-text text-caption text-center">
+            Don&apos;t have an account?{" "}
+            <Link to="/registerrestaurant" className="admin-footer-link">
+              Register your restaurant.
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
