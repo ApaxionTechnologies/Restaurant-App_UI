@@ -38,6 +38,14 @@ export default function ResetPasswordPage({ onClose }) {
     else navigate(-1);
   };
 
+  const handleBackdropClick = () => {
+    handleClose();
+  };
+
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -89,13 +97,15 @@ export default function ResetPasswordPage({ onClose }) {
       setIsLoading(false);
     }
   };
+
   if (!tokenValid) {
     return (
       <div
         className="reset-password-page"
         style={{ backgroundImage: "url('/bgimage.jpg')" }}
+        onClick={handleBackdropClick}
       >
-        <div className="reset-password-container">
+        <div className="reset-password-container" onClick={stopPropagation}>
           <div className="reset-password-card">
             <button className="close-button" onClick={handleClose}>
               <FaTimes />
@@ -122,8 +132,9 @@ export default function ResetPasswordPage({ onClose }) {
       <div
         className="reset-password-page"
         style={{ backgroundImage: "url('/bgimage.jpg')" }}
+        onClick={handleBackdropClick}
       >
-        <div className="reset-password-container">
+        <div className="reset-password-container" onClick={stopPropagation}>
           <div className="reset-password-card success-message">
             <button className="close-button" onClick={handleClose}>
               <FaTimes />
@@ -153,8 +164,9 @@ export default function ResetPasswordPage({ onClose }) {
     <div
       className="reset-password-page"
       style={{ backgroundImage: "url('/bgimage.jpg')" }}
+      onClick={handleBackdropClick}
     >
-      <div className="reset-password-container">
+      <div className="reset-password-container" onClick={stopPropagation}>
         <div className="reset-password-card">
           <button className="close-button" onClick={handleClose}>
             <FaTimes />
@@ -251,3 +263,4 @@ export default function ResetPasswordPage({ onClose }) {
     </div>
   );
 }
+
