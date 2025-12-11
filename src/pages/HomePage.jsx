@@ -28,6 +28,7 @@ export default function HomePage() {
         style={{ backgroundImage: "url('/bgimage.jpg')" }}
       >
         <div className="hero-dark-overlay" />
+
         <div className="hero-content-wrapper">
           <div className="hero-logo-row">
             <img
@@ -40,13 +41,15 @@ export default function HomePage() {
 
           <div className="hero-main">
             <div className="hero-left">
-             
               <h1 className="hero-heading">
-              The Future of Restaurant Ordering is Here — Serve Faster. Manage Better
+                The Future of Restaurant Ordering is Here — Serve Faster. Manage
+                Better
               </h1>
+
               <p className="hero-description">
-              No queues. No confusion. No messy paper menus.
-Just a simple QR scan that gives your customers the seamless experience they expect — and your staff the speed and efficiency they need.
+                No queues. No confusion. No messy paper menus. Just a simple QR
+                scan that gives your customers the seamless experience they
+                expect — and your staff the speed and efficiency they need.
               </p>
 
               <div className="hero-buttons">

@@ -68,7 +68,7 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
     }
   };
 
-  const handleBackToLogin = () => {
+  const handleBackToLoginClick = () => {
     if (onBackToLogin) {
       onBackToLogin();
     } else {
@@ -76,9 +76,17 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
     }
   };
 
+  const handleBackdropClick = () => {
+    handleClose();
+  };
+
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="forgot-modal">
-      <div className="forgot-container">
+    <div className="forgot-modal" onClick={handleBackdropClick}>
+      <div className="forgot-container" onClick={stopPropagation}>
         <div className="forgot-card">
           <button
             className="close-button btn btn-ghost btn-icon btn-square"
@@ -178,7 +186,7 @@ export default function ForgotPassword({ onClose, onBackToLogin }) {
               <button
                 type="button"
                 className="forgot-footer-link"
-                onClick={handleBackToLogin}
+                onClick={handleBackToLoginClick}
                 disabled={isLoading}
               >
                 Login
