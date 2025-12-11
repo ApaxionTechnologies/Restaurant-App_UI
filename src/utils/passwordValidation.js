@@ -2,6 +2,7 @@ import {
   FaCheck, 
   FaTimesCircle 
 } from "react-icons/fa";
+import '../styles/RegisterForm.css'
 export const validatePassword = (password) => {
   const uppercase = /[A-Z]/;
   const lowercase = /[a-z]/;
@@ -37,15 +38,19 @@ export const PasswordRequirements = ({ password }) => {
 
   return (
     <div className="password-requirements">
-      <p className="requirements-title">Password must contain:</p>
-      <ul className="requirements-list">
-        {requirements.map((req, idx) => (
-          <li key={idx} className={req.valid ? "valid" : "invalid"}>
-            {req.valid ? <FaCheck className="requirement-icon" /> : <FaTimesCircle className="requirement-icon" />}
-            {req.label}
-          </li>
-        ))}
-      </ul>
+   <ul className="password-requirements">
+  {requirements.map((req, idx) => (
+    <li
+      key={idx}
+      className={`requirement-item ${req.valid ? "valid" : "invalid"}`}
+    >
+      <span className="requirement-bullet"></span>
+      {req.label}
+    </li>
+  ))}
+</ul>
+
+
     </div>
   );
 };

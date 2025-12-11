@@ -1,0 +1,840 @@
+{
+  "logoText": "QRBites",
+  "formTitle": "Register your Restaurant",
+  "formSubtitle": "Join our platform to reach more customers and grow your business",
+  "artworkAlt": "Food artwork",
+
+  "progress": {
+    "step1": "Step 1",
+    "step2": "Step 2",
+    "step3": "Step 3",
+    "step4": "Step 4"
+  },
+
+  "register": {
+    "restaurantName": "Restaurant Name",
+    "enterRestaurantName": "Enter restaurant name",
+
+    "ownerName": "Owner's Name",
+    "enterOwnerName": "Enter owner's name",
+
+    "gstNumber": "GST Number (optional)",
+
+    "contactNumber": "Contact Number",
+    "enterContact": "Enter contact number",
+
+    "restaurantAddress1": "Restaurant Address (line 1)",
+    "enterAddress1": "Enter address line 1",
+
+    "restaurantAddress2": "Restaurant Address (line 2)",
+    "enterAddress2Optional": "Enter address line 2 (optional)",
+
+    "country": "Select Country",
+    "selectCountry": "Select Country",
+    "state": "Select State",
+    "city": "Select City",
+    "cityRegion": "City/Region",
+    "enterCityName": "Enter city name",
+
+    "pincode": "Pin Code",
+    "enterPincode": "Enter pincode",
+
+    "tagLine": "Tag-line",
+    "taglineLabel": "Tag-line of your Restaurant",
+    "taglinePlaceholder": "Enter a catchy tagline for your restaurant",
+
+    "upload": {
+      "coverLabel": "Upload Cover Image",
+      "logoLabel": "Upload Logo",
+      "uploadIconAlt": "Upload",
+      "previewAlt": "Preview",
+      "logoPreviewAlt": "Logo Preview",
+      "fileTypeError": "Only JPG, JPEG, PNG files are allowed."
+    },
+
+    "email": "E-mail Address",
+    "enterEmail": "example@gmail.com",
+
+    "password": "Create your password",
+    "enterPassword": "Enter password",
+
+    "confirmPassword": "Confirm your password",
+    "enterConfirmPassword": "Confirm password",
+
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "previous": "Previous",
+      "submit": "Submit",
+      "completeRegistration": "Complete Registration",
+      "processing": "Processing..."
+    },
+
+    "toasts": {
+      "registerSuccess": "Registered successfully! Please log in.",
+      "registerFailed": "Registration failed. Please try again.",
+      "fillRequired": "Please fill all required fields correctly.",
+      "imageTypeError": "Only JPG, JPEG, PNG files are allowed."
+    },
+
+    "errors": {
+      "restaurantName": "Restaurant name is required.",
+      "ownerName": "Owner name is required.",
+      "validOwnerName": "Owner name must contain letters only.",
+      "contact": "Valid phone number required.",
+      "address1": "Address line 1 is required.",
+      "country": "Country is required.",
+      "state": "State is required.",
+      "city": "City is required.",
+      "pincode": "Enter a valid 5-6 digit pincode.",
+      "email": "Enter a valid email address.",
+      "password": "Password does not meet requirements.",
+      "confirmPassword": "Passwords do not match.",
+      "requiredField": "Required field"
+    }
+  },
+
+  "login": {
+    "title": "Restaurant Admin Portal",
+    "subtitle": "Sign in to manage your restaurant",
+
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email",
+      "required": "Email is required",
+      "invalid": "Please enter a valid email address"
+    },
+
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "required": "Password is required",
+      "invalid": "Password does not meet requirements",
+      "forgot": "Forgot password?"
+    },
+
+    "button": {
+      "login": "Continue to Dashboard",
+      "loggingIn": "Signing in..."
+    },
+
+    "footer": {
+      "noAccount": "Don't have an account?",
+      "register": "Register Your Restaurant"
+    },
+
+    "errors": {
+      "general": "Invalid email or password",
+      "network": "Network error. Please try again."
+    }
+  },
+   "homePage": {
+    "brandName": "QRBites",
+    "mainHeading": "The Future of Restaurant Ordering is Here — Serve Faster. Manage Better",
+    "description": "No queues. No confusion. No messy paper menus. Just a simple QR scan that gives your customers the seamless experience they expect — and your staff the speed and efficiency they need.",
+    "login": "Login",
+    "register": "Register"
+  },
+
+  "menuItem": {
+    "pageTitle": "Add Menu Item",
+    "pageTitleEdit": "Edit Menu Item",
+    "restaurantId": "Restaurant ID",
+
+    "buttons": {
+      "addMultiple": "Add Multiple Items",
+      "saveItem": "Save Item",
+      "saveChanges": "Save Changes",
+      "reset": "Reset"
+    },
+
+    "fields": {
+      "name": {
+        "label": "Item Name",
+        "placeholder": "Enter item name",
+        "required": "Item name is required"
+      },
+
+      "ingredients": {
+        "label": "Ingredients",
+        "placeholder": "Enter ingredients"
+      },
+
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category",
+        "required": "Category is required"
+      },
+
+      "cuisine": {
+        "label": "Cuisine",
+        "placeholder": "Select cuisine",
+        "required": "Cuisine is required"
+      },
+
+      "type": {
+        "label": "Type",
+        "veg": "Veg",
+        "nonVeg": "Non-Veg"
+      },
+
+      "price": {
+        "label": "Price (₹)",
+        "placeholder": "Enter price",
+        "required": "Price is required"
+      },
+
+      "discount": {
+        "label": "Discount (%)",
+        "placeholder": "Enter discount"
+      },
+
+      "prepTime": {
+        "label": "Time to Prepare (mins)",
+        "placeholder": "Enter preparation time",
+        "required": "Prep time is required"
+      },
+
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter description"
+      },
+
+      "status": {
+        "label": "Status",
+        "published": "Published",
+        "draft": "Draft"
+      },
+
+      "image": {
+        "uploadLabel": "Upload Image *",
+        "noPreview": "No image uploaded yet",
+        "errorRequired": "Please upload an image."
+      }
+    },
+
+    "errors": {
+      "fileLarge": "File too large! Max 2MB.",
+      "fileType": "Only JPG or PNG allowed.",
+      "general": "Something went wrong."
+    },
+
+    "messages": {
+      "added": "Menu item added successfully!",
+      "updated": "Menu item updated successfully!"
+    },
+
+    "preview": "Preview"
+  },
+  
+  "cartPage": {
+    "title": "Your Order",
+    "tableLabel": "Table Number:",
+    "tableNotSpecified": "Not specified",
+    "tableErrorMessage": "Table number not detected. Please scan the QR code again.",
+
+    "emptyCart": {
+      "title": "Your cart is empty",
+      "subtitle": "Add some delicious items from our menu",
+      "browseMenu": "Browse Menu"
+    },
+
+    "itemsHeader": {
+      "item": "Item",
+      "qty": "Qty",
+      "price": "Price"
+    },
+
+    "itemTotal": "Item Total",
+
+    "instructions": {
+      "title": "Add Instructions (Optional)",
+      "placeholder": "Any special requests or instructions for your order..."
+    },
+
+    "taxDetails": "TAX DETAILS",
+    "billDetails": "BILL DETAILS",
+
+    "bill": {
+      "taxableAmount": "Taxable Amount",
+      "sgst": "SGST",
+      "cgst": "CGST",
+      "gst": "GST",
+      "restaurantDiscount": "Restaurant Discount",
+      "total": "Total",
+      "pricesInclusive": "Prices are inclusive of all taxes."
+    },
+
+    "placeOrder": {
+      "btn": "Place Order • ₹{{amount}}",
+      "loading": "Placing Order..."
+    },
+
+    "alerts": {
+      "missingTable": "Table number not found. Please scan the QR code again.",
+      "orderError": "There was an error placing your order. Please try again."
+    }
+  },
+  
+  "bill": {
+    "downloadPdf": "Download PDF",
+    "print": "Print",
+    "billNo": "Bill No",
+    "date": "Date",
+    "table": "Table",
+    "waiter": "Waiter",
+    "item": "Item",
+    "qty": "Qty",
+    "amount": "Amount",
+    "itemTotal": "Item Total",
+    "inclusiveTaxNote": "Prices are inclusive of all taxes.",
+    "taxDetails": "TAX DETAILS",
+    "taxableAmount": "Taxable Amount",
+    "sgst": "SGST",
+    "cgst": "CGST",
+    "gst": "GST",
+    "restaurantDiscount": "Restaurant Discount",
+    "total": "Total",
+    "billDetails": "BILL DETAILS",
+    "discount": "Discount",
+    "footerNote": "Thank you for dining with us!",
+    "notSpecified": "Not specified"
+  },
+  "restaurant": {
+    "addressSeparator": "•"
+  }
+,
+  "header": {
+    "buttons": {
+      "registerRestaurant": "Register as Restaurant",
+      "login": "Login",
+      "viewAllOrders": "View All Orders"
+    },
+
+    "menu": {
+      "dashboard": "Dashboard",
+      "editProfile": "Edit Profile",
+      "logout": "Logout"
+    },
+
+    "bell": {
+      "recentOrders": "Recent Orders",
+      "loading": "Loading...",
+      "noOrders": "No recent orders",
+      "tooltipGoToTable": "Go to Table",
+      "tooltipOrderId": "Order ID"
+    },
+
+    "labels": {
+      "myRestaurant": "My Restaurant",
+      "home": "Home"
+    }
+  }
+,  "dashboard": {
+    "itemCards": {
+      "orders": "Orders",
+      "revenue": "Revenue",
+      "customers": "Customers",
+      "menuItems": "Menu Items",
+      "avgOrderValue": "Avg Order Value",
+      "newVisitors": "New Visitors",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month"
+    }
+  },
+  "orderManagement": {
+    "title": "Order Management",
+
+    "stats": {
+      "total": "Total Orders",
+      "placed": "Placed",
+      "preparing": "Preparing",
+      "served": "Served",
+      "paid": "Paid",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+
+    "filters": {
+      "showCompletedCancelled": "Show Completed & Cancelled ({{count}})",
+      "ordersTitleActive": "Orders (Active)",
+      "ordersTitleCompleted": "Orders (Completed & Cancelled)",
+      "searchPlaceholder": "Search across all orders...",
+      "allStatus": "All Status",
+      "allOrders": "All Orders",
+      "filterPlaceholder": "Filter...",
+      "clearAllTooltip": "Clear all filters",
+      "clearAllBtn": "Clear All Filters"
+    },
+
+    "table": {
+      "serial": "S.No",
+      "orderId": "Order ID.",
+      "table": "Table",
+      "items": "Items",
+      "total": "Total (₹)",
+      "orderTime": "Order Time",
+      "status": "Status",
+      "actions": "Actions",
+      "noVisibleItems": "—",
+      "noOrdersTitle": "No orders found",
+      "noOrdersMessage": "There are no orders matching your search or filter criteria."
+    },
+
+    "items": {
+      "specialInstructionsPrefix": "Special instructions"
+    },
+
+    "editModal": {
+      "title": "Edit Order",
+      "addNewItem": "Add New Item",
+      "itemNameHeader": "Item Name",
+      "quantityHeader": "Quantity",
+      "priceHeader": "Price (₹)",
+      "actionHeader": "Action",
+      "typePlaceholder": "Type item name...",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "removeItem": "Remove item"
+    },
+
+    "nameErrors": {
+      "alreadyAdded": "Already added. Increase quantity instead.",
+      "itemNotAvailable": "Item not available",
+      "alreadyAddedLong": "This item is already added in the order. Increase its quantity instead.",
+      "selectFromMenu": "Select an item from menu",
+      "noOrderSelected": "No order selected for editing."
+    },
+
+    "actions": {
+      "editTitle": "Edit Order Items",
+      "markPreparing": "Mark as Preparing",
+      "cancelOrder": "Cancel Order",
+      "markServed": "Mark as Served",
+      "generateBill": "Generate Bill",
+      "viewBill": "View Bill",
+      "markPaid": "Mark as Paid",
+      "markCompleted": "Mark as Completed"
+    },
+
+    "billPreview": {
+      "orderTotal": "Order Total:",
+      "itemTotal": "Item Total:",
+      "discount": "Discount:",
+      "gst": "GST:",
+      "sgst": "SGST:",
+      "cgst": "CGST:"
+    },
+
+    "pagination": {
+      "page": "Page",
+      "of": "of"
+    },
+
+    "loading": {
+      "loadingOrders": "Loading orders...",
+      "loading": "Loading..."
+    },
+
+    "toasts": {
+      "orderDeleted": "Order deleted successfully.",
+      "orderDeleteFailed": "Failed to delete order. Please try again.",
+      "orderUpdated": " Order updated successfully!",
+      "orderUpdateFailed": " Failed to update order. Please try again.",
+      "billGenerated": "Bill generated",
+      "billFailed": "Bill generation failed",
+      "fetchBillFailed": "Failed to fetch bill. Please try again.",
+      "invalidItems": " Some items are invalid or do not exist in the menu. Please fix before saving."
+    },
+
+    "statuses": {
+      "placed": "Placed",
+      "preparing": "Preparing",
+      "served": "Served",
+      "paid": "Paid",
+      "billed": "Billed",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "reports": {
+    "title": "Analytics & Reports",
+    "reportTypeLabel": "Report Type",
+    "reportType": {
+      "hotSelling": "Hot Selling Items",
+      "orderReport": "Order Report",
+      "revenueReport": "Revenue Report"
+    },
+    "timeRangeLabel": "Time Range",
+    "timeRange": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "custom": "Custom Range"
+    },
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "generateReport": "Generate Report",
+    "exportCSV": "Export CSV",
+    "totalOrders": "Total Orders",
+    "totalRevenue": "Total Revenue",
+    "averageOrderValue": "Average Order Value",
+    "peakHour": "Peak Hour",
+    "noReportTitle": "No Report Generated",
+    "noReportMessage": "Select report type and time range, then click \"Generate Report\" to view analytics.",
+    "loadingReport": "Generating report...",
+    "table": {
+      "rank": "Rank",
+      "itemName": "Item Name",
+      "quantitySold": "Quantity Sold",
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "date": "Date",
+      "average": "Average",
+      "dayOfWeek": "Day of Week"
+    },
+    "orderStatus": {
+      "placed": "Placed",
+      "preparing": "Preparing",
+      "served": "Served",
+      "paid": "Paid",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "success": {
+      "reportGenerated": "Report generated successfully!",
+      "reportExported": "Report exported successfully!"
+    },
+    "error": {
+      "reportFailed": "Failed to generate report",
+      "exportFailed": "Failed to export report"
+    }
+  },
+  "logout": "Logout"
+
+,
+"tableManager": {
+    "title": "Manage Tables",
+    "tableCountLabel": "Number of Tables in Your Restaurant",
+    "tableCountHelper": "Enter the total number of tables in your restaurant",
+    "saveButton": "Save Table Count",
+    "savingButton": "Saving...",
+    "negativeError": "Table count cannot be negative",
+    "success": "Table count updated successfully!",
+    "failure": "Failed to update table count",
+    "currentTablesInfo": "Currently have {count} tables saved in database."
+  },
+  "qrGenerator": {
+    "noTables": "No Tables Configured",
+    "noTablesMessage": "Please set up your table count first to generate QR codes.",
+    "downloadAllButton": "Download All QR Codes ({count})",
+    "preparingDownload": "Preparing Download...",
+    "downloadCurrentButton": "Download Current QR Code",
+    "scanOrderTitle": "SCAN & ORDER",
+    "scanOrderDescription": "Scan The QR Code with Your Smartphone Camera, read our digital menu and order!",
+    "poweredBy": "Powered by Apaxion",
+    "placeholder": "No QR Generated Yet. Please set up your table count first.",
+    "tableLabel": "Table {number} of {total}",
+    "previous": "← Previous",
+    "next": "Next →"
+  },
+  "loading": {
+    "restaurantData": "Loading restaurant data..."
+  },
+  "sessionExpired": "Session expired, please login again.",
+  "downloadError": "Failed to download QR code",
+  "downloadAllError": "Failed to download QR codes"
+,
+"taxSlabManagement": {
+    "title": "GST Tax Slabs",
+    "addNewSlabButton": "+ Add New Slab",
+    "tableHeaders": {
+      "name": "Name",
+      "rate": "Rate (%)",
+      "type": "Type",
+      "hsnCode": "HSN Code",
+      "effectiveFrom": "Effective From",
+      "effectiveTo": "Effective To",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "typeOptions": {
+      "withITC": "With ITC",
+      "withoutITC": "Without ITC"
+    },
+    "status": {
+      "active": "Active",
+      "expired": "Expired"
+    },
+    "modal": {
+      "addTitle": "Add Slab",
+      "editTitle": "Edit Slab",
+      "placeholders": {
+        "name": "Name",
+        "rate": "Rate (%)",
+        "hsnCode": "HSN Code",
+        "effectiveFrom": "Effective From",
+        "effectiveTo": "Effective To"
+      },
+      "typeOptions": {
+        "withITC": "With ITC",
+        "withoutITC": "Without ITC"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save"
+      }
+    },
+    "messages": {
+      "fetchError": "Failed to fetch slabs.",
+      "saveError": "Error saving slab."
+    },
+    "editButton": "Edit"
+  },
+  "viewMenu": {
+    "loading": "Loading menu...",
+    "error": "Failed to load data. Please try again later.",
+    "deleteConfirmTitle": "Delete Menu Item",
+    "deleteConfirmMessage": "Are you sure you want to delete \"{{itemName}}\"? This action cannot be undone.",
+    "deleteConfirmButton": "Delete",
+    "deleteCancelButton": "Cancel",
+    "deleteSuccess": "Item deleted successfully!",
+    "deleteError": "Delete failed: {{errorMessage}}",
+    "statusChangeSuccess": "Item moved to {{status}} successfully!",
+    "statusChangeError": "Failed to update item status. {{errorMessage}}",
+    "searchPlaceholder": "Search by name, price, cuisine, type...",
+    "emptyState": {
+      "noItems": "No {{filter}} items available",
+      "noSearchMatch": "No items match your search for \"{{query}}\""
+    },
+    "filters": {
+      "all": "All",
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "buttons": {
+      "edit": "Edit",
+      "publish": "Publish",
+      "draft": "Draft"
+    },
+    "genericCuisine": "Generic",
+    "prepTime": "mins"
+  },
+  "viewMenuNavbar": {
+    "tabs": {
+      "chooseFood": "Choose Food",
+      "feedback": "Give Feedback",
+      "cart": "Cart"
+    },
+    "menuLabel": "MENU",
+    "hamburgerOpen": "Open menu",
+    "cartBadgeAria": "Cart items count"
+  }
+,
+"adminDashboard": {
+    "title": "Welcome, Admin ",
+    "subtitle": "Manage your restaurant menu and settings below:",
+
+    "cards": {
+      "viewMenu": {
+        "title": "View Menu",
+        "desc": "See your restaurant's full menu."
+      },
+      "addItem": {
+        "title": "Add Menu Item",
+        "desc": "Add new dishes and beverages."
+      },
+      "generateQR": {
+        "title": "Generate Menu QR",
+        "desc": "Create QR codes for Restaurant Menu."
+      },
+      "manageTables": {
+        "title": "Manage Tables",
+        "desc": "Organize seating and reservations."
+      },
+      "orderManagement": {
+        "title": "Order Management",
+        "desc": "View placed orders by tables & dishes."
+      },
+      "reports": {
+        "title": "Reports & Analytics",
+        "desc": "View sales reports and analytics."
+      },
+      "config": {
+        "title": "Configurations",
+        "desc": "Configure categories and cuisines."
+      }
+    }
+  },
+  "editProfile": {
+    "title": "Edit Restaurant Profile",
+    "subtitle": "Update your restaurant information and settings",
+  
+    "restaurantName": "Restaurant Name",
+    "ownerName": "Owner Name",
+    "tagline": "Tagline",
+    "contactNumber": "Contact Number",
+
+    "submit": "Save Changes",
+    "logout": "Logout"
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email address and we’ll send you an email with instructions to reset your password.",
+    "submittedSubtitle": "Check your email for further instructions.",
+
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email address",
+
+    "validation": {
+      "required": "Email is required",
+      "invalid": "Please enter a valid email address"
+    },
+
+    "button": {
+      "reset": "Reset",
+      "sending": "Sending...",
+      "resend": "Click to resend"
+    },
+
+    "success": {
+      "title": "Check your email",
+      "description": "We've sent password reset instructions to",
+      "testLabel": "Test:",
+      "openForm": "Click here to open Reset Form"
+    },
+
+    "error": {
+      "general": "Failed to send reset instructions. Please try again."
+    },
+
+    "footer": {
+      "text": "or Back to",
+      "login": "Login"
+    }
+  },
+   "generateMenuQR": {
+    "menuQRTitle": "Menu QR",
+    "restaurant": "Restaurant",
+    "viewMenuButton": "View Our Menu",
+    "scanViewMenu": "SCAN & VIEW MENU",
+    "scanDescription": "Scan the QR code with your smartphone camera to open our digital menu instantly.",
+    "poweredBy": "Powered by Apaxion",
+    "downloadMenuQR": "Download Menu QR",
+    "loading": "Loading...",
+    "sessionExpired": "Session expired, please login again."
+  },
+  "menu": {
+    "search_placeholder": "Search dishes...",
+    "categories": "Categories",
+    "all": "All",
+    "loading": "Loading menu...",
+    "read_more": "Read More",
+    "cuisine": "Cuisine",
+    "time": "Time",
+    "min": "min",
+    "category_title_icon": "🍽",
+    
+    "layout": {
+      "list": "List View",
+      "grid2": "2 Columns",
+      "grid3": "3 Columns"
+    },
+
+    "no_menu": "No dishes available in this category",
+    "uncategorized": "Uncategorized",
+
+    "drawer": {
+      "title": "Categories",
+      "close": "Close"
+    }
+  },
+  "orderSuccess": {
+    "title": "Order Placed",
+    "message": "Your order was placed successfully.",
+    "scanAgain": "Scan Again",
+    "unknownTable": "Unknown Table"
+  }
+,
+ "bulkUpload": {
+    "pageTitle": "Upload Item File",
+    "pageSubtitle": "Upload an Excel file to add items to menu",
+
+    "uploadClick": "Click to upload Excel file",
+    "uploadSupported": "Upload .xlsx and .xls files",
+
+    "noteTitle": "Note:",
+    "noteType": "The Type column in the Excel file must only contain",
+    "noteVeg": "veg",
+    "noteNonVeg": "non-veg",
+
+    "errorInvalid": "Please upload a valid Excel file (.xlsx or .xls)",
+    "errorParse": "Failed to parse Excel file. Please ensure it's a valid Excel document.",
+    "errorRead": "Failed to read the file. Please try again.",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+
+    "submit": "Submit",
+    "uploading": "Uploading...",
+
+    "itemSheet": "Item Sheet",
+    "rejectedItemSheet": "Rejected Item Sheet",
+
+    "noData": "No data found",
+    "showingRows": "Showing first 100 rows of",
+    "totalRows": "total rows",
+
+    "excelHeaders": {
+      "name": "Name",
+      "category": "Category",
+      "description": "Description",
+      "type": "Type",
+      "prepTime": "Prep Time",
+      "price": "Price",
+      "discount": "Discount",
+      "createdAt": "Created At",
+      "reason": "Reason"
+    },
+
+    "stats": {
+      "totalItems": "Total Items",
+      "validItems": "Valid Items",
+      "rejectedItems": "Rejected Items"
+    },
+
+    "reset": "Reset"
+  },
+  "resetPassword": {
+    "invalidLinkTitle": "Invalid Reset Link",
+    "invalidLinkMessage": "The password reset link is invalid or has expired.",
+    "backToLogin": "Back to Login",
+
+    "successTitle": "Password Reset Successfully",
+    "successMessage": "You can now login with your new password.",
+
+    "createTitle": "Create New Password",
+    "createSubtitle": "Please enter your new password below",
+
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+
+    "placeholderNewPassword": "Enter your new password",
+    "placeholderConfirmPassword": "Confirm your password",
+
+    "errors": {
+      "passwordRequired": "Password is required",
+      "passwordInvalid": "Password does not meet requirements",
+      "confirmRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "resetFailed": "Failed to reset password."
+    },
+
+    "resetting": "Resetting...",
+    "resetPasswordBtn": "Reset Password",
+
+    "scanAgain": "Scan Again",
+
+    "tokenExpired": "Invalid or expired link"
+  }
+ 
+}
