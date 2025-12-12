@@ -8,7 +8,8 @@ import HomeHeader from "../components/HomeHeader";
 import Footer from "../components/Footer";
 import { DownloadButton } from "../components/ExcelTemplate";
 import { ItemCards } from "../components/ItemCards";
-import { uploadBulkMenuItems } from "../services/apiService";
+// import { uploadBulkMenuItems } from "../services/apiService";
+import { uploadBulkMenuItems } from "../services/menuService";
 export const BulkItemUpload = () => {
   const [excelData, setExcelData] = useState(null);
   const [fileName, setFileName] = useState("");
@@ -149,9 +150,9 @@ export const BulkItemUpload = () => {
       formData.append("file", file);
   
     const resData = await uploadBulkMenuItems(file);
-      if (resData.status === "Success") {
+      if (resData.status === "true") {
    
-        setRejectedItems(resData?.data?.rejctedList);
+        setRejectedItems(resData?.data?.rejectedList);
         setValidItemCount(resData?.data?.totalValidItems);
         setRejectedItemCount(resData?.data?.totalRejectedItems);
         setTotalItemCount(resData?.data?.totalItems);
@@ -166,6 +167,7 @@ export const BulkItemUpload = () => {
       handleReset();
     }
   };
+
 
   const thStyles = {
     padding: "0.75rem 1rem",

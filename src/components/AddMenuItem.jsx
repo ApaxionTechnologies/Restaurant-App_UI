@@ -2,14 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import "../styles/AddMenuItem.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import {
-  getMyRestaurant,
-  addMenuItem,
-  updateMenuItem,
-} from "../services/apiService.js";
+// import {
+//   getMyRestaurant,
+//   addMenuItem,
+//   updateMenuItem,
+// } from "../services/apiService.js";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-
+import { getMyRestaurant } from "../services/restaurantService.js";
+import { addMenuItem, updateMenuItem } from "../services/menuService.js";
+import { getCategories } from "../services/categoryService";
+import { getCuisines } from "../services/cuisineService";
 const AddMenuItem = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,17 +23,20 @@ const AddMenuItem = () => {
   const [restaurant, setRestaurant] = useState(null);
 
   const [formData, setFormData] = useState({
-    category: "Starter",
+    categoryId: "",
+    cuisineId: "",
     name: "",
     price: "",
-    cuisine: "Indian",
-    timeToPrepare: "",
+    prepTime: "",
     ingredients: "",
     description: "",
     status: "Published",
-    discount: "",
-    vegType: "veg",
-    taxType: "exclusive", // 🔹 Default
+    discountedPrice: "",
+    type: "veg",
+    taxType: "exclusive",
+    tags: [],
+    addOns: [],
+    variants: [],
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -44,16 +50,9 @@ const AddMenuItem = () => {
   const priceRef = useRef(null);
   const categoryRef = useRef(null);
 
-  const categoryOptions = ["Starter", "Main Course", "Dessert", "Drinks"];
-  const cuisineOptions = [
-    "Indian",
-    "Japanese",
-    "Chinese",
-    "Italian",
-    "Mexican",
-  ];
+  const [categories, setCategories] = useState([]);
+  const [cuisines, setCuisines] = useState([]);
 
-  // 🔹 Hardcoded GST Slabs per category
   const categoryTaxMap = {
     Starter: 5,
     "Main Course": 12,
@@ -65,28 +64,46 @@ const AddMenuItem = () => {
     const fetchMe = async () => {
       try {
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant);
+        console.log("Fetched /me -", res);
+        setRestaurant(res.data);
+        console.log("Restaurant ID:", res.data._id);
+          localStorage.setItem("restaurantId", res.data._id);
       } catch (err) {
         console.error("Fetch /me failed -", err);
       }
     };
     fetchMe();
   }, []);
-
+useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const catRes = await getCategories();
+        const cuiRes = await getCuisines();
+        setCategories(catRes.data);
+        setCuisines(cuiRes.data);
+      } catch (err) {
+        console.error("Error fetching categories/cuisines:", err);
+      }
+    };
+    fetchOptions();
+  }, []);
   useEffect(() => {
     if (isEditMode && editItem) {
       setFormData({
-        category: editItem.category || "Starter",
+         categoryId: editItem.categoryId || "",
+        cuisineId: editItem.cuisineId || "",
         name: editItem.name || "",
         price: editItem.price || "",
-        cuisine: editItem.cuisine || "Indian",
-        timeToPrepare: editItem.prepTime || "",
+         prepTime: editItem.prepTime || "",
         ingredients: editItem.ingredients || "",
         description: editItem.description || "",
         status: editItem.status || "Published",
-        discount: editItem.discount || "",
-        vegType: editItem.type || "veg",
+        discountedPrice: editItem.discountedPrice || "",
+        type: editItem.type || "veg",
         taxType: editItem.taxType || "exclusive",
+        tags: editItem.tags || [],
+        addOns: editItem.addOns || [],
+        variants: editItem.variants || [],
       });
       if (editItem.image) {
         setImagePreview(editItem.image);
@@ -127,13 +144,12 @@ const AddMenuItem = () => {
 
   const validateRequiredFields = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Item name required";
-    if (formData.price === "") newErrors.price = "Price required";
-    if (formData.timeToPrepare === "")
-      newErrors.timeToPrepare = "Preparation time required";
-    if (!formData.cuisine.trim()) newErrors.cuisine = "Cuisine required";
-    // if (!formData.gstRate) newErrors.gstRate = "GST rate required";
-    
+     if (!formData.name) newErrors.name = "Item name is required";
+    if (!formData.price) newErrors.price = "Price is required";
+    if (!formData.categoryId) newErrors.categoryId = "Category required";
+    if (!formData.cuisineId) newErrors.cuisineId = "Cuisine required";
+    if (!formData.prepTime) newErrors.prepTime = "Prep time required";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -151,52 +167,57 @@ const AddMenuItem = () => {
     const gstRate = categoryTaxMap[formData.category] || 5;
 
     const data = new FormData();
-    data.append("category", formData.category);
+    data.append("restaurantId", restaurant?._id);
+    data.append("categoryId", formData.categoryId);
+    data.append("cuisineId", formData.cuisineId);
     data.append("name", formData.name);
     data.append("price", formData.price);
-    data.append("cuisine", formData.cuisine);
-    data.append("prepTime", formData.timeToPrepare);
+    data.append("prepTime", formData.prepTime);
     data.append("ingredients", formData.ingredients);
     data.append("description", formData.description);
+    data.append("discountedPrice", formData.discountedPrice || "");
     data.append("status", formData.status);
-    data.append("type", formData.vegType.toLowerCase());
-    data.append("discount", formData.discount || "");
-    data.append("gstRate", gstRate); // 🔹 Auto GST from category
     data.append("taxType", formData.taxType);
+    data.append("tags", JSON.stringify(formData.tags));
+    data.append("addOns", JSON.stringify(formData.addOns));
+    data.append("variants", JSON.stringify(formData.variants));
     if (imageFile) data.append("image", imageFile);
 
     try {
       if (isEditMode) {
         const updatedItem = await updateMenuItem(itemId, data);
-        toast.success("✅ Menu item updated successfully!");
+        toast.success(" Menu item updated successfully!");
         navigate("/admin-dashboard", { state: { updatedItem } });
       } else {
         const newItem = await addMenuItem(data);
-        toast.success("✅ Menu item added successfully!");
+        toast.success(" Menu item added successfully!");
         navigate("/admin-dashboard", { state: { newItem } });
       }
       handleReset();
     } catch (err) {
-      console.error("❌ Error saving item:", err.response?.data || err.message);
+      console.error(" Error saving item:", err.response?.data || err.message);
       showFormError(
-        "❌ " + (err.response?.data?.message || "Something went wrong.")
+        " " + (err.response?.data?.message || "Something went wrong.")
       );
     }
   };
 
   const handleReset = () => {
     setFormData({
-      category: "Starter",
+      categoryId: "",
+      cuisineId: "",
       name: "",
       price: "",
-      cuisine: "Indian",
-      timeToPrepare: "",
+      prepTime: "",
       ingredients: "",
       description: "",
       status: "Published",
-      discount: "",
-      vegType: "veg",
+      discountedPrice: "",
+      type: "veg",
       taxType: "exclusive",
+      tags: [],
+      addOns: [],
+      variants: [],
     });
     setImageFile(null);
     setImagePreview(null);
@@ -278,46 +299,46 @@ const AddMenuItem = () => {
               </div>
 
               {/* Category & Cuisine */}
-              <div className="form-grid">
-                <div>
-                  <label>Category</label>
-                  <select
-                    ref={categoryRef}
-                    name="category"
-                    className={`select ${errors.category ? "error" : ""}`}
-                    value={formData.category}
-                    onChange={handleChange}
-                  >
-                    {categoryOptions.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <span className="error-message">{errors.category}</span>
-                  )}
-                </div>
+           <div>
+            <label>Category</label>
+            <select
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleChange}
+              className={errors.categoryId ? "error" : ""}
+            >
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            {errors.categoryId && (
+              <div className="error-message">{errors.categoryId}</div>
+            )}
+          </div>
 
-                <div>
-                  <label>Cuisine</label>
-                  <select
-                    name="cuisine"
-                    className={`select ${errors.cuisine ? "error" : ""}`}
-                    value={formData.cuisine}
-                    onChange={handleChange}
-                  >
-                    {cuisineOptions.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.cuisine && (
-                    <span className="error-message">{errors.cuisine}</span>
-                  )}
-                </div>
-              </div>
+          {/* Cuisine */}
+          <div>
+            <label>Cuisine</label>
+            <select
+              name="cuisineId"
+              value={formData.cuisineId}
+              onChange={handleChange}
+              className={errors.cuisineId ? "error" : ""}
+            >
+              <option value="">Select cuisine</option>
+              {cuisines.map((cui) => (
+                <option key={cui._id} value={cui._id}>
+                  {cui.name}
+                </option>
+              ))}
+            </select>
+            {errors.cuisineId && (
+              <div className="error-message">{errors.cuisineId}</div>
+            )}
+          </div>
 
               {/* Type & TaxType together as form-grid */}
               <div className="form-grid">
@@ -346,7 +367,7 @@ const AddMenuItem = () => {
                     </label>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <label>GST.Exclusive / Inclusive</label>
                   <div className="radio-group">
                     <label>
@@ -370,7 +391,7 @@ const AddMenuItem = () => {
                       Inclusive
                     </label>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Price & Discount */}
@@ -407,13 +428,13 @@ const AddMenuItem = () => {
                 <label>Time to Prepare (mins)</label>
                 <input
                   type="number"
-                  name="timeToPrepare"
-                  className={`input ${errors.timeToPrepare ? "error" : ""}`}
-                  value={formData.timeToPrepare}
+                  name="prepTime"
+                  className={`input ${errors.prepTime ? "error" : ""}`}
+                  value={formData.prepTime}
                   onChange={handleChange}
                 />
-                {errors.timeToPrepare && (
-                  <div className="error-message">{errors.timeToPrepare}</div>
+                {errors.prepTime && (
+                  <div className="error-message">{errors.prepTime}</div>
                 )}
               </div>
 

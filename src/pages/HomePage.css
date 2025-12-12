@@ -1,104 +1,116 @@
-
-body.home-page,
-html.home-page {
-  margin: 0 !important;
-  overflow-x: hidden !important;
+.home-page {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  font-family: var(--font-family-base, system-ui, sans-serif);
 }
 
-
-
-.home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 40px;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 3rem;
-}
-
-.home-header .logo img {
-  height: 10px;
-  cursor: pointer;
-}
-
-.header-actions {
-  display: flex;
-  gap: 15px;
-}
-.header-link {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #0e0e0f;
-}
-
-.header-link:hover {
-  text-decoration: underline;
-}
-
-/* Hero Banner */
-.hero-banner {
-  height: 350px;
-  background: url('/food-collage.jpg') center/cover no-repeat;
+.hero-page {
   position: relative;
-}
-
-.hero-overlay {
-  background: rgba(0, 0, 0, 0.4);
-  height: 100%;
+  min-height: 100vh;
+  padding: 40px 6vw 60px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
   display: flex;
+  align-items: stretch;
   justify-content: center;
-  align-items: center;
+  overflow: hidden;
 }
 
-.hero-title {
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
+.hero-dark-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at right, rgba(0, 0, 0, 0.2), transparent),
+    linear-gradient(to right, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.4));
 }
 
-.food-section {
+.hero-content-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  transform: scale(0.75);
+  transform-origin: top left;
+  padding-left: 1vw;
+}
+@media (min-width: 1400px) {
+  .hero-content-wrapper {
+    transform: scale(0.67);
+  }
+}
+
+.hero-logo-row {
   display: flex;
-  justify-content: center;
-  padding: 50px 0;
-  
-}
-
-footer {
-  margin-top: 0;
-}
-
-
-.food-card {
-  background: orange;
-  border-radius: 15px;
-  display: flex;
   align-items: center;
-  padding: 40px 50px;
-  gap: 90px;
-  width: 90%;
-  Height: 200px;
+  gap: 10px;
+  margin-bottom: 32px;
 }
 
-.food-text h2 {
-  color: white;
-  font-weight: bold;
-  margin: 0;
-}
-
-.food-text p {
-  color: white;
-  margin: 0;
-}
-
-.food-image img {
-  height: 100px;
-  width: 140px;
-}
-.food-image img {
-  height: 100px;
+.hero-logo-image {
+  height: 48px;
   width: auto;
-  border-radius: 10px;
+  object-fit: contain;
+}
+
+.hero-logo-row h1 {
+  position: relative;
+  top: 4px;
+  margin: 0;
+  font-size: 1.7rem;
+}
+.hero-main {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.hero-left {
+  max-width: 520px;
+}
+.hero-heading {
+  font-weight: 700;
+  margin-bottom: 18px;
+  line-height: 1.15;
+  font-size: clamp(2rem, 2.4vw + 0.6rem, 2.7rem);
+}
+.hero-description {
+  font-size: clamp(0.95rem, 0.8vw + 0.5rem, 1.05rem);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin-bottom: 26px;
+  max-width: 520px;
+}
+.hero-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.hero-btn {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-btn-light {
+  background: #fff;
+  color: #000;
+}
+
+.hero-btn-orange {
+  background: #ff7a00;
+  color: #fff;
+}
+
+.hero-btn-orange:hover {
+  background: #e56a00;
 }

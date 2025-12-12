@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import "aos/dist/aos.css";
@@ -8,360 +8,396 @@ import "../styles/RegisterForm.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
 import Select from "react-select";
-import Footer from "../components/Footer.jsx";
-import HomeHeader from "../components/HomeHeader.jsx";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
-
-import { useDispatch, useSelector } from "react-redux";
-import { setFormField, resetForm } from "../store/formSlice";
-import { registerRestaurant ,logoutRestaurant } from "../services/apiService";
-
-
+import { registerRestaurant, logoutRestaurant } from "../services/apiService";
+import { useTranslation } from "react-i18next";
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
+import EmailVerificationModal from "./EmailVerificationModal";
+import TermsConditionsModal from "./TermsConditionsModal";
+import PrivacyPolicyModal from "./PrivacyPolicyModal";
 
-const BASE_URL = "http://localhost:5001/api";
 
-export default function RegisterRestaurant() {
+const BASE_URL = "http://localhost:5001/api/v1";
+
+export default function RegisterForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const formData = useSelector((state) => state.form); 
+  
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    restaurantName: "",
+    ownerName: "",
+    gstNumber: "",
+    contact: "",
+    restaurantAddress1: "",
+    restaurantAddress2: "",
+    country: "",
+    state: "",
+    city: "",
+    pinCode: "",
+    tagLine: "",
+    images: [],
+    logo: null,
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   const [previewImage, setPreviewImage] = useState(null);
   const [previewLogo, setPreviewLogo] = useState(null);
-  const [activeStep, setActiveStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
 
   const [touched, setTouched] = useState({});
   const [errors, setErrors] = useState({});
-  const [countryList, setCountryList] = useState([]);
+  
+  const [countries, setCountries] = useState([]);
   const [stateList, setStateList] = useState([]);
   const [cityList, setCityList] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [hasStates, setHasStates] = useState(false);
   const [hasCities, setHasCities] = useState(false);
-const [restaurantName, setRestaurantName] = useState("");
 
-  const safeFormData = {
-    ...formData,
-    address: formData?.address || {
-      line1: "",
-      line2: "",
-      pincode: "",
-      country: "",
-      state: "",
-      city: "",
-    },
-  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [isEmailVerified, setIsEmailVerified] = useState(false);
+const [showVerificationModal, setShowVerificationModal] = useState(false);
+const [acceptedTerms, setAcceptedTerms] = useState(false);
+const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+
+  const artworkImages = [
+    "/foodculter.png",
+    "/steper3.png",
+    "/steper3.png",
+    "/steper4.png",
+  ];
+const bgImages = {
+  1: "/bg-peach.png",
+  2: "/bg-step3.png",
+  3: "/bg-peach.png",
+  4: "/bg-step4.png",
+};
+
+  const [artworkSrc, setArtworkSrc] = useState(artworkImages[0]);
+  const [artworkFade, setArtworkFade] = useState(false);
+  const artworkRef = useRef(null);
 
   useEffect(() => {
-    AOS.init({ duration: 1000 });
-    setCountryList(Country.getAllCountries());
+    AOS.init({ duration: 800, once: true });
+    setCountries(Country.getAllCountries());
     
-    if (formData.address?.country) {
-      const states = State.getStatesOfCountry(formData.address.country);
-      setStateList(states);
-      setHasStates(states.length > 0);
-      
-      if (states.length > 0 && formData.address.state) {
-        const cities = City.getCitiesOfState(formData.address.country, formData.address.state);
-        setCityList(cities || []);
-        setHasCities(cities && cities.length > 0);
-      } else if (states.length === 0) {
-        const cities = City.getCitiesOfCountry(formData.address.country);
-        setCityList(cities || []);
-        setHasCities(cities && cities.length > 0);
-      }
-    }
     try {
       window.history.replaceState({ step: 1 }, "");
     } catch (e) {
-
+      console.log("History state error:", e);
     }
 
     const onPopState = (event) => {
       const state = event.state;
       if (state && state.step) {
-        setActiveStep(state.step);
+        setStep(state.step);
         window.scrollTo(0, 0);
-      } else {
-        setActiveStep((prev) => {
-          if (prev > 1) {
-            try { window.history.replaceState({ step: 1 }, ""); } catch (e) {}
-            return 1;
-          }
-          return prev;
-        });
       }
     };
 
     window.addEventListener("popstate", onPopState);
-
     return () => {
       window.removeEventListener("popstate", onPopState);
     };
   }, []);
 
- 
+  useEffect(() => {
+    const newSrc = artworkImages[step - 1] || artworkImages[0];
+   
+    setArtworkFade(true);
+    const t = setTimeout(() => {
+      setArtworkSrc(newSrc);
+      setTimeout(() => setArtworkFade(false), 300);
+    }, 150);
 
-  const isValidImageType = (file) => {
-    if (!file) return false;
-    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-    return validTypes.includes(file.type);
-  };
+    return () => clearTimeout(t);
+  }, [step]);
 
-  const handleAddressChange = (field, value) => {
-    const updatedAddress = { ...formData.address, [field]: value };
+  const handleEmailVerifyCheckbox = async (checked) => {
+  if (checked) {
+    // Validate email first
+    if (!formData.email) {
+      toast.error("Please enter your email first");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
 
-    if (field === "country") {
-      const states = State.getStatesOfCountry(value);
+    try {
+      // TODO: API call to send OTP
+      // await axios.post('/api/send-otp', { email: formData.email });
+      
+      console.log("Sending OTP to:", formData.email);
+      toast.success("Verification code sent to your email!");
+      setShowVerificationModal(true);
+    } catch (error) {
+      toast.error("Failed to send verification code. Please try again.");
+    }
+  } else {
+    setIsEmailVerified(false);
+  }
+};
+const handleVerifyEmail = (verified) => {
+  setIsEmailVerified(verified);
+  if (verified) {
+    toast.success("Email verified successfully!");
+  }
+};
+
+  useEffect(() => {
+    if (formData.country) {
+      const states = State.getStatesOfCountry(formData.country);
       setStateList(states);
       setHasStates(states.length > 0);
       
       if (states.length === 0) {
-        const cities = City.getCitiesOfCountry(value);
+        const cities = City.getCitiesOfCountry(formData.country);
         setCityList(cities || []);
         setHasCities(cities && cities.length > 0);
       } else {
         setCityList([]);
         setHasCities(false);
       }
-      
-      updatedAddress.state = "";
-      updatedAddress.city = "";
     }
+  }, [formData.country]);
 
-    if (field === "state") {
-      const cities = City.getCitiesOfState(formData.address.country, value);
+  useEffect(() => {
+    if (formData.country && formData.state) {
+      const cities = City.getCitiesOfState(formData.country, formData.state);
       setCityList(cities || []);
       setHasCities(cities && cities.length > 0);
-      updatedAddress.city = "";
     }
-
-    dispatch(setFormField({ field: "address", value: updatedAddress }));
-    validate({ ...formData, address: updatedAddress });
-  };
+  }, [formData.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    let updatedValue = value;
-
+    
     if (name === "email") {
-      updatedValue = value.toLowerCase();
-    }
-    if (name === "pincode") {
-      dispatch(
-        setFormField({
-          field: "address",
-          value: { ...formData.address, [name]: value },
-        })
-      );
+      setFormData({ ...formData, [name]: value.toLowerCase() });
     } else {
-      dispatch(setFormField({ field: name, value: updatedValue }));
+      setFormData({ ...formData, [name]: value });
     }
+    
+    validateField(name, value);
+  };
 
-    validate({ ...formData, [name]: updatedValue });
+  const handlePhoneChange = (value) => {
+    setFormData({ ...formData, contact: value });
+    validateField("contact", value);
+  };
+
+  const handleLocationChange = (field, value) => {
+    const newFormData = { ...formData, [field]: value };
+    
+    if (field === "country") {
+      newFormData.state = "";
+      newFormData.city = "";
+    } else if (field === "state") {
+      newFormData.city = "";
+    }
+    
+    setFormData(newFormData);
+    validateField(field, value);
+  };
+
+  const validateField = (field, value) => {
+    const newErrors = { ...errors };
+    
+    switch (field) {
+      case "restaurantName":
+        if (!value) newErrors.restaurantName = t("register.errors.restaurantName");
+        else delete newErrors.restaurantName;
+        break;
+        
+      case "ownerName":
+        if (!value) newErrors.ownerName = t("register.errors.ownerName");
+        else if (!/^[A-Za-z\s]+$/.test(value))
+          newErrors.ownerName = t("register.errors.validOwnerName");
+        else delete newErrors.ownerName;
+        break;
+        
+      case "contact":
+        if (!value || value.length < 10)
+          newErrors.contact = t("register.errors.contact");
+        else delete newErrors.contact;
+        break;
+        
+      case "restaurantAddress1":
+        if (!value) newErrors.restaurantAddress1 = t("register.errors.addressLine1");
+        else delete newErrors.restaurantAddress1;
+        break;
+        
+      case "country":
+        if (!value) newErrors.country = t("register.errors.country");
+        else delete newErrors.country;
+        break;
+        
+      case "pinCode":
+        if (!value) newErrors.pinCode = t("register.errors.pincode");
+        else if (!/^[0-9]{5,6}$/.test(value))
+          newErrors.pinCode = "Enter a valid pincode (5-6 digits).";
+        else delete newErrors.pinCode;
+        break;
+        
+      case "email":
+        if (!value) newErrors.email = t("register.errors.requiredField");
+        else if (!/\S+@\S+\.\S+/.test(value))
+          newErrors.email = t("register.errors.email");
+        else delete newErrors.email;
+        break;
+        
+      case "password":
+        const passwordValidation = validatePassword(value);
+        if (!value) newErrors.password = t("register.errors.requiredField");
+        else if (!passwordValidation.isValid)
+          newErrors.password = t("register.errors.password");
+        else delete newErrors.password;
+        break;
+        
+      case "confirmPassword":
+        if (!value) newErrors.confirmPassword = "Please confirm password.";
+        else if (value !== formData.password)
+          newErrors.confirmPassword = t("register.errors.confirmPassword");
+        else delete newErrors.confirmPassword;
+        break;
+        
+      default:
+        break;
+    }
+    
+    setErrors(newErrors);
   };
 
   const handleBlur = (e) => {
     const { name } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    validate(formData);
+    setTouched({ ...touched, [name]: true });
+    validateField(name, formData[name]);
   };
 
-  const handlePhoneChange = (value) => {
-    dispatch(setFormField({ field: "contact", value }));
-    validate({ ...formData, contact: value });
-    setTouched((prev) => ({ ...prev, contact: true }));
-  };
-
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handleImageChange = async (e) => {
+  const handleFileChange = (e, type) => {
     const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
+    if (!file) return;
+
+    const validTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Only JPG, JPEG, PNG files are allowed.");
       e.target.value = null;
       return;
     }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
-    }
-  };
-
-  useEffect(() => {
-    if (formData.previewImage) setPreviewImage(formData.previewImage);
-    if (formData.previewLogo) setPreviewLogo(formData.previewLogo);
-  }, []);
-
-  const validate = (data) => {
-    const newErrors = {};
-    const nameRegex = /^[A-Za-z\s]+$/;
-
-    if (!data.restaurantName)
-      newErrors.restaurantName = "Restaurant name is required.";
-    if (!data.ownerName) newErrors.ownerName = "Owner name is required.";
-    else if (!nameRegex.test(data.ownerName))
-      newErrors.ownerName = "Owner name must contain letters only.";
-
-    if (!data.contact || data.contact.length < 10)
-      newErrors.contact = "Valid phone number required.";
-
-    const { line1, country, state, city, pincode } = data.address || {};
-    if (!line1) newErrors.line1 = "Address Line 1 is required.";
-    if (!country) newErrors.country = "Country is required.";
-    if (hasStates && !state) newErrors.state = "State is required.";
-    if (hasCities && !city) newErrors.city = "City is required.";
-    if (!data.email || !/\S+@\S+\.\S+/.test(data.email))
-      newErrors.email = "Enter a valid email.";
-     const passwordValidation = validatePassword(data.password);
-    if (!data.password || !passwordValidation.isValid)
-      newErrors.password = "Password does not meet all requirements";
-
-    if (data.password !== data.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match.";
-
-    setErrors(newErrors);
-    return newErrors;
-  };
-
-
-  const validateStep1 = (data) => {
-    const newErrors = {};
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const pincodeRegex = /^[0-9]{5,6}$/;
-
-    if (!data.restaurantName)
-      newErrors.restaurantName = "Restaurant name is required.";
-    if (!data.ownerName) newErrors.ownerName = "Owner name is required.";
-    else if (!nameRegex.test(data.ownerName))
-      newErrors.ownerName = "Owner name must contain letters only.";
-
-    if (!data.contact || data.contact.length < 10)
-      newErrors.contact = "Valid phone number required.";
-
-    const { line1, country, state, city, pincode } = data.address || {};
-    if (!line1) newErrors.line1 = "Address Line 1 is required.";
-    if (!country) newErrors.country = "Country is required.";
-    
-    if (hasStates && !state) newErrors.state = "State is required.";
-    
-    if (hasCities && !city) newErrors.city = "City is required.";
-    
-    if (!pincode) newErrors.pincode = "Pincode is required.";
-    else if (!pincodeRegex.test(pincode))
-      newErrors.pincode = "Enter a valid pincode.";
-
-    return newErrors;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const currentErrors = validate(formData);
-
-    setTouched({
-      restaurantName: true,
-      ownerName: true,
-      contact: true,
-      line1: true,
-      country: true,
-      state: true,
-      city: true,
-      pincode: true,
-      email: true,
-      password: true,
-      confirmPassword: true,
-    });
-
-    if (Object.keys(currentErrors).length === 0) {
-      try {
-        const formDataToSend = new FormData();
-        formDataToSend.append("restaurantName", formData.restaurantName);
-        formDataToSend.append("ownerName", formData.ownerName);
-        formDataToSend.append("contact", formData.contact);
-        formDataToSend.append("tagline", formData.tagline);
-        formDataToSend.append("address", JSON.stringify(formData.address));
-        formDataToSend.append("email", formData.email.toLowerCase());
-        formDataToSend.append("password", formData.password);
-
-        if (formData.image) formDataToSend.append("image", formData.image);
-        if (formData.logoImage)
-          formDataToSend.append("logoImage", formData.logoImage);
-
-        const response = await registerRestaurant(formDataToSend);
-        toast.success(
-          response.message || "Registered successfully! Please log in."
-        );
-        dispatch(resetForm()); 
-        try { window.history.replaceState(null, ""); } catch (e) {}
-        navigate("/");
-      } catch (error) {
-        console.error("Registration error:", error);
-        toast.error(error.response?.data?.error || "Registration failed.");
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (type === "images") {
+        setPreviewImage(event.target.result);
+        setFormData({ ...formData, images: [file] });
+      } else if (type === "logo") {
+        setPreviewLogo(event.target.result);
+        setFormData({ ...formData, logo: file });
       }
-    } else {
-      toast.error("Please fill the form correctly.");
-    }
-    setIsSubmitting(false);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const nextStep = () => {
-    const currentErrors = validateStep1(formData);
+  const validateStep = (stepNumber) => {
+    const newErrors = {};
+    
+    if (stepNumber === 1) {
+      if (!formData.restaurantName) newErrors.restaurantName = t("register.errors.restaurantName");
+      if (!formData.ownerName) newErrors.ownerName = t("register.errors.ownerName");
+      else if (!/^[A-Za-z\s]+$/.test(formData.ownerName))
+        newErrors.ownerName = t("validOwnerName");
+      if (!formData.contact || formData.contact.length < 10)
+        newErrors.contact = t("register.errors.contact");
+    }
+    
+    if (stepNumber === 2) {
+      if (!formData.restaurantAddress1) newErrors.restaurantAddress1 = t("register.errors.address1");
+      if (!formData.country) newErrors.country = t("register.errors.country");
+      if (hasStates && !formData.state) newErrors.state = t("register.errors.state");
+      if (hasCities && !formData.city) newErrors.city = t("register.errors.city");
+      if (!formData.pinCode) newErrors.pinCode = t("register.errors.pincode");
+      else if (!/^[0-9]{5,6}$/.test(formData.pinCode))
+        newErrors.pinCode = "Enter a valid pincode (5-6 digits).";
+    }
+    
+    if (stepNumber === 4) {
+      if (!formData.email) newErrors.email = t("register.errors.requiredField");
+      else if (!/\S+@\S+\.\S+/.test(formData.email))
+        newErrors.email = t("errors.email");
+  
+      const passwordValidation = validatePassword(formData.password);
+      if (!formData.password) newErrors.password = t("register.errors.requiredField");
+      else if (!passwordValidation.isValid)
+        newErrors.password = t("register.errors.password");
+      
+      if (!formData.confirmPassword) newErrors.confirmPassword = "Please confirm password.";
+      else if (formData.confirmPassword !== formData.password)
+        newErrors.confirmPassword = t("register.errors.confirmPassword");
+       
+  if (!acceptedTerms) newErrors.terms = "Please accept Terms & Conditions";
+  if (!acceptedPrivacy) newErrors.privacy = "Please accept Privacy Policy";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    setTouched({
-      restaurantName: true,
-      ownerName: true,
-      contact: true,
-      line1: true,
-      country: true,
-      state: true,
-      city: true,
-      pincode: true,
-    });
-    setErrors(currentErrors);
-
-    if (Object.keys(currentErrors).length === 0) {
-      const newStep = activeStep + 1;
-      setActiveStep(newStep);
+  const handleNext = () => {
+    let newTouched = { ...touched };
+    
+    if (step === 1) {
+      newTouched = {
+        ...newTouched,
+        restaurantName: true,
+        ownerName: true,
+        contact: true,
+      };
+    } else if (step === 2) {
+      newTouched = {
+        ...newTouched,
+        restaurantAddress1: true,
+        country: true,
+        pinCode: true,
+        state: true,
+        city: true,
+      };
+    } else if (step === 4) {
+      newTouched = {
+        ...newTouched,
+        email: true,
+        password: true,
+        confirmPassword: true,
+      };
+    }
+    
+    setTouched(newTouched);
+    
+    if (validateStep(step)) {
+      const newStep = step + 1;
+      setStep(newStep);
       try {
-        window.history.pushState({ step: newStep - 1 }, "");
+        window.history.pushState({ step: newStep }, "");
       } catch (e) {}
       window.scrollTo(0, 0);
+    } else {
+      toast.error("Please fill all required fields correctly.");
     }
   };
 
-  const prevStep = () => {
-    if (activeStep > 1) {
-      const newStep = activeStep - 1;
-      setActiveStep(newStep);
+  const handlePrev = () => {
+    if (step > 1) {
+      const newStep = step - 1;
+      setStep(newStep);
       try {
         window.history.replaceState({ step: newStep }, "");
       } catch (e) {}
@@ -369,439 +405,617 @@ const [restaurantName, setRestaurantName] = useState("");
     }
   };
 
-  const customSelectStyles = {
-    control: (base, state) => ({
-      ...base,
-      height: "52px",
-      minHeight: "42px",
-      borderRadius: "12px",
-      border: state.isFocused ? "2px solid #4f46e5" : "1px solid #d1d5db",
-      boxShadow: state.isFocused
-        ? "0 0 0 3px rgba(79, 70, 229, 0.1)"
-        : "none",
-      "&:hover": { borderColor: state.isFocused ? "#4f46e5" : "#9ca3af" },
-      transition: "all 0.2s ease",
-      backgroundColor: "#f9fafb",
-    }),
-    valueContainer: (base) => ({
-      ...base,
-      height: "42px",
-      padding: "0 12px",
-    }),
-    input: (base) => ({ ...base, margin: 0, padding: 0 }),
-    indicatorsContainer: (base) => ({ ...base, height: "42px" }),
-    multiValue: (base) => ({
-      ...base,
-      backgroundColor: "#eef2ff",
-      borderRadius: "6px",
-      padding: "2px 6px",
-    }),
-    menu: (base) => ({
-      ...base,
-      borderRadius: "12px",
-      overflow: "hidden",
-      boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor: state.isSelected
-        ? "#4f46e5"
-        : state.isFocused
-        ? "#eef2ff"
-        : "white",
-      color: state.isSelected ? "white" : "#1f2937",
-      "&:active": {
-        backgroundColor: state.isSelected ? "#4f46e5" : "#e5e7eb",
-      },
-    }),
-  };
-
-  const steps = [
-    { number: 1, title: "Restaurant Details" },
-    { number: 2, title: "Login Credentials" },
-  ];
-
-  const handleLogout = async () => {
-    try {
-      await logoutRestaurant();   
-      dispatch(resetForm());      
-      localStorage.removeItem("token"); 
-      setRestaurantName("");      
-      navigate("/");              
-    } catch (error) {
-      console.error("❌ Logout error:", error);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    setTouched({
+      ...touched,
+      email: true,
+      password: true,
+      confirmPassword: true,
+    });
+    
+    if (validateStep(4)) {
+      try {
+        const formDataToSend = new FormData();
+        formDataToSend.append("restaurantName", formData.restaurantName);
+        formDataToSend.append("ownerName", formData.ownerName);
+        formDataToSend.append("gstNumber", formData.gstNumber || "");
+        formDataToSend.append("contact", formData.contact);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("password", formData.password);
+        
+        const address = {
+          line1: formData.restaurantAddress1,
+          line2: formData.restaurantAddress2,
+          country: formData.country,
+          state: formData.state,
+          city: formData.city,
+          pincode: formData.pinCode,
+        };
+        formDataToSend.append("address", JSON.stringify(address));
+        
+        if (formData.images && formData.images.length > 0) {
+          formDataToSend.append("image", formData.images[0]);
+        }
+        
+        if (formData.logo) {
+          formDataToSend.append("logoImage", formData.logo);
+        }
+        
+        if (formData.tagLine) {
+          formDataToSend.append("tagline", formData.tagLine);
+        }
+        
+        const response = await registerRestaurant(formDataToSend);
+        toast.success(
+          response.message || "Registered successfully! Please log in."
+        );
+        
+        setFormData({
+          restaurantName: "",
+          ownerName: "",
+          gstNumber: "",
+          contact: "",
+          restaurantAddress1: "",
+          restaurantAddress2: "",
+          country: "",
+          state: "",
+          city: "",
+          pinCode: "",
+          tagLine: "",
+          images: [],
+          logo: null,
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        
+        navigate("/login");
+        
+      } catch (error) {
+        console.error("Registration error:", error);
+        toast.error(error.response?.data?.error || "Registration failed. Please try again.");
+      }
+    } else {
+      toast.error("Please fill all fields correctly.");
     }
+    
+    setIsSubmitting(false);
   };
-  return (
-    <>
-      <HomeHeader />
 
-      <div className="register-page">
-        <div className="register-container">
-          <div className="register-header">
-            <h1>Register Your Restaurant</h1>
-            <p>Join our platform to reach more customers and grow your business</p>
-          </div>
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="step-inner" data-aos="fade-up">
+            <div className="form-group">
+              <label className="form-label">Restaurant Name</label>
+              <input
+                type="text"
+                name="restaurantName"
+                value={formData.restaurantName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Ramen Ipsum H"
+                className={`form-input ${errors.restaurantName && touched.restaurantName ? 'error' : ''}`}
+                autoComplete="off"
+              />
+              {errors.restaurantName && touched.restaurantName && (
+                <div className="error-message">{errors.restaurantName}</div>
+              )}
+            </div>
 
-          <div className="progress-container">
-            <div className="progress-steps">
-              {steps.map((step, index) => (
-                <div key={step.number} className={`step ${activeStep >= step.number ? "active" : ""}`}>
-                  <div className="step-number">{step.number}</div>
-                  <span className="step-title">{step.title}</span>
-                  {index < steps.length - 1 && (
-                    <div className={`step-connector ${activeStep > step.number ? "completed" : ""}`}></div>
-                  )}
+            <div className="form-group">
+              <label className="form-label">Owner's Name</label>
+              <input
+                type="text"
+                name="ownerName"
+                value={formData.ownerName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Rahul Singh Roy"
+                className={`form-input ${errors.ownerName && touched.ownerName ? 'error' : ''}`}
+                autoComplete="off"
+              />
+              {errors.ownerName && touched.ownerName && (
+                <div className="error-message">{errors.ownerName}</div>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">GST Number</label>
+              <input
+                type="text"
+                name="gstNumber"
+                value={formData.gstNumber}
+                onChange={handleChange}
+                placeholder="Write 45345"
+                className="form-input"
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="form-group phone-input-wrapper">
+              <label className="form-label">Contact Number</label>
+              <PhoneInput
+                country={"in"}
+                value={formData.contact}
+                onChange={handlePhoneChange}
+                inputClass={`form-input ${errors.contact && touched.contact ? "error" : ""}`}
+                containerClass="phone-container"
+                inputProps={{
+                  name: "contact",
+                  autoComplete: "off",
+                  onBlur: () => handleBlur({ target: { name: "contact" } })
+                }}
+              />
+              {errors.contact && touched.contact && (
+                <div className="phone-error-message">
+                  {errors.contact}
                 </div>
-              ))}
+              )}
             </div>
           </div>
+        );
 
-          <form className="register-form" onSubmit={handleSubmit} data-aos="fade-up">
-            {activeStep === 1 && (
-              <div className="form-step">
-                <p className="step-description">Tell us about your restaurant business</p>
-                
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label><i className="fas fa-store me-2 blue-icon" />Restaurant Name</label>
-                    <div className="field-wrapper">
-                      <input
-                        type="text"
-                        name="restaurantName"
-                        value={formData.restaurantName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={errors.restaurantName && touched.restaurantName ? "error" : ""}
-                        placeholder="Enter your restaurant name"
-                      />
-                      {errors.restaurantName && touched.restaurantName && <div className="error-message">{errors.restaurantName}</div>}
-                    </div>
-                  </div>
+      case 2:
+        return (
+          <div className="step-inner" data-aos="fade-up">
+            <div className="form-group">
+              <label className="form-label">Restaurant Address 1</label>
+              <input
+                type="text"
+                name="restaurantAddress1"
+                value={formData.restaurantAddress1}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="Enter address line 1"
+                className={`form-input ${errors.restaurantAddress1 && touched.restaurantAddress1 ? 'error' : ''}`}
+                autoComplete="off"
+              />
+              {errors.restaurantAddress1 && touched.restaurantAddress1 && (
+                <div className="error-message">{errors.restaurantAddress1}</div>
+              )}
+            </div>
 
-                  <div className="form-group">
-                    <label><i className="fas fa-user me-2 blue-icon" />Owner Name</label>
-                    <div className="field-wrapper">
-                      <input
-                        type="text"
-                        name="ownerName"
-                        value={formData.ownerName}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={errors.ownerName && touched.ownerName ? "error" : ""}
-                        placeholder="Full name"
-                      />
-                      {errors.ownerName && touched.ownerName && (<div className="error-message">{errors.ownerName}</div>)}
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label><i className="fas fa-quote-left me-2 blue-icon" />Tagline</label>
-                    <input
-                      type="text"
-                      name="tagline"
-                      value={formData.tagline}
-                      onChange={handleChange}
-                      placeholder="e.g. Fresh Taste, Better Life"
-                    />
-                  </div>
+            <div className="form-group">
+              <label className="form-label">Restaurant Address 2</label>
+              <input
+                type="text"
+                name="restaurantAddress2"
+                value={formData.restaurantAddress2}
+                onChange={handleChange}
+                placeholder="Enter address line 2 (Optional)"
+                className="form-input"
+                autoComplete="off"
+              />
+            </div>
 
-                  <div className="form-group">
-                    <label><i className="fas fa-phone me-2 blue-icon" />Contact Number</label>
-                    <div className="field-wrapper">
-                      <div className={`phone-input-wrapper ${errors.contact && touched.contact ? "error" : ""}`}>
-                        <PhoneInput
-                          country={"in"}
-                          value={formData.contact}
-                          onChange={handlePhoneChange}
-                          onBlur={() => setTouched((prev) => ({ ...prev, contact: true }))}
-                          inputClass="custom-phone-input"
-                          buttonClass="phone-flag-button"
-                          dropdownClass="phone-dropdown"
-                          enableSearch
-                          placeholder="Enter phone number"
-                        />
-                      </div>
-                      {errors.contact && touched.contact && (
-                        <div className="error-message">{errors.contact}</div>
-                      )}
-                    </div>
-                  </div>
+            <div className="form-row-two">
+              <div className="form-group">
+                <label className="form-label">Country</label>
+                <select
+                  name="country"
+                  value={formData.country}
+                  onChange={(e) => handleLocationChange("country", e.target.value)}
+                  onBlur={handleBlur}
+                  className={`form-select ${errors.country && touched.country ? 'error' : ''}`}
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.isoCode}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.country && touched.country && (
+                  <div className="error-message">{errors.country}</div>
+                )}
+              </div>
 
-                  <div className="form-group">
-                    <label><i className="fas fa-map-marker-alt me-2 blue-icon" />Address Line 1</label>
-                    <div className="field-wrapper">
-                      <input
-                        type="text"
-                        value={safeFormData.address.line1}
-                        onChange={(e) => handleAddressChange("line1", e.target.value)}
-                        className={errors.line1 && touched.line1 ? "error" : ""}
-                        placeholder="Address Line 1"
-                      />
-                      {errors.line1 && touched.line1 &&( <div className="error-message">{errors.line1}</div>)}
-                    </div>
-                  </div>
+              <div className="form-group pin-wrapper">
+                <label className="form-label">Pincode</label>
+                <input
+                  type="text"
+                  name="pinCode"
+                  value={formData.pinCode}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter pincode"
+                  className={`form-input ${errors.pinCode && touched.pinCode ? "error" : ""}`}
+                  autoComplete="off"
+                  maxLength="6"
+                />
+                {errors.pinCode && touched.pinCode && (
+                  <div className="pin-error-message">{errors.pinCode}</div>
+                )}
+              </div>
+            </div>
 
-                  <div className="form-group">
-                    <label><i className="fas fa-building me-2 blue-icon" />Address Line 2</label>
-                    <input
-                      type="text"
-                      value={safeFormData.address.line2}
-                      onChange={(e) => handleAddressChange("line2", e.target.value)}
-                      placeholder="Address Line 2"
-                    />
-                  </div>
-                  
-                  <div className="form-group">
-                    <label><i className="fas fa-globe-asia me-2 blue-icon" />Country</label>
-                    <div className="field-wrapper">
-                      <Select
-                        options={countryList.map((c) => ({ label: c.name, value: c.isoCode }))}
-                        value={safeFormData.address.country
-                          ? { label: Country.getCountryByCode(safeFormData.address.country)?.name, value: safeFormData.address.country }
-                          : null
-                        }
-                        onChange={(selected) => handleAddressChange("country", selected.value)}
-                        placeholder="Select Country"
-                        classNamePrefix="react-select"
-                        className={`react-select-container ${errors.country && touched.country ? "error" : ""}`}
-                        styles={customSelectStyles}
-                      />
-                      {errors.country && touched.country && (<div className="error-message">{errors.country}</div>)}
-                    </div>
-                  </div>
-                  
-                  <div className="form-group">
-                    <label><i className="fas fa-map-pin me-2 blue-icon" />Pincode</label>
-                    <div className="field-wrapper">
-                      <input
-                        type="text"
-                        name="pincode"
-                        value={safeFormData.address.pincode}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={errors.pincode && touched.pincode ? "error" : ""}
-                        placeholder="Enter pincode"
-                        maxLength="6"
-                      />
-                      {errors.pincode && touched.pincode && <div className="error-message">{errors.pincode}</div>}
-                    </div>
-                  </div>
-                  
-                  {hasStates && (
-                    <div className="form-group">
-                      <label><i className="fas fa-map me-2 blue-icon" />State</label>
-                      <div className="field-wrapper">
-                        <Select
-                          options={stateList.map((s) => ({ label: s.name, value: s.isoCode }))}
-                          value={
-                            safeFormData.address.state
-                              ? {
-                                  label: State.getStateByCodeAndCountry(
-                                    safeFormData.address.state,
-                                    safeFormData.address.country
-                                  )?.name,
-                                  value: safeFormData.address.state,
-                                }
-                              : null
-                          }
-                          onChange={(selected) => handleAddressChange("state", selected.value)}
-                          placeholder="Select State"
-                          className={`react-select-container ${errors.state && touched.state ? "error" : ""}`}
-                          classNamePrefix="react-select"
-                          styles={customSelectStyles}
-                        />
-                        {errors.state && touched.state && <div className="error-message">{errors.state}</div>}
-                      </div>
-                    </div>
-                  )}
-                  {hasCities && (
-                    <div className="form-group">
-                      <label><i className="fas fa-city me-2 blue-icon" />{hasStates ? "City" : "City/Region"}</label>
-                      <div className="field-wrapper">
-                        {cityList.length > 0 ? (
-                          <Select
-                            options={cityList.map((c) => ({ label: c.name, value: c.name }))}
-                            value={
-                              safeFormData.address.city
-                                ? { label: safeFormData.address.city, value: safeFormData.address.city }
-                                : null
-                            }
-                            onChange={(selected) => handleAddressChange("city", selected.value)}
-                            placeholder={hasStates ? "Select City" : "Select City/Region"}
-                            className={`react-select-container ${errors.city && touched.city ? "error" : ""}`}
-                            classNamePrefix="react-select"
-                            styles={customSelectStyles}
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            value={safeFormData.address.city || ""}
-                            onChange={(e) => handleAddressChange("city", e.target.value)}
-                            className={errors.city && touched.city ? "error" : ""}
-                            placeholder="Enter city or region name"
-                          />
-                        )}
-                        {errors.city && touched.city && <div className="error-message">{errors.city}</div>}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="image-upload-section">
-                  <h3><i className="fas fa-images me-2 blue-icon" />Upload Images</h3>
-                  <div className="image-grid">
-                    <div className="image-upload-box">
-                      <label>
-                        <i className="fas fa-image me-2 blue-icon" />Cover Image
-                        <input type="file" accept="image/*" onChange={handleImageChange} />
-                        <div className="upload-placeholder">
-                          {previewImage ? (
-                            <img src={previewImage} alt="Preview" />
-                          ) : (
-                            <>
-                              <i className="fas fa-cloud-upload-alt blue-icon"></i>
-                              <span>Click to upload</span>
-                              <small>JPG, PNG up to 5MB</small>
-                            </>
-                          )}
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="image-upload-box">
-                      <label>
-                        <i className="fas fa-tag me-2 blue-icon" />Logo
-                        <input type="file" accept="image/*" onChange={handleLogoChange} />
-                        <div className="upload-placeholder">
-                          {previewLogo ? (
-                            <img src={previewLogo} alt="Logo Preview" />
-                          ) : (
-                            <>
-                              <i className="fas fa-cloud-upload-alt blue-icon"></i>
-                              <span>Click to upload</span>
-                              <small>JPG, PNG up to 2MB</small>
-                            </>
-                          )}
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {activeStep === 1 && (
-                  <div className="form-step">
-                    <div className="form-actions single-action">
-                      <button type="button" className="btn-next" onClick={nextStep}>
-                        Next <i className="fas fa-arrow-right ms-2"></i>
-                      </button>
-                    </div>
-                  </div>
+            {hasStates && (
+              <div className="form-group">
+                <label className="form-label">State</label>
+                <select
+                  name="state"
+                  value={formData.state}
+                  onChange={(e) => handleLocationChange("state", e.target.value)}
+                  onBlur={handleBlur}
+                  className={`form-select ${errors.state && touched.state ? 'error' : ''}`}
+                >
+                  <option value="">Select State</option>
+                  {stateList.map((state) => (
+                    <option key={state.isoCode} value={state.isoCode}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.state && touched.state && (
+                  <div className="error-message">{errors.state}</div>
                 )}
               </div>
             )}
 
-            {activeStep === 2 && (
-              <div className="form-step">
-                <p className="step-description">Create your login credentials</p>
-                
-                <div className="form-group full-width">
-                  <label><i className="fas fa-envelope me-2 blue-icon" />Email Address</label>
-                  <div className="field-wrapper">
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={errors.email && touched.email ? "error" : ""}
-                      placeholder="your@email.com"
-                      autoComplete="email"
-                    />
-                    {errors.email && touched.email && <div className="error-message">{errors.email}</div>}
-                  </div>
-                </div>
-
-                <div className="form-grid">
-                  <div className="form-group mt-4 password-field">
-     <label><i className="fas fa-lock me-2 blue-icon" />Password</label>
-  <div className="field-wrapper">
-    <div className="input-with-icon">
-      <input
-        type={showPassword ? "text" : "password"}
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        className={errors.password && touched.password ? "error" : ""}
-        placeholder="Create a strong password"
-      />
-      <i
-        className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
-        onClick={() => setShowPassword(!showPassword)}
-      ></i>
-    </div>
-    {errors.password && touched.password && (
-      <div className="error-message">{errors.password}</div>
-    )}
-  </div>
- 
-     <div className="password-requirements-container">
-      <PasswordRequirements password={formData.password} />
-    </div>
- </div>
-
-
-                  <div className="form-group mt-4 password-field">
-                    <label><i className="fas fa-lock me-2 blue-icon" />Confirm Password</label>
-        <div className="field-wrapper">
-          
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={errors.confirmPassword && touched.confirmPassword ? "error" : ""}
-              placeholder="Confirm your password"
-            />
-            <i
-              className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"} toggle-password`}
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            ></i>
-        
-          {errors.confirmPassword && touched.confirmPassword && (
-            <div className="error-message">{errors.confirmPassword}</div>
-          )}
-        </div>
-      </div>
-                </div>
-
-                <div className="form-actions">
-                  <button type="button" className="btn-prev" onClick={prevStep}>
-                    <i className="fas fa-arrow-left me-2"></i> Back
-                  </button>
-                  <button type="submit" className="btn-submit" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin me-2"></i> Processing...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-check-circle me-2"></i> Complete Registration
-                      </>
-                    )}
-                  </button>
-                </div>
+            {hasCities && (
+              <div className="form-group">
+                <label className="form-label">{hasStates ? "City" : "City/Region"}</label>
+                {cityList.length > 0 ? (
+                  <select
+                    name="city"
+                    value={formData.city}
+                    onChange={(e) => handleLocationChange("city", e.target.value)}
+                    onBlur={handleBlur}
+                    className={`form-select ${errors.city && touched.city ? 'error' : ''}`}
+                  >
+                    <option value="">Select {hasStates ? "City" : "City/Region"}</option>
+                    {cityList.map((city) => (
+                      <option key={city.name} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter city name"
+                    className={`form-input ${errors.city && touched.city ? 'error' : ''}`}
+                  />
+                )}
+                {errors.city && touched.city && (
+                  <div className="error-message">{errors.city}</div>
+                )}
               </div>
             )}
-          </form>
+          </div>
+        );
+
+      case 3:
+        return (
+          <div className="step-inner" data-aos="fade-up">
+            <div className="form-group">
+              <label className="form-label">Tag-line of your Restaurant</label>
+              <textarea
+                name="tagLine"
+                value={formData.tagLine}
+                onChange={handleChange}
+                placeholder="Enter a catchy tagline for your restaurant"
+                className="form-textarea"
+              />
+            </div>
+
+            <div className="upload-row">
+              <div className="upload-box">
+                <label htmlFor="images-upload" style={{ cursor: "pointer", display: "block" }}>
+                  <div className="upload-icon">⬇</div>
+                  <div className="upload-text">Upload Cover Image</div>
+                  {previewImage && (
+                    <div className="preview-container">
+                      <img src={previewImage} alt="Preview" className="preview-image" />
+                    </div>
+                  )}
+                </label>
+                <input
+                  id="images-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e, "images")}
+                  style={{ display: "none" }}
+                />
+              </div>
+
+              <div className="upload-box">
+                <label htmlFor="logo-upload" style={{ cursor: "pointer", display: "block" }}>
+                  <div className="upload-icon">⬇</div>
+                  <div className="upload-text">Upload Logo</div>
+                  {previewLogo && (
+                    <div className="preview-container">
+                      <img src={previewLogo} alt="Logo Preview" className="preview-image" />
+                    </div>
+                  )}
+                </label>
+                <input
+                  id="logo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e, "logo")}
+                  style={{ display: "none" }}
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 4:
+        return (
+          <div className="step-inner" data-aos="fade-up">
+         <div className="form-group">
+        <label className="form-label">Email</label>
+        <div className="email-input-wrapper">
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            placeholder="example@gmail.com"
+            className={`form-input email-input-with-verify ${errors.email && touched.email ? 'error' : ''}`}
+            autoComplete="off"
+            disabled={isEmailVerified}
+          />
+          
+          {/* Inline Checkbox in Email Input */}
+          <div className="inline-verify-checkbox">
+            <input
+              type="checkbox"
+              checked={isEmailVerified}
+              onChange={(e) => handleEmailVerifyCheckbox(e.target.checked)}
+              className="custom-checkbox"
+              disabled={isEmailVerified}
+              title={isEmailVerified ? "Email Verified" : "Click to verify email"}
+            />
+            <span className={`verify-tooltip ${isEmailVerified ? 'verified' : ''}`}>
+              {isEmailVerified ? "✓ Verified" : "Click to verify"}
+            </span>
+          </div>
         </div>
+        
+        {errors.email && touched.email && (
+          <div className="error-message">{errors.email}</div>
+        )}
+        
+        {/* Verification Status Text */}
+        {isEmailVerified && (
+          <div className="verification-status verified">
+            <i className="fas fa-check-circle"></i>
+            Email verified successfully
+          </div>
+        )}
+
+        {errors.emailVerification && (
+          <div className="checkbox-error">{errors.emailVerification}</div>
+        )}
       </div>
-      
-      <div className="Footer">
-        <Footer />
-      </div>
+       
+
+            <div className="form-group password-field">
+              <label className="form-label">Password</label>
+              <div className="input-with-icon">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter password"
+                  className={`form-input ${errors.password && touched.password ? 'error' : ''}`}
+                />
+              </div>
+              {errors.password && touched.password && (
+                <div className="error-message">{errors.password}</div>
+              )}
+              
+              <div className="password-requirements-container">
+                <PasswordRequirements password={formData.password} />
+              </div>
+            </div>
+
+            <div className="form-group password-field">
+              <label className="form-label">Confirm Password</label>
+              <div className="input-with-icon">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Confirm password"
+                  className={`form-input ${errors.confirmPassword && touched.confirmPassword ? 'error' : ''}`}
+                />
+              </div>
+              {errors.confirmPassword && touched.confirmPassword && (
+                <div className="error-message">{errors.confirmPassword}</div>
+              )}
+            </div>
+      <div className="terms-checkboxes">
+  <label className="terms-label">
+    <input
+      type="checkbox"
+      checked={acceptedTerms}
+      onChange={(e) => setAcceptedTerms(e.target.checked)}
+      className="custom-checkbox"
+    />
+
+    <span className="checkbox-text">
+      I agree to the{" "}
+      {/* Open in-modal instead of navigation */}
+      <button
+        type="button"
+        className="terms-link"
+        onClick={() => setShowTermsModal(true)}
      
+      >
+        Terms &amp; Conditions
+      </button>
+    </span>
+
+    {errors.terms && (
+      <span className="checkbox-error">({errors.terms})</span>
+    )}
+  </label>
+
+  <label className="terms-label">
+   <input
+    type="checkbox"
+    checked={acceptedPrivacy}
+    onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+    className="custom-checkbox"
+  />
+  <span className="checkbox-text">
+    I agree to the
+    <span className="checkbox-link" onClick={() => setShowPrivacyModal(true)}>
+      {" "}Privacy Policy
+    </span>
+  </span>
+
+    {errors.privacy && (
+      <span className="checkbox-error">({errors.privacy})</span>
+    )}
+  </label>
+</div>
+
+    
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <div className="register-container">
+        <div className="logo-section">
+          <div className="hero-logo-row">
+            <img
+              src="/restaurant_logo.png"
+              alt="Restaurant Logo"
+              className="hero-logo-image"
+            />
+            <h1>QRBites</h1>
+          </div>
+        </div>
+
+{/* Upper curved lines */}
+<img src="/vector-line.png" className="vector-line upper-line" alt="" />
+<img src="/vector-line.png" className="vector-line upper-line subtle" alt="" />
+
+        <div className="form-section">
+        
+          <div className="register-form-card">
+            <div className="form-header">
+              <h1 className="form-title">Register your Restaurant</h1>
+              <p className="form-subtitle">Lorem ipsum is a placeholder text commonly</p>
+            </div>
+
+            <div className="progress-indicator">
+              <div className={`step-circle ${step === 1 ? "active" : ""}`}>1</div>
+              <div className="step-line"></div>
+              <div className={`step-circle ${step === 2 ? "active" : ""}`}>2</div>
+              <div className="step-line"></div>
+              <div className={`step-circle ${step === 3 ? "active" : ""}`}>3</div>
+              <div className="step-line"></div>
+              <div className={`step-circle ${step === 4 ? "active" : ""}`}>4</div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="form-body">
+              {renderStep()}
+
+              <div className="form-actions">
+                {step < 4 ? (
+                  <button type="button" className="submit-button" onClick={handleNext}>
+                    Next
+                  </button>
+                ) : (
+                  <button type="submit" className="submit-button" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i> Processing
+                      </>
+                    ) : (
+                      "Complete Registration"
+                    )}
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+<img src="/vector-line.png" alt="decorative line" className="vector-line main-line" draggable="false" />
+<img src="/vector-line.png" className="vector-line subtle" alt="" />
+      <div className="food-artwork">
+
+  {/* BACKGROUND CIRCLE */}
+{/* MAIN background (bottom curve) */}
+<img 
+  src={bgImages[step]} 
+  alt="bg circle"
+  className={`food-bg-circle 
+    ${step === 2 ? "circle-step-3" : "circle-step-default"}
+    ${step === 4 ? "circle-step-4-bottom" : "circle-step-default"}`}
+  draggable="false"
+/>
+
+{/* TOP curve — only for step 4 */}
+{step === 4 && (
+  <img
+    src={bgImages[step]}
+    alt="bg circle top"
+    className="food-bg-circle circle-step-4-top"
+    draggable="false"
+  />
+)}
+
+
+
+  {/* FOOD IMAGES */}
+  <img
+    ref={artworkRef}
+    src={artworkSrc}
+    alt="food artwork"className={`food-main ${artworkFade ? 'artwork-fade' : ''} ${
+    artworkSrc === "/steper3.png" ? "small-food" : ""
+  }
+    
+  ${
+    artworkSrc === "/steper4.png" ? "food-img-4" : ""
+  }`}
+    draggable="false"
+  />
+
+</div>
+
+      </div>
+       <EmailVerificationModal
+      isOpen={showVerificationModal}
+      onClose={() => setShowVerificationModal(false)}
+      email={formData.email}
+      onVerify={handleVerifyEmail}
+    />
+    <TermsConditionsModal
+  isOpen={showTermsModal}
+  onClose={() => setShowTermsModal(false)}
+/>
+<PrivacyPolicyModal
+  isOpen={showPrivacyModal}
+  onClose={() => setShowPrivacyModal(false)}
+/>
+
     </>
   );
 }

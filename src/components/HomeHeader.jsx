@@ -8,8 +8,8 @@ import "./HomeHeader.css";
 import "../styles/DropDown.css";
 import { Home } from "lucide-react";
 import { useNotification } from "../context/Notification";
-import axios from "axios";
-import { getOrders } from "../services/apiService.js";
+//import { getOrders } from "../services/apiService.js";
+import { getOrders } from "../services/orderService.js";
 export default function HomeHeader({
   isAdminDashboard = false,
   restaurant = null,
@@ -21,7 +21,7 @@ export default function HomeHeader({
   const [scrolled, setScrolled] = useState(() => {
     return sessionStorage.getItem("headerScrolled") === "true";
   });
-
+  
   const isRegisterPage = location.pathname === "/registerrestaurant";
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [showDropdownopen, setShowDropdownopen] = useState(false);
@@ -339,24 +339,20 @@ export default function HomeHeader({
               </div>
 
               <div className="profile-menu" ref={profileRef}>
-                <img
-                  src={
-                    restaurant?.logoImage
-                      ? restaurant.logoImage.startsWith("http")
-                        ? restaurant.logoImage
-                        : `http://localhost:5001${restaurant.logoImage}`
-                      : "/burger.jpg"
-                  }
-                  alt="Restaurant Logo"
-                  className="profile-logo"
-                  onClick={handleProfileClick}
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                  }}
-                />
+              <img
+  src={restaurant?.branding?.logoImage ? `http://localhost:5001${restaurant.branding.logoImage}` : "/burger.jpg"}
+  alt="Restaurant Logo"
+  className="profile-logo"
+  style={{
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    objectFit: "contain",
+    cursor: "pointer",
+  }}
+  onClick={handleProfileClick}
+/>
+
               </div>
             </>
           ) : (

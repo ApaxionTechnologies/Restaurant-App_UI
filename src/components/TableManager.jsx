@@ -7,9 +7,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
 import toast from "react-hot-toast";
-import { getMyRestaurant, updateRestaurantTables } from "../services/apiService.js";
+//import { getMyRestaurant, updateRestaurantTables } from "../services/apiService.js";
 import HomeHeader from "./HomeHeader.jsx";
-
+import { getMyRestaurant,updateRestaurantTables } from "../services/restaurantService.js";
 const TableManager = ({ restaurant, onTablesUpdated }) => {
   const [tableCount, setTableCount] = useState(restaurant?.tables || 0);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -94,22 +94,55 @@ const QRGenerator = ({ restaurant }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const qrPreviewRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
+useEffect(() => {
+  if (!restaurant?.tables) {
+    setQrList([]);
+    return;
+  }
+  const newQrList = [];
+  for (let i = 1; i <= restaurant.tables; i++) {
+    newQrList.push({
+      table: i,
+      value: `${window.location.origin}/menu?restaurantId=${restaurant._id}&table=${i}`
+    });
+  }
+  setQrList(newQrList);
+  setCurrentIndex(0);
 
-  useEffect(() => {
-    if (restaurant?.tables > 0 && restaurant?._id) {
-      const newQrList = [];
-      for (let i = 1; i <= restaurant.tables; i++) {
-        newQrList.push({
-          table: i,
-          value: `${window.location.origin}/menu?restaurantId=${restaurant._id}&table=${i}`
-        });
-      }
-      setQrList(newQrList);
-      setCurrentIndex(0);
-    } else {
-      setQrList([]);
-    }
-  }, [restaurant]);
+  console.log("QRGenerator effect fired with tables:", restaurant.tables);
+}, [restaurant?.tables]);
+
+  // useEffect(() => {
+  //   if (restaurant?.tables > 0 && restaurant?._id) {
+  //     const newQrList = [];
+  //     for (let i = 1; i <= restaurant.tables; i++) {
+  //       newQrList.push({
+  //         table: i,
+  //         value: `${window.location.origin}/menu?restaurantId=${restaurant._id}&table=${i}`
+  //       });
+  //     }
+  //     setQrList(newQrList);
+  //     setCurrentIndex(0);
+  //   } else {
+  //     setQrList([]);
+  //   }
+  // }, [restaurant]);
+// useEffect(() => {
+//   if (restaurant?.tables > 0 && restaurant?._id) {
+    
+//     const newQrList = [];
+//     for (let i = 1; i <= restaurant.tables; i++) {
+//       newQrList.push({
+//         table: i,
+//         value: `${window.location.origin}/menu?restaurantId=${restaurant._id}&table=${i}`
+//       });
+//     }
+//     setQrList(newQrList);
+//     setCurrentIndex(0);
+//   } else {
+//     setQrList([]);
+//   }
+// }, [restaurant?.tables, restaurant?._id]); // ✅ correct
 
   const downloadSingleQR = async () => {
     if (!qrPreviewRef.current || qrList.length === 0) return;
@@ -337,7 +370,8 @@ export default function GenerateQR() {
       try {
         setIsLoading(true);
         const data = await getMyRestaurant();
-        setRestaurant(data.restaurant || data);
+        setRestaurant(data.data || data);
+        console.log("Fetched restaurant data:", data);
         setIsLoading(false);
       } catch (err) {
         console.error("Failed to fetch restaurant data:", err);

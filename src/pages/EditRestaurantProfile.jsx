@@ -11,11 +11,13 @@ import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormField } from "../store/formSlice";
-import { getMyRestaurant, updateRestaurantProfile , logoutRestaurant} from "../services/apiService"; 
 import HomeHeader from "../components/HomeHeader";
 import { jwtDecode } from "jwt-decode"; 
 import Footer from "../components/Footer";
 import { resetForm } from "../store/formSlice"; 
+import { getMyRestaurant, updateRestaurantProfile} from "../services/restaurantService";
+import { logoutRestaurant } from "../services/authService";
+
 export default function EditRestaurantProfile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -56,13 +58,13 @@ export default function EditRestaurantProfile() {
       try {
        
         const res = await getMyRestaurant();
-        setRestaurant(res.restaurant || res);
+        setRestaurant(res.data || res);
 
         const decoded = jwtDecode(localStorage.getItem("token"));
         setAdminEmail(decoded.email);
         setRestaurantName(decoded.restaurantName || "My Restaurant");
       } catch (err) {
-        console.error("❌ Failed to fetch admin/restaurant:", err);
+        console.error("Failed to fetch admin/restaurant:", err);
       }
     };
     fetchMe();
@@ -164,9 +166,9 @@ const handleLogout = async () => {
     const fetchRestaurantData = async () => {
       try {
         const data = await getMyRestaurant();
-        console.log("🍔 Restaurant data from API:", data);
+        console.log(" Restaurant data from API:", data);
 
-        const restaurant = data.restaurant || data;
+        const restaurant = data.data || data;
         dispatch(setFormField({ field: "restaurantName", value: restaurant.restaurantName || "" }));
         dispatch(setFormField({ field: "ownerName", value: restaurant.ownerName || "" }));
         dispatch(setFormField({ field: "contact", value: restaurant.contact || "" }));
@@ -249,43 +251,89 @@ const handleLogout = async () => {
       reader.onerror = (error) => reject(error);
     });
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Only JPG, JPEG, PNG files are allowed.",
-      }));
-      e.target.value = null;
-      return;
-    }
-    setErrors((prev) => ({ ...prev, image: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewImage(base64);
-      dispatch(setFormField({ field: "image", value: file }));
-      dispatch(setFormField({ field: "previewImage", value: base64 }));
-    }
-  };
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       image: "Only JPG, JPEG, PNG files are allowed.",
+  //     }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, image: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewImage(base64);
+  //     dispatch(setFormField({ field: "image", value: file }));
+  //     dispatch(setFormField({ field: "previewImage", value: base64 }));
+  //   }
+  // };
 
-  const handleLogoChange = async (e) => {
-    const file = e.target.files[0];
-    if (file && !isValidImageType(file)) {
-      setErrors((prev) => ({
-        ...prev,
-        logoImage: "Only JPG, JPEG, PNG files are allowed.",
-      }));
-      e.target.value = null;
-      return;
+  // const handleLogoChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file && !isValidImageType(file)) {
+  //     setErrors((prev) => ({
+  //       ...prev,
+  //       logoImage: "Only JPG, JPEG, PNG files are allowed.",
+  //     }));
+  //     e.target.value = null;
+  //     return;
+  //   }
+  //   setErrors((prev) => ({ ...prev, logoImage: "" }));
+  //   if (file) {
+  //     const base64 = await toBase64(file);
+  //     setPreviewLogo(base64);
+  //     dispatch(setFormField({ field: "logoImage", value: file }));
+  //     dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  //   }
+  // };
+const handleImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, image: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  const base64 = await toBase64(file);
+  setPreviewImage(base64);
+
+  // Save inside branding object in Redux
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      image: file,       
+      previewImage: base64 
     }
-    setErrors((prev) => ({ ...prev, logoImage: "" }));
-    if (file) {
-      const base64 = await toBase64(file);
-      setPreviewLogo(base64);
-      dispatch(setFormField({ field: "logoImage", value: file }));
-      dispatch(setFormField({ field: "previewLogo", value: base64 }));
+  }));
+};
+
+const handleLogoChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (!isValidImageType(file)) {
+    setErrors((prev) => ({ ...prev, logoImage: "Only JPG, JPEG, PNG files are allowed." }));
+    e.target.value = null;
+    return;
+  }
+
+  const base64 = await toBase64(file);
+  setPreviewLogo(base64);
+
+  dispatch(setFormField({
+    field: "branding",
+    value: {
+      ...formData.branding,
+      logoImage: file,        // File for backend
+      previewLogo: base64     // Base64 for preview
     }
-  };
+  }));
+};
 
   const validate = (data) => {
     const newErrors = {};
@@ -367,29 +415,35 @@ const handleLogout = async () => {
       formDataToSend.append("address[state]", formData.address.state || "");
       formDataToSend.append("address[city]", formData.address.city || "");
       formDataToSend.append("address[pincode]", formData.address.pincode);
+       if (formData.branding?.image instanceof File)
+      formDataToSend.append("image", formData.branding.image);
+    if (formData.branding?.logoImage instanceof File)
+      formDataToSend.append("logoImage", formData.branding.logoImage);
+    if (formData.branding?.headerImage instanceof File)
+      formDataToSend.append("headerImage", formData.branding.headerImage);
+    if (formData.branding?.footerImage instanceof File)
+      formDataToSend.append("footerImage", formData.branding.footerImage);
+
       if (currentPassword) {
         formDataToSend.append("currentPassword", currentPassword);
       }
       if (formData.password) {
         formDataToSend.append("password", formData.password);
       }
-      if (formData.image instanceof File) {
-        formDataToSend.append("image", formData.image);
-      }
-      if (formData.logoImage instanceof File) {
-        formDataToSend.append("logoImage", formData.logoImage);
-      }
       const response = await updateRestaurantProfile(formDataToSend);
-     if (response.success) {
+      console.log("Update API Response:", response);
+   if (response?.status === true || response?.status === "true") {
+
   toast.success("Profile updated successfully!");
   navigate("/admin-dashboard")
   dispatch(setFormField({ field: "password", value: "" }));
   dispatch(setFormField({ field: "confirmPassword", value: "" }));
   setCurrentPassword("");
-  const { restaurant } = await getMyRestaurant();
-  setRestaurant(restaurant);
-  if (restaurant.image) setPreviewImage(restaurant.image);
-  if (restaurant.logoImage) setPreviewLogo(restaurant.logoImage);
+const restaurantData = await getMyRestaurant();
+setRestaurant(restaurantData);
+if (restaurantData.image) setPreviewImage(restaurantData.image);
+if (restaurantData.logoImage) setPreviewLogo(restaurantData.logoImage);
+
 } else {
   toast.error(response.message || "Failed to update profile");
 }
