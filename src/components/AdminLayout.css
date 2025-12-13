@@ -1,0 +1,139 @@
+:root {
+    --page-bg: #fbf3ee; 
+    --content-max: 1200px;
+  }
+  
+  /* full-screen two-column layout */
+  .admin-layout {
+    display: flex;
+    min-height: 100vh;
+    height: 100vh;
+    width: 100%;
+    background: var(--page-bg);
+    overflow: hidden;
+  }
+  
+  /* ----- Sidebar -----
+     Keep the original sidebar sizing, but ensure it's fixed and add the thin blue divider.
+     We scope rules to .sidebar-wrap so they override your sidebar css without edits.
+  */
+  .sidebar-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+    height: 100vh;
+    box-sizing: border-box;
+    background: transparent;
+    position: relative;
+  }
+  
+  /* This wrapper preserves the sidebar's internal scale class from Sidebar.css */
+  .sidebar-scale {
+    height: 100vh;
+    display: block;
+  }
+  
+  /* Thin blue vertical divider like screenshot.
+     We apply this to the edge of the sidebar so it spans top→bottom.
+  */
+  .sidebar-wrap::after {
+    content: "";
+    position: absolute;
+    right: -2px;                /* sit at the boundary */
+    top: 0;
+    bottom: 0;
+    width: 4px;                 /* adjust thickness */
+    /* background: linear-gradient(180deg, #0f83d6, #1ea6ff 60%); */
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.02) inset;
+    pointer-events: none;
+  }
+  
+  /* ----- Main content -----
+     Main region scrolls independently if content is long.
+  */
+  .main-wrap {
+    flex: 1 1 auto;
+    min-width: 0; /* important so content can shrink on small screens */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent; /* header already provides the soft background */
+  }
+  
+  /* Make header sticky to match screenshot */
+  .homeheader {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    /* keep your existing homeheader background; we give subtle bottom shadow to match screenshot */
+    box-shadow: 0 6px 24px rgba(19,19,22,0.03);
+  }
+  
+  /* Content area scrolls independently */
+  .content-area {
+    flex: 1 1 auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 18px 24px 48px; /* spacing below header */
+    box-sizing: border-box;
+  }
+  
+  /* Keep page contents centered & limit width like screenshot */
+  .content-inner {
+    max-width: var(--content-max);
+    margin: 12px auto;
+    box-sizing: border-box;
+    /* match the same left alignment as the header inner so header text & content line up */
+    padding: 4px 8px;
+  }
+  
+  /* small helper: ensure HomeHeader's inner container lines up exactly with content-inner.
+     If your HomeHeader already uses max-width 1200px and margin auto, this is a no-op.
+  */
+  .homeheader .homeheader-inner,
+  .content-inner {
+    max-width: var(--content-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* ============================= */
+/* REMOVE TOP GAP — OPTION A FIX */
+/* ============================= */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.content-area {
+  padding-top: 0 !important;     /* remove 18px top padding */
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 48px;
+}
+
+.content-inner {
+  margin-top: 0 !important;      /* remove 12px top margin */
+}
+
+.content-inner > *:first-child {
+  margin-top: 0 !important;      /* remove extra 10px margin */
+}
+
+  
+  /* Responsive adjustments */
+  @media (max-width: 1000px) {
+    /* Sidebar collapses by its own CSS; ensure our wrapper shrinks too */
+    .sidebar-wrap { flex: 0 0 84px; }
+    .sidebar-wrap::after { right: -1px; width: 2px; }
+    .content-area { padding: 12px 10px 36px; }
+  }
+  
+  /* If you want the header title to vertically center with the right cards (visual tweak) */
+  .homeheader-left { display:flex; align-items:center; }
+  
+  /* OPTIONAL: if you want the content top to begin slightly below the header title as in screenshot */
+  .content-inner > *:first-child { margin-top: 10px; }
+  

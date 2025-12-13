@@ -8,6 +8,7 @@
     "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.9.0",
     "@tabler/icons-react": "^3.34.1",
+    "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-table": "^8.21.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -62,6 +63,7 @@
     "react-window": "^2.2.1",
     "redux-persist": "^6.0.0",
     "styled-components": "^6.1.19",
+    "tailwindcss": "^4.1.18",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },

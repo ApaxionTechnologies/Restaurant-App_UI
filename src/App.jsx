@@ -15,9 +15,8 @@ import EditRestaurantProfile from "./pages/EditRestaurantProfile";
 import ResetPasswordPage from "./pages/ResetPasswordForm";
 import GenerateMenuQR from "./pages/GenerateMenuQR";
 
-
+import Sidebar from './components/Sidebar'
 import TaxSlabManagement from "./components/TaxSlabManagement";
-
 import AddMenuItem from "./components/AddMenuItem";
 import QRScanner from "./components/QRScanner";
 import TableManager from "./components/TableManager";
@@ -48,6 +47,8 @@ import Config from "./pages/config/Config";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TopBarWrapper from "./components/TopBarWrapper";
+import HomeHeader from "./components/HomeHeader";
+import AdminLayout from "./components/AdminLayout";
 export default function App() {
   const location = useLocation();
   const state = location.state || {};
@@ -117,9 +118,12 @@ export default function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/feedback" element={<FeedbackPage />} />
+                <Route path="/header" element={<HomeHeader />} />
+                <Route path="/sidebar" element={<Sidebar />} />
+                <Route path="/admin-layout" element={<AdminLayout />} />
 
                 <Route element={<TopBarWrapper />}>
-                 
+                
                   <Route
                     path="/admin-dashboard"
                     element={

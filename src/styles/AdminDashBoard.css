@@ -1,125 +1,381 @@
-.admin-dashboard {
-  max-width: 800px;
-  margin: 2rem auto;
-  font-family: 'Segoe UI', sans-serif;
+:root {
+  --bg: #FBF3EE;
+  --card: #fff;
+  --accent: #F58B5E;
+  --muted: #BFB3AA;
 }
 
-.dashboard-header {
-  background: #f8f9fa;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
+.adb-dashboard {
+  padding: 20px;
+  background: transparent;
+}
+.adb-kpis {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.adb-kpi {
+  flex: 1;
+  background: var(--card);
+  padding: 18px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.adb-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff5f0, #fffaf8);
+  font-size: 22px;
+}
+
+.adb-num {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.adb-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+.adb-card-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.adb-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.adb-card {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+/* .adb-card-big {
+  grid-column: span 2;
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  padding: 28px;
+}
+
+.adb-card-left {
+  flex: 0 0 60%;
+}
+
+.adb-card-title {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.adb-card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 12px;
+} */
+.adb-card-big {
+  grid-column: span 2;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-}
-
-/* Profile Icon */
-.profile-container {
+  align-items: stretch;
+  padding: 32px;
   position: relative;
+  min-height: 260px;
 }
 
-.profile-icon {
-  font-size: 2rem;
-  color: #007bff;
-  cursor: pointer;
-  transition: color 0.3s;
+/* LEFT SIDE */
+.adb-card-left {
+  flex: 0 0 55%;
+  max-width: 55%;
 }
 
-.profile-icon:hover {
-  color: #0056b3;
+.adb-card-title {
+  font-size: 22px;
+  margin-bottom: 10px;
 }
 
-
-.profile-menu {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background: #fff;
-  width: 230px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  padding: 1rem;
-  animation: fadeIn 0.2s ease-in-out;
-  z-index: 1000;
+.adb-card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 18px;
 }
-
-.profile-menu .menu-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: 0.25rem;
-}
-
-.profile-menu .menu-email {
-  font-size: 0.85rem;
-  color: #444;
-  margin-bottom: 0.75rem;
-  word-break: break-word;
-}
-
-
-.logout-btn {
-  width: 100%;
-  background: #dc3545;
-  color: #fff;
-  padding: 0.6rem;
-  font-size: 1rem;
+.adb-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.logout-btn:hover {
-  background: #b02a37;
-}
-
-/* Main Section */
-.admin-section {
   background: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  cursor: pointer;
 }
 
-.admin-section h3 {
-  margin-bottom: 1rem;
+.adb-btn-primary {
+  background: var(--accent);
+  color: #fff;
 }
 
-.admin-section p {
-  color: #555;
+/* .adb-card-right {
+  width: 140px;
+  height: 100px;
+} */
+.adb-card-right {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+   min-width: 0;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* .adb-burger {
+  width: 140px;
+  height: 100px;
+  background: linear-gradient(90deg, #fff, #ffe7d6);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+} */
+.adb-btn-outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+.adb-add-btn {
+  position: absolute;
+  top: 26px;
+  right: 0;
+  padding: 10px 18px;
+  border-radius: 14px;
+  font-size: 14px;
 }
 
-
-.admin-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+/* Burger image */
+.adb-burger-img {
+  /* width: 220px;
+  max-width: 100%;
+  object-fit: contain;
+  margin-top: auto; */
+  width: 180px;      /* ⬅ increase width */
+  height: auto;      /* keeps aspect ratio */
+  max-width: none;   /* prevents shrinking */
+  object-fit: contain;
+  position: relative;
+  right: -30px;   /* move to the right */
+  top: -16px;     
 }
 
-.admin-dashboard-wrapper {
+.adb-card-small {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  justify-content: space-between;
 }
 
+.adb-qr,
+.adb-tables,
+.adb-extra {
+  height: 160px;
+  border-radius: 12px;
+  border: 2px dashed #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.admin-dashboard-content {
-  flex: 1;
+/* ---------- Updated Reviews section (replace the previous rules) ---------- */
+
+.adb-reviews {
+  margin-top: 28px;
+  color: #55463f;
+}
+.adb-reviews h3 {
+  color: #7d6b63;
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+/* horizontal scrolling row */
+.adb-reviews-row {
+  display: flex;
+  gap: 22px;
+  padding-bottom: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Individual card */
+.adb-review {
+  position: relative;
+  min-width: 380px;       /* makes it larger like example */
+  max-width: 420px;
+  background: var(--card, #fff);
+  border-radius: 18px;
+  padding: 20px 20px 22px 20px;
+  box-shadow: 0 10px 30px rgba(85,70,63,0.06);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow: visible; /* allow image to overflow */
+}
+
+/* left content column inside card */
+.adb-review-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* small avatar + name row */
+.adb-review-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.adb-avatar-small {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(180deg,#f5f5f5,#efefef);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06) inset;
+  flex: 0 0 36px;
+}
+
+/* name & meta */
+.adb-review-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #2f3133;
+}
+.adb-review-meta-wrap { font-size: 12px; color: #9b8e86; }
+.adb-review-meta { font-size: 12px; color: #9b8e86; }
+
+/* body text */
+.adb-review-text {
+  font-size: 13px;
+  color: #6e6058;
+  margin-top: 6px;
+  line-height: 1.4;
+  max-width: calc(100% - 8px);
+}
+
+/* bottom row with stars + numeric rating */
+.adb-review-bottom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* stars */
+.adb-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+.adb-stars .star {
+  font-size: 14px;
+  opacity: 0.35;
+  transform: translateY(0);
+}
+.adb-stars .star.filled {
+  color: #f6c23e;   /* star color */
+  opacity: 1;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+/* numeric score on the right of stars */
+.adb-score {
+  margin-left: 8px;
+  font-weight: 700;
+  color: #4a4a4a;
+  font-size: 14px;
+}
+
+/* the big circular image that visually overlaps the card on the right */
+.adb-review-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex: 0 0 140px;
+  margin-left: 8px;
+  box-shadow: 0 18px 40px rgba(85,70,63,0.08);
+  transform: translateX(10px);
+  position: relative;
+  z-index: 2;
+}
+
+/* optional connecting line effect: pseudo element on the card to create a faint line */
+.adb-review::after {
+  content: "";
+  position: absolute;
+  right: -120px; /* places a faint line behind the circular image if desired */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 180px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(245,139,94,0.05), rgba(245,139,94,0));
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* tweak for small screens */
+@media (max-width: 920px) {
+  .adb-review { min-width: 320px; max-width: 360px; padding: 16px; border-radius: 14px; }
+  .adb-review-img { width: 110px; height: 110px; flex: 0 0 110px; transform: translateX(6px); }
+  .adb-review::after { right: -90px; width: 140px; }
+}
+::-webkit-scrollbar {
+  display: none;
+}
+/* ---------- fallbacks / original small review rules removed/replaced ---------- */
+
+/* If you still need the compact version (legacy) for other places, keep these under a modifier:
+   .adb-review.compact { min-width:260px; padding:14px; border-radius:12px; display:flex; gap:12px; align-items:center; box-shadow:0 8px 18px rgba(0,0,0,0.05); }
+   .adb-review.compact .adb-avatar { width:48px; height:48px; background:#eee; border-radius:50%; }
+   .adb-review.compact .adb-review-rating { margin-left:auto; }
+*/
+
+/* ---------- Responsive / existing media query adjustments ---------- */
+
+@media (max-width: 1000px) {
+  .adb-kpis {
+    flex-direction: column;
+  }
+  .adb-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .adb-card-big {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .adb-card-left, .adb-card-right {
+    flex: 1 1 100%;
+  }
+  .adb-add-btn {
+    position: relative;
+    right: auto;
+    top: auto;
+    margin: 12px 0 0 auto; 
+  }
+  .adb-burger-card {
+    max-width: 100%;
+  }
 }
