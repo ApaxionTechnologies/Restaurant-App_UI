@@ -9,14 +9,13 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import axios from "axios";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-import { Toaster, toast } from "react-hot-toast";
 import { registerRestaurant, logoutRestaurant } from "../services/apiService";
 import { useTranslation } from "react-i18next";
 import { validatePassword, PasswordRequirements } from "../utils/passwordValidation";
 import EmailVerificationModal from "./EmailVerificationModal";
 import TermsConditionsModal from "./TermsConditionsModal";
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
-
+import { sendOtp } from "../services/authService";
 
 const BASE_URL = "http://localhost:5001/api/v1";
 
@@ -61,25 +60,25 @@ export default function RegisterForm() {
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-const [isEmailVerified, setIsEmailVerified] = useState(false);
-const [showVerificationModal, setShowVerificationModal] = useState(false);
-const [acceptedTerms, setAcceptedTerms] = useState(false);
-const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   const artworkImages = [
     "/foodculter.png",
     "/steper3.png",
-    "/steper3.png",
+    "/steper2.png",
     "/steper4.png",
   ];
-const bgImages = {
-  1: "/bg-peach.png",
-  2: "/bg-step3.png",
-  3: "/bg-peach.png",
-  4: "/bg-step4.png",
-};
+  const bgImages = {
+    1: "/bg-peach.png",
+    2: "/bg-step3.png",
+    3: "/bg-peach.png",
+    4: "/bg-step4.png",
+  };
 
   const [artworkSrc, setArtworkSrc] = useState(artworkImages[0]);
   const [artworkFade, setArtworkFade] = useState(false);
@@ -121,38 +120,35 @@ const bgImages = {
     return () => clearTimeout(t);
   }, [step]);
 
-  const handleEmailVerifyCheckbox = async (checked) => {
-  if (checked) {
-    // Validate email first
+  const handleEmailVerify = async () => {
+    setEmailError("");
+
     if (!formData.email) {
-      toast.error("Please enter your email first");
+      setEmailError("Please enter your email first");
       return;
     }
+
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      toast.error("Please enter a valid email");
+      setEmailError("Please enter a valid email address");
       return;
     }
 
     try {
-      // TODO: API call to send OTP
-      // await axios.post('/api/send-otp', { email: formData.email });
-      
+      await sendOtp(formData.email);
       console.log("Sending OTP to:", formData.email);
-      toast.success("Verification code sent to your email!");
       setShowVerificationModal(true);
     } catch (error) {
-      toast.error("Failed to send verification code. Please try again.");
+      setEmailError("Failed to send verification code. Please try again.");
     }
-  } else {
-    setIsEmailVerified(false);
-  }
-};
-const handleVerifyEmail = (verified) => {
-  setIsEmailVerified(verified);
-  if (verified) {
-    toast.success("Email verified successfully!");
-  }
-};
+  };
+
+  const handleVerifyEmail = (verified) => {
+    if (verified) {
+      setIsEmailVerified(true);
+    } else {
+      setIsEmailVerified(false);
+    }
+  };
 
   useEffect(() => {
     if (formData.country) {
@@ -181,14 +177,16 @@ const handleVerifyEmail = (verified) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "email") {
-      setFormData({ ...formData, [name]: value.toLowerCase() });
-    } else {
-      setFormData({ ...formData, [name]: value });
+      const newEmail = value.toLowerCase();
+      setIsEmailVerified(false);
+      setEmailError("");
+      setFormData({ ...formData, email: newEmail });
+      return;
     }
-    
-    validateField(name, value);
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handlePhoneChange = (value) => {
@@ -290,7 +288,6 @@ const handleVerifyEmail = (verified) => {
 
     const validTypes = ["image/jpeg", "image/jpg", "image/png"];
     if (!validTypes.includes(file.type)) {
-      toast.error("Only JPG, JPEG, PNG files are allowed.");
       e.target.value = null;
       return;
     }
@@ -344,8 +341,8 @@ const handleVerifyEmail = (verified) => {
       else if (formData.confirmPassword !== formData.password)
         newErrors.confirmPassword = t("register.errors.confirmPassword");
        
-  if (!acceptedTerms) newErrors.terms = "Please accept Terms & Conditions";
-  if (!acceptedPrivacy) newErrors.privacy = "Please accept Privacy Policy";
+      if (!acceptedTerms) newErrors.terms = "Please accept Terms & Conditions";
+      if (!acceptedPrivacy) newErrors.privacy = "Please accept Privacy Policy";
     }
     
     setErrors(newErrors);
@@ -389,8 +386,6 @@ const handleVerifyEmail = (verified) => {
         window.history.pushState({ step: newStep }, "");
       } catch (e) {}
       window.scrollTo(0, 0);
-    } else {
-      toast.error("Please fill all required fields correctly.");
     }
   };
 
@@ -449,9 +444,6 @@ const handleVerifyEmail = (verified) => {
         }
         
         const response = await registerRestaurant(formDataToSend);
-        toast.success(
-          response.message || "Registered successfully! Please log in."
-        );
         
         setFormData({
           restaurantName: "",
@@ -476,10 +468,7 @@ const handleVerifyEmail = (verified) => {
         
       } catch (error) {
         console.error("Registration error:", error);
-        toast.error(error.response?.data?.error || "Registration failed. Please try again.");
       }
-    } else {
-      toast.error("Please fill all fields correctly.");
     }
     
     setIsSubmitting(false);
@@ -753,54 +742,49 @@ const handleVerifyEmail = (verified) => {
       case 4:
         return (
           <div className="step-inner" data-aos="fade-up">
-         <div className="form-group">
-        <label className="form-label">Email</label>
-        <div className="email-input-wrapper">
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            placeholder="example@gmail.com"
-            className={`form-input email-input-with-verify ${errors.email && touched.email ? 'error' : ''}`}
-            autoComplete="off"
-            disabled={isEmailVerified}
-          />
-          
-          {/* Inline Checkbox in Email Input */}
-          <div className="inline-verify-checkbox">
-            <input
-              type="checkbox"
-              checked={isEmailVerified}
-              onChange={(e) => handleEmailVerifyCheckbox(e.target.checked)}
-              className="custom-checkbox"
-              disabled={isEmailVerified}
-              title={isEmailVerified ? "Email Verified" : "Click to verify email"}
-            />
-            <span className={`verify-tooltip ${isEmailVerified ? 'verified' : ''}`}>
-              {isEmailVerified ? "✓ Verified" : "Click to verify"}
-            </span>
-          </div>
-        </div>
-        
-        {errors.email && touched.email && (
-          <div className="error-message">{errors.email}</div>
-        )}
-        
-        {/* Verification Status Text */}
-        {isEmailVerified && (
-          <div className="verification-status verified">
-            <i className="fas fa-check-circle"></i>
-            Email verified successfully
-          </div>
-        )}
+            <div className="form-group">
+              <div className="form-group email-verify-wrapper">
+                <label className="form-label">Email</label>
 
-        {errors.emailVerification && (
-          <div className="checkbox-error">{errors.emailVerification}</div>
-        )}
-      </div>
-       
+                <div className="email-input-container">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`form-input ${errors.email && touched.email ? "error" : ""}`}
+                    placeholder="example@gmail.com"
+                    autoComplete="off"
+                  />
+
+                  {!isEmailVerified && formData.email && /\S+@\S+\.\S+/.test(formData.email) ? (
+                    <span className="verify-link" onClick={handleEmailVerify}>
+                      Verify
+                    </span>
+                  ) : null}
+
+                  {isEmailVerified && (
+                    <span className="verified-text">Verified ✓</span>
+                  )}
+                </div>
+
+                {errors.email && touched.email && (
+                  <div className="error-message">{errors.email}</div>
+                )}
+              </div>
+
+              {isEmailVerified && (
+                <div className="verification-status verified">
+                  <i className="fas fa-check-circle"></i>
+                  Email verified successfully
+                </div>
+              )}
+
+              {errors.emailVerification && (
+                <div className="checkbox-error">{errors.emailVerification}</div>
+              )}
+            </div>
 
             <div className="form-group password-field">
               <label className="form-label">Password</label>
@@ -841,54 +825,48 @@ const handleVerifyEmail = (verified) => {
                 <div className="error-message">{errors.confirmPassword}</div>
               )}
             </div>
-      <div className="terms-checkboxes">
-  <label className="terms-label">
-    <input
-      type="checkbox"
-      checked={acceptedTerms}
-      onChange={(e) => setAcceptedTerms(e.target.checked)}
-      className="custom-checkbox"
-    />
 
-    <span className="checkbox-text">
-      I agree to the{" "}
-      {/* Open in-modal instead of navigation */}
-      <button
-        type="button"
-        className="terms-link"
-        onClick={() => setShowTermsModal(true)}
-     
-      >
-        Terms &amp; Conditions
-      </button>
-    </span>
+            <div className="terms-checkboxes">
+              <label className="terms-label">
+               <input
+  type="checkbox"
+  checked={acceptedTerms}
+  onChange={(e) => setAcceptedTerms(e.target.checked)}
+  style={{ accentColor: "#d0661d" }}
+/>
+                <span className="checkbox-text">
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    className="terms-link"
+                    onClick={() => setShowTermsModal(true)}
+                  >
+                    Terms &amp; Conditions
+                  </button>
+                </span>
+                {errors.terms && (
+                  <span className="checkbox-error">({errors.terms})</span>
+                )}
+              </label>
 
-    {errors.terms && (
-      <span className="checkbox-error">({errors.terms})</span>
-    )}
-  </label>
-
-  <label className="terms-label">
-   <input
-    type="checkbox"
-    checked={acceptedPrivacy}
-    onChange={(e) => setAcceptedPrivacy(e.target.checked)}
-    className="custom-checkbox"
-  />
-  <span className="checkbox-text">
-    I agree to the
-    <span className="checkbox-link" onClick={() => setShowPrivacyModal(true)}>
-      {" "}Privacy Policy
-    </span>
-  </span>
-
-    {errors.privacy && (
-      <span className="checkbox-error">({errors.privacy})</span>
-    )}
-  </label>
-</div>
-
-    
+              <label className="terms-label">
+               <input
+  type="checkbox"
+  checked={acceptedPrivacy}
+  onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+ style={{ accentColor: "#d0661d" }}
+/>
+                <span className="checkbox-text">
+                  I agree to the
+                  <span className="checkbox-link" onClick={() => setShowPrivacyModal(true)}>
+                    {" "}Privacy Policy
+                  </span>
+                </span>
+                {errors.privacy && (
+                  <span className="checkbox-error">({errors.privacy})</span>
+                )}
+              </label>
+            </div>
           </div>
         );
 
@@ -911,12 +889,10 @@ const handleVerifyEmail = (verified) => {
           </div>
         </div>
 
-{/* Upper curved lines */}
-<img src="/vector-line.png" className="vector-line upper-line" alt="" />
-<img src="/vector-line.png" className="vector-line upper-line subtle" alt="" />
+        <img src="/vector-line.png" className="vector-line upper-line" alt="" />
+        <img src="/vector-line.png" className="vector-line upper-line subtle" alt="" />
 
         <div className="form-section">
-        
           <div className="register-form-card">
             <div className="form-header">
               <h1 className="form-title">Register your Restaurant</h1>
@@ -957,63 +933,66 @@ const handleVerifyEmail = (verified) => {
           </div>
         </div>
 
-<img src="/vector-line.png" alt="decorative line" className="vector-line main-line" draggable="false" />
-<img src="/vector-line.png" className="vector-line subtle" alt="" />
-      <div className="food-artwork">
+        <img src="/vector-line.png" alt="decorative line" className="vector-line main-line" draggable="false" />
+        <img src="/vector-line.png" className="vector-line subtle" alt="" />
 
-  {/* BACKGROUND CIRCLE */}
-{/* MAIN background (bottom curve) */}
-<img 
-  src={bgImages[step]} 
-  alt="bg circle"
-  className={`food-bg-circle 
-    ${step === 2 ? "circle-step-3" : "circle-step-default"}
-    ${step === 4 ? "circle-step-4-bottom" : "circle-step-default"}`}
-  draggable="false"
-/>
+        <div className="food-artwork">
+          <img 
+            src={bgImages[step]} 
+            alt="bg circle"
+            className={`food-bg-circle 
+              ${step === 2 ? "circle-step-3" : "circle-step-default"}
+              ${step === 4 ? "circle-step-4-bottom" : "circle-step-default"}`}
+            draggable="false"
+          />
 
-{/* TOP curve — only for step 4 */}
-{step === 4 && (
-  <img
-    src={bgImages[step]}
-    alt="bg circle top"
-    className="food-bg-circle circle-step-4-top"
-    draggable="false"
-  />
-)}
+          {step === 4 && (
+            <img
+              src={bgImages[step]}
+              alt="bg circle top"
+              className="food-bg-circle circle-step-4-top"
+              draggable="false"
+            />
+          )}
 
-
-
-  {/* FOOD IMAGES */}
-  <img
-    ref={artworkRef}
-    src={artworkSrc}
-    alt="food artwork"className={`food-main ${artworkFade ? 'artwork-fade' : ''} ${
-    artworkSrc === "/steper3.png" ? "small-food" : ""
-  }
-    
-  ${
-    artworkSrc === "/steper4.png" ? "food-img-4" : ""
-  }`}
-    draggable="false"
-  />
-
-</div>
-
+          <img
+            ref={artworkRef}
+            src={artworkSrc}
+            alt="food artwork"
+            className={`food-main ${artworkFade ? 'artwork-fade' : ''} ${
+              artworkSrc === "/steper3.png" ? "small-food" : ""
+            } ${
+              artworkSrc === "/steper4.png" ? "food-img-4" : ""
+            }`}
+            draggable="false"
+          />
+        </div>
       </div>
-       <EmailVerificationModal
-      isOpen={showVerificationModal}
-      onClose={() => setShowVerificationModal(false)}
-      email={formData.email}
-      onVerify={handleVerifyEmail}
-    />
-    <TermsConditionsModal
+
+      <EmailVerificationModal
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        email={formData.email}
+        onVerify={handleVerifyEmail}
+      />
+     {/* TERMS & CONDITIONS MODAL */}
+<TermsConditionsModal
   isOpen={showTermsModal}
-  onClose={() => setShowTermsModal(false)}
+  onClose={() => {
+    setShowTermsModal(false);
+    // Auto-check Terms only if unchecked
+    setAcceptedTerms(true);
+  }}
 />
+
+{/* PRIVACY POLICY MODAL */}
 <PrivacyPolicyModal
   isOpen={showPrivacyModal}
-  onClose={() => setShowPrivacyModal(false)}
+  onClose={() => {
+    setShowPrivacyModal(false);
+    // Auto-check Privacy only if unchecked
+    setAcceptedPrivacy(true);
+  }}
 />
 
     </>

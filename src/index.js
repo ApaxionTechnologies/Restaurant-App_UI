@@ -14,7 +14,11 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import store, { persistor } from "./store"; 
+
 import "./index.css";
+
+
+
 import "./config/i18n";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./config/i18n";

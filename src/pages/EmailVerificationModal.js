@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../styles/EmailVerificationModal.css";
+import { verifyOtp, sendOtp } from "../services/authService";
 
 const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -9,8 +10,12 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
 
+  // Start resend timer when modal opens
   useEffect(() => {
-    if (isOpen && resendTimer > 0) {
+    setResendTimer(60);
+    setCanResend(false);
+
+    if (isOpen) {
       const timer = setInterval(() => {
         setResendTimer((prev) => {
           if (prev <= 1) {
@@ -23,20 +28,16 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [isOpen, resendTimer]);
+  }, [isOpen]);
 
   const handleChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
     setError("");
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
   };
 
   const handleKeyDown = (index, e) => {
@@ -49,17 +50,13 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").slice(0, 6);
     if (!/^\d+$/.test(pastedData)) return;
-
     const newOtp = pastedData.split("");
     setOtp([...newOtp, ...Array(6 - newOtp.length).fill("")]);
-    
-    const nextEmptyIndex = newOtp.length < 6 ? newOtp.length : 5;
-    inputRefs.current[nextEmptyIndex]?.focus();
+    inputRefs.current[newOtp.length < 6 ? newOtp.length : 5]?.focus();
   };
 
   const handleVerify = async () => {
     const otpValue = otp.join("");
-    
     if (otpValue.length !== 6) {
       setError("Please enter complete OTP");
       return;
@@ -69,23 +66,13 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
     setError("");
 
     try {
-      // TODO: API call to verify OTP
-      // const response = await axios.post('/api/verify-otp', { email, otp: otpValue });
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const success = true; 
-      
-      if (success) {
-        onVerify(true);
-        onClose();
-      } else {
-        setError("Invalid OTP. Please try again.");
-        setOtp(["", "", "", "", "", ""]);
-        inputRefs.current[0]?.focus();
-      }
-    } catch (error) {
-      setError(error.response?.data?.message || "Verification failed. Please try again.");
+      await verifyOtp(email, otpValue);
+      onVerify(true); // Notify parent that email is verified
+      onClose();
+    } catch (err) {
+      setError(err.message || "Invalid OTP. Please try again.");
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
     } finally {
       setIsVerifying(false);
     }
@@ -100,11 +87,9 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
     setError("");
 
     try {
-      // TODO: API call to resend OTP
-      // await axios.post('/api/resend-otp', { email });
-      console.log("Resend OTP to:", email);
-    } catch (error) {
-      setError("Failed to resend OTP. Please try again.");
+      await sendOtp(email); // Call API to send OTP
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP. Please try again.");
     }
   };
 
@@ -113,19 +98,13 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
+        <button className="modal-close" onClick={onClose}>×</button>
 
         <div className="modal-header">
-          <div className="modal-icon">
-            <i className="fas fa-envelope-open-text"></i>
-          </div>
+          <div className="modal-icon"><i className="fas fa-envelope-open-text"></i></div>
           <h2 className="modal-title">Email Verification</h2>
           <p className="modal-subtitle">
-            We've sent a 6-digit code to
-            <br />
-            <strong>{email}</strong>
+            We've sent a 6-digit code to <strong>{email}</strong>
           </p>
         </div>
 
@@ -148,12 +127,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
             ))}
           </div>
 
-          {error && (
-            <div className="error-message-modal">
-              <i className="fas fa-exclamation-circle"></i>
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message-modal">{error}</div>}
 
           <button
             className="verify-button"
@@ -161,25 +135,17 @@ const EmailVerificationModal = ({ isOpen, onClose, email, onVerify }) => {
             disabled={isVerifying || otp.join("").length !== 6}
           >
             {isVerifying ? (
-              <>
-                <i className="fas fa-spinner fa-spin"></i>
-                Verifying...
-              </>
-            ) : (
-              "Verify Email"
-            )}
+              <><i className="fas fa-spinner fa-spin"></i> Verifying...</>
+            ) : "Verify Email"}
           </button>
 
           <div className="resend-section">
             {canResend ? (
               <button className="resend-button" onClick={handleResend}>
-                <i className="fas fa-redo-alt"></i>
-                Resend Code
+                <i className="fas fa-redo-alt"></i> Resend Code
               </button>
             ) : (
-              <p className="resend-timer">
-                Resend code in <span>{resendTimer}s</span>
-              </p>
+              <p className="resend-timer">Resend code in <span>{resendTimer}s</span></p>
             )}
           </div>
         </div>
