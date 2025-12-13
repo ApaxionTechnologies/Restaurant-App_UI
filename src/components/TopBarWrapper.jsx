@@ -1,8 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import HomeHeader from "./HomeHeader";
-import Footer from "./Footer";
 import { useEffect, useState } from "react";
-// import { getMyRestaurant } from "../services/apiService";
 import { getMyRestaurant } from "../services/restaurantService.js";
 
 export default function TopBarWrapper() {
@@ -11,7 +8,8 @@ export default function TopBarWrapper() {
   );
   const [adminEmail, setAdminEmail] = useState("");
   const [restaurant, setRestaurant] = useState(null);
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("adminEmail");
@@ -23,6 +21,7 @@ export default function TopBarWrapper() {
   useEffect(() => {
     const storedEmail = localStorage.getItem("adminEmail");
     const storedToken = localStorage.getItem("token");
+
     if (!storedEmail || !storedToken) {
       navigate("/");
     } else {
@@ -41,20 +40,13 @@ export default function TopBarWrapper() {
     };
     fetchMe();
   }, []);
+
   return (
     <>
-      <HomeHeader
-        isAdminDashboard={true}
-        restaurantName={restaurantName}
-        adminEmail={adminEmail}
-        onLogout={handleLogout}
-        restaurant={restaurant}
-      />
-      <div className="mt-5">
-
-      <Outlet />
+      {/* HEADER REMOVED — AdminLayout will show the header */}
+      <div className="mt-0">
+        <Outlet />
       </div>
-      <Footer />
     </>
   );
 }
