@@ -1,0 +1,132 @@
+/* Overlay */
+.terms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999 !important;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal Content */
+.terms-modal-content {
+  background: #FFFFFF;
+  border-radius: 16px;
+  width: 45%;
+  max-width: 800px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: slideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Close Button */
+.terms-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #8C8C8C;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.terms-modal-close:hover {
+  background: #F5F5F5;
+  color: #2C2C2C;
+  transform: rotate(90deg);
+}
+
+/* Header */
+.terms-modal-header {
+  text-align: center;
+  padding: 40px 40px 20px;
+}
+
+.terms-modal-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #FFE8D6 0%, #FFD4B8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D2691E;
+  font-size: 32px;
+}
+
+.terms-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2C2C2C;
+  margin-bottom: 12px;
+}
+
+.terms-modal-subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Body */
+.terms-modal-body {
+  padding: 0 40px;
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #F4A16E #f5f5f5;
+}
+
+/* Footer */
+.terms-modal-footer {
+  padding: 20px 40px 40px;
+}
+
+.terms-accept-button {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(135deg, #D2691E 0%, #C85A1A 100%);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(210, 105, 30, 0.3);
+}
+
+.terms-accept-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
+}
