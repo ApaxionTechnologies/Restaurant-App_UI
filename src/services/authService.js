@@ -35,3 +35,19 @@ export const loginWithGoogle = async () => {
   });
   return data;
 };
+export const sendOtp = async (email) => {
+  try {
+    const res = await API.post("/auth/send-otp", { email });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+export const verifyOtp = async (email, otp) => {
+  try {
+    const res = await API.post("/auth/verify-otp", { email, otp });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
