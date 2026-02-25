@@ -70,11 +70,8 @@ export default function AdminLogin({ onClose }) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminEmail", adminEmail);
 
-      if (rememberMe) {
-        localStorage.setItem("rememberAdmin", "true");
-      } else {
-        localStorage.removeItem("rememberAdmin");
-      }
+      if (rememberMe) localStorage.setItem("rememberAdmin", "true");
+      else localStorage.removeItem("rememberAdmin");
 
       navigate("/admin-dashboard");
       if (onClose) onClose();
@@ -88,13 +85,13 @@ export default function AdminLogin({ onClose }) {
 
   const handleEmailChange = (value) => {
     setAdminEmail(value);
-    setFieldErrors((prev) => ({ ...prev, email: "" }));
+    setFieldErrors((p) => ({ ...p, email: "" }));
     if (errorMessage) setErrorMessage("");
   };
 
   const handlePasswordChange = (value) => {
     setAdminPassword(value);
-    setFieldErrors((prev) => ({ ...prev, password: "" }));
+    setFieldErrors((p) => ({ ...p, password: "" }));
     if (errorMessage) setErrorMessage("");
   };
 
@@ -103,54 +100,37 @@ export default function AdminLogin({ onClose }) {
     setShowForgotPassword(true);
   };
 
-  const handleBackToLogin = () => {
-    setShowForgotPassword(false);
-  };
+  const handleBackToLogin = () => setShowForgotPassword(false);
 
   const handleGoogleLogin = async () => {
     setErrorMessage("");
     setIsGoogleSubmitting(true);
-
     try {
       const data = await loginWithGoogle();
       localStorage.setItem("token", data.token);
       localStorage.setItem("adminEmail", data.email);
-
-      if (rememberMe) {
-        localStorage.setItem("rememberAdmin", "true");
-      } else {
-        localStorage.removeItem("rememberAdmin");
-      }
+      if (rememberMe) localStorage.setItem("rememberAdmin", "true");
+      else localStorage.removeItem("rememberAdmin");
 
       navigate("/admin-dashboard");
       if (onClose) onClose();
     } catch (err) {
       console.error("Google login error:", err);
-      setErrorMessage(
-        err.message || "Google sign-in failed. Please try again."
-      );
+      setErrorMessage(err.message || "Google sign-in failed. Please try again.");
     } finally {
       setIsGoogleSubmitting(false);
     }
   };
 
   if (showForgotPassword) {
-    return (
-      <ForgotPassword
-        onClose={handleClose}
-        onBackToLogin={handleBackToLogin}
-      />
-    );
+    return <ForgotPassword onClose={handleClose} onBackToLogin={handleBackToLogin} />;
   }
 
   return (
-    <div className="admin-login-backdrop" onClick={handleClose}>
-      <div
-        className="admin-login-card"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="al-backdrop" onClick={handleClose}>
+      <div className="al-card" onClick={(e) => e.stopPropagation()}>
         <button
-          className="admin-login-close btn btn-ghost btn-icon btn-square"
+          className="al-close"
           onClick={handleClose}
           type="button"
           aria-label="Close"
@@ -158,59 +138,41 @@ export default function AdminLogin({ onClose }) {
           <FaTimes />
         </button>
 
-        <div className="admin-login-inner">
-          <h2 className="admin-login-title heading-main text-center">
-            Admin Portal
-          </h2>
-          <p className="admin-login-subtitle text-subtitle text-center">
-            Sign in to manage your restaurant
-          </p>
+        <div className="al-inner">
+          <h2 className="al-title">Admin Portal</h2>
+          <p className="al-sub">Sign in to Manage your Resturant</p>
 
-          <form
-            className="admin-login-form"
-            onSubmit={handleSubmit}
-            noValidate
-          >
-            <div className="admin-field">
-              <label className="admin-label" htmlFor="admin-email">
-                Email
-              </label>
+          <form className="al-form" onSubmit={handleSubmit} noValidate>
+            <div className="al-field">
+              <label htmlFor="admin-email" className="al-label">Email</label>
               <input
                 id="admin-email"
                 type="email"
-                className={`admin-input ${
-                  fieldErrors.email ? "admin-input-error" : ""
-                }`}
-                placeholder="Enter your email"
+                className={`al-input ${fieldErrors.email ? "al-input-error" : ""}`}
+                placeholder=""
                 value={adminEmail}
                 onChange={(e) => handleEmailChange(e.target.value)}
+                autoComplete="email"
               />
-              {fieldErrors.email && (
-                <div className="admin-error-text">{fieldErrors.email}</div>
-              )}
+              {fieldErrors.email && <div className="al-field-error">{fieldErrors.email}</div>}
             </div>
 
-            <div className="admin-field">
-              <label className="admin-label" htmlFor="admin-password">
-                Password
-              </label>
+            <div className="al-field">
+              <label htmlFor="admin-password" className="al-label">Password</label>
               <input
                 id="admin-password"
                 type="password"
-                className={`admin-input ${
-                  fieldErrors.password ? "admin-input-error" : ""
-                }`}
-                placeholder="Enter your password"
+                className={`al-input ${fieldErrors.password ? "al-input-error" : ""}`}
+                placeholder=""
                 value={adminPassword}
                 onChange={(e) => handlePasswordChange(e.target.value)}
+                autoComplete="current-password"
               />
-              {fieldErrors.password && (
-                <div className="admin-error-text">{fieldErrors.password}</div>
-              )}
+              {fieldErrors.password && <div className="al-field-error">{fieldErrors.password}</div>}
             </div>
 
-            <div className="admin-remember-row">
-              <label className="admin-remember">
+            <div className="al-row">
+              <label className="al-remember">
                 <input
                   type="checkbox"
                   checked={rememberMe}
@@ -219,65 +181,40 @@ export default function AdminLogin({ onClose }) {
                 <span>Remember me?</span>
               </label>
 
-              <button
-                type="button"
-                className="admin-forgot-link btn-text"
-                onClick={handleForgotPasswordClick}
-              >
+              <button type="button" className="al-forgot" onClick={handleForgotPasswordClick}>
                 Forgot Password
               </button>
             </div>
 
-            {errorMessage && (
-              <div className="admin-error-banner">{errorMessage}</div>
-            )}
+            {errorMessage && <div className="al-error">{errorMessage}</div>}
 
-            <button
-              type="submit"
-              className="admin-submit-btn btn btn-primary btn-pill"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Signing in..." : "Sign in"}
-            </button>
-
-            <div className="admin-or text-caption text-center">
-              or sign in with other accounts?
+            <div className="al-submit-wrap">
+              <button
+                type="submit"
+                className="al-submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Signing in..." : "Sign in"}
+              </button>
             </div>
 
-            <div className="admin-social-row">
+            <div className="al-or">or sign in with other accounts?</div>
+
+            <div className="al-socials">
               <button
                 type="button"
-                className="admin-social-btn btn btn-soft btn-square btn-icon btn-google"
+                className="al-social al-g"
                 onClick={handleGoogleLogin}
                 disabled={isGoogleSubmitting}
+                aria-label="Google"
               >
                 <FaGoogle />
               </button>
-              <button
-                type="button"
-                className="admin-social-btn btn btn-soft btn-square btn-icon btn-facebook"
-              >
-                <FaFacebookF />
-              </button>
-              <button
-                type="button"
-                className="admin-social-btn btn btn-soft btn-square btn-icon btn-instagram"
-              >
-                <FaInstagram />
-              </button>
-              <button
-                type="button"
-                className="admin-social-btn btn btn-soft btn-square btn-icon btn-linkedin"
-              >
-                <FaLinkedinIn />
-              </button>
             </div>
 
-            <p className="admin-footer-text text-caption text-center">
+            <p className="al-foot">
               Don&apos;t have an account?{" "}
-              <Link to="/registerrestaurant" className="admin-footer-link">
-                Register your restaurant.
-              </Link>
+              <Link to="/registerrestaurant" className="al-register">Register Your Restaurant.</Link>
             </p>
           </form>
         </div>
